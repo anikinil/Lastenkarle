@@ -6,7 +6,6 @@ from api.serializer import *
 
 @api_view(['GET'])
 def getAllBikes(request):
-
     bike = Bike.objects.all()
     serializer = BikeSerializer(bike, many=True)
     return Response(serializer.data)
