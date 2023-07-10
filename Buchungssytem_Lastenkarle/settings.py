@@ -26,7 +26,9 @@ SECRET_KEY = 'django-insecure-jw&8^!f%+_ac^n%=-4je8mq&=(8*v@4*s+l*ti(u8$t$^j29&@
 DEBUG = True
 
 ALLOWED_HOSTS = ['transport.data.kit.edu',
-                 ]
+                 '.localhost',
+                 '127.0.0.1',
+                 '[::1]']
 
 
 # Application definition
@@ -38,7 +40,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'PrivacyStatement'
+    'rest_framework',
+    'PrivacyStatement',
+    'api',
+    'db_model',
+
 ]
 
 MIDDLEWARE = [
@@ -78,8 +84,12 @@ WSGI_APPLICATION = 'Buchungssytem_Lastenkarle.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'Model',
+        'USER': 'root',
+        'PASSWORD': 'YOUR_ROOT_PASSWORD_HERE',
+        'HOST': 'localhost',
+        'PORT': '40000',
     }
 }
 
