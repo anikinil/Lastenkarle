@@ -50,6 +50,10 @@ class StoreSerializer(serializers.ModelSerializer):
         model = Store
         fields = '__all__'
 
+class RegionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Store
+        fields = ['REGION']
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -58,14 +62,26 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class Availability_Serializer(serializers.ModelSerializer):
+    my_field = serializers.SerializerMethodField('get_flags')
+
+    def get_flags(self, availability):
+        return 'test'
+
     class Meta:
         model = Availability
-        fields = '__all__'
+        fields = ('from_date', 'until_date', 'my_field')
 
 
 class Availability_StatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = Availability_Status
+        fields = '__all__'
+
+
+
+class Availability_FlagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Availability_Flag
         fields = '__all__'
 
 
