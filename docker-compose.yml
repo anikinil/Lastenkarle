@@ -1,0 +1,54 @@
+version: "3.9"
+
+services:
+  django_gunicorn:
+    build:
+      dockerfile: ./Buchungssystem_Lastenkarle/Dockerfile_Django
+    volumes:
+      - ./Buchungssystem_Lastenkarle/:/usr/src/app/
+    #depends_on:
+     # db:
+     #   condition: service_healthy
+    ports:
+      - "8000:8000"
+    expose:
+      - "8000"
+    env_file:
+      - envvarsdjango.env
+
+  nginx:
+    build: ./nginx
+    volumes:
+      - ./Buchungssystem_Lastenkarle/static:/static
+    ports:
+      - "80:80"
+    depends_on:
+      - django_gunicorn
+
+
+  db:
+    image: mariadb:11.0
+    restart: always
+    volumes:
+      - ./dev/data:/var/lib/mysql
+      - ./dev/mariadb:/docker-entrypoint-initdb.d
+    env_file:
+      - envvarsdb.env
+    #healthcheck:
+    #  test: ["CMD", "/usr/local/bin/healthcheck.sh", "--innodb_initialized"]
+    #  timeout: 2s
+    #  retries: 30
+    ports:
+      - "3306:3306"
+
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    expose:
+      - "40001"
+    ports:
+      - "40001:80"
+    environment:
+      - PMA_HOST=db
+      - PMA_PORT=3306
+      - UPLOAD_LIMIT=69M

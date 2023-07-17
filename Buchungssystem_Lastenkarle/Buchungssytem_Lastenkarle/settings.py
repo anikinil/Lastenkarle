@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,15 +20,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-jw&8^!f%+_ac^n%=-4je8mq&=(8*v@4*s+l*ti(u8$t$^j29&@'
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['transport.data.kit.edu',
-                 '.localhost',
-                 '127.0.0.1',
-                 '[::1]']
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -85,11 +82,11 @@ WSGI_APPLICATION = 'Buchungssytem_Lastenkarle.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'Model',
-        'USER': 'root',
-        'PASSWORD': 'YOUR_ROOT_PASSWORD_HERE',
-        'HOST': 'localhost',
-        'PORT': '40000',
+        'NAME': os.environ.get("NAME"),
+        'USER':  os.environ.get("USER"),
+        'PASSWORD':  os.environ.get("PASSWORD"),
+        'HOST': 'db',
+        'PORT': '3306',
     }
 }
 
@@ -129,7 +126,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
-
+STATIC_ROOT = 'static/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
