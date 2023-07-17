@@ -1,0 +1,23 @@
+# pull official base image
+FROM python:3.12.0b3-bullseye
+
+# set work directory
+WORKDIR /usr/src/app
+
+# set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+# install dependencies
+RUN pip install --upgrade pip
+COPY ./requirements.txt .
+RUN pip install -r requirements.txt
+RUN apt update
+RUN apt install default-mysql-client -y
+
+#test for need of copy project since its mounted anyways
+# copy project
+COPY . .
+RUN chmod +x ./Buchungssystem_Lastenkarle/entrypoint.sh
+ENTRYPOINT ["./entrypoint.sh"]
+

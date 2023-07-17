@@ -1,5 +1,5 @@
 """
-WSGI config for Buchungssytem_Lastenkarle project.
+WSGI config for Buchungssystem_Lastenkarle project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Buchungssytem_Lastenkarle.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Buchungssystem_Lastenkarle.settings')
 
 application = get_wsgi_application()
