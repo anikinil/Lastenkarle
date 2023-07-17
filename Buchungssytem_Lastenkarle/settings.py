@@ -84,8 +84,12 @@ WSGI_APPLICATION = 'Buchungssytem_Lastenkarle.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'Model',
+        'USER': 'root',
+        'PASSWORD': 'YOUR_ROOT_PASSWORD_HERE',
+        'HOST': 'localhost',
+        'PORT': '40000',
     }
 }
 

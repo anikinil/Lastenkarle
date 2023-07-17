@@ -62,14 +62,10 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class Availability_Serializer(serializers.ModelSerializer):
-    my_field = serializers.SerializerMethodField('get_flags')
-
-    def get_flags(self, availability):
-        return 'test'
 
     class Meta:
         model = Availability
-        fields = ('from_date', 'until_date', 'my_field')
+        fields = '__all__'
 
 
 class Availability_StatusSerializer(serializers.ModelSerializer):

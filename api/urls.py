@@ -1,8 +1,8 @@
 from django.urls import path, include
 
 urlpatterns = [
-    path('v1/', include('api.v1.urls')),
-    #path('admin/', include('')),
+    path('booking/', include('api.booking.urls')),
+    path('user/', include('api.user.urls')),
     #path('manager/', include('')),
     #path('', include('')),
 ]
