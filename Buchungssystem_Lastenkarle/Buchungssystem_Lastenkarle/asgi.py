@@ -1,5 +1,5 @@
 """
-ASGI config for Buchungssytem_Lastenkarle project.
+ASGI config for Buchungssystem_Lastenkarle project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Buchungssytem_Lastenkarle.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Buchungssystem_Lastenkarle.settings')
 
 application = get_asgi_application()

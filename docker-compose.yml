@@ -2,6 +2,7 @@ version: "3.9"
 
 services:
   django_gunicorn:
+    restart: always
     build:
       dockerfile: ./Buchungssystem_Lastenkarle/Dockerfile_Django
     volumes:
@@ -27,7 +28,7 @@ services:
 
 
   db:
-    image: mariadb:11.0
+    image: mariadb:latest
     restart: always
     volumes:
       - ./dev/data:/var/lib/mysql
