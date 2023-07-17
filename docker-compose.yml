@@ -4,6 +4,7 @@ services:
   django_gunicorn:
     restart: always
     build:
+      context: .
       dockerfile: ./Buchungssystem_Lastenkarle/Dockerfile_Django
     volumes:
       - ./Buchungssystem_Lastenkarle/:/usr/src/app/
