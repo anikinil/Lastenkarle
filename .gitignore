@@ -6,3 +6,5 @@
 /Buchungssystem_Lastenkarle/.idea/
 /dev/data/
 /Buchungssystem_Lastenkarle/static/
+/envvarsdjango.env
+/envvarsdb.env
