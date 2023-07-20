@@ -1,5 +1,26 @@
 from django.db import models
 
+# Create your model managers here
+
+class UserManager(models.Manager):
+
+
+    def create(self, username, year_of_birth, assurance_lvl,
+               contact_data, first_name, last_name, address,
+               date_of_verification, id_number):
+        user = User(username=username,
+                    year_of_birth=year_of_birth,
+                    assurance_lvl=assurance_lvl,
+                    contact_data=contact_data)
+        user.save()
+        id_data = ID_Data(user=user,
+                          first_name=first_name,
+                          last_name=last_name,
+                          address=address,
+                          date_of_verification=date_of_verification,
+                          id_number=id_number)
+        id_data.save()
+        return user
 
 # Create your models here.
 class User(models.Model):

@@ -4,9 +4,11 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from api.serializer import *
+from db_model.models import *
 
 
 class ListRegion(APIView):
+
 
     def get(self, request):
         region = Store.REGION
@@ -56,8 +58,17 @@ class DetailStore(APIView):
 class ListAvailabilities(APIView):
 
     def get(self, request):
-        availability = Availability.objects.all()
-        serializer = Availability_Serializer(availability)
+        availabilities = Availability_Status.objects.all()
+        serializer = Availability_StatusSerializer(availabilities, many=True)
+        return Response(serializer.data)
+
+
+class DetailBikeAvailability(APIView):
+
+
+    def get(self, request, bike_id):
+        availabilities_of_bike = Availability_Status.objects.filter(availability__bike=bike_id)
+        serializer = Availability_StatusSerializer(availabilities_of_bike, many=True)
         return Response(serializer.data)
 
 
@@ -70,4 +81,3 @@ class DetailBooking(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
