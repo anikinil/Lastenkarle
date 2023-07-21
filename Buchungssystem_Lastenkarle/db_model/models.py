@@ -1,27 +1,5 @@
 from django.db import models
 
-# Create your model managers here
-
-class UserManager(models.Manager):
-
-
-    def create(self, username, year_of_birth, assurance_lvl,
-               contact_data, first_name, last_name, address,
-               date_of_verification, id_number):
-        user = User(username=username,
-                    year_of_birth=year_of_birth,
-                    assurance_lvl=assurance_lvl,
-                    contact_data=contact_data)
-        user.save()
-        id_data = ID_Data(user=user,
-                          first_name=first_name,
-                          last_name=last_name,
-                          address=address,
-                          date_of_verification=date_of_verification,
-                          id_number=id_number)
-        id_data.save()
-        return user
-
 # Create your models here.
 class User(models.Model):
     ASSURANCE_LEVEL = [
@@ -42,16 +20,15 @@ class ID_Data(models.Model):
     id_number = models.TextField(max_length=3)
 
 
+class Local_Data(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    password = models.TextField(default="ERROR")
+
+
 class OIDC_Data(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     issue = models.TextField(default="ERROR")
     subject = models.TextField(default="ERROR")
-
-
-class Local_Data(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    password = models.TextField(default="ERROR")
-    contact_data = models.TextField(default="ERROR")
 
 
 class User_Flag(models.Model):

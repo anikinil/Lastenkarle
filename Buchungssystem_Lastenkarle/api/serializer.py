@@ -5,13 +5,15 @@ from db_model.models import *
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('username',
-                  'year_of_birth',
-                  'assurance_lvl',
-                  'contact_data')
+        fields = ('username', 'year_of_birth', 'assurance_lvl', 'contact_data')
 
-class ID_DataSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
+    def create(self, validated_data):
+        return User.objects.create(**validated_data)
+
+
+class RegistrationSerializer(serializers.ModelSerializer):
+    user = UserSerializer(required=True, many=False)
+
     class Meta:
         model = ID_Data
         fields = ('user',
@@ -22,20 +24,11 @@ class ID_DataSerializer(serializers.ModelSerializer):
                   'id_number')
 
     def create(self, validated_data):
-        return User.objects.create(
-            username=validated_data['username'],
-            year_of_birth=validated_data['year_of_birth'],
-            assuarance_lvl=validated_data['assurance_lvl'],
-            contact_data=validated_data['contact_data'],
-            user=validated_data['user'],
-            first_name=validated_data['first_name'],
-            last_name=validated_data['last_name'],
-            address=validated_data['address'],
-            date_of_verification=validated_data['date_of_verification'],
-            id_number=validated_data['id_number']
-        )
-
-
+        password = self.initial_data['password']
+        user = User.objects.create(**validated_data.pop('user', None))
+        Local_Data.objects.create(user=user, password=password)
+        id_data = ID_Data.objects.create(user=user, **validated_data)
+        return id_data
 
 class OIDC_DataSerializer(serializers.ModelSerializer):
     class Meta:
@@ -43,24 +36,11 @@ class OIDC_DataSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class Local_DataSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Local_Data
-        fields = '__all__'
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
 
 
-class User_StatusSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User_Status
-        fields = '__all__'
-        depth = 1
-
-
-
-class User_FlagSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User_Flag
-        fields = '__all__'
 
 
 class BikeSerializer(serializers.ModelSerializer):
@@ -74,10 +54,12 @@ class StoreSerializer(serializers.ModelSerializer):
         model = Store
         fields = '__all__'
 
+
 class RegionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Store
         fields = ['REGION']
+
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -91,12 +73,6 @@ class UserDataSerializer(serializers.ModelSerializer):
         fields = '__all__'
         depth = 1
 
-class Availability_Serializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Availability
-        fields = '__all__'
-
 
 class Availability_StatusSerializer(serializers.ModelSerializer):
     class Meta:
@@ -105,27 +81,10 @@ class Availability_StatusSerializer(serializers.ModelSerializer):
         depth = 1
 
 
-class Availability_FlagSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Availability_Flag
-        fields = '__all__'
-
 
 class BookingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Booking
-        fields = '__all__'
-
-
-class Booking_FlagSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Booking_Flag
-        fields = '__all__'
-
-
-class Booking_StatusSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Booking_Status
         fields = '__all__'
 
 
