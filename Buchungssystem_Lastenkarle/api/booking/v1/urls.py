@@ -9,5 +9,4 @@ urlpatterns = [
     path('bikes/<int:bike_id>/store', views.DetailStore.as_view()),
     path('bikes/<int:bike_id>/booking', views.DetailBooking.as_view()),
     path('bikes/<int:bike_id>/availability', views.DetailBikeAvailability.as_view()),
-
 ]

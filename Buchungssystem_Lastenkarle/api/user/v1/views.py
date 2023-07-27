@@ -1,14 +1,44 @@
-from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.generics import CreateAPIView, UpdateAPIView
+from rest_framework.permissions import AllowAny
+from django.contrib.auth import login
+from rest_framework.authentication import BasicAuthentication
+
+from knox.views import LoginView as KnoxLoginView
 
 from api.serializer import *
 from db_model.models import *
 
 
-class ListBooking(APIView):
+class CreateUserAPI(CreateAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = CreateUserSerializer
+    permission_classes = (AllowAny,)
 
+
+class UpdateUserAPI(UpdateAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = UpdateUserSerializer
+
+
+class LoginView(KnoxLoginView):
+    permission_classes = (AllowAny,)
+    serializer_class = LoginSerializer
+
+    def post(self, request, format=None):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            user = serializer.validated_data['user']
+            login(request, user)
+            response = super(LoginView, self).post(request, format=None)
+        else:
+            return Response({'message': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(response.data, status=status.HTTP_200_OK)
+
+
+class ListBooking(APIView):
 
     def get(self, request, user_id):
         bookings = Booking.objects.filter(user_id=user_id)
@@ -18,7 +48,6 @@ class ListBooking(APIView):
 
 class DetailBooking(APIView):
 
-
     def get(self, request, user_id, booking_id):
         booking = Booking.objects.get(pk=booking_id)
         serializer = BookingSerializer(booking, many=False)
@@ -26,7 +55,6 @@ class DetailBooking(APIView):
 
 
 class DetailBikeByBooking(APIView):
-
 
     def get(self, request, user_id, booking_id):
         bike = Booking.objects.get(pk=booking_id).bike
@@ -36,7 +64,6 @@ class DetailBikeByBooking(APIView):
 
 class DetailStoreByBike(APIView):
 
-
     def get(self, request, user_id, booking_id):
         store = Booking.objects.get(pk=booking_id).bike.store
         serializer = StoreSerializer(store, many=False)
@@ -45,35 +72,7 @@ class DetailStoreByBike(APIView):
 
 class DetailUserData(APIView):
 
-
     def get(self, request, user_id):
-        user_data = ID_Data.objects.get(user_id=user_id)
+        user_data = ID_Data.objects.get(user=UserI.objects.get(pk=user_id))
         serializer = UserDataSerializer(user_data, many=False)
         return Response(serializer.data)
-
-
-class UserRegistration(APIView):
-
-
-    def post(self, request):
-        serializer = RegistrationSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class UserLogin(APIView):
-
-
-    def post(self, request):
-        serializer = LoginSerializer(data=request.data)
-        if serializer.is_valid():
-            user_exists = User.objects.filter(username=serializer.validated_data['username']).exists()
-            if user_exists == "NULL":
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-            user = User.objects.get(username=serializer.validated_data['username'])
-            password = Local_Data.objects.get(user=user).password
-            if password == serializer.validated_data['password']:
-                return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -13,7 +13,7 @@ RUN pip install --upgrade pip
 COPY ./requirements.txt .
 RUN pip install -r requirements.txt
 RUN apt update
-RUN apt install default-mysql-client -y
+#RUN apt install default-mysql-client -y
 
 #test for need of copy project since its mounted anyways
 # copy project
