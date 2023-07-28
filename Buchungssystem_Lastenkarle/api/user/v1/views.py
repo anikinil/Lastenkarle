@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.generics import CreateAPIView, UpdateAPIView
+from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView
 from rest_framework.permissions import AllowAny
 from django.contrib.auth import login
 from rest_framework.authentication import BasicAuthentication
@@ -12,15 +12,15 @@ from api.serializer import *
 from db_model.models import *
 
 
-class CreateUserAPI(CreateAPIView):
+class RegistrateUser(CreateAPIView):
     queryset = CustomUser.objects.all()
-    serializer_class = CreateUserSerializer
+    serializer_class = RegistrationSerializer
     permission_classes = (AllowAny,)
 
 
-class UpdateUserAPI(UpdateAPIView):
+class UpdateUserData(RetrieveUpdateAPIView):
     queryset = CustomUser.objects.all()
-    serializer_class = UpdateUserSerializer
+    serializer_class = UpdateUserDataSerializer
 
 
 class LoginView(KnoxLoginView):
@@ -74,5 +74,5 @@ class DetailUserData(APIView):
 
     def get(self, request, user_id):
         user_data = ID_Data.objects.get(user=UserI.objects.get(pk=user_id))
-        serializer = UserDataSerializer(user_data, many=False)
+        serializer = UserFlagSerializer(user_data, many=False)
         return Response(serializer.data)

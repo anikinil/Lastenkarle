@@ -57,6 +57,7 @@ class CustomUser(AbstractBaseUser):
 
 # Create your models here.
 
+
 class UserI(models.Model):
     ASSURANCE_LEVEL = [
         ("N", "None"), ("L", "Low"), ("M", "Medium"), ("H", "High"),

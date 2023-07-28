@@ -4,8 +4,8 @@ from . import views
 
 urlpatterns = [
     path('login', views.LoginView.as_view()),
-    path('register', views.CreateUserAPI.as_view()),
-    path('update/<int:pk>', views.UpdateUserAPI.as_view()),
+    path('register', views.RegistrateUser.as_view()),
+    path('update/<int:pk>', views.UpdateUserData.as_view()),
     path('<int:user_id>/user', views.DetailUserData.as_view()),
     path('<int:user_id>/user/bookings/', views.ListBooking.as_view()),
     path('<int:user_id>/user/bookings/<int:booking_id>', views.DetailBooking.as_view()),

@@ -25,7 +25,7 @@ class InternalUserSerializer(serializers.ModelSerializer):
         return UserI.objects.create(**validated_data)
 
 
-class CreateUserSerializer(serializers.ModelSerializer):
+class RegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = '__all__'
@@ -38,20 +38,10 @@ class CreateUserSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        user = CustomUser.objects.create_user(**validated_data)
-        dbuser = UserI.objects.create(username=user.username,
-                             year_of_birth=user.year_of_birth,
-                             assurance_lvl=user.assurance_lvl,
-                             contact_data=user.contact_data)
-        Local_Data.objects.create(user=dbuser, password=user.password)
-        ID_Data.objects.create(user=dbuser, first_name=user.first_name,
-                               last_name=user.last_name, address=user.address,
-                               date_of_verification=user.date_of_verification,
-                               id_number=user.id_number)
-        return user
+        auth_user = CustomUser.objects.create_user(**validated_data)
+        return auth_user
 
-
-class UpdateUserSerializer(serializers.ModelSerializer):
+class UpdateUserDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ('username',
@@ -63,23 +53,21 @@ class UpdateUserSerializer(serializers.ModelSerializer):
                   'address',
                   'date_of_verification',
                   'id_number',
-                  'password',
-                  'is_staff',
-                  'is_superuser',
-                  'is_active')
+                  'password')
 
     def update(self, instance, validated_data):
-        password = validated_data.pop('password')
+        #identify user by token logic goes here rather function
+        password = validated_data.pop('password', None)
         if password:
             instance.set_password(password)
         instance = super().update(instance, validated_data)
         return instance
 
 
-class UserDBSerializer(serializers.ModelSerializer):
+class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = UserI
-        fields = '__all__'
+        model = CustomUser
+        fields = ['username']
 
 
 class LoginSerializer(serializers.Serializer):
@@ -105,8 +93,25 @@ class LoginSerializer(serializers.Serializer):
         attrs['user'] = user
         return attrs
 
+
+class LocalUserDataSerializer(serializers.Serializer):
+    class Meta:
+        model = Local_Data
+        fields = '__all__'
+
+    def update(self, instance, validated_data):
+        pass
+
+
+
+
+class UserDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserI
+        fields = '__all__'
+
 class UserSerializer(serializers.ModelSerializer):
-    user = UserDBSerializer()
+    user = UserDataSerializer()
     class Meta:
         model = ID_Data
         fields = ('user',
@@ -141,7 +146,7 @@ class RegionSerializer(serializers.ModelSerializer):
         fields = ['REGION']
 
 
-class UserDataSerializer(serializers.ModelSerializer):
+class UserFlagSerializer(serializers.ModelSerializer):
     class Meta:
         model = User_Status
         fields = '__all__'
