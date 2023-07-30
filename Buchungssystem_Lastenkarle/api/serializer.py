@@ -1,62 +1,80 @@
 from rest_framework import serializers
 from django.contrib.auth import authenticate
-from django.contrib.auth.hashers import make_password, check_password
 from db_model.models import *
 
 
-class InternalUserSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = CustomUser
-        fields = ('username',
+        model = User
+        fields = ('assurance_lvl',
                   'year_of_birth',
-                  'assurance_lvl',
-                  'contact_data',
-                  'first_name',
-                  'last_name',
-                  'address',
-                  'date_of_verification',
-                  'id_number',
-                  'password',
-                  'is_staff',
-                  'is_superuser',
-                  'is_active')
+                  'contact_data')
 
-    def create(self, validated_data):
-        return UserI.objects.create(**validated_data)
+    def update(self, instance, validated_data):
+        instance = super().update(instance, validated_data)
+        return instance
 
-
-class RegistrationSerializer(serializers.ModelSerializer):
+class LoginDataSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
     class Meta:
-        model = CustomUser
+        model = LoginData
         fields = '__all__'
 
+"""
+JSON format for user creation:
+
+{
+    "local_data":{
+        "first_name":"",
+        "last_name":"",
+        "address":"",
+        "date_of_verification":"",
+        "id_number":""
+    },
+    "user": {
+        "assurance_lvl": "",
+        "year_of_birth": ,
+        "contact_data": ""
+    },
+    "username": "",
+    "password": ""
+}
+"""
+class RegistrationSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+    class Meta:
+        model = LoginData
+        exclude = ['last_login']
 
     def validate(self, attrs):
         username = attrs.get('username')
-        if CustomUser.objects.filter(username=username).exists():
-            raise serializers.ValidationError('User with username already exists.')
+        if LoginData.objects.filter(username=username).exists():
+            raise serializers.ValidationError('Username already exists.')
         return attrs
 
-    def create(self, validated_data):
-        auth_user = CustomUser.objects.create_user(**validated_data)
-        return auth_user
+    def to_internal_value(self, data):
+        local_data = data.pop('local_data', {})
+        validated_data = super().to_internal_value(data)
+        validated_data['local_data'] = local_data
+        return validated_data
 
-class UpdateUserDataSerializer(serializers.ModelSerializer):
+    def create(self, validated_data):
+        username = validated_data.pop('username', None)
+        password = validated_data.pop('password', None)
+        if username and password:
+            auth_user = LoginData.objects.create_user(username, password, **validated_data)
+            return auth_user
+        # logic for oidc user creation data handling
+        return
+
+
+class UpdateLoginDataSerializer(serializers.ModelSerializer):
     class Meta:
-        model = CustomUser
+        model = LoginData
         fields = ('username',
-                  'year_of_birth',
-                  'assurance_lvl',
-                  'contact_data',
-                  'first_name',
-                  'last_name',
-                  'address',
-                  'date_of_verification',
-                  'id_number',
                   'password')
 
     def update(self, instance, validated_data):
-        #identify user by token logic goes here rather function
         password = validated_data.pop('password', None)
         if password:
             instance.set_password(password)
@@ -64,10 +82,18 @@ class UpdateUserDataSerializer(serializers.ModelSerializer):
         return instance
 
 
-class CustomUserSerializer(serializers.ModelSerializer):
+class UpdateLocalDataSerializer(serializers.ModelSerializer):
     class Meta:
-        model = CustomUser
-        fields = ['username']
+        model = LocalData
+        fields = ('first_name',
+                  'last_name',
+                  'address',
+                  'date_of_verification',
+                  'id_number')
+
+    def update(self, instance, validated_data):
+        instance = super().update(instance, validated_data)
+        return instance
 
 
 class LoginSerializer(serializers.Serializer):
@@ -81,7 +107,7 @@ class LoginSerializer(serializers.Serializer):
         if not username or not password:
             raise serializers.ValidationError('Please give both username and password')
 
-        if not CustomUser.objects.filter(username=username).exists():
+        if not LoginData.objects.filter(username=username).exists():
             raise serializers.ValidationError('Username not found enter correct credentials')
         user = authenticate(
             request=self.context.get('request'),
@@ -92,40 +118,6 @@ class LoginSerializer(serializers.Serializer):
             raise serializers.ValidationError('Wrong credentials')
         attrs['user'] = user
         return attrs
-
-
-class LocalUserDataSerializer(serializers.Serializer):
-    class Meta:
-        model = Local_Data
-        fields = '__all__'
-
-    def update(self, instance, validated_data):
-        pass
-
-
-
-
-class UserDataSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserI
-        fields = '__all__'
-
-class UserSerializer(serializers.ModelSerializer):
-    user = UserDataSerializer()
-    class Meta:
-        model = ID_Data
-        fields = ('user',
-                  'first_name',
-                  'last_name',
-                  'address',
-                  'date_of_verification',
-                  'id_number')
-
-
-class OIDC_DataSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = OIDC_Data
-        fields = '__all__'
 
 
 class BikeSerializer(serializers.ModelSerializer):
@@ -164,4 +156,3 @@ class BookingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Booking
         fields = '__all__'
-

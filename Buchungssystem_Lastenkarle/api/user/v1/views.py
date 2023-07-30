@@ -4,8 +4,6 @@ from rest_framework import status
 from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView
 from rest_framework.permissions import AllowAny
 from django.contrib.auth import login
-from rest_framework.authentication import BasicAuthentication
-
 from knox.views import LoginView as KnoxLoginView
 
 from api.serializer import *
@@ -13,14 +11,24 @@ from db_model.models import *
 
 
 class RegistrateUser(CreateAPIView):
-    queryset = CustomUser.objects.all()
+    queryset = LoginData.objects.all()
     serializer_class = RegistrationSerializer
     permission_classes = (AllowAny,)
 
 
+class UpdateLoginData(RetrieveUpdateAPIView):
+    queryset = LoginData.objects.all()
+    serializer_class = UpdateLoginDataSerializer
+
+
+class UpdateLocalData(RetrieveUpdateAPIView):
+    queryset = LocalData.objects.all()
+    serializer_class = UpdateLocalDataSerializer
+
+
 class UpdateUserData(RetrieveUpdateAPIView):
-    queryset = CustomUser.objects.all()
-    serializer_class = UpdateUserDataSerializer
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 
 class LoginView(KnoxLoginView):
@@ -73,6 +81,6 @@ class DetailStoreByBike(APIView):
 class DetailUserData(APIView):
 
     def get(self, request, user_id):
-        user_data = ID_Data.objects.get(user=UserI.objects.get(pk=user_id))
+        user_data = LocalData.objects.get(user=User.objects.get(pk=user_id))
         serializer = UserFlagSerializer(user_data, many=False)
         return Response(serializer.data)

@@ -3,43 +3,31 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
 # Create internal user model here.
 class UserManager(BaseUserManager):
+
     def create_user(self, username, password, **extra_fields):
-        user = self.model(username=username, **extra_fields)
-        user.set_password(password)
+        user = User.objects.create(**extra_fields.pop('user'))
         user.is_active = True
-        user.save()
-        return user
+        LocalData.objects.create(**extra_fields.pop('local_data'))
+        login_data = self.model(user=user, username=username, **extra_fields)
+        login_data.set_password(password)
+        login_data.save()
+        return login_data
 
-    def create_superuser(self, username, password, **extra_fields):
+
+    def create_superuser(self, **extra_fields):
         extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_active', True)
         extra_fields.setdefault('is_superuser', True)
-
-        if not extra_fields.get('is_staff'):
-            raise ValueError("Superuser must have is_staff = True")
-
-        if not extra_fields.get('is_superuser'):
-            raise ValueError("Superuser must have is_superuser = True")
-        return self.create_user(username, password, **extra_fields)
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('Superuser must have is_staff=True.')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
+        return self.create_user(**extra_fields)
 
 
-class CustomUser(AbstractBaseUser):
-    ASSURANCE_LEVEL = [
-        ("N", "None"), ("L", "Low"), ("M", "Medium"), ("H", "High"),
-    ]
+class LoginData(AbstractBaseUser):
+    user = models.OneToOneField('User', on_delete=models.CASCADE, null=True, blank=True)
     username = models.TextField(max_length=30, unique=True)
-    year_of_birth = models.IntegerField(null=True)
-    assurance_lvl = models.CharField(default="N", max_length=1, choices=ASSURANCE_LEVEL)
-    contact_data = models.TextField(default="ERROR")
-    first_name = models.TextField(default="ERROR")
-    last_name = models.TextField(default="ERROR")
-    address = models.TextField(default="ERROR")
-    date_of_verification = models.DateField(auto_now=True)
-    id_number = models.TextField(max_length=3)
     password = models.TextField(default="ERROR")
-    is_staff = models.BooleanField(default=False)
-    is_superuser = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=True)
 
     USERNAME_FIELD = 'username'
 
@@ -55,37 +43,35 @@ class CustomUser(AbstractBaseUser):
         return True
 
 
-# Create your models here.
-
-
-class UserI(models.Model):
+class User(models.Model):
     ASSURANCE_LEVEL = [
         ("N", "None"), ("L", "Low"), ("M", "Medium"), ("H", "High"),
     ]
-    username = models.TextField(max_length=30)
-    year_of_birth = models.IntegerField()
     assurance_lvl = models.CharField(max_length=1, choices=ASSURANCE_LEVEL)
+    year_of_birth = models.IntegerField()
     contact_data = models.TextField(default="ERROR")
 
+    is_staff = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
 
-class ID_Data(models.Model):
-    user = models.ForeignKey(UserI, on_delete=models.CASCADE)
+
+
+class OIDCLoginData(models.Model):
+    user = models.OneToOneField('User', on_delete=models.CASCADE, null=True, blank=True)
+    issue = models.TextField(default="ERROR")
+    subject = models.TextField(default="ERROR")
+
+
+class LocalData(models.Model):
+    user = models.OneToOneField('User', on_delete=models.CASCADE, null=True, blank=True)
     first_name = models.TextField(default="ERROR")
     last_name = models.TextField(default="ERROR")
     address = models.TextField(default="ERROR")
+# do OIDC user also need to show documents on pickup?
+# if so date_of_verification should be moved to User model
     date_of_verification = models.DateField(auto_now=True)
     id_number = models.TextField(max_length=3)
-
-
-class Local_Data(models.Model):
-    user = models.ForeignKey(UserI, on_delete=models.CASCADE)
-    password = models.TextField(default="ERROR")
-
-
-class OIDC_Data(models.Model):
-    user = models.ForeignKey(UserI, on_delete=models.CASCADE)
-    issue = models.TextField(default="ERROR")
-    subject = models.TextField(default="ERROR")
 
 
 class User_Flag(models.Model):
@@ -93,7 +79,7 @@ class User_Flag(models.Model):
 
 
 class User_Status(models.Model):
-    user = models.ForeignKey(UserI, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     flag = models.ForeignKey(User_Flag, on_delete=models.CASCADE)
 
 
@@ -129,7 +115,7 @@ class Availability_Status(models.Model):
 
 
 class Booking(models.Model):
-    user = models.ForeignKey(UserI, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     bike = models.ForeignKey(Bike, on_delete=models.CASCADE)
     begin = models.DateField(auto_now=True)
     end = models.DateField(auto_now=True)
