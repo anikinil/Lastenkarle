@@ -42,11 +42,42 @@ class LoginData(AbstractBaseUser):
     def has_perm(self, perm, obj=None):
         return True
 
+"""
+USER_FLAGS = (('A', 'Authentifiziert'),
+              ('L', 'Gelöscht'),
+              ('M', 'Ermahnt'),
+              ('I', 'Admin'),
+              ('B', 'Gebannt'),
+              ('S', 'Shopowner'),
+              ('K', 'Kunde'))
+
+AVAILABILITY_FLAGS = (('B', 'Gebucht'),
+                      ('F', 'Frei'))
+
+BOOKING_FLAGS = (('B', 'Gebucht'),
+                 ('R', 'Reparatur'),
+                 ('A', 'Abgeholt'),
+                 ('S', 'Storniert'),
+                 ('Z', 'Zurückgegeben'))
+"""
+class User_status(models.Model):
+    USER_STATUS_FLAG = [
+        ('A', 'Authentifiziert'),
+        ('L', 'Gelöscht'),
+        ('M', 'Ermahnt'),
+        ('I', 'Admin'),
+        ('B', 'Gebannt'),
+        ('S', 'Shopowner'),
+        ('K', 'Kunde')
+    ]
+    user_status = models.CharField(max_length=1, choices=USER_STATUS_FLAG)
+
 
 class User(models.Model):
     ASSURANCE_LEVEL = [
         ("N", "None"), ("L", "Low"), ("M", "Medium"), ("H", "High"),
     ]
+    user_status = models.ManyToManyField(User_status)
     assurance_lvl = models.CharField(max_length=1, choices=ASSURANCE_LEVEL)
     year_of_birth = models.IntegerField()
     contact_data = models.TextField(default="ERROR")
@@ -74,15 +105,6 @@ class LocalData(models.Model):
     id_number = models.TextField(max_length=3)
 
 
-class User_Flag(models.Model):
-    meaning = models.TextField(default="ERROR")
-
-
-class User_Status(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    flag = models.ForeignKey(User_Flag, on_delete=models.CASCADE)
-
-
 class Store(models.Model):
     REGION = [("KA", "Karlsruhe"), ("ETT", "Ettlingen"), ("BAD", "Baden-Baden"),
               ("BRU", "Bruchsal"), ("MAL", "Malsch"), ]
@@ -97,21 +119,29 @@ class Bike(models.Model):
     description = models.TextField(default="ERROR")
     image_link = models.TextField(default="ERROR")
 
+class Availability_Status(models.Model):
+    AVAILABILITY_STATUS_FLAG = [
+                    ('B', 'Gebucht'),
+                    ('F', 'Frei')
+    ]
+    availability_status = models.CharField(max_length=1, choices=AVAILABILITY_STATUS_FLAG)
 
 class Availability(models.Model):
     from_date = models.DateField(auto_now=True)
     until_date = models.DateField(auto_now=True)
     store = models.ForeignKey(Store, on_delete=models.CASCADE)
     bike = models.ForeignKey(Bike, on_delete=models.CASCADE)
+    availability_status = models.ManyToManyField(Availability_Status)
 
-
-class Availability_Flag(models.Model):
-    meaning = models.TextField(default="ERROR")
-
-
-class Availability_Status(models.Model):
-    availability = models.ForeignKey(Availability, on_delete=models.CASCADE)
-    flag = models.ForeignKey(Availability_Flag, on_delete=models.CASCADE)
+class Booking_Status(models.Model):
+    BOOKING_STATUS_FLAG = [
+        ('B', 'Gebucht'),
+        ('R', 'Reparatur'),
+        ('A', 'Abgeholt'),
+        ('S', 'Storniert'),
+        ('Z', 'Zurückgegeben')
+    ]
+    booking_status = models.CharField(max_length=20, choices=BOOKING_STATUS_FLAG)
 
 
 class Booking(models.Model):
@@ -119,15 +149,7 @@ class Booking(models.Model):
     bike = models.ForeignKey(Bike, on_delete=models.CASCADE)
     begin = models.DateField(auto_now=True)
     end = models.DateField(auto_now=True)
-
-
-class Booking_Flag(models.Model):
-    meaning = models.TextField(default="ERROR")
-
-
-class Booking_Status(models.Model):
-    booking = models.ForeignKey(Booking, on_delete=models.CASCADE)
-    flag = models.ForeignKey(Booking_Flag, on_delete=models.CASCADE)
+    booking_status = models.ManyToManyField(Booking_Status)
 
 
 class Mail_Template(models.Model):

@@ -3,6 +3,7 @@ from knox.views import LoginView, LogoutAllView
 from . import views
 
 urlpatterns = [
+    path('status', views.UserStatusView.as_view()),
     path('login', views.LoginView.as_view()),
     path('register', views.RegistrateUser.as_view()),
     path('update/data/<int:pk>', views.UpdateUserData.as_view()),

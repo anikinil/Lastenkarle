@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import authenticate
-from db_model.models import *
+from db_model.models import User, LoginData, Booking, LocalData, Bike, Store, User_status
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -125,6 +125,11 @@ class BikeSerializer(serializers.ModelSerializer):
         model = Bike
         fields = '__all__'
 
+class UserStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User_status
+        fields = '__all__'
+
 
 class StoreSerializer(serializers.ModelSerializer):
     class Meta:
@@ -137,19 +142,6 @@ class RegionSerializer(serializers.ModelSerializer):
         model = Store
         fields = ['REGION']
 
-
-class UserFlagSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User_Status
-        fields = '__all__'
-        depth = 1
-
-
-class Availability_StatusSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Availability_Status
-        fields = '__all__'
-        depth = 1
 
 
 class BookingSerializer(serializers.ModelSerializer):

@@ -45,6 +45,15 @@ class LoginView(KnoxLoginView):
             return Response({'message': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
         return Response(response.data, status=status.HTTP_200_OK)
 
+class UserStatusView(APIView):
+
+    def post(self, request):
+        serializer = UserStatusSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class ListBooking(APIView):
 

@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'PrivacyStatement',
     'api',
     'db_model',
-    'knox',
+    'knox'
 ]
 
 REST_FRAMEWORK = {
