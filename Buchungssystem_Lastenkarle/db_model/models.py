@@ -42,24 +42,18 @@ class LoginData(AbstractBaseUser):
     def has_perm(self, perm, obj=None):
         return True
 
-"""
-USER_FLAGS = (('A', 'Authentifiziert'),
-              ('L', 'Gelöscht'),
-              ('M', 'Ermahnt'),
-              ('I', 'Admin'),
-              ('B', 'Gebannt'),
-              ('S', 'Shopowner'),
-              ('K', 'Kunde'))
+    def is_staff(self):
+        return self.user.is_staff
+    def is_staff_of_store(self):
+        if self.is_staff():
+            return None
+        return None
 
-AVAILABILITY_FLAGS = (('B', 'Gebucht'),
-                      ('F', 'Frei'))
+    def is_superuser(self):
+        return self.user.is_superuser
 
-BOOKING_FLAGS = (('B', 'Gebucht'),
-                 ('R', 'Reparatur'),
-                 ('A', 'Abgeholt'),
-                 ('S', 'Storniert'),
-                 ('Z', 'Zurückgegeben'))
-"""
+
+
 class User_status(models.Model):
     USER_STATUS_FLAG = [
         ('A', 'Authentifiziert'),
@@ -67,10 +61,11 @@ class User_status(models.Model):
         ('M', 'Ermahnt'),
         ('I', 'Admin'),
         ('B', 'Gebannt'),
-        ('S', 'Shopowner'),
+        ('S', 'Shopowner'), # shopowner gets signaled by is_staff in user, instead us ('Sx', 'store_name') for flag
         ('K', 'Kunde')
     ]
     user_status = models.CharField(max_length=1, choices=USER_STATUS_FLAG)
+
 
 
 class User(models.Model):
@@ -85,7 +80,6 @@ class User(models.Model):
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-
 
 
 class OIDCLoginData(models.Model):
@@ -110,7 +104,7 @@ class Store(models.Model):
               ("BRU", "Bruchsal"), ("MAL", "Malsch"), ]
     region = models.TextField(max_length=3, choices=REGION)
     address = models.TextField(default="ERROR")
-    name = models.TextField(default="ERROR")
+    name = models.TextField(default="ERROR", unique=True)
 
 
 class Bike(models.Model):

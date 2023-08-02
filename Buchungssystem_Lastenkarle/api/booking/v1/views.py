@@ -1,4 +1,3 @@
-from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -26,14 +25,8 @@ class ListBikes(APIView):
 
 class DetailBike(APIView):
 
-    def get_Bike(self, bike_id):
-        try:
-            return Bike.objects.get(pk=bike_id)
-        except Bike.DoesNotExist:
-            raise Http404
-
     def get(self, request, bike_id):
-        bike = self.get_Bike(bike_id)
+        bike = Bike.objects.filter(pk=bike_id)
         serializer = BikeSerializer(bike, many=False)
         return Response(serializer.data)
 
@@ -49,8 +42,7 @@ class ListStores(APIView):
 class DetailStore(APIView):
 
     def get(self, request, bike_id):
-        bike = Bike.objects.get(pk=bike_id)
-        store = bike.store
+        store = Bike.objects.get(pk=bike_id).store
         serializer = StoreSerializer(store, many=False)
         return Response(serializer.data)
 
@@ -58,8 +50,8 @@ class DetailStore(APIView):
 class ListAvailabilities(APIView):
 
     def get(self, request):
-        availabilities = Availability_Status.objects.all()
-        serializer = Availability_StatusSerializer(availabilities, many=True)
+        availabilities = Availability.objects.all()
+        serializer = AvailabilitySerializer(availabilities, many=True)
         return Response(serializer.data)
 
 
