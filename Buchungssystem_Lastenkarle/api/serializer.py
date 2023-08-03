@@ -122,7 +122,11 @@ class LoginSerializer(serializers.Serializer):
 class LocalDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = LocalData
-        fields = '__all__'
+        fields = ('first_name',
+                  'last_name',
+                  'address',
+                  'date_of_verification',
+                  'id_number')
 
 
 class BikeSerializer(serializers.ModelSerializer):
@@ -130,10 +134,16 @@ class BikeSerializer(serializers.ModelSerializer):
         model = Bike
         fields = '__all__'
 
-class UserStatusSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User_status
-        fields = '__all__'
+    def __init__(self, *args, **kwargs):
+        # Get the "fields" parameter from the context
+        fields = kwargs.pop('fields', None)
+
+        super().__init__(*args, **kwargs)
+
+        # Exclude fields if the "fields" parameter is provided in the context
+        if fields is not None:
+            for field_name in set(self.fields.keys()) - set(fields):
+                self.fields.pop(field_name)
 
 
 class StoreSerializer(serializers.ModelSerializer):
@@ -141,28 +151,67 @@ class StoreSerializer(serializers.ModelSerializer):
         model = Store
         fields = '__all__'
 
+    def __init__(self, *args, **kwargs):
+        # Get the "fields" parameter from the context
+        fields = kwargs.pop('fields', None)
+
+        super().__init__(*args, **kwargs)
+
+        # Exclude fields if the "fields" parameter is provided in the context
+        if fields is not None:
+            for field_name in set(self.fields.keys()) - set(fields):
+                self.fields.pop(field_name)
+
 
 class RegionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Store
-        fields = ['REGION']
+        fields = '__all__'
 
+
+class BookingStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Booking_Status
+        fields = ['booking_status']
 
 
 class BookingSerializer(serializers.ModelSerializer):
+    booking_status = BookingStatusSerializer(many=True, read_only=True)
     class Meta:
         model = Booking
         fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        # Get the "fields" parameter from the context
+        fields = kwargs.pop('fields', None)
+
+        super().__init__(*args, **kwargs)
+
+        # Exclude fields if the "fields" parameter is provided in the context
+        if fields is not None:
+            for field_name in set(self.fields.keys()) - set(fields):
+                self.fields.pop(field_name)
 
 
 class AvailabilityStatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = Availability_Status
-        fields = '__all__'
+        fields = ['availability_status']
 
 class AvailabilitySerializer(serializers.ModelSerializer):
     availability_status = AvailabilityStatusSerializer(many=True, read_only=True)
 
     class Meta:
         model = Availability
-        fields = ['from_date', 'until_date', 'store', 'bike', 'availability_status']
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        # Get the "fields" parameter from the context
+        fields = kwargs.pop('fields', None)
+
+        super().__init__(*args, **kwargs)
+
+        # Exclude fields if the "fields" parameter is provided in the context
+        if fields is not None:
+            for field_name in set(self.fields.keys()) - set(fields):
+                self.fields.pop(field_name)
