@@ -17,7 +17,6 @@ from rest_framework.settings import api_settings
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -28,7 +27,6 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
-
 
 # Application definition
 
@@ -47,21 +45,21 @@ INSTALLED_APPS = [
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication', ),
+    'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication',),
 }
 
 # These are the default values if none are set
 
 REST_KNOX = {
-    'SECURE_HASH_ALGORITHM':'cryptography.hazmat.primitives.hashes.SHA512',
-    'AUTH_TOKEN_CHARACTER_LENGTH': 64, # By default, it is set to 64 characters (this shouldn't need changing).
-    'TOKEN_TTL': timedelta(minutes=45), # The default is 10 hours i.e., timedelta(hours=10)).
+    'SECURE_HASH_ALGORITHM': 'cryptography.hazmat.primitives.hashes.SHA512',
+    'AUTH_TOKEN_CHARACTER_LENGTH': 64,  # By default, it is set to 64 characters (this shouldn't need changing).
+    'TOKEN_TTL': timedelta(minutes=45),  # The default is 10 hours i.e., timedelta(hours=10)).
     'USER_SERIALIZER': 'api.serializer.LoginDataSerializer',
-    'TOKEN_LIMIT_PER_USER': None, # By default, this option is disabled and set to None -- thus no limit.
-    'AUTO_REFRESH': False, # This defines if the token expiry time is extended by TOKEN_TTL each time the token is used.
+    'TOKEN_LIMIT_PER_USER': None,  # By default, this option is disabled and set to None -- thus no limit.
+    'AUTO_REFRESH': False,
+    # This defines if the token expiry time is extended by TOKEN_TTL each time the token is used.
     'EXPIRY_DATETIME_FORMAT': api_settings.DATETIME_FORMAT,
 }
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -96,7 +94,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Buchungssystem_Lastenkarle.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
@@ -104,15 +101,14 @@ DATABASES = {
     'default': {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": "lastenkarle.sqlite",
-        #'ENGINE': 'django.db.backends.mysql',
-        #'NAME': os.environ.get("NAME"),
-        #'USER':  os.environ.get("USER"),
-        #'PASSWORD':  os.environ.get("PASSWORD"),
-        #'HOST': 'db',
-        #'PORT': '3306',
+        # 'ENGINE': 'django.db.backends.mysql',
+        # 'NAME': os.environ.get("NAME"),
+        # 'USER':  os.environ.get("USER"),
+        # 'PASSWORD':  os.environ.get("PASSWORD"),
+        # 'HOST': 'db',
+        # 'PORT': '3306',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -132,7 +128,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
@@ -144,6 +139,22 @@ USE_I18N = True
 
 USE_TZ = True
 
+AUTHLIB_OAUTH_CLIENTS = {
+    'helmholtz': {
+        # todo change to read from enviroment files
+        'client_id': os.environ.get("HELMHOLTZ_CLIENT_ID"),
+        'client_secret': os.environ.get("HELMHOLTZ_CLIENT_SECRET"),
+        'server_metadata_url': 'https://login.helmholtz.de/oauth2/.well-known/openid-configuration',
+        'request_token_url': None,
+        'request_token_params': None,
+        'access_token_url': None,
+        'access_token_params': None,
+        'refresh_token_url': None,
+        'authorize_url': None,
+        'api_base_url': None,
+        'client_kwargs': {"scope": "profile email eduperson_unique_id eduperson_assurance"},
+    },
+}
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/

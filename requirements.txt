@@ -2,3 +2,5 @@ Django==4.2.3
 gunicorn==20.1.0
 djangorestframework==3.14.0
 django-rest-knox==4.2.0
+authlib==1.2.1
+requests==2.31.0

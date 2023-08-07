@@ -8,12 +8,16 @@ from knox.views import LoginView as KnoxLoginView
 from knox.auth import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django.core.exceptions import *
+from authlib.integrations.django_client import OAuth
 from django.http import Http404
 from api.permissions import IsStaff, IsSuperUser
 
 from api.serializer import *
 from db_model.models import *
 
+#oauth = OAuth()
+#print("Das Ding ist:")
+#print(oauth.helmholtz)
 
 class RegistrateUser(CreateAPIView):
     queryset = LoginData.objects.all()
