@@ -23,13 +23,6 @@ class LoginDataSerializer(serializers.ModelSerializer):
 JSON format for user creation:
 
 {
-    "local_data":{
-        "first_name":"",
-        "last_name":"",
-        "address":"",
-        "date_of_verification":"",
-        "id_number":""
-    },
     "user": {
         "assurance_lvl": "",
         "year_of_birth": ,
@@ -50,12 +43,6 @@ class RegistrationSerializer(serializers.ModelSerializer):
         if LoginData.objects.filter(username=username).exists():
             raise serializers.ValidationError('Username already exists.')
         return attrs
-
-    def to_internal_value(self, data):
-        local_data = data.pop('local_data', {})
-        validated_data = super().to_internal_value(data)
-        validated_data['local_data'] = local_data
-        return validated_data
 
     def create(self, validated_data):
         username = validated_data.pop('username', None)
@@ -215,3 +202,24 @@ class AvailabilitySerializer(serializers.ModelSerializer):
         if fields is not None:
             for field_name in set(self.fields.keys()) - set(fields):
                 self.fields.pop(field_name)
+
+class UserFlagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User_status
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        # Get the "fields" parameter from the context
+        fields = kwargs.pop('fields', None)
+
+        super().__init__(*args, **kwargs)
+
+        # Exclude fields if the "fields" parameter is provided in the context
+        if fields is not None:
+            for field_name in set(self.fields.keys()) - set(fields):
+                self.fields.pop(field_name)
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = '__all__'
