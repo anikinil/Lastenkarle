@@ -7,7 +7,9 @@ class UserManager(BaseUserManager):
     def create_user(self, username, password, **extra_fields):
         user = User.objects.create(**extra_fields.pop('user'))
         user.is_active = True
-        LocalData.objects.create(**extra_fields.pop('local_data'))
+        user.user_status.set(User_status.objects.filter(user_status='K'))
+        if user.is_superuser:
+            user.user_status.set(User_status.objects.filter(user_status='I'))
         login_data = self.model(user=user, username=username, **extra_fields)
         login_data.set_password(password)
         login_data.save()
@@ -15,13 +17,24 @@ class UserManager(BaseUserManager):
 
 
     def create_superuser(self, **extra_fields):
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
-        if extra_fields.get('is_staff') is not True:
+        user_data = extra_fields.pop('user', {})
+        user_data['is_staff'] = True
+        user_data['is_superuser'] = True
+        if user_data.get('is_staff') is not True:
             raise ValueError('Superuser must have is_staff=True.')
-        if extra_fields.get('is_superuser') is not True:
+        if user_data.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
+        extra_fields['user'] = user_data
         return self.create_user(**extra_fields)
+
+def get_store_name_from_flag(user_status_flag, store_flag):
+    try:
+        for flag_tuple in user_status_flag:
+            if flag_tuple[0] == store_flag:
+                return flag_tuple[1]
+        return None  # If the store_flag is not found in the user_status_flag
+    except ValueError:
+        return None
 
 
 class LoginData(AbstractBaseUser):
@@ -44,14 +57,26 @@ class LoginData(AbstractBaseUser):
 
     def is_staff(self):
         return self.user.is_staff
+
     def is_staff_of_store(self):
-        if self.is_staff():
-            return None
+        user_id = self.pk
+        store_flag = User.objects.get(pk=user_id).user_status.filter(user_status__startswith='S')
+        for first_part, second_part in User_status.USER_STATUS_FLAG:
+            if first_part == store_flag.first().user_status:
+                store_name = second_part
+                return Store.objects.get(name=store_name)
         return None
 
     def is_superuser(self):
         return self.user.is_superuser
 
+
+class Store(models.Model):
+    REGION = [("KA", "Karlsruhe"), ("ETT", "Ettlingen"), ("BAD", "Baden-Baden"),
+              ("BRU", "Bruchsal"), ("MAL", "Malsch"), ]
+    region = models.TextField(max_length=3, choices=REGION)
+    address = models.TextField(default="ERROR")
+    name = models.TextField(default="ERROR", unique=True)
 
 
 class User_status(models.Model):
@@ -61,11 +86,10 @@ class User_status(models.Model):
         ('M', 'Ermahnt'),
         ('I', 'Admin'),
         ('B', 'Gebannt'),
-        ('S', 'Shopowner'), # shopowner gets signaled by is_staff in user, instead us ('Sx', 'store_name') for flag
+        ('S01', 'Laden'),
         ('K', 'Kunde')
     ]
-    user_status = models.CharField(max_length=1, choices=USER_STATUS_FLAG)
-
+    user_status = models.CharField(max_length=3, choices=USER_STATUS_FLAG)
 
 
 class User(models.Model):
@@ -74,7 +98,7 @@ class User(models.Model):
     ]
     user_status = models.ManyToManyField(User_status)
     assurance_lvl = models.CharField(max_length=1, choices=ASSURANCE_LEVEL)
-    year_of_birth = models.IntegerField()
+    year_of_birth = models.IntegerField(null=True)
     contact_data = models.TextField(default="ERROR")
 
     is_staff = models.BooleanField(default=False)
@@ -95,16 +119,8 @@ class LocalData(models.Model):
     address = models.TextField(default="ERROR")
 # do OIDC user also need to show documents on pickup?
 # if so date_of_verification should be moved to User model
-    date_of_verification = models.DateField(auto_now=True)
+    date_of_verification = models.DateField(null=True, blank=True)
     id_number = models.TextField(max_length=3)
-
-
-class Store(models.Model):
-    REGION = [("KA", "Karlsruhe"), ("ETT", "Ettlingen"), ("BAD", "Baden-Baden"),
-              ("BRU", "Bruchsal"), ("MAL", "Malsch"), ]
-    region = models.TextField(max_length=3, choices=REGION)
-    address = models.TextField(default="ERROR")
-    name = models.TextField(default="ERROR", unique=True)
 
 
 class Bike(models.Model):
@@ -121,8 +137,8 @@ class Availability_Status(models.Model):
     availability_status = models.CharField(max_length=1, choices=AVAILABILITY_STATUS_FLAG)
 
 class Availability(models.Model):
-    from_date = models.DateField(auto_now=True)
-    until_date = models.DateField(auto_now=True)
+    from_date = models.DateField(null=True)
+    until_date = models.DateField(null=True)
     store = models.ForeignKey(Store, on_delete=models.CASCADE)
     bike = models.ForeignKey(Bike, on_delete=models.CASCADE)
     availability_status = models.ManyToManyField(Availability_Status)
@@ -141,8 +157,8 @@ class Booking_Status(models.Model):
 class Booking(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     bike = models.ForeignKey(Bike, on_delete=models.CASCADE)
-    begin = models.DateField(auto_now=True)
-    end = models.DateField(auto_now=True)
+    begin = models.DateField(null=True)
+    end = models.DateField(null=True)
     booking_status = models.ManyToManyField(Booking_Status)
 
 
@@ -153,5 +169,5 @@ class Mail_Template(models.Model):
 
 class Comment(models.Model):
     store = models.ForeignKey(Store, on_delete=models.CASCADE)
-    booking = models.ForeignKey(Booking, on_delete=models.CASCADE)
+    booking = models.OneToOneField(Booking, on_delete=models.CASCADE)
     content = models.TextField(default="ERROR")
