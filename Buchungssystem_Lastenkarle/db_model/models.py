@@ -16,6 +16,8 @@ class UserManager(BaseUserManager):
         return login_data
 
 
+
+
     def create_superuser(self, **extra_fields):
         user_data = extra_fields.pop('user', {})
         user_data['is_staff'] = True

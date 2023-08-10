@@ -1,3 +1,4 @@
+from django.shortcuts import redirect
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -14,9 +15,25 @@ from api.algorithm import merge_availabilities_algorithm
 from api.serializer import *
 from db_model.models import *
 
-#oauth = OAuth()
-#print("Das Ding ist:")
-#print(oauth.helmholtz)
+from Buchungssystem_Lastenkarle.settings import CANONICAL_HOST
+
+oauth = OAuth()
+
+oauth.register(name="helmholtz")
+
+
+def helmholtzLogin(request):
+    redirect_uri = CANONICAL_HOST + '/api/user/v1/helmholtz/auth'
+    return oauth.helmholtz.authorize_redirect(request, redirect_uri)
+
+
+def helmholtzAuth(request):
+    token = oauth.helmholtz.authorize_access_token(request)
+    print(token)
+    userinfo = oauth.helmholtz.userinfo(request=request, token=token)
+    print(userinfo)
+    return redirect('/')
+
 
 class RegistrateUser(CreateAPIView):
     queryset = LoginData.objects.all()
@@ -164,6 +181,7 @@ class LocalDataOfUser(APIView):
         data = LocalData.objects.get(user=User.objects.get(pk=self.request.user.pk))
         serializer = LocalDataSerializer(data, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class UserDataOfUser(APIView):
     authentication_classes = [TokenAuthentication]
