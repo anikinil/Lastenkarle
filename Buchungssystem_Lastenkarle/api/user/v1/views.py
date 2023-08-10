@@ -15,13 +15,13 @@ from db_model.models import *
 
 
 class RegistrateUser(CreateAPIView):
-    queryset = LoginData.objects.all()
+    queryset = User.objects.all()
     serializer_class = RegistrationSerializer
     permission_classes = (AllowAny,)
 
 
 class UpdateLoginData(RetrieveUpdateAPIView):
-    queryset = LoginData.objects.all()
+    queryset = User.objects.all()
     serializer_class = UpdateLoginDataSerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
@@ -41,7 +41,7 @@ class UpdateLocalData(RetrieveUpdateAPIView):
     permission_classes = [IsAuthenticated]
 
     def update(self, request, *args, **kwargs):
-        instance = LocalData.objects.get(user=User.objects.get(pk=self.request.user.pk))
+        instance = LocalData.objects.get(user=self.request.user)
         serializer = self.get_serializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -55,7 +55,7 @@ class UpdateUserData(RetrieveUpdateAPIView):
     permission_classes = [IsAuthenticated]
 
     def update(self, request, *args, **kwargs):
-        instance = User.objects.get(pk=self.request.user.pk)
+        instance = self.request.user
         serializer = self.get_serializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -84,7 +84,7 @@ class AllBookingsFromUser(APIView):
     # gets all bookings of the user if none it is an empty list
     def get(self, request):
         fields_to_include = ['begin', 'end', 'booking_status']
-        bookings = Booking.objects.filter(user_id=request.user.pk)
+        bookings = Booking.objects.filter(user=request.user)
         serializer = BookingSerializer(bookings, many=True, fields=fields_to_include)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -99,7 +99,7 @@ class BookingFromUser(APIView):
             Booking.objects.get(pk=booking_id)
         except ObjectDoesNotExist:
             raise Http404
-        fields_to_include = ['begin', 'end', 'booking_status']
+        fields_to_include = ['id', 'begin', 'end', 'booking_status']
         booking = Booking.objects.get(pk=booking_id)
         serializer = BookingSerializer(booking, many=False, fields=fields_to_include)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -127,7 +127,7 @@ class BookedBike(APIView):
             Booking.objects.get(pk=booking_id).bike
         except ObjectDoesNotExist:
             raise Http404
-        fields_to_include = ['name', 'description', 'image_link']
+        fields_to_include = ['id', 'name', 'description', 'image_link']
         bike = Booking.objects.get(pk=booking_id).bike
         serializer = BikeSerializer(bike, many=False, fields=fields_to_include)
         return Response(serializer.data, status=status.HTTP_200_OK)

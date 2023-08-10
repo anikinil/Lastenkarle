@@ -2,30 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
 # Create internal user model here.
-class UserManager(BaseUserManager):
 
-    def create_user(self, username, password, **extra_fields):
-        user = User.objects.create(**extra_fields.pop('user'))
-        user.is_active = True
-        user.user_status.set(User_status.objects.filter(user_status='K'))
-        if user.is_superuser:
-            user.user_status.set(User_status.objects.filter(user_status='I'))
-        login_data = self.model(user=user, username=username, **extra_fields)
-        login_data.set_password(password)
-        login_data.save()
-        return login_data
-
-
-    def create_superuser(self, **extra_fields):
-        user_data = extra_fields.pop('user', {})
-        user_data['is_staff'] = True
-        user_data['is_superuser'] = True
-        if user_data.get('is_staff') is not True:
-            raise ValueError('Superuser must have is_staff=True.')
-        if user_data.get('is_superuser') is not True:
-            raise ValueError('Superuser must have is_superuser=True.')
-        extra_fields['user'] = user_data
-        return self.create_user(**extra_fields)
 
 def get_store_name_from_flag(user_status_flag, store_flag):
     try:
@@ -37,39 +14,27 @@ def get_store_name_from_flag(user_status_flag, store_flag):
         return None
 
 
-class LoginData(AbstractBaseUser):
-    user = models.OneToOneField('User', on_delete=models.CASCADE, null=True, blank=True)
-    username = models.TextField(max_length=30, unique=True)
-    password = models.TextField(default="ERROR")
 
-    USERNAME_FIELD = 'username'
+class UserManager(BaseUserManager):
 
-    objects = UserManager()
+    def create_user(self, username, password, **extra_fields):
+        user = User.objects.create(username=username, password=password, **extra_fields)
+        user.is_active = True
+        user.user_status.set(User_status.objects.filter(user_status='K'))
+        if user.is_superuser:
+            user.user_status.set(User_status.objects.filter(user_status='I'))
+        user.set_password(password)
+        user.save()
+        return user
 
-    def __str__(self):
-        return self.username
-
-    def has_module_perms(self, app_label):
-        return True
-
-    def has_perm(self, perm, obj=None):
-        return True
-
-    def is_staff(self):
-        return self.user.is_staff
-
-    def is_staff_of_store(self):
-        user_id = self.pk
-        store_flag = User.objects.get(pk=user_id).user_status.filter(user_status__startswith='S')
-        for first_part, second_part in User_status.USER_STATUS_FLAG:
-            if first_part == store_flag.first().user_status:
-                store_name = second_part
-                return Store.objects.get(name=store_name)
-        return None
-
-    def is_superuser(self):
-        return self.user.is_superuser
-
+    def create_superuser(self, **extra_fields):
+        extra_fields['is_staff'] = True
+        extra_fields['is_superuser'] = True
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('Superuser must have is_staff=True.')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
+        return self.create_user(**extra_fields)
 
 class Store(models.Model):
     REGION = [("KA", "Karlsruhe"), ("ETT", "Ettlingen"), ("BAD", "Baden-Baden"),
@@ -86,13 +51,15 @@ class User_status(models.Model):
         ('M', 'Ermahnt'),
         ('I', 'Admin'),
         ('B', 'Gebannt'),
-        ('S01', 'Laden'),
+        ('S01', 'Store1'),
+        ('S02', 'Store2'),
+        ('S03', 'Store3'),
         ('K', 'Kunde')
     ]
     user_status = models.CharField(max_length=3, choices=USER_STATUS_FLAG)
 
 
-class User(models.Model):
+class User(AbstractBaseUser):
     ASSURANCE_LEVEL = [
         ("N", "None"), ("L", "Low"), ("M", "Medium"), ("H", "High"),
     ]
@@ -104,6 +71,29 @@ class User(models.Model):
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
+    username = models.TextField(max_length=30, unique=True)
+    password = models.TextField(default="ERROR")
+
+    USERNAME_FIELD = 'username'
+
+    objects = UserManager()
+
+    def __str__(self):
+        return self.username
+
+    def has_module_perms(self, app_label):
+        return True
+
+    def has_perm(self, perm, obj=None):
+        return True
+
+    def is_staff_of_store(self):
+        store_flag = self.user_status.filter(user_status__startswith='S')
+        for first_part, second_part in User_status.USER_STATUS_FLAG:
+            if first_part == store_flag.first().user_status:
+                store_name = second_part
+                return Store.objects.get(name=store_name)
+        return None
 
 
 class OIDCLoginData(models.Model):

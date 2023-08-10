@@ -81,7 +81,7 @@ class MakeBooking(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, bike_id):
-        user = User.objects.get(pk=self.request.user.pk)
+        user = self.request.user
         bike = Bike.objects.get(pk=bike_id)
         additional_data = {
             'user': user.pk,

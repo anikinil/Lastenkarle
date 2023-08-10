@@ -13,34 +13,23 @@ class UserSerializer(serializers.ModelSerializer):
         instance = super().update(instance, validated_data)
         return instance
 
-class LoginDataSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
+
+class UserLoginSerializer(serializers.ModelSerializer):
     class Meta:
-        model = LoginData
+        model = User
         fields = '__all__'
 
-"""
-JSON format for user creation:
 
-{
-    "user": {
-        "assurance_lvl": "",
-        "year_of_birth": ,
-        "contact_data": ""
-    },
-    "username": "",
-    "password": ""
-}
-"""
 class RegistrationSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
     class Meta:
-        model = LoginData
-        exclude = ['last_login']
+        model = User
+        fields = ('contact_data',
+                  'username',
+                  'password')
 
     def validate(self, attrs):
         username = attrs.get('username')
-        if LoginData.objects.filter(username=username).exists():
+        if User.objects.filter(username=username).exists():
             raise serializers.ValidationError('Username already exists.')
         return attrs
 
@@ -48,7 +37,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
         username = validated_data.pop('username', None)
         password = validated_data.pop('password', None)
         if username and password:
-            auth_user = LoginData.objects.create_user(username, password, **validated_data)
+            auth_user = User.objects.create_user(username, password, **validated_data)
             return auth_user
         # logic for oidc user creation data handling
         return
@@ -56,7 +45,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
 class UpdateLoginDataSerializer(serializers.ModelSerializer):
     class Meta:
-        model = LoginData
+        model = User
         fields = ('username',
                   'password')
 
@@ -93,7 +82,7 @@ class LoginSerializer(serializers.Serializer):
         if not username or not password:
             raise serializers.ValidationError('Please give both username and password')
 
-        if not LoginData.objects.filter(username=username).exists():
+        if not User.objects.filter(username=username).exists():
             raise serializers.ValidationError('Username not found enter correct credentials')
         user = authenticate(
             request=self.context.get('request'),
@@ -223,3 +212,18 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        # Get the "fields" parameter from the context
+        fields = kwargs.pop('fields', None)
+
+        super().__init__(*args, **kwargs)
+
+        # Exclude fields if the "fields" parameter is provided in the context
+        if fields is not None:
+            for field_name in set(self.fields.keys()) - set(fields):
+                self.fields.pop(field_name)
+
+    def update(self, instance, validated_data):
+        instance = super().update(instance, validated_data)
+        return instance
