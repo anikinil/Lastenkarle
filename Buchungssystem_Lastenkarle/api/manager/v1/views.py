@@ -1,9 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView
-from django.contrib.auth import login
-from knox.views import LoginView as KnoxLoginView
 from knox.auth import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.core.exceptions import *
@@ -20,10 +17,25 @@ class AllUserFlags(APIView):
     permission_classes = [IsStaff & IsAuthenticated]
 
     def get(self, request):
-        fields_to_include = ['user_status']
-        flags = User_status.objects.all()
-        serializer = UserFlagSerializer(flags, many=True, fields=fields_to_include)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(User_status.USER_STATUS_FLAG, status=status.HTTP_200_OK)
+
+
+class EnrollUser(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsStaff & IsAuthenticated]
+
+    def post(self, request):
+        username = request.data['username']
+        store = self.request.user.is_staff_of_store()
+        flag_name = 'S' + str(store.pk)
+        flag = User_status.objects.get(user_status=flag_name)
+        user = User.objects.get(username=username)
+        user.user_status.add(flag)
+        user.is_staff = True
+        user.save()
+        return Response(status=status.HTTP_200_OK)
+
+
 
 
 class BikesOfStore(APIView):
@@ -75,7 +87,7 @@ class SelectedBike(APIView):
         serializer = BookingSerializer(data=data)
         if serializer.is_valid():
             booking = serializer.save()
-            booking.booking_status.set(Booking_Status.objects.filter(booking_status='R'))
+            booking.booking_status.add(Booking_Status.objects.get(booking_status='I').pk)
             booking.save()
             split_availabilities_algorithm(booking)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -107,6 +119,7 @@ class BookingsOfStore(APIView):
         serializer = BookingSerializer(bookings, many=True, fields=fields_to_include)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 class SelectedBookingOfStore(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsStaff]
@@ -127,10 +140,12 @@ class SelectedBookingOfStore(APIView):
             raise Http404
         booking = Booking.objects.get(pk=booking_id, bike__store=store)
         booking.booking_status.clear()
-        booking.booking_status.set(Booking_Status.objects.filter(booking_status='S'))
+        booking.booking_status.set(Booking_Status.objects.filter(booking_status='C'))
+        booking.string = None
         booking.save()
         merge_availabilities_algorithm(booking)
         return Response(status=status.HTTP_200_OK)
+
 
 class CommentToBooking(APIView):
     authentication_classes = [TokenAuthentication]
@@ -138,6 +153,9 @@ class CommentToBooking(APIView):
 
     def get(self, request, booking_id):
         store = self.request.user.is_staff_of_store()
+        if not Comment.objects.filter(store=store, booking_id=booking_id).exists():
+            error_message = {'error': 'Booking has no associated comment'}
+            return Response(error_message, status=status.HTTP_404_NOT_FOUND)
         fields_to_include = ['content']
         comment = Comment.objects.get(store=store, booking_id=booking_id)
         serializer = CommentSerializer(comment, fields=fields_to_include, many=False)
@@ -164,3 +182,90 @@ class CommentToBooking(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class CheckLocalData(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated & IsStaff]
+
+    def get(self, request, booking_id):
+        try:
+            Booking.objects.filter(pk=booking_id)
+        except ObjectDoesNotExist:
+            raise Http404
+        booking = Booking.objects.get(pk=booking_id)
+        if not LocalData.objects.filter(user=booking.user).exists():
+            error_message = {'error': 'User has no associated local data'}
+            return Response(error_message,status=status.HTTP_404_NOT_FOUND)
+        localdata = LocalData.objects.get(user=booking.user)
+        serializer = LocalDataSerializer(localdata, many=False)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request, booking_id):
+        try:
+            Booking.objects.get(pk=booking_id)
+        except ObjectDoesNotExist:
+            raise Http404
+        booking = Booking.objects.get(pk=booking_id)
+        user = booking.user
+        serializer = LocalDataSerializer(data=request.data)
+        if serializer.is_valid():
+            local_data = serializer.save()
+            local_data.user = user
+            local_data.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def patch(self, request, booking_id):
+        try:
+            Booking.objects.get(pk=booking_id)
+        except ObjectDoesNotExist:
+            raise Http404
+        booking = Booking.objects.get(pk=booking_id)
+        instance = LocalData.objects.get(user=booking.user)
+        serializer = UpdateLocalDataSerializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ConfirmBikeHandOut(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated & IsStaff]
+
+    def get(self, request, booking_id):
+        try:
+            Booking.objects.get(pk=booking_id)
+        except ObjectDoesNotExist:
+            raise Http404
+        booking = Booking.objects.get(pk=booking_id)
+        serializer = BookingConfirmationSerializer(booking, many=False)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request, booking_id):
+        try:
+            Booking.objects.get(pk=booking_id)
+        except ObjectDoesNotExist:
+            raise Http404
+        booking = Booking.objects.get(pk=booking_id)
+        if not booking.booking_status.contains(Booking_Status.objects.get(booking_status='P')):
+            booking.booking_status.add(Booking_Status.objects.get(booking_status='P').pk)
+        if booking.booking_status.contains(Booking_Status.objects.get(booking_status='P')):
+            booking.booking_status.remove(Booking_Status.objects.get(booking_status='P').pk)
+            booking.booking_status.add(Booking_Status.objects.get(booking_status='R').pk)
+            booking.string = None
+        return Response(status=status.HTTP_200_OK)
+
+
+class FindByQRString(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated & IsStaff]
+
+    def get(self, request, qr_string):
+        booking = Booking.objects.get(string=qr_string)
+        fields_to_include = ['id']
+        serializer = BookingSerializer(booking, many=False, fields=fields_to_include)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+### FEHLT: REPORT FUNKTION VON COMMENTS AUS

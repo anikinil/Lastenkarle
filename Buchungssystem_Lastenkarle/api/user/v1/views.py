@@ -20,34 +20,6 @@ class RegistrateUser(CreateAPIView):
     permission_classes = (AllowAny,)
 
 
-class UpdateLoginData(RetrieveUpdateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UpdateLoginDataSerializer
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    def update(self, request, *args, **kwargs):
-        instance = self.request.user
-        serializer = self.get_serializer(instance, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data)
-
-
-class UpdateLocalData(RetrieveUpdateAPIView):
-    queryset = LocalData.objects.all()
-    serializer_class = UpdateLocalDataSerializer
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    def update(self, request, *args, **kwargs):
-        instance = LocalData.objects.get(user=self.request.user)
-        serializer = self.get_serializer(instance, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data)
-
-
 class UpdateUserData(RetrieveUpdateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -112,7 +84,8 @@ class BookingFromUser(APIView):
             raise Http404
         booking = Booking.objects.get(pk=booking_id)
         booking.booking_status.clear()
-        booking.booking_status.set(Booking_Status.objects.filter(booking_status='S'))
+        booking.booking_status.add(Booking_Status.objects.get(booking_status='C'))
+        booking.string = None
         booking.save()
         merge_availabilities_algorithm(booking)
         return Response(status=status.HTTP_200_OK)
@@ -148,19 +121,6 @@ class StoreOfBookedBike(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class LocalDataOfUser(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        try:
-            LocalData.objects.get(user=User.objects.get(pk=self.request.user.pk))
-        except ObjectDoesNotExist:
-            raise Http404
-        data = LocalData.objects.get(user=User.objects.get(pk=self.request.user.pk))
-        serializer = LocalDataSerializer(data, many=False)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
 class UserDataOfUser(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
@@ -175,11 +135,14 @@ class UserDataOfUser(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class LoginDataOfUser(APIView):
+
+class DeleteUserAccount(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
-        data = self.request.user
-        serializer = LoginSerializer(data, many=False)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    def post(self, request):
+        user = self.request.user
+        if LocalData.objects.filter(user=user).exists():
+            LocalData.objects.get(user=user).anonymize().save()
+        user.anonymize().save()
+        return Response(status=status.HTTP_200_OK)

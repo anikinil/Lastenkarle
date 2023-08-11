@@ -46,15 +46,15 @@ class Store(models.Model):
 
 class User_status(models.Model):
     USER_STATUS_FLAG = [
-        ('A', 'Authentifiziert'),
-        ('L', 'Gelöscht'),
-        ('M', 'Ermahnt'),
-        ('I', 'Admin'),
-        ('B', 'Gebannt'),
-        ('S01', 'Store1'),
-        ('S02', 'Store2'),
-        ('S03', 'Store3'),
-        ('K', 'Kunde')
+        ('V', 'Verified'),
+        ('D', 'Deleted'),
+        ('R', 'Reminded'),
+        ('A', 'Administrator'),
+        ('B', 'Banned'),
+        ('S1', 'Store1'), # S+STORE_ID, STORENAME
+        ('S2', 'Store2'),
+        ('S3', 'Store3'),
+        ('C', 'Customer')
     ]
     user_status = models.CharField(max_length=3, choices=USER_STATUS_FLAG)
 
@@ -63,20 +63,31 @@ class User(AbstractBaseUser):
     ASSURANCE_LEVEL = [
         ("N", "None"), ("L", "Low"), ("M", "Medium"), ("H", "High"),
     ]
-    user_status = models.ManyToManyField(User_status)
-    assurance_lvl = models.CharField(max_length=1, choices=ASSURANCE_LEVEL)
-    year_of_birth = models.IntegerField(null=True)
-    contact_data = models.TextField(default="ERROR")
+    user_status = models.ManyToManyField(User_status, blank=True)
+    assurance_lvl = models.CharField(max_length=1, choices=ASSURANCE_LEVEL, null=True, blank=True)
+    year_of_birth = models.IntegerField(null=True, blank=True)
+    contact_data = models.TextField(null=True, blank=True)
 
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    username = models.TextField(max_length=30, unique=True)
-    password = models.TextField(default="ERROR")
+    username = models.TextField(max_length=30, unique=True, null=True, blank=True)
+    password = models.TextField(null=True, blank=True)
 
     USERNAME_FIELD = 'username'
 
     objects = UserManager()
+
+    def anonymize(self):
+        self.assurance_lvl = None
+        self.year_of_birth = None
+        self.contact_data = None
+        self.is_superuser = False
+        self.is_staff = False
+        self.is_active = False
+        self.username = None
+        self.password = None
+        return self
 
     def __str__(self):
         return self.username
@@ -104,13 +115,19 @@ class OIDCLoginData(models.Model):
 
 class LocalData(models.Model):
     user = models.OneToOneField('User', on_delete=models.CASCADE, null=True, blank=True)
-    first_name = models.TextField(default="ERROR")
-    last_name = models.TextField(default="ERROR")
-    address = models.TextField(default="ERROR")
-# do OIDC user also need to show documents on pickup?
-# if so date_of_verification should be moved to User model
+    first_name = models.TextField(default="ERROR", null=True, blank=True)
+    last_name = models.TextField(default="ERROR", null=True, blank=True)
+    address = models.TextField(default="ERROR", null=True, blank=True)
     date_of_verification = models.DateField(null=True, blank=True)
-    id_number = models.TextField(max_length=3)
+    id_number = models.TextField(max_length=3, null=True, blank=True)
+
+    def anonymize(self):
+        self.first_name = None
+        self.last_name = None
+        self.address = None
+        self.date_of_verification = None
+        self.id_number = None
+        return self
 
 
 class Bike(models.Model):
@@ -121,8 +138,8 @@ class Bike(models.Model):
 
 class Availability_Status(models.Model):
     AVAILABILITY_STATUS_FLAG = [
-                    ('B', 'Gebucht'),
-                    ('F', 'Frei')
+                    ('B', 'Booked'),
+                    ('A', 'Available')
     ]
     availability_status = models.CharField(max_length=1, choices=AVAILABILITY_STATUS_FLAG)
 
@@ -135,11 +152,11 @@ class Availability(models.Model):
 
 class Booking_Status(models.Model):
     BOOKING_STATUS_FLAG = [
-        ('B', 'Gebucht'),
-        ('R', 'Reparatur'),
-        ('A', 'Abgeholt'),
-        ('S', 'Storniert'),
-        ('Z', 'Zurückgegeben')
+        ('B', 'Booked'),
+        ('I', 'Internal usage'),
+        ('P', 'Picked up'),
+        ('C', 'Cancelled'),
+        ('R', 'Returned')
     ]
     booking_status = models.CharField(max_length=20, choices=BOOKING_STATUS_FLAG)
 
@@ -149,6 +166,7 @@ class Booking(models.Model):
     bike = models.ForeignKey(Bike, on_delete=models.CASCADE)
     begin = models.DateField(null=True)
     end = models.DateField(null=True)
+    string = models.CharField(max_length=5, null=True, unique=True)
     booking_status = models.ManyToManyField(Booking_Status)
 
 

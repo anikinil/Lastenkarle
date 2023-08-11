@@ -2,22 +2,38 @@ from rest_framework import serializers
 from django.contrib.auth import authenticate
 from db_model.models import *
 
+
+class UserStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User_status
+        fields = ['user_status']
+
+
 class UserSerializer(serializers.ModelSerializer):
+    user_status = UserStatusSerializer(many=True, read_only=True)
     class Meta:
         model = User
-        fields = ('assurance_lvl',
-                  'year_of_birth',
-                  'contact_data')
+        fields = '__all__'
 
     def update(self, instance, validated_data):
+        password = validated_data.pop('password', None)
+        if password:
+            instance.set_password(password)
         instance = super().update(instance, validated_data)
         return instance
 
 
-class UserLoginSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = '__all__'
+    def __init__(self, *args, **kwargs):
+        # Get the "fields" parameter from the context
+        fields = kwargs.pop('fields', None)
+
+        super().__init__(*args, **kwargs)
+
+        # Exclude fields if the "fields" parameter is provided in the context
+        if fields is not None:
+            for field_name in set(self.fields.keys()) - set(fields):
+                self.fields.pop(field_name)
+
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -41,34 +57,6 @@ class RegistrationSerializer(serializers.ModelSerializer):
             return auth_user
         # logic for oidc user creation data handling
         return
-
-
-class UpdateLoginDataSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('username',
-                  'password')
-
-    def update(self, instance, validated_data):
-        password = validated_data.pop('password', None)
-        if password:
-            instance.set_password(password)
-        instance = super().update(instance, validated_data)
-        return instance
-
-
-class UpdateLocalDataSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = LocalData
-        fields = ('first_name',
-                  'last_name',
-                  'address',
-                  'date_of_verification',
-                  'id_number')
-
-    def update(self, instance, validated_data):
-        instance = super().update(instance, validated_data)
-        return instance
 
 
 class LoginSerializer(serializers.Serializer):
@@ -103,6 +91,19 @@ class LocalDataSerializer(serializers.ModelSerializer):
                   'address',
                   'date_of_verification',
                   'id_number')
+
+class UpdateLocalDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LocalData
+        fields = ('first_name',
+                  'last_name',
+                  'address',
+                  'date_of_verification',
+                  'id_number')
+
+    def update(self, instance, validated_data):
+        instance = super().update(instance, validated_data)
+        return instance
 
 
 class BikeSerializer(serializers.ModelSerializer):
@@ -139,17 +140,18 @@ class StoreSerializer(serializers.ModelSerializer):
                 self.fields.pop(field_name)
 
 
-class RegionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Store
-        fields = '__all__'
-
-
 class BookingStatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = Booking_Status
         fields = ['booking_status']
 
+
+class BookingConfirmationSerializer(serializers.ModelSerializer):
+    user = UserSerializer(many=False, read_only=True)
+    booking_status = BookingStatusSerializer(many=True, read_only=True)
+    class Meta:
+        model = Booking
+        fields = '__all__'
 
 class BookingSerializer(serializers.ModelSerializer):
     booking_status = BookingStatusSerializer(many=True, read_only=True)
@@ -192,21 +194,6 @@ class AvailabilitySerializer(serializers.ModelSerializer):
             for field_name in set(self.fields.keys()) - set(fields):
                 self.fields.pop(field_name)
 
-class UserFlagSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User_status
-        fields = '__all__'
-
-    def __init__(self, *args, **kwargs):
-        # Get the "fields" parameter from the context
-        fields = kwargs.pop('fields', None)
-
-        super().__init__(*args, **kwargs)
-
-        # Exclude fields if the "fields" parameter is provided in the context
-        if fields is not None:
-            for field_name in set(self.fields.keys()) - set(fields):
-                self.fields.pop(field_name)
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
