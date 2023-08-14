@@ -2,20 +2,23 @@ version: "3.9"
 
 services:
   django_gunicorn:
-    restart: always
     build:
       dockerfile: ./Buchungssystem_Lastenkarle/Dockerfile_Django
     volumes:
       - ./Buchungssystem_Lastenkarle/:/usr/src/app/
-    #depends_on:
-     # db:
-     #   condition: service_healthy
+      #depends_on:
+      # db:
+      #   condition: service_healthy
     ports:
       - "8000:8000"
     expose:
       - "8000"
     env_file:
       - envvarsdjango.env
+    depends_on:
+      db:
+        condition: service_healthy
+
 
   nginx:
     build: ./nginx
@@ -26,30 +29,34 @@ services:
     depends_on:
       - django_gunicorn
 
-
   db:
-    image: mariadb:latest
+    container_name: pg_container
+    image: postgres:15.3-bullseye
     restart: always
-    volumes:
-      - ./dev/data:/var/lib/mysql
-      - ./dev/mariadb:/docker-entrypoint-initdb.d
-    env_file:
-      - envvarsdb.env
-    #healthcheck:
-    #  test: ["CMD", "/usr/local/bin/healthcheck.sh", "--innodb_initialized"]
-    #  timeout: 2s
-    #  retries: 30
-    ports:
-      - "3306:3306"
-
-  phpmyadmin:
-    image: phpmyadmin
-    restart: always
-    expose:
-      - "40001"
-    ports:
-      - "40001:80"
     environment:
-      - PMA_HOST=db
-      - PMA_PORT=3306
-      - UPLOAD_LIMIT=69M
+      POSTGRES_USER: Caro
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: test_db
+    volumes:
+      - ./dev_postgres:/var/lib/postgresql/
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "Caro", "-d", "test_db" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+
+  pgadmin:
+    container_name: pgadmin4_container
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: Caro@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    ports:
+      - "40000:5050"
+      - "40001:80"
+    expose:
+      - "40000"

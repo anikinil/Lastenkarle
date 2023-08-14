@@ -4,11 +4,11 @@ set -e
 host="db"
 port="3306"
 
-echo "Starting test if Database is Ready"
-until mysqladmin ping -h"$host" -P"$port" --silent; do
-  echo "Waiting for database to be ready..."
-  sleep 1
-done
+#echo "Starting test if Database is Ready"
+#until mysqladmin ping -h"$host" -P"$port" --silent; do
+#  echo "Waiting for database to be ready..."
+ # sleep 1
+#done
 echo "Execute migration Command"
 python manage.py collectstatic --no-input
 python manage.py migrate --no-input
