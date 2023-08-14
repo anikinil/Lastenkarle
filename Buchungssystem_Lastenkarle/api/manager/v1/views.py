@@ -131,13 +131,11 @@ class SelectedBookingOfStore(APIView):
         serializer = BookingSerializer(bookings, many=False, fields=fields_to_include)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    #cancel booking
     def post(self, request, booking_id):
         store = self.request.user.is_staff_of_store()
-        try:
-            Booking.objects.get(pk=booking_id, bike__store=store)
-        except ObjectDoesNotExist:
-            raise Http404
+        if not Booking.objects.filter(pk=booking_id, bike__store=store).exists():
+
+            return Response(status=status.HTTP_400_BAD_REQUEST)
         booking = Booking.objects.get(pk=booking_id, bike__store=store)
         booking.booking_status.clear()
         booking.booking_status.set(Booking_Status.objects.filter(booking_status='C'))
@@ -268,4 +266,10 @@ class FindByQRString(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-### FEHLT: REPORT FUNKTION VON COMMENTS AUS
+class ReportBookingToAdmin(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated & IsStaff]
+
+    def post(self, request, booking_id):
+        # send email to admin address logic
+        return Response(status=status.HTTP_200_OK)

@@ -2,8 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from knox.auth import TokenAuthentication
-from rest_framework.permissions import IsAuthenticated, AllowAny
-from django.core.exceptions import *
+from rest_framework.permissions import IsAuthenticated
 from django.http import Http404
 
 from api.algorithm import *
@@ -19,11 +18,10 @@ class AllUserFlags(APIView):
     def get(self, request):
         return Response(User_status.USER_STATUS_FLAG, status=status.HTTP_200_OK)
 
-    # needs testing (enrollment)
     def post(self, request):
-        username = request.data['username']
+        contact_data = request.data['contact_data']
         user_flag = request.data['user_status']
-        user = User.objects.get(username=username)
+        user = User.objects.get(contact_data=contact_data)
         user.user_status.add(User_status.objects.get(user_status=user_flag).pk)
         return Response(status=status.HTTP_200_OK)
 
@@ -37,6 +35,7 @@ class AllUsers(APIView):
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 class SelectedUser(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated & IsSuperUser]
@@ -45,6 +44,7 @@ class SelectedUser(APIView):
         user = User.objects.get(pk=user_id)
         serializer = UserSerializer(user, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class AllBookingsOfUser(APIView):
     authentication_classes = [TokenAuthentication]
@@ -75,8 +75,10 @@ class SelectedBooking(APIView):
         serializer = BookingSerializer(bookings, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    # needs testing (cancel booking as admin)
     def post(self, request, booking_id):
+        if not Booking.objects.filter(pk=booking_id).exists():
+
+            return Response(status=status.HTTP_400_BAD_REQUEST)
         booking = Booking.objects.get(pk=booking_id)
         booking.booking_status.clear()
         booking.booking_status.set(Booking_Status.objects.filter(booking_status='C'))
@@ -92,7 +94,8 @@ class CommentOfBooking(APIView):
 
     def get(self, request, booking_id):
         if not Comment.objects.filter(booking_id=booking_id).exists():
-            raise Http404
+
+            return Response(status=status.HTTP_400_BAD_REQUEST)
         comment = Comment.objects.get(booking_id=booking_id)
         serializer = CommentSerializer(comment, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -106,6 +109,7 @@ class AllBikes(APIView):
         bikes = Bike.objects.all()
         serializer = BikeSerializer(bikes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class SelectedBike(APIView):
     authentication_classes = [TokenAuthentication]
@@ -126,6 +130,7 @@ class AvailabilityOfBike(APIView):
         serializer = AvailabilitySerializer(availability, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 class AllStores(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated & IsSuperUser]
@@ -135,6 +140,7 @@ class AllStores(APIView):
         serializer = StoreSerializer(stores, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 class SelectedStore(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated & IsSuperUser]
@@ -143,6 +149,7 @@ class SelectedStore(APIView):
         store = Store.objects.get(pk=store_id)
         serializer = StoreSerializer(store, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class AvailabilityOfBikesFromStore(APIView):
     authentication_classes = [TokenAuthentication]
@@ -154,14 +161,14 @@ class AvailabilityOfBikesFromStore(APIView):
         serializer = AvailabilitySerializer(availabilities, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-# needs testing (banning)
+
 class BanUser(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated & IsSuperUser]
 
     def post(self, request):
-        username = request.data['username']
-        user = User.objects.get(username=username)
+        contact_data = request.data['contact_data']
+        user = User.objects.get(contact_data=contact_data)
         user.user_status.add(User_status.objects.get(user_status='B').pk)
         user.is_active = False
         return Response(status=status.HTTP_200_OK)
