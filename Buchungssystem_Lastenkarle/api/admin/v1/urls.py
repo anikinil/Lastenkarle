@@ -1,0 +1,19 @@
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('user-flags', views.AllUserFlags.as_view()),
+    path('ban-user', views.BanUser.as_view()),
+    path('users', views.AllUsers.as_view()),
+    path('users/<int:user_id>', views.SelectedUser.as_view()),
+    path('users/<int:user_id>/bookings', views.AllBookingsOfUser.as_view()),
+    path('bookings', views.AllBookings.as_view()),
+    path('bookings/<int:booking_id>', views.SelectedBooking.as_view()),
+    path('bookings/<int:booking_id>/comment', views.CommentOfBooking.as_view()),
+    path('bookings/bikes', views.AllBikes.as_view()),
+    path('bookings/bikes/<int:bike_id>', views.SelectedBike.as_view()),
+    path('bookings/bikes/<int:bike_id>/availability', views.AvailabilityOfBike.as_view()),
+    path('bookings/stores', views.AllStores.as_view()),
+    path('bookings/stores/<int:store_id>', views.SelectedStore.as_view()),
+    path('bookings/stores/<int:store_id>/availability', views.AvailabilityOfBikesFromStore.as_view())
+]

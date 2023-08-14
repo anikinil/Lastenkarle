@@ -2,11 +2,13 @@ version: "3.9"
 
 services:
   django_gunicorn:
-    restart: always
+  #     restart: always
     build:
+      context: .
       dockerfile: ./Buchungssystem_Lastenkarle/Dockerfile_Django
     volumes:
       - ./Buchungssystem_Lastenkarle/:/usr/src/app/
+      - ./dev/database/:/var/database/
     #depends_on:
      # db:
      #   condition: service_healthy
@@ -27,29 +29,29 @@ services:
       - django_gunicorn
 
 
-  db:
-    image: mariadb:latest
-    restart: always
-    volumes:
-      - ./dev/data:/var/lib/mysql
-      - ./dev/mariadb:/docker-entrypoint-initdb.d
-    env_file:
-      - envvarsdb.env
-    #healthcheck:
-    #  test: ["CMD", "/usr/local/bin/healthcheck.sh", "--innodb_initialized"]
-    #  timeout: 2s
-    #  retries: 30
-    ports:
-      - "3306:3306"
+  #db:
+  #  image: mariadb:10.3.9
+  #  restart: always
+  #  volumes:
+  #    - ./dev/mariadb:/var/lib/mysql
+  #  #  - ./dev/mariadb:/docker-entrypoint-initdb.d
+  #  env_file:
+  #    - envvarsdb.env
+  #  #healthcheck:
+  #  #  test: ["CMD", "/usr/local/bin/healthcheck.sh", "--innodb_initialized"]
+  #  #  timeout: 2s
+  #  #  retries: 30
+  #  ports:
+  #    - "3306:3306"
 
-  phpmyadmin:
-    image: phpmyadmin
-    restart: always
-    expose:
-      - "40001"
-    ports:
-      - "40001:80"
-    environment:
-      - PMA_HOST=db
-      - PMA_PORT=3306
-      - UPLOAD_LIMIT=69M
+  #phpmyadmin:
+  #  image: phpmyadmin
+  #  restart: always
+  #  expose:
+  #    - "40001"
+  #  ports:
+  #    - "40001:80"
+  #  environment:
+  #    - PMA_HOST=db
+  #    - PMA_PORT=3306
+  #    - UPLOAD_LIMIT=69M
