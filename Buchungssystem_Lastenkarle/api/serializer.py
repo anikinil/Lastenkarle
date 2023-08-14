@@ -1,42 +1,109 @@
 from rest_framework import serializers
+from django.contrib.auth import authenticate
 from db_model.models import *
 
 
+class UserStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User_status
+        fields = ['user_status']
+
 
 class UserSerializer(serializers.ModelSerializer):
+    user_status = UserStatusSerializer(many=True, read_only=True)
     class Meta:
         model = User
         fields = '__all__'
 
+    def update(self, instance, validated_data):
+        password = validated_data.pop('password', None)
+        if password:
+            instance.set_password(password)
+        instance = super().update(instance, validated_data)
+        return instance
 
-class ID_DataSerializer(serializers.ModelSerializer):
+
+    def __init__(self, *args, **kwargs):
+        # Get the "fields" parameter from the context
+        fields = kwargs.pop('fields', None)
+
+        super().__init__(*args, **kwargs)
+
+        # Exclude fields if the "fields" parameter is provided in the context
+        if fields is not None:
+            for field_name in set(self.fields.keys()) - set(fields):
+                self.fields.pop(field_name)
+
+
+
+class RegistrationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ID_Data
-        fields = '__all__'
+        model = User
+        fields = ('contact_data',
+                  'username',
+                  'password')
+
+    def validate(self, attrs):
+        username = attrs.get('username')
+        if User.objects.filter(username=username).exists():
+            raise serializers.ValidationError('Username already exists.')
+        return attrs
+
+    def create(self, validated_data):
+        username = validated_data.pop('username', None)
+        password = validated_data.pop('password', None)
+        if username and password:
+            auth_user = User.objects.create_user(username, password, **validated_data)
+            return auth_user
+        # logic for oidc user creation data handling
+        return
 
 
-class OIDC_DataSerializer(serializers.ModelSerializer):
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField(style={'input_type':'password'}, trim_whitespace=False)
+
+    def validate(self, attrs):
+        username = attrs.get('username')
+        password = attrs.get('password')
+
+        if not username or not password:
+            raise serializers.ValidationError('Please give both username and password')
+
+        if not User.objects.filter(username=username).exists():
+            raise serializers.ValidationError('Username not found enter correct credentials')
+        user = authenticate(
+            request=self.context.get('request'),
+            username=username,
+            password=password
+            )
+        if not user:
+            raise serializers.ValidationError('Wrong credentials')
+        attrs['user'] = user
+        return attrs
+
+
+class LocalDataSerializer(serializers.ModelSerializer):
     class Meta:
-        model = OIDC_Data
-        fields = '__all__'
+        model = LocalData
+        fields = ('first_name',
+                  'last_name',
+                  'address',
+                  'date_of_verification',
+                  'id_number')
 
-
-class Local_DataSerializer(serializers.ModelSerializer):
+class UpdateLocalDataSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Local_Data
-        fields = '__all__'
+        model = LocalData
+        fields = ('first_name',
+                  'last_name',
+                  'address',
+                  'date_of_verification',
+                  'id_number')
 
-
-class User_FlagSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User_Flag
-        fields = '__all__'
-
-
-class User_StatusSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User_Status
-        fields = '__all__'
+    def update(self, instance, validated_data):
+        instance = super().update(instance, validated_data)
+        return instance
 
 
 class BikeSerializer(serializers.ModelSerializer):
@@ -44,62 +111,106 @@ class BikeSerializer(serializers.ModelSerializer):
         model = Bike
         fields = '__all__'
 
+    def __init__(self, *args, **kwargs):
+        # Get the "fields" parameter from the context
+        fields = kwargs.pop('fields', None)
+
+        super().__init__(*args, **kwargs)
+
+        # Exclude fields if the "fields" parameter is provided in the context
+        if fields is not None:
+            for field_name in set(self.fields.keys()) - set(fields):
+                self.fields.pop(field_name)
+
 
 class StoreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Store
         fields = '__all__'
 
-class RegionSerializer(serializers.ModelSerializer):
+    def __init__(self, *args, **kwargs):
+        # Get the "fields" parameter from the context
+        fields = kwargs.pop('fields', None)
+
+        super().__init__(*args, **kwargs)
+
+        # Exclude fields if the "fields" parameter is provided in the context
+        if fields is not None:
+            for field_name in set(self.fields.keys()) - set(fields):
+                self.fields.pop(field_name)
+
+
+class BookingStatusSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Store
-        fields = ['REGION']
+        model = Booking_Status
+        fields = ['booking_status']
+
+
+class BookingConfirmationSerializer(serializers.ModelSerializer):
+    user = UserSerializer(many=False, read_only=True)
+    booking_status = BookingStatusSerializer(many=True, read_only=True)
+    class Meta:
+        model = Booking
+        fields = '__all__'
+
+class BookingSerializer(serializers.ModelSerializer):
+    booking_status = BookingStatusSerializer(many=True, read_only=True)
+    class Meta:
+        model = Booking
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        # Get the "fields" parameter from the context
+        fields = kwargs.pop('fields', None)
+
+        super().__init__(*args, **kwargs)
+
+        # Exclude fields if the "fields" parameter is provided in the context
+        if fields is not None:
+            for field_name in set(self.fields.keys()) - set(fields):
+                self.fields.pop(field_name)
+
+
+class AvailabilityStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Availability_Status
+        fields = ['availability_status']
+
+class AvailabilitySerializer(serializers.ModelSerializer):
+    availability_status = AvailabilityStatusSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Availability
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        # Get the "fields" parameter from the context
+        fields = kwargs.pop('fields', None)
+
+        super().__init__(*args, **kwargs)
+
+        # Exclude fields if the "fields" parameter is provided in the context
+        if fields is not None:
+            for field_name in set(self.fields.keys()) - set(fields):
+                self.fields.pop(field_name)
+
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = '__all__'
 
+    def __init__(self, *args, **kwargs):
+        # Get the "fields" parameter from the context
+        fields = kwargs.pop('fields', None)
 
-class Availability_Serializer(serializers.ModelSerializer):
+        super().__init__(*args, **kwargs)
 
-    class Meta:
-        model = Availability
-        fields = '__all__'
+        # Exclude fields if the "fields" parameter is provided in the context
+        if fields is not None:
+            for field_name in set(self.fields.keys()) - set(fields):
+                self.fields.pop(field_name)
 
-
-class Availability_StatusSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Availability_Status
-        fields = '__all__'
-
-
-
-class Availability_FlagSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Availability_Flag
-        fields = '__all__'
-
-
-class BookingSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Booking
-        fields = '__all__'
-
-
-class Booking_FlagSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Booking_Flag
-        fields = '__all__'
-
-
-class Booking_StatusSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Booking_Status
-        fields = '__all__'
-
-
-class Mail_TemplateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Mail_Template
-        fields = '__all__'
+    def update(self, instance, validated_data):
+        instance = super().update(instance, validated_data)
+        return instance
