@@ -140,7 +140,6 @@ USE_TZ = True
 
 AUTHLIB_OAUTH_CLIENTS = {
     'helmholtz': {
-        # todo change to read from enviroment files
         'client_id': os.environ.get("HELMHOLTZ_CLIENT_ID"),
         'client_secret': os.environ.get("HELMHOLTZ_CLIENT_SECRET"),
         'server_metadata_url': 'https://login.helmholtz.de/oauth2/.well-known/openid-configuration',
@@ -164,5 +163,5 @@ STATIC_ROOT = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
+#todo put this in an enviroment file for configuration
 CANONICAL_HOST = "http://localhost"

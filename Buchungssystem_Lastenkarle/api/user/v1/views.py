@@ -27,12 +27,29 @@ def helmholtzLogin(request):
     return oauth.helmholtz.authorize_redirect(request, redirect_uri)
 
 
-def helmholtzAuth(request):
-    token = oauth.helmholtz.authorize_access_token(request)
-    print(token)
-    userinfo = oauth.helmholtz.userinfo(request=request, token=token)
-    print(userinfo)
-    return redirect('/')
+# def helmholtzAuth(request):
+#   token = oauth.helmholtz.authorize_access_token(request)
+#   print(token)
+#   userinfo = oauth.helmholtz.userinfo(request=request, token=token)
+#   print(userinfo)
+#   user = User.objects.create_helmholtz_user(userinfo)
+#   login(request, user)
+#   docreturn redirect('/')
+
+class HelmholtzAuthView(KnoxLoginView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request, format=None):
+        token = oauth.helmholtz.authorize_access_token(request)
+        userinfo = oauth.helmholtz.userinfo(request=request, token=token)
+        if User.objects.filter(username=userinfo['eduperson_unique_id']).exists() is False:
+            user = User.objects.create_helmholtz_user(userinfo)
+        else:
+            user = User.objects.filter(username=userinfo['eduperson_unique_id']).first()
+            user = User.objects.update_helmholtz_user(user, userinfo)
+        login(request, user)
+        response = super(HelmholtzAuthView, self).post(request, format=None)
+        return Response(response.data, status=status.HTTP_200_OK)
 
 
 class RegistrateUser(CreateAPIView):
@@ -168,7 +185,6 @@ class UserDataOfUser(APIView):
         data = User.objects.get(pk=self.request.user.pk)
         serializer = UserSerializer(data, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
 
 
 class DeleteUserAccount(APIView):
