@@ -2,63 +2,18 @@ from rest_framework import serializers
 from django.contrib.auth import authenticate
 from db_model.models import *
 
+
+class UserStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User_status
+        fields = ['user_status']
+
+
 class UserSerializer(serializers.ModelSerializer):
+    user_status = UserStatusSerializer(many=True, read_only=True)
     class Meta:
         model = User
-        fields = ('assurance_lvl',
-                  'year_of_birth',
-                  'contact_data')
-
-    def update(self, instance, validated_data):
-        instance = super().update(instance, validated_data)
-        return instance
-
-class LoginDataSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
-    class Meta:
-        model = LoginData
         fields = '__all__'
-
-"""
-JSON format for user creation:
-
-{
-    "user": {
-        "assurance_lvl": "",
-        "year_of_birth": ,
-        "contact_data": ""
-    },
-    "username": "",
-    "password": ""
-}
-"""
-class RegistrationSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
-    class Meta:
-        model = LoginData
-        exclude = ['last_login']
-
-    def validate(self, attrs):
-        username = attrs.get('username')
-        if LoginData.objects.filter(username=username).exists():
-            raise serializers.ValidationError('Username already exists.')
-        return attrs
-
-    def create(self, validated_data):
-        username = validated_data.pop('username', None)
-        password = validated_data.pop('password', None)
-        if username and password:
-            auth_user = LoginData.objects.create_user(username, password, **validated_data)
-            return auth_user
-        # logic for oidc user creation data handling
-        return
-
-
-class UpdateLoginDataSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = LoginData
-        fields = ('username',
-                  'password')
 
     def update(self, instance, validated_data):
         password = validated_data.pop('password', None)
@@ -68,18 +23,40 @@ class UpdateLoginDataSerializer(serializers.ModelSerializer):
         return instance
 
 
-class UpdateLocalDataSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = LocalData
-        fields = ('first_name',
-                  'last_name',
-                  'address',
-                  'date_of_verification',
-                  'id_number')
+    def __init__(self, *args, **kwargs):
+        # Get the "fields" parameter from the context
+        fields = kwargs.pop('fields', None)
 
-    def update(self, instance, validated_data):
-        instance = super().update(instance, validated_data)
-        return instance
+        super().__init__(*args, **kwargs)
+
+        # Exclude fields if the "fields" parameter is provided in the context
+        if fields is not None:
+            for field_name in set(self.fields.keys()) - set(fields):
+                self.fields.pop(field_name)
+
+
+
+class RegistrationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('contact_data',
+                  'username',
+                  'password')
+
+    def validate(self, attrs):
+        username = attrs.get('username')
+        if User.objects.filter(username=username).exists():
+            raise serializers.ValidationError('Username already exists.')
+        return attrs
+
+    def create(self, validated_data):
+        username = validated_data.pop('username', None)
+        password = validated_data.pop('password', None)
+        if username and password:
+            auth_user = User.objects.create_user(username, password, **validated_data)
+            return auth_user
+        # logic for oidc user creation data handling
+        return
 
 
 class LoginSerializer(serializers.Serializer):
@@ -93,7 +70,7 @@ class LoginSerializer(serializers.Serializer):
         if not username or not password:
             raise serializers.ValidationError('Please give both username and password')
 
-        if not LoginData.objects.filter(username=username).exists():
+        if not User.objects.filter(username=username).exists():
             raise serializers.ValidationError('Username not found enter correct credentials')
         user = authenticate(
             request=self.context.get('request'),
@@ -114,6 +91,19 @@ class LocalDataSerializer(serializers.ModelSerializer):
                   'address',
                   'date_of_verification',
                   'id_number')
+
+class UpdateLocalDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LocalData
+        fields = ('first_name',
+                  'last_name',
+                  'address',
+                  'date_of_verification',
+                  'id_number')
+
+    def update(self, instance, validated_data):
+        instance = super().update(instance, validated_data)
+        return instance
 
 
 class BikeSerializer(serializers.ModelSerializer):
@@ -150,17 +140,18 @@ class StoreSerializer(serializers.ModelSerializer):
                 self.fields.pop(field_name)
 
 
-class RegionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Store
-        fields = '__all__'
-
-
 class BookingStatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = Booking_Status
         fields = ['booking_status']
 
+
+class BookingConfirmationSerializer(serializers.ModelSerializer):
+    user = UserSerializer(many=False, read_only=True)
+    booking_status = BookingStatusSerializer(many=True, read_only=True)
+    class Meta:
+        model = Booking
+        fields = '__all__'
 
 class BookingSerializer(serializers.ModelSerializer):
     booking_status = BookingStatusSerializer(many=True, read_only=True)
@@ -203,9 +194,10 @@ class AvailabilitySerializer(serializers.ModelSerializer):
             for field_name in set(self.fields.keys()) - set(fields):
                 self.fields.pop(field_name)
 
-class UserFlagSerializer(serializers.ModelSerializer):
+
+class CommentSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User_status
+        model = Comment
         fields = '__all__'
 
     def __init__(self, *args, **kwargs):
@@ -219,7 +211,6 @@ class UserFlagSerializer(serializers.ModelSerializer):
             for field_name in set(self.fields.keys()) - set(fields):
                 self.fields.pop(field_name)
 
-class CommentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Comment
-        fields = '__all__'
+    def update(self, instance, validated_data):
+        instance = super().update(instance, validated_data)
+        return instance
