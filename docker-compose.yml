@@ -1,17 +1,13 @@
-version: "3.9"
+version: "3.8"
 
 services:
   django_gunicorn:
-  #     restart: always
+    #     restart: always
     build:
       context: .
       dockerfile: ./Buchungssystem_Lastenkarle/Dockerfile_Django
     volumes:
       - ./Buchungssystem_Lastenkarle/:/usr/src/app/
-    ports:
-      - "8000:8000"
-    expose:
-      - "8000"
     env_file:
       - envvarsdjango.env
     depends_on:
@@ -32,14 +28,12 @@ services:
     container_name: pg_container
     image: postgres:15.3-bullseye
     restart: always
-    environment:
-      POSTGRES_USER: Caro
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: test_db
+    env_file:
+      - envvarsdb.env
+
     volumes:
       - ./dev_postgres:/var/lib/postgresql/
-    ports:
-      - "5432:5432"
+
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "Caro", "-d", "test_db" ]
       interval: 10s
@@ -51,11 +45,8 @@ services:
     container_name: pgadmin4_container
     image: dpage/pgadmin4
     restart: always
-    environment:
-      PGADMIN_DEFAULT_EMAIL: Caro@admin.com
-      PGADMIN_DEFAULT_PASSWORD: root
+    env_file:
+      - envvarsdb.env
+
     ports:
-      - "40000:5050"
       - "40001:80"
-    expose:
-      - "40000"

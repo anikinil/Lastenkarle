@@ -102,13 +102,14 @@ WSGI_APPLICATION = 'Buchungssystem_Lastenkarle.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'test_db',
-        'USER': 'Caro',
-        'PASSWORD': 'password',
+        'NAME': os.environ.get('NAME'),
+        'USER': os.environ.get('USER'),
+        'PASSWORD': os.environ.get('PASSWORD'),
         'HOST': 'pg_container',  # This should match the container name of your PostgreSQL container
         'PORT': '5432',
     }
 }
+
 
 
 # Password validation
