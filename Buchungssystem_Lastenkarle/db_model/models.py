@@ -20,7 +20,7 @@ class UserManager(BaseUserManager):
     def create_user(self, username, password, **extra_fields):
         user = User.objects.create(username=username, password=password, **extra_fields)
         user.is_active = True
-        user.user_status.set(User_status.objects.filter(user_status='K'))
+        user.user_status.set(User_status.objects.filter(user_status='C'))
         if user.is_superuser:
             user.user_status.set(User_status.objects.filter(user_status='I'))
         user.set_password(password)
@@ -30,7 +30,7 @@ class UserManager(BaseUserManager):
     def create_helmholtz_user(self, userinfo):
         user = User.objects.create(username=userinfo['eduperson_unique_id'], password=" ")
         user.is_active = True
-        user.user_status.set(User_status.objects.filter(user_status='K'))
+        user.user_status.set(User_status.objects.filter(user_status='C'))
         if user.is_superuser:
             user.user_status.set(User_status.objects.filter(user_status='I'))
         return self.update_helmholtz_user(user, userinfo)
@@ -42,7 +42,6 @@ class UserManager(BaseUserManager):
             user.assurance_lvl = 'M'
         else:
             user.assurance_lvl = 'L'
-
         user.save()
         return user
 

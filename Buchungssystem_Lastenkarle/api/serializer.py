@@ -24,12 +24,8 @@ class UserSerializer(serializers.ModelSerializer):
 
 
     def __init__(self, *args, **kwargs):
-        # Get the "fields" parameter from the context
         fields = kwargs.pop('fields', None)
-
         super().__init__(*args, **kwargs)
-
-        # Exclude fields if the "fields" parameter is provided in the context
         if fields is not None:
             for field_name in set(self.fields.keys()) - set(fields):
                 self.fields.pop(field_name)
@@ -55,7 +51,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
         if username and password:
             auth_user = User.objects.create_user(username, password, **validated_data)
             return auth_user
-        # logic for oidc user creation data handling
+
         return
 
 
@@ -113,12 +109,8 @@ class BikeSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def __init__(self, *args, **kwargs):
-        # Get the "fields" parameter from the context
         fields = kwargs.pop('fields', None)
-
         super().__init__(*args, **kwargs)
-
-        # Exclude fields if the "fields" parameter is provided in the context
         if fields is not None:
             for field_name in set(self.fields.keys()) - set(fields):
                 self.fields.pop(field_name)
@@ -130,12 +122,8 @@ class StoreSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def __init__(self, *args, **kwargs):
-        # Get the "fields" parameter from the context
         fields = kwargs.pop('fields', None)
-
         super().__init__(*args, **kwargs)
-
-        # Exclude fields if the "fields" parameter is provided in the context
         if fields is not None:
             for field_name in set(self.fields.keys()) - set(fields):
                 self.fields.pop(field_name)
@@ -161,12 +149,8 @@ class BookingSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def __init__(self, *args, **kwargs):
-        # Get the "fields" parameter from the context
         fields = kwargs.pop('fields', None)
-
         super().__init__(*args, **kwargs)
-
-        # Exclude fields if the "fields" parameter is provided in the context
         if fields is not None:
             for field_name in set(self.fields.keys()) - set(fields):
                 self.fields.pop(field_name)
@@ -185,12 +169,8 @@ class AvailabilitySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def __init__(self, *args, **kwargs):
-        # Get the "fields" parameter from the context
         fields = kwargs.pop('fields', None)
-
         super().__init__(*args, **kwargs)
-
-        # Exclude fields if the "fields" parameter is provided in the context
         if fields is not None:
             for field_name in set(self.fields.keys()) - set(fields):
                 self.fields.pop(field_name)
@@ -202,12 +182,8 @@ class CommentSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def __init__(self, *args, **kwargs):
-        # Get the "fields" parameter from the context
         fields = kwargs.pop('fields', None)
-
         super().__init__(*args, **kwargs)
-
-        # Exclude fields if the "fields" parameter is provided in the context
         if fields is not None:
             for field_name in set(self.fields.keys()) - set(fields):
                 self.fields.pop(field_name)
