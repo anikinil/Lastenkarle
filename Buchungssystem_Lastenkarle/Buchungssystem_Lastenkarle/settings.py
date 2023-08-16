@@ -17,7 +17,6 @@ from rest_framework.settings import api_settings
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -28,7 +27,6 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
-
 
 # Application definition
 
@@ -95,7 +93,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Buchungssystem_Lastenkarle.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
@@ -111,7 +108,6 @@ DATABASES = {
         #'PORT': '3306',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -131,7 +127,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
@@ -143,6 +138,21 @@ USE_I18N = True
 
 USE_TZ = True
 
+AUTHLIB_OAUTH_CLIENTS = {
+    'helmholtz': {
+        'client_id': os.environ.get("HELMHOLTZ_CLIENT_ID"),
+        'client_secret': os.environ.get("HELMHOLTZ_CLIENT_SECRET"),
+        'server_metadata_url': 'https://login.helmholtz.de/oauth2/.well-known/openid-configuration',
+        'request_token_url': None,
+        'request_token_params': None,
+        'access_token_url': None,
+        'access_token_params': None,
+        'refresh_token_url': None,
+        'authorize_url': None,
+        'api_base_url': None,
+        'client_kwargs': {"scope": "profile email eduperson_unique_id eduperson_assurance"},
+    },
+}
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
@@ -153,3 +163,5 @@ STATIC_ROOT = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+#todo put this in an enviroment file for configuration
+CANONICAL_HOST = "http://localhost"

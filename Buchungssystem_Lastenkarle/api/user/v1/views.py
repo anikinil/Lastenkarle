@@ -1,3 +1,4 @@
+from django.shortcuts import redirect
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -7,11 +8,48 @@ from knox.views import LoginView as KnoxLoginView
 from knox.auth import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.core.exceptions import *
+from authlib.integrations.django_client import OAuth
 from django.http import Http404
 
 from api.algorithm import merge_availabilities_algorithm
 from api.serializer import *
 from db_model.models import *
+
+from Buchungssystem_Lastenkarle.settings import CANONICAL_HOST
+
+oauth = OAuth()
+
+oauth.register(name="helmholtz")
+
+
+def helmholtzLogin(request):
+    redirect_uri = CANONICAL_HOST + '/api/user/v1/helmholtz/auth'
+    return oauth.helmholtz.authorize_redirect(request, redirect_uri)
+
+
+# def helmholtzAuth(request):
+#   token = oauth.helmholtz.authorize_access_token(request)
+#   print(token)
+#   userinfo = oauth.helmholtz.userinfo(request=request, token=token)
+#   print(userinfo)
+#   user = User.objects.create_helmholtz_user(userinfo)
+#   login(request, user)
+#   docreturn redirect('/')
+
+class HelmholtzAuthView(KnoxLoginView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request, format=None):
+        token = oauth.helmholtz.authorize_access_token(request)
+        userinfo = oauth.helmholtz.userinfo(request=request, token=token)
+        if User.objects.filter(username=userinfo['eduperson_unique_id']).exists() is False:
+            user = User.objects.create_helmholtz_user(userinfo)
+        else:
+            user = User.objects.filter(username=userinfo['eduperson_unique_id']).first()
+            user = User.objects.update_helmholtz_user(user, userinfo)
+        login(request, user)
+        response = super(HelmholtzAuthView, self).post(request, format=None)
+        return Response(response.data, status=status.HTTP_200_OK)
 
 
 class RegistrateUser(CreateAPIView):
@@ -121,6 +159,20 @@ class StoreOfBookedBike(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+class LocalDataOfUser(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        try:
+            LocalData.objects.get(user=User.objects.get(pk=self.request.user.pk))
+        except ObjectDoesNotExist:
+            raise Http404
+        data = LocalData.objects.get(user=User.objects.get(pk=self.request.user.pk))
+        serializer = LocalDataSerializer(data, many=False)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 class UserDataOfUser(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
@@ -133,7 +185,6 @@ class UserDataOfUser(APIView):
         data = User.objects.get(pk=self.request.user.pk)
         serializer = UserSerializer(data, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
 
 
 class DeleteUserAccount(APIView):

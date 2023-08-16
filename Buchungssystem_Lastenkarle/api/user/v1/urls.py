@@ -13,5 +13,7 @@ urlpatterns = [
     path('user/bookings/<int:booking_id>', views.BookingFromUser.as_view()),
     path('user/bookings/<int:booking_id>/bike', views.BookedBike.as_view()),
     path('user/bookings/<int:booking_id>/bike/store', views.StoreOfBookedBike.as_view()),
-    path('user/delete-account', views.DeleteUserAccount.as_view())
+    path('user/delete-account', views.DeleteUserAccount.as_view()),
+    path('helmholtz/login', views.helmholtzLogin),
+    path('helmholtz/auth', views.HelmholtzAuthView.as_view()),
 ]

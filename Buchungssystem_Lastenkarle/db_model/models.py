@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
+
 # Create internal user model here.
 
 
@@ -12,7 +13,6 @@ def get_store_name_from_flag(user_status_flag, store_flag):
         return None  # If the store_flag is not found in the user_status_flag
     except ValueError:
         return None
-
 
 
 class UserManager(BaseUserManager):
@@ -27,6 +27,25 @@ class UserManager(BaseUserManager):
         user.save()
         return user
 
+    def create_helmholtz_user(self, userinfo):
+        user = User.objects.create(username=userinfo['eduperson_unique_id'], password=" ")
+        user.is_active = True
+        user.user_status.set(User_status.objects.filter(user_status='K'))
+        if user.is_superuser:
+            user.user_status.set(User_status.objects.filter(user_status='I'))
+        return self.update_helmholtz_user(user, userinfo)
+
+    def update_helmholtz_user(self, user, userinfo):
+        if 'https://refeds.org/assurance/IAP/high' in userinfo['eduperson_assurance']:
+            user.assurance_lvl = 'H'
+        elif 'https://refeds.org/assurance/IAP/medium' in userinfo['eduperson_assurance']:
+            user.assurance_lvl = 'M'
+        else:
+            user.assurance_lvl = 'L'
+
+        user.save()
+        return user
+
     def create_superuser(self, **extra_fields):
         extra_fields['is_staff'] = True
         extra_fields['is_superuser'] = True
@@ -35,6 +54,7 @@ class UserManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
         return self.create_user(**extra_fields)
+
 
 class Store(models.Model):
     REGION = [("KA", "Karlsruhe"), ("ETT", "Ettlingen"), ("BAD", "Baden-Baden"),
@@ -51,7 +71,7 @@ class User_status(models.Model):
         ('R', 'Reminded'),
         ('A', 'Administrator'),
         ('B', 'Banned'),
-        ('S1', 'Store1'), # S+STORE_ID, STORENAME
+        ('S1', 'Store1'),  # S+STORE_ID, STORENAME
         ('S2', 'Store2'),
         ('S3', 'Store3'),
         ('C', 'Customer')
@@ -136,12 +156,14 @@ class Bike(models.Model):
     description = models.TextField(default="ERROR")
     image_link = models.TextField(default="ERROR")
 
+
 class Availability_Status(models.Model):
     AVAILABILITY_STATUS_FLAG = [
-                    ('B', 'Booked'),
-                    ('A', 'Available')
+        ('B', 'Booked'),
+        ('A', 'Available')
     ]
     availability_status = models.CharField(max_length=1, choices=AVAILABILITY_STATUS_FLAG)
+
 
 class Availability(models.Model):
     from_date = models.DateField(null=True)
@@ -149,6 +171,7 @@ class Availability(models.Model):
     store = models.ForeignKey(Store, on_delete=models.CASCADE)
     bike = models.ForeignKey(Bike, on_delete=models.CASCADE)
     availability_status = models.ManyToManyField(Availability_Status)
+
 
 class Booking_Status(models.Model):
     BOOKING_STATUS_FLAG = [
