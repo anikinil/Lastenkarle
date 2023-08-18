@@ -32,7 +32,7 @@ services:
       - envvarsdb.env
 
     volumes:
-      - ./dev_postgres:/var/lib/postgresql/
+      - ./postgress_data:/var/lib/postgresql/data
 
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "Caro", "-d", "test_db" ]

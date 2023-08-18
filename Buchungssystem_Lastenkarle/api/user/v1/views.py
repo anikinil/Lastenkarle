@@ -57,6 +57,15 @@ class RegistrateUser(CreateAPIView):
     serializer_class = RegistrationSerializer
     permission_classes = (AllowAny,)
 
+    def post(self, request, *args, **kwargs):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            #TODO: user registered confirmation call
+            #TODO: view for redirect page and set user as verified
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class UpdateUserData(RetrieveUpdateAPIView):
     queryset = User.objects.all()
@@ -114,7 +123,6 @@ class BookingFromUser(APIView):
         serializer = BookingSerializer(booking, many=False, fields=fields_to_include)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    # cancel booking as the customer -> changes booking status flag
     def post(self, request, booking_id):
         try:
             Booking.objects.get(pk=booking_id)
@@ -122,10 +130,11 @@ class BookingFromUser(APIView):
             raise Http404
         booking = Booking.objects.get(pk=booking_id)
         booking.booking_status.clear()
-        booking.booking_status.add(Booking_Status.objects.get(booking_status='C'))
+        booking.booking_status.add(Booking_Status.objects.get(booking_status='Cancelled'))
         booking.string = None
         booking.save()
         merge_availabilities_algorithm(booking)
+        #TODO: cancellation confirmation call
         return Response(status=status.HTTP_200_OK)
 
 

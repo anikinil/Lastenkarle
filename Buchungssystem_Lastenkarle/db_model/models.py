@@ -2,37 +2,29 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
 
-# Create internal user model here.
-
-
-def get_store_name_from_flag(user_status_flag, store_flag):
-    try:
-        for flag_tuple in user_status_flag:
-            if flag_tuple[0] == store_flag:
-                return flag_tuple[1]
-        return None  # If the store_flag is not found in the user_status_flag
-    except ValueError:
-        return None
-
-
 class UserManager(BaseUserManager):
 
     def create_user(self, username, password, **extra_fields):
-        user = User.objects.create(username=username, password=password, **extra_fields)
+        user = User(username=username, **extra_fields)
         user.is_active = True
-        user.user_status.set(User_status.objects.filter(user_status='K'))
-        if user.is_superuser:
-            user.user_status.set(User_status.objects.filter(user_status='I'))
         user.set_password(password)
         user.save()
+
+        user_status_customer = User_Status.objects.get(user_status='Customer')
+        user.user_status.add(user_status_customer)
+
+        if user.is_superuser:
+            user_status_admin = User_Status.objects.get(user_status='Administrator')
+            user.user_status.add(user_status_admin)
+
         return user
 
     def create_helmholtz_user(self, userinfo):
         user = User.objects.create(username=userinfo['eduperson_unique_id'], password=" ")
         user.is_active = True
-        user.user_status.set(User_status.objects.filter(user_status='K'))
+        user.user_status.set(User_Status.objects.filter(user_status='Customer'))
         if user.is_superuser:
-            user.user_status.set(User_status.objects.filter(user_status='I'))
+            user.user_status.set(User_Status.objects.filter(user_status='Administrator'))
         return self.update_helmholtz_user(user, userinfo)
 
     def update_helmholtz_user(self, user, userinfo):
@@ -42,7 +34,6 @@ class UserManager(BaseUserManager):
             user.assurance_lvl = 'M'
         else:
             user.assurance_lvl = 'L'
-
         user.save()
         return user
 
@@ -59,31 +50,22 @@ class UserManager(BaseUserManager):
 class Store(models.Model):
     REGION = [("KA", "Karlsruhe"), ("ETT", "Ettlingen"), ("BAD", "Baden-Baden"),
               ("BRU", "Bruchsal"), ("MAL", "Malsch"), ]
+    store_flag = models.OneToOneField('User_Status', on_delete=models.CASCADE, null=True)
     region = models.TextField(max_length=3, choices=REGION)
     address = models.TextField(default="ERROR")
+    contact_data = models.TextField(max_length=256)
     name = models.TextField(default="ERROR", unique=True)
 
 
-class User_status(models.Model):
-    USER_STATUS_FLAG = [
-        ('V', 'Verified'),
-        ('D', 'Deleted'),
-        ('R', 'Reminded'),
-        ('A', 'Administrator'),
-        ('B', 'Banned'),
-        ('S1', 'Store1'),  # S+STORE_ID, STORENAME
-        ('S2', 'Store2'),
-        ('S3', 'Store3'),
-        ('C', 'Customer')
-    ]
-    user_status = models.CharField(max_length=3, choices=USER_STATUS_FLAG)
+class User_Status(models.Model):
+    user_status = models.CharField(max_length=32)
 
 
 class User(AbstractBaseUser):
     ASSURANCE_LEVEL = [
         ("N", "None"), ("L", "Low"), ("M", "Medium"), ("H", "High"),
     ]
-    user_status = models.ManyToManyField(User_status, blank=True)
+    user_status = models.ManyToManyField(User_Status, blank=True)
     assurance_lvl = models.CharField(max_length=1, choices=ASSURANCE_LEVEL, null=True, blank=True)
     year_of_birth = models.IntegerField(null=True, blank=True)
     contact_data = models.TextField(null=True, blank=True)
@@ -91,7 +73,7 @@ class User(AbstractBaseUser):
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    username = models.TextField(max_length=30, unique=True, null=True, blank=True)
+    username = models.TextField(max_length=1028, unique=True, null=True, blank=True)
     password = models.TextField(null=True, blank=True)
 
     USERNAME_FIELD = 'username'
@@ -118,13 +100,12 @@ class User(AbstractBaseUser):
     def has_perm(self, perm, obj=None):
         return True
 
+    # Store: Storename
     def is_staff_of_store(self):
         store_flag = self.user_status.filter(user_status__startswith='S')
-        for first_part, second_part in User_status.USER_STATUS_FLAG:
-            if first_part == store_flag.first().user_status:
-                store_name = second_part
-                return Store.objects.get(name=store_name)
-        return None
+        name_part = store_flag.split(': ')[1]
+        store = Store.objects.get(name=name_part)
+        return store
 
 
 class OIDCLoginData(models.Model):
@@ -158,11 +139,7 @@ class Bike(models.Model):
 
 
 class Availability_Status(models.Model):
-    AVAILABILITY_STATUS_FLAG = [
-        ('B', 'Booked'),
-        ('A', 'Available')
-    ]
-    availability_status = models.CharField(max_length=1, choices=AVAILABILITY_STATUS_FLAG)
+    availability_status = models.CharField(max_length=32)
 
 
 class Availability(models.Model):
@@ -174,14 +151,7 @@ class Availability(models.Model):
 
 
 class Booking_Status(models.Model):
-    BOOKING_STATUS_FLAG = [
-        ('B', 'Booked'),
-        ('I', 'Internal usage'),
-        ('P', 'Picked up'),
-        ('C', 'Cancelled'),
-        ('R', 'Returned')
-    ]
-    booking_status = models.CharField(max_length=20, choices=BOOKING_STATUS_FLAG)
+    booking_status = models.CharField(max_length=32)
 
 
 class Booking(models.Model):

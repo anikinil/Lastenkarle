@@ -5,7 +5,7 @@ from db_model.models import *
 
 class UserStatusSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User_status
+        model = User_Status
         fields = ['user_status']
 
 
@@ -40,6 +40,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('contact_data',
+                  'year_of_birth',
                   'username',
                   'password')
 
