@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
-
+from datetime import date
 
 class UserManager(BaseUserManager):
 
@@ -22,9 +22,9 @@ class UserManager(BaseUserManager):
     def create_helmholtz_user(self, userinfo):
         user = User.objects.create(username=userinfo['eduperson_unique_id'], password=" ")
         user.is_active = True
-        user.user_status.set(User_Status.objects.filter(user_status='Customer'))
+        user.user_status.add(User_Status.objects.get(user_status='Customer'))
         if user.is_superuser:
-            user.user_status.set(User_Status.objects.filter(user_status='Administrator'))
+            user.user_status.add(User_Status.objects.get(user_status='Administrator'))
         return self.update_helmholtz_user(user, userinfo)
 
     def update_helmholtz_user(self, user, userinfo):
@@ -56,9 +56,31 @@ class Store(models.Model):
     contact_data = models.TextField(max_length=256)
     name = models.TextField(default="ERROR", unique=True)
 
+    def delete(self, *args, **kwargs):
+        if self.store_flag:
+            self.store_flag.delete()
+        self.bike_set.all().delete()
+        super(Store, self).delete(*args, **kwargs)
 
 class User_Status(models.Model):
     user_status = models.CharField(max_length=32)
+
+    @classmethod
+    def custom_create_store_flags(cls, store):
+        store_name = store.name
+        flag = f"Store: {store_name}"
+        instance = cls(user_status=flag)
+        instance.save()
+        return instance
+
+    @classmethod
+    def get_store_of_flag(self):
+        if self.user_status.startswith("Store:"):
+            flag = self.user_status
+            _, store_name = flag.split(":", 1)
+            store = Store.objects.get(name=store_name)
+            return store
+        return None
 
 
 class User(AbstractBaseUser):
@@ -66,9 +88,9 @@ class User(AbstractBaseUser):
         ("N", "None"), ("L", "Low"), ("M", "Medium"), ("H", "High"),
     ]
     user_status = models.ManyToManyField(User_Status, blank=True)
-    assurance_lvl = models.CharField(max_length=1, choices=ASSURANCE_LEVEL, null=True, blank=True)
+    assurance_lvl = models.CharField(max_length=1, choices=ASSURANCE_LEVEL, default='N', null=True)
     year_of_birth = models.IntegerField(null=True, blank=True)
-    contact_data = models.TextField(null=True, blank=True)
+    contact_data = models.TextField(unique=True, null=True)
 
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
@@ -100,9 +122,8 @@ class User(AbstractBaseUser):
     def has_perm(self, perm, obj=None):
         return True
 
-    # Store: Storename
     def is_staff_of_store(self):
-        store_flag = self.user_status.filter(user_status__startswith='S')
+        store_flag = self.user_status.get(user_status__startswith='Store:').user_status
         name_part = store_flag.split(': ')[1]
         store = Store.objects.get(name=name_part)
         return store
@@ -137,17 +158,29 @@ class Bike(models.Model):
     description = models.TextField(default="ERROR")
     image_link = models.TextField(default="ERROR")
 
+    def delete(self, *args, **kwargs):
+        self.availability_set.all().delete()
+        super(Bike, self).delete(*args, **kwargs)
+
 
 class Availability_Status(models.Model):
     availability_status = models.CharField(max_length=32)
 
 
 class Availability(models.Model):
-    from_date = models.DateField(null=True)
-    until_date = models.DateField(null=True)
+    from_date = models.DateField(default=date(1000, 1, 1))
+    until_date = models.DateField(default=date(5000, 1, 1))
     store = models.ForeignKey(Store, on_delete=models.CASCADE)
     bike = models.ForeignKey(Bike, on_delete=models.CASCADE)
     availability_status = models.ManyToManyField(Availability_Status)
+
+    @classmethod
+    def create_availability(cls, store, bike):
+        instance = cls(store=store, bike=bike)
+        instance.save()
+        instance.availability_status.set(Availability_Status.objects.filter(availability_status='Available'))
+        instance.save()
+        return instance
 
 
 class Booking_Status(models.Model):

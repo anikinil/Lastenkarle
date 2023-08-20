@@ -6,6 +6,8 @@ urlpatterns = [
     path('ban-user', views.BanUser.as_view()),
     path('create/store', views.AddStore.as_view()),
     path('create/store/<int:store_id>/bike', views.AddBike.as_view()),
+    path('delete/store/<int:pk>', views.DeleteStore.as_view()),
+    path('delete/bike/<int:pk>', views.DeleteBike.as_view()),
     path('users', views.AllUsers.as_view()),
     path('users/<int:user_id>', views.SelectedUser.as_view()),
     path('users/<int:user_id>/bookings', views.AllBookingsOfUser.as_view()),

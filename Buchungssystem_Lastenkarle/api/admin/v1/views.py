@@ -1,10 +1,10 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.generics import DestroyAPIView
 from rest_framework import status
 from knox.auth import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django.http import Http404
-from datetime import date
 
 from api.algorithm import *
 from api.permissions import *
@@ -22,10 +22,13 @@ class AllUserFlags(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
-        username = request.data['username']
+        contact_data = request.data['contact_data']
         user_flag = request.data['user_status']
-        user = User.objects.get(username=username)
+        user = User.objects.get(contact_data=contact_data)
         user.user_status.add(User_Status.objects.get(user_status=user_flag).pk)
+        if user_flag.startswith("Store:"):
+            user.is_staff = True
+            user.save()
         return Response(status=status.HTTP_200_OK)
 
 
@@ -106,20 +109,27 @@ class AddBike(APIView):
     permission_classes = [IsAuthenticated & IsSuperUser]
 
     def post(self, request, store_id):
-        serializer = BikeSerializer(data=request.data)
+        additional_data = {
+            'store': store_id,
+        }
+        data = {**request.data, **additional_data}
+        serializer = BikeSerializer(data=data)
         if serializer.is_valid():
             bike = serializer.save()
-            store = Store.objects.get(store_id=store_id)
-            default_from_date = date(1000, 1, 1)
-            default_until_date = date(5000, 1, 1)
-            Availability.objects.create(from_date=default_from_date,
-                                        until_date=default_until_date,
-                                        store=store,
-                                        bike=bike,
-                                        availability_status=
-                                        Availability_Status.objects.get(availability_status='Available'))
+            store = Store.objects.get(pk=store_id)
+            Availability.create_availability(store, bike)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class DeleteBike(DestroyAPIView):
+    queryset = Bike.objects.all()
+    serializer_class = BikeSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated & IsSuperUser]
+
+    def perform_destroy(self, instance):
+        instance.delete()
 
 
 class AllBikes(APIView):
@@ -149,7 +159,6 @@ class SelectedBike(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-
 class AvailabilityOfBike(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated & IsSuperUser]
@@ -168,12 +177,21 @@ class AddStore(APIView):
         serializer = StoreSerializer(data=request.data)
         if serializer.is_valid():
             store = serializer.save()
-            storename = store.name
-            flag = f"store: {storename}"
-            storeflag = User_Status.objects.create(flag)
-            store.store_flag.set(storeflag)
+            store_flag = User_Status.custom_create_store_flags(store)
+            store.store_flag = store_flag
+            store.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class DeleteStore(DestroyAPIView):
+    queryset = Store.objects.all()
+    serializer_class = StoreSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated & IsSuperUser]
+
+    def perform_destroy(self, instance):
+        instance.delete()
 
 
 class AllStores(APIView):
@@ -217,10 +235,11 @@ class BanUser(APIView):
     permission_classes = [IsAuthenticated & IsSuperUser]
 
     def post(self, request):
-        username = request.data['username']
-        user = User.objects.get(username=username)
+        contact_data = request.data['contact_data']
+        user = User.objects.get(contact_data=contact_data)
         user.user_status.add(User_Status.objects.get(user_status='Banned').pk)
         user.is_active = False
+        user.save()
         #TODO: User banned mail call
         return Response(status=status.HTTP_200_OK)
 

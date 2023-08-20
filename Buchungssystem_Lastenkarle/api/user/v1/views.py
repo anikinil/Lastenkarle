@@ -100,9 +100,8 @@ class AllBookingsFromUser(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
-    # gets all bookings of the user if none it is an empty list
     def get(self, request):
-        fields_to_include = ['begin', 'end', 'booking_status']
+        fields_to_include = ['id', 'begin', 'end', 'booking_status']
         bookings = Booking.objects.filter(user=request.user)
         serializer = BookingSerializer(bookings, many=True, fields=fields_to_include)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -162,7 +161,7 @@ class StoreOfBookedBike(APIView):
             Booking.objects.get(pk=booking_id).bike.store
         except ObjectDoesNotExist:
             raise Http404
-        fields_to_include = ['region', 'address', 'name']
+        fields_to_include = ['id', 'region', 'address', 'name']
         store = Booking.objects.get(pk=booking_id).bike.store
         serializer = StoreSerializer(store, many=False, fields=fields_to_include)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -205,4 +204,5 @@ class DeleteUserAccount(APIView):
         if LocalData.objects.filter(user=user).exists():
             LocalData.objects.get(user=user).anonymize().save()
         user.anonymize().save()
+        user.user_status.clear()
         return Response(status=status.HTTP_200_OK)

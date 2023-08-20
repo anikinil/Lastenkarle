@@ -59,7 +59,7 @@ class StoreByBike(APIView):
     permission_classes = (AllowAny,)
 
     def get(self, request, bike_id):
-        fields_to_include = ['region', 'address', 'name']
+        fields_to_include = ['region', 'contact_data', 'address', 'name']
         store = Bike.objects.get(pk=bike_id).store
         serializer = StoreSerializer(store, many=False, fields=fields_to_include)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -92,6 +92,7 @@ class MakeBooking(APIView):
         if serializer.is_valid():
             booking = serializer.save()
             booking.booking_status.set(Booking_Status.objects.filter(booking_status='Booked'))
+            #TODO: call booking string (qr code related) generating method and assign the value to the booking
             split_availabilities_algorithm(booking)
             #TODO: booking mail call
             return Response(serializer.data, status=status.HTTP_201_CREATED)
