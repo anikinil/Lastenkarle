@@ -53,7 +53,8 @@ class Store(models.Model):
     store_flag = models.OneToOneField('User_Status', on_delete=models.CASCADE, null=True)
     region = models.TextField(max_length=3, choices=REGION)
     address = models.TextField(default="ERROR")
-    contact_data = models.TextField(max_length=256)
+    phone_number = models.TextField(max_length=256)
+    email = models.TextField(max_length=256)
     name = models.TextField(default="ERROR", unique=True)
 
     def delete(self, *args, **kwargs):
