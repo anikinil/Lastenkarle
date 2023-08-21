@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: 'Calibri', sans-serif;
+        }
+        .bold {
+            font-weight: bold;
+        }
+        .red-link {
+            color: red;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <img src="{{ lastenkarle_logo_url }}" alt="Header Image" style="width: 100%; max-width: 400px; display: block;">
+    <p>Hallo {{ username }}!</p>
+    <p>Der Status deiner Buchung von {{ bike_name }} bei {{ station_name }} wurde auf "Abgeholt" geändert.</p>
+    <p>Falls du das nicht warst, kann das an einem Fehler in der Station liegen oder etwas anderes ist schief gelaufen.</p>
+    <p>Wende dich in diesem Fall bitte an die Station <a class="red-link" href="{{ store_websitelink }}">{{ station_name }}</a>:</p>
+    <p class="bold">Kontaktdaten:</p>
+    <p>{{ store_contact_data }}</p>
+    <p>Das Team von Lastenkarle</p>
+</body>
+</html>

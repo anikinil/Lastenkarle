@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  body {
+    font-family: 'Calibri', sans-serif; /* Use Calibri font */
+  }
+</style>
+</head>
+<body>
+    <img src="{{ lastenkarle_logo_url }}" alt="Header Image" style="width: 100%; max-width: 400px; display: block;">
+  <p>Hallo {{ username }},</p>
+  
+  <p>deine Buchung von {{ bike_name }} bei {{ station_name }} von {{ start_date }} bis {{ end_date }} wurde <b>storniert</b>.</p>
+  
+  <p>Falls du die Stornierung nicht selbst durchgeführt hast, wurde sie möglicherweise wegen eines Defekts von der Station storniert. 
+    Beachte hierzu weitere E-Mails von uns.</p>
+  
+  <p>Das Team von Lastenkarle</p>
+</body>
+</html>

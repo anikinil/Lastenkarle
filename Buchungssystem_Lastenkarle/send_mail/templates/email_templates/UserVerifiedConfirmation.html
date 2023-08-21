@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: 'Calibri', sans-serif;
+        }
+        .bold {
+            font-weight: bold;
+        }
+        .red-link {
+            color: red;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <img src="{{ lastenkarle_logo_url }}" alt="Header Image" style="width: 100%; max-width: 400px; display: block;">
+    <p>Hallo {{ username }}!</p>
+    <p>Der Status deines Accounts wurde auf "Authentifiziert" geändert.</p>
+    <p>Falls du das nicht warst, wende dich bitte direkt an uns.</p>
+    <p class="bold">Kontaktdaten:</p>
+    <p>{{ admin_contact_data }}</p>
+    <p>Das Team von Lastenkarle</p>
+</body>
+</html>

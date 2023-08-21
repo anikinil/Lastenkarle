@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  body {
+    font-family: 'Calibri', sans-serif; /* Use Calibri font */
+  }
+  .headline-red {
+    color: red;
+    font-weight: bold;
+  }
+  .bold-black {
+    font-weight: bold;
+    color: black;
+  }
+  .bold-cursive-black {
+    font-weight: bold;
+    font-style: italic;
+    color: black;
+  }
+  .red-link {
+    color: red;
+  }
+</style>
+</head>
+<body>
+    <img src="{{ lastenkarle_logo_url }}" alt="Header Image" style="width: 100%; max-width: 400px; display: block;">
+  <p class="text-black">Hallo {{ username }},</p>
+  
+  <p class="text-black">Danke für deine Buchung von {{ bike_name }} bei {{ station_name }}!</p>
+  
+  <p class="headline-red">Buchungsdetails/Stornierung</p>
+  
+  <p class="text-black">Du kannst deine Buchungsdetails hier einsehen und die Buchung jederzeit stornieren: <a class="red-link" href="{{ booking_link }}">Link zu deiner Buchung</a>.</p>
+  
+  <p class="headline-red">Informationen zur Abholung</p>
+  
+  <p class="text-black">Hole {{ bike_name }} am {{ start_date }} bei der Station {{ station_name }} ab.<br>
+    Bringe es dort spätestens am {{ end_date }} wieder zurück.</p>
+  
+  <p class="bold-black">Bitte zeige bei der Abholung und bei der Rückgabe jeweils den im Anhang beigefügten QR-Code vor.<br>
+    Es kann passieren, dass du dich beim Abholen ausweisen musst.<br>
+    Aus diesem Grund möchten wir dich bitten ein entsprechendes Ausweisdokument mitzubringen.</p>
+  
+  <p class="bold-black">Abholadresse:</p>
+  
+  <p class="text-black">{{ store_address }}</p>
+  
+  <p class="bold-black">Öffnungszeiten:</p>
+  
+  <p class="text-black">{{ store_openinghours }}<br>
+    Bitte unter <a class="red-link" href={{ store_websitelink }}>{{ store_websitelink }}</a> aktuelle Öffnungszeiten nachschauen.</p>
+  <p class="bold-black">Kontaktdaten der Station:</p>
+
+  <p class="text-black">{{ store_contact_data }}</p>
+
+  <p class="bold-black">Danke! Das Team von Lastenkarle.</p>
+  
+  <hr class="bold-red">
+  
+  <p class="bold-cursive-black">PS: Lastenkarle ist kostenfrei! Hilf Lastenkarle mit einer Spende von 5 Euro pro Tag, dieses Angebot auch langfristig kostenfrei aufrecht zu erhalten.<br>
+    <a class="red-link" href="https://lastenkarle.de/spenden">Hier kannst du spenden.</a></p>
+  
+  <hr class="bold-red">
+  
+  <p class="headline-red">Allgemeine Geschäfts- und Nutzungsbedingungen (AGB) für das Lastenrad-Leihsystem „Lastenkarle“ der Lastenrad-Initiative für die Region Karlsruhe e. V.</p>
+  
+  <p class="text-red"><a class="red-link" href="https://lastenkarle.de/wp-content/uploads/2022/11/20221110-AGB.pdf">AGB als PDF</a></p>
+  
+  <p class="text-black">[AGB]</p>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: 'Calibri', sans-serif;
+        }
+        .bold {
+            font-weight: bold;
+        }
+        .red-link {
+            color: red;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <img src="{{ lastenkarle_logo_url }}" alt="Header Image" style="width: 100%; max-width: 400px; display: block;">
+    <p>Hallo!</p>
+    <p>Der Status eines Accounts wurde auf "Ermahnt" geändert. Wir bitten um eine Entscheidung, ob der Kunde gebannt werden muss oder es bei einer Ermahnung bleibt.</p>
+    <p>Username: {{ username }}</p>
+    <p>Absender: {{ station_name }}</p>
+    <p>Grund: {{ commentary }}</p>
+    <p class="bold">Kontaktdaten des Stores:</p>
+    <p>{{ store_contact_data }}</p>
+    <p>Das Team von Lastenkarle</p>
+</body>
+</html>

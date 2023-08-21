@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'api',
     'db_model',
     'knox',
+    'send_mail',
+    'qr_code'
 ]
 
 REST_FRAMEWORK = {
@@ -169,3 +171,10 @@ STATIC_ROOT = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #todo put this in an enviroment file for configuration
 CANONICAL_HOST = "http://localhost"
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'mail.gmx.net'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
