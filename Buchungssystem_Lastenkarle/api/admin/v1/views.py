@@ -1,9 +1,9 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.generics import DestroyAPIView
 from rest_framework import status
 from knox.auth import TokenAuthentication
-from rest_framework.permissions import IsAuthenticated, AllowAny
-from django.core.exceptions import *
+from rest_framework.permissions import IsAuthenticated
 from django.http import Http404
 
 from api.algorithm import *
@@ -17,14 +17,18 @@ class AllUserFlags(APIView):
     permission_classes = [IsAuthenticated & IsSuperUser]
 
     def get(self, request):
-        return Response(User_status.USER_STATUS_FLAG, status=status.HTTP_200_OK)
+        user_status = User_Status.objects.all()
+        serializer = UserStatusSerializer(user_status, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
-    # needs testing (enrollment)
     def post(self, request):
-        username = request.data['username']
+        contact_data = request.data['contact_data']
         user_flag = request.data['user_status']
-        user = User.objects.get(username=username)
-        user.user_status.add(User_status.objects.get(user_status=user_flag).pk)
+        user = User.objects.get(contact_data=contact_data)
+        user.user_status.add(User_Status.objects.get(user_status=user_flag).pk)
+        if user_flag.startswith("Store:"):
+            user.is_staff = True
+            user.save()
         return Response(status=status.HTTP_200_OK)
 
 
@@ -37,6 +41,7 @@ class AllUsers(APIView):
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 class SelectedUser(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated & IsSuperUser]
@@ -45,6 +50,7 @@ class SelectedUser(APIView):
         user = User.objects.get(pk=user_id)
         serializer = UserSerializer(user, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class AllBookingsOfUser(APIView):
     authentication_classes = [TokenAuthentication]
@@ -75,14 +81,14 @@ class SelectedBooking(APIView):
         serializer = BookingSerializer(bookings, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    # needs testing (cancel booking as admin)
     def post(self, request, booking_id):
         booking = Booking.objects.get(pk=booking_id)
         booking.booking_status.clear()
-        booking.booking_status.set(Booking_Status.objects.filter(booking_status='C'))
+        booking.booking_status.set(Booking_Status.objects.filter(booking_status='Cancelled'))
         booking.string = None
         booking.save()
         merge_availabilities_algorithm(booking)
+        #TODO: cancellation throught store confirmation mail call
         return Response(status=status.HTTP_200_OK)
 
 
@@ -98,6 +104,34 @@ class CommentOfBooking(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+class AddBike(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated & IsSuperUser]
+
+    def post(self, request, store_id):
+        additional_data = {
+            'store': store_id,
+        }
+        data = {**request.data, **additional_data}
+        serializer = BikeSerializer(data=data)
+        if serializer.is_valid():
+            bike = serializer.save()
+            store = Store.objects.get(pk=store_id)
+            Availability.create_availability(store, bike)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class DeleteBike(DestroyAPIView):
+    queryset = Bike.objects.all()
+    serializer_class = BikeSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated & IsSuperUser]
+
+    def perform_destroy(self, instance):
+        instance.delete()
+
+
 class AllBikes(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated & IsSuperUser]
@@ -107,6 +141,7 @@ class AllBikes(APIView):
         serializer = BikeSerializer(bikes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 class SelectedBike(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated & IsSuperUser]
@@ -114,6 +149,13 @@ class SelectedBike(APIView):
     def get(self, request, bike_id):
         bike = Bike.objects.get(pk=bike_id)
         serializer = BikeSerializer(bike, many=False)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def patch(self, request, bike_id, *args, **kwargs):
+        instance = Bike.objects.get(pk=bike_id)
+        serializer = BikeSerializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -125,6 +167,32 @@ class AvailabilityOfBike(APIView):
         availability = Availability.objects.filter(bike_id=bike_id)
         serializer = AvailabilitySerializer(availability, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class AddStore(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated & IsSuperUser]
+
+    def post(self, request):
+        serializer = StoreSerializer(data=request.data)
+        if serializer.is_valid():
+            store = serializer.save()
+            store_flag = User_Status.custom_create_store_flags(store)
+            store.store_flag = store_flag
+            store.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class DeleteStore(DestroyAPIView):
+    queryset = Store.objects.all()
+    serializer_class = StoreSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated & IsSuperUser]
+
+    def perform_destroy(self, instance):
+        instance.delete()
+
 
 class AllStores(APIView):
     authentication_classes = [TokenAuthentication]
@@ -144,6 +212,14 @@ class SelectedStore(APIView):
         serializer = StoreSerializer(store, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    def patch(self, request, store_id, *args, **kwargs):
+        instance = Store.objects.get(pk=store_id)
+        serializer = StoreSerializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 class AvailabilityOfBikesFromStore(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated & IsSuperUser]
@@ -154,14 +230,17 @@ class AvailabilityOfBikesFromStore(APIView):
         serializer = AvailabilitySerializer(availabilities, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-# needs testing (banning)
+
 class BanUser(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated & IsSuperUser]
 
     def post(self, request):
-        username = request.data['username']
-        user = User.objects.get(username=username)
-        user.user_status.add(User_status.objects.get(user_status='B').pk)
+        contact_data = request.data['contact_data']
+        user = User.objects.get(contact_data=contact_data)
+        user.user_status.add(User_Status.objects.get(user_status='Banned').pk)
         user.is_active = False
+        user.save()
+        #TODO: User banned mail call
         return Response(status=status.HTTP_200_OK)
+
