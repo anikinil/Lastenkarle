@@ -24,7 +24,7 @@ def send_booking_confirmation(request, booking, user, booking_link, store_openin
     recipient_list = [user.contact_data]
 
     email = EmailMessage(subject, html_message, from_email, recipient_list)
-    # TODO: QR-Code generieren und in den Anhang als pdf einfügen
+    # QR-Code generieren und in den Anhang als pdf einfügen
     # attachment_path = "/pfad/zur/datei.txt"  # Pfad zur Anhangsdatei anpassen
     # with open(attachment_path, 'rb') as attachment_file:
     #    email.attach("attachment.txt", attachment_file.read(), "text/plain")
