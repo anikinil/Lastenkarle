@@ -1,0 +1,4 @@
+generateStoreConfig(store)
+{
+
+}

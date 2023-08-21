@@ -180,6 +180,7 @@ class AddStore(APIView):
             store_flag = User_Status.custom_create_store_flags(store)
             store.store_flag = store_flag
             store.save()
+            generateStoreConfig(store)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
