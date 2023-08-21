@@ -5,7 +5,7 @@ from db_model.models import *
 
 class UserStatusSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User_status
+        model = User_Status
         fields = ['user_status']
 
 
@@ -22,6 +22,9 @@ class UserSerializer(serializers.ModelSerializer):
         instance = super().update(instance, validated_data)
         return instance
 
+    def create(self, validated_data):
+        user = User.objects.create_user(**validated_data)
+        return user
 
     def __init__(self, *args, **kwargs):
         fields = kwargs.pop('fields', None)
@@ -36,6 +39,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('contact_data',
+                  'year_of_birth',
                   'username',
                   'password')
 
@@ -89,15 +93,6 @@ class LocalDataSerializer(serializers.ModelSerializer):
                   'date_of_verification',
                   'id_number')
 
-class UpdateLocalDataSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = LocalData
-        fields = ('first_name',
-                  'last_name',
-                  'address',
-                  'date_of_verification',
-                  'id_number')
-
     def update(self, instance, validated_data):
         instance = super().update(instance, validated_data)
         return instance
@@ -138,9 +133,11 @@ class BookingStatusSerializer(serializers.ModelSerializer):
 class BookingConfirmationSerializer(serializers.ModelSerializer):
     user = UserSerializer(many=False, read_only=True)
     booking_status = BookingStatusSerializer(many=True, read_only=True)
+
     class Meta:
         model = Booking
         fields = '__all__'
+
 
 class BookingSerializer(serializers.ModelSerializer):
     booking_status = BookingStatusSerializer(many=True, read_only=True)
