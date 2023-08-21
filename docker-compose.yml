@@ -47,6 +47,7 @@ services:
     restart: always
     env_file:
       - envvarsdb.env
-
+    depends_on:
+      - db
     ports:
       - "40001:80"
