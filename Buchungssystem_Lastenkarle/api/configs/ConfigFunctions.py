@@ -1,10 +1,18 @@
 import json
+import os
 import random
 import string
 
+# Find the path to your Django project's base directory
+base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# Create the path to the 'Project/api/configs' directory within your project
+configs_folder_path = os.path.join(base_dir, 'configs')
+# Generate the full path to store_configs.json within the 'Project/api/configs' directory
+store_config_path = os.path.join(configs_folder_path, 'store_configs.json')
+
 
 def _generateStoreConfig(store_configs):
-    with open("store_configs.json", "w") as config_file:
+    with open(store_config_path, "w") as config_file:
         json.dump(store_configs, config_file, indent=2)
 
 
@@ -47,7 +55,7 @@ def getStoreNameFromJson(StoreJson):
 
 def _readStoreConfig():
     try:
-        with open("store_configs.json", "r") as config_file:
+        with open(store_config_path, "r") as config_file:
             store_configs = json.load(config_file)
             return store_configs.get("stores", [])  # Get the "stores" key or return an empty list
     except FileNotFoundError:
