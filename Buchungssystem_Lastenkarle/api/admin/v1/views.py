@@ -270,3 +270,24 @@ class BanUser(APIView):
         #TODO: User banned mail call
         return Response(status=status.HTTP_200_OK)
 
+
+class AllStoreConfigurations(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated & IsSuperUser]
+
+    def get(self, request):
+        return Response(getAllStoresConfig(), status=status.HTTP_200_OK)
+
+
+class SelectedStoreConfiguration(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated & IsSuperUser]
+
+    def get(self, request, store_id):
+        store = Store.objects.get(pk=store_id)
+        return Response(getStoreConfig(store.name), status=status.HTTP_200_OK)
+
+    def patch(self, request, store_id):
+        store = Store.objects.get(pk=store_id)
+        update_store_config(store.name, request.data)
+        return Response(getStoreConfig(store.name), status=status.HTTP_200_OK)

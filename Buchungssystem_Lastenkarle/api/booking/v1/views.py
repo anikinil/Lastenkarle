@@ -77,6 +77,14 @@ class AvailabilityOfBike(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+class AllStoreConfigurations(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = (AllowAny,)
+
+    def get(self, request):
+        return Response(getAllStoresConfig(), status=status.HTTP_200_OK)
+
+
 class MakeBooking(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]

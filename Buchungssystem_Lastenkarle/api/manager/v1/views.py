@@ -370,3 +370,17 @@ class ReportComment(APIView):
         #TODO: admin user warning notification call
         #TODO: user warning call
         return Response(status=status.HTTP_200_OK)
+
+
+class StoreConfigFile(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated & IsStaff]
+
+    def get(self, request):
+        store = self.request.user.is_staff_of_store()
+        return Response(getStoreConfig(store.name), status=status.HTTP_200_OK)
+
+    def patch(self, request):
+        store = self.request.user.is_staff_of_store()
+        update_store_config(store.name, request.data)
+        return Response(getStoreConfig(store.name), status=status.HTTP_200_OK)

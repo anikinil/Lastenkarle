@@ -7,6 +7,7 @@ urlpatterns = [
     path('user-flag', views.AllUserFlags.as_view()),
     path('enrollment', views.EnrollUser.as_view()),
     path('store-page', views.StorePage.as_view()),
+    path('configuration', views.StoreConfigFile.as_view()),
     path('bikes', views.BikesOfStore.as_view()),
     path('bikes/<int:bike_id>', views.SelectedBike.as_view()),
     path('bikes/<int:bike_id>/delete', views.DeleteBike.as_view()),
