@@ -37,8 +37,8 @@ services:
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "Caro", "-d", "test_db" ]
       interval: 10s
-      timeout: 5s
-      retries: 3
+      timeout: 10s
+      retries: 5
 
 
   pgadmin:

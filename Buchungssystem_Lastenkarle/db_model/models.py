@@ -34,6 +34,7 @@ class UserManager(BaseUserManager):
             user.assurance_lvl = 'M'
         else:
             user.assurance_lvl = 'L'
+        user.contact_data = userinfo['email']
         user.save()
         return user
 

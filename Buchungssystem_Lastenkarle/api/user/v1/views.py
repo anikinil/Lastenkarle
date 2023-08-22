@@ -22,9 +22,12 @@ oauth = OAuth()
 oauth.register(name="helmholtz")
 
 
-def helmholtzLogin(request):
-    redirect_uri = CANONICAL_HOST + '/api/user/v1/helmholtz/auth'
-    return oauth.helmholtz.authorize_redirect(request, redirect_uri)
+class HelmholtzLoginView(APIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request, *args, **kwargs):
+        redirect_uri = CANONICAL_HOST + '/api/user/v1/helmholtz/auth'
+        return oauth.helmholtz.authorize_redirect(request, redirect_uri)
 
 
 # def helmholtzAuth(request):
