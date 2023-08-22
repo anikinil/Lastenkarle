@@ -23,4 +23,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('privacy', PrivacyStatement.views.privacy_policy),
     path('api/', include('api.urls')),
+    #TODO: EmailPath nach Testen wieder entfernen
+    path('email/', include('send_mail.urls')),
 ]

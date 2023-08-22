@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{% load static %}
 <html>
 <head>
     <style>
@@ -17,11 +17,12 @@
 <body>
     <img src="{{ lastenkarle_logo_url }}" alt="Header Image" style="width: 100%; max-width: 400px; display: block;">
     <p>Hallo {{ username }}!</p>
-    <p>Der Status deiner Buchung von {{ bike_name }} bei {{ station_name }} wurde auf "Abgeholt" geändert.</p>
-    <p>Falls du das nicht warst, kann das an einem Fehler in der Station liegen oder etwas anderes ist schief gelaufen.</p>
-    <p>Wende dich in diesem Fall bitte an die Station <a class="red-link" href="{{ store_websitelink }}">{{ station_name }}</a>:</p>
-    <p class="bold">Kontaktdaten:</p>
-    <p>{{ store_contact_data }}</p>
+    <p>Der Status deines Accounts wurde auf "Gebannt" geändert. Das bedeutet, dass du von unseren Diensten ausgeschlossen bist.</p>
+    <p>Erst nach Ablauf dieser Zeit kannst du wieder Lastenräder buchen.</p>
+    <p>Bei Rückfragen, melde dich bei uns.</p>
+    <p class="bold">Unsere Kontaktdaten:</p>
+    <p>{{ lastenkarle_name }}<br>{{ lastenkarle_address_street }}<br>{{ lastenkarle_address_city }}<br>{{ lastenkarle_email }}</p>
+
     <p>Das Team von Lastenkarle</p>
 </body>
 </html>

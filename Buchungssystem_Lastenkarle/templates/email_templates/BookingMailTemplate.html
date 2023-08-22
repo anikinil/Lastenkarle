@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{% load static %}
 <html>
 <head>
 <style>
@@ -24,10 +24,10 @@
 </style>
 </head>
 <body>
-    <img src="{{ lastenkarle_logo_url }}" alt="Header Image" style="width: 100%; max-width: 400px; display: block;">
+  <img src="https://transport.data.kit.edu/static/Lastenkarle_header.png" alt="Header Image" style="width: 100%; max-width: 400px; display: block;">
   <p class="text-black">Hallo {{ username }},</p>
   
-  <p class="text-black">Danke für deine Buchung von {{ bike_name }} bei {{ station_name }}!</p>
+  <p class="text-black">danke für deine Buchung von {{ bike_name }} bei {{ station_name }}!</p>
   
   <p class="headline-red">Buchungsdetails/Stornierung</p>
   
@@ -43,23 +43,33 @@
     Aus diesem Grund möchten wir dich bitten ein entsprechendes Ausweisdokument mitzubringen.</p>
   
   <p class="bold-black">Abholadresse:</p>
-  
-  <p class="text-black">{{ store_address }}</p>
+  <p class="text-black">
+    {% for address_line in store_address %}
+        {{ address_line }}<br>
+    {% endfor %}
+  </p>
   
   <p class="bold-black">Öffnungszeiten:</p>
-  
-  <p class="text-black">{{ store_openinghours }}<br>
-    Bitte unter <a class="red-link" href={{ store_websitelink }}>{{ store_websitelink }}</a> aktuelle Öffnungszeiten nachschauen.</p>
-  <p class="bold-black">Kontaktdaten der Station:</p>
 
-  <p class="text-black">{{ store_contact_data }}</p>
+  <p class="text-black">
+    {% for openinghour_line in store_opening_hours %}
+        {{ openinghour_line }}<br>
+    {% endfor %}
+  </p>
+    Schau bitte unter <a class="red-link" href="{{ store_website_link }}">Shop-Website</a> die aktuellen Öffnungszeiten nach.</p>
+  <p class="bold-black">Kontaktdaten der Station:</p>
+  <p class="text-black">
+    {% for contact_line in store_contact_data %}
+        {{ contact_line }}<br>
+    {% endfor %}
+  </p>
 
   <p class="bold-black">Danke! Das Team von Lastenkarle.</p>
   
   <hr class="bold-red">
   
   <p class="bold-cursive-black">PS: Lastenkarle ist kostenfrei! Hilf Lastenkarle mit einer Spende von 5 Euro pro Tag, dieses Angebot auch langfristig kostenfrei aufrecht zu erhalten.<br>
-    <a class="red-link" href="https://lastenkarle.de/spenden">Hier kannst du spenden.</a></p>
+    <a class="red-link" href="{{ spenden_link }}">Hier kannst du spenden.</a></p>
   
   <hr class="bold-red">
   

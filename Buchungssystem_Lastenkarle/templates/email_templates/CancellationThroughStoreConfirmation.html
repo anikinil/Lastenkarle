@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{% load static %}
 <html>
 <head>
 <style>
@@ -8,13 +8,10 @@
 </style>
 </head>
 <body>
-    <img src="{{ lastenkarle_logo_url }}" style="width: 100%; max-width: 400px; display: block;">
+  <img src="{{ lastenkarle_logo_url }}" style="width: 100%; max-width: 400px; display: block;">
   <p>Hallo {{ username }},</p>
   
   <p>deine Buchung von {{ bike_name }} bei {{ station_name }} von {{ start_date }} bis {{ end_date }} wurde durch die Station {{ station_name }} <b>storniert</b>.</p>
-  
-  <p>Falls du die Stornierung nicht durchführen lassen wolltest, wurde sie möglicherweise wegen eines Defekts von der Station storniert. 
-    Beachte hierzu weitere E-Mails von uns.</p>
   
   <p>Das Team von Lastenkarle</p>
 </body>
