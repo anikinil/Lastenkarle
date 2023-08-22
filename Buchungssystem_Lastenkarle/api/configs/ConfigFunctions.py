@@ -16,7 +16,7 @@ def update_store_config(store_name, new_store_infos):
             if "openhours" in new_store_infos:
                 store["openhours"].update(new_store_infos["openhours"])
             if "pretime" in new_store_infos:
-                store["openhours"]["pretime"] = new_store_infos["pretime"]
+                store["pretime"] = new_store_infos["pretime"]
             _generateStoreConfig({"stores": stores})
             break
 
@@ -94,8 +94,9 @@ def add_store(store_name):
                 "start": "%H:%M",
                 "end": "%H:%M"
             },
-            "pretime": "%H:%M"
-        }
+
+        },
+        "pretime": "%H:%M"
 
     }
     stores.append(new_store)
@@ -116,17 +117,17 @@ def generate_random_string(length):
 #add_store("Store2")
 #add_store("Store27")
 #add_store("Store69")
-##Example usage
+#Example usage
 #new_store_data_json = '''
 # {
 #    "openhours": {
 #        "wed": { "opened": true, "start": "20:00", "end": "21:00" },
-#        "fri": { "opened": true, "start": "13:00", "end": "16:00" },
-#        "sun": { "opened": false, "start": "%H:%M", "end": "%H:%M" }
-#    },
-#    "pretime": "20:00"
-# }
-# '''
+ #       "fri": { "opened": true, "start": "13:00", "end": "16:00" },
+ #       "sun": { "opened": false, "start": "%H:%M", "end": "%H:%M" }
+ #   },
+ #   "pretime": "20:00"
+ #}
+ #'''
 #store_name = "Store2"
 
 #new_store_data = json.loads(new_store_data_json)
