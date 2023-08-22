@@ -10,6 +10,7 @@ from api.algorithm import *
 from api.permissions import *
 from api.serializer import *
 from db_model.models import *
+from api.configs.ConfigFunctions import *
 
 
 class AllUserFlags(APIView):
@@ -203,7 +204,7 @@ class AddStore(APIView):
             store_flag = User_Status.custom_create_store_flags(store)
             store.store_flag = store_flag
             store.save()
-            generateStoreConfig(store)
+            add_store(store.name)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -226,6 +227,7 @@ class AllStores(APIView):
         stores = Store.objects.all()
         serializer = StoreSerializer(stores, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class SelectedStore(APIView):
     authentication_classes = [TokenAuthentication]

@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from datetime import date
+from api.configs.ConfigFunctions import deleteStoreConfig
+
 
 class UserManager(BaseUserManager):
 
@@ -58,10 +60,12 @@ class Store(models.Model):
     name = models.TextField(default="ERROR", unique=True)
 
     def delete(self, *args, **kwargs):
+        deleteStoreConfig(store_name=self.name)
         if self.store_flag:
             self.store_flag.delete()
         self.bike_set.all().delete()
         super(Store, self).delete(*args, **kwargs)
+
 
 class User_Status(models.Model):
     user_status = models.CharField(max_length=32)

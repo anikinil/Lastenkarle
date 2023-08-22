@@ -11,7 +11,7 @@ from api.algorithm import *
 from api.permissions import *
 from api.serializer import *
 from db_model.models import *
-
+from api.configs.ConfigFunctions import *
 
 class AllUserFlags(APIView):
     authentication_classes = [TokenAuthentication]
@@ -130,6 +130,10 @@ class SelectedBike(APIView):
         if serializer.is_valid():
             booking = serializer.save(user=user)
             booking.booking_status.add(Booking_Status.objects.get(booking_status='Internal usage').pk)
+            string = generate_random_string(5)
+            while Booking.objects.filter(string=string).exists():
+                string = generate_random_string(5)
+            booking.string = string
             booking.save()
             split_availabilities_algorithm(booking)
             #TODO: booking mail call

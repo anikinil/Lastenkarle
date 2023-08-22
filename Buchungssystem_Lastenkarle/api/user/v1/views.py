@@ -27,15 +27,6 @@ def helmholtzLogin(request):
     return oauth.helmholtz.authorize_redirect(request, redirect_uri)
 
 
-# def helmholtzAuth(request):
-#   token = oauth.helmholtz.authorize_access_token(request)
-#   print(token)
-#   userinfo = oauth.helmholtz.userinfo(request=request, token=token)
-#   print(userinfo)
-#   user = User.objects.create_helmholtz_user(userinfo)
-#   login(request, user)
-#   docreturn redirect('/')
-
 class HelmholtzAuthView(KnoxLoginView):
     permission_classes = (AllowAny,)
 
