@@ -20,7 +20,11 @@
     <p>Der Status deines Accounts wurde auf "Authentifiziert" geändert.</p>
     <p>Falls du das nicht warst, wende dich bitte direkt an uns.</p>
     <p class="bold">Kontaktdaten:</p>
-    <p>{{ lastenkarle_contact_data }}</p>
+    <p class="text-black">
+        {% for contact_line in lastenkarle_contact_data %}
+            {{ contact_line }}<br>
+        {% endfor %}
+    </p>
     <p>Das Team von Lastenkarle</p>
 </body>
 </html>

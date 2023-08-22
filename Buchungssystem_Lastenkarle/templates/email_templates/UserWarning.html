@@ -22,7 +22,11 @@
     <p>Absender: {{ station_name }}</p>
     <p>Grund: {{ commentary }}</p>
     <p class="bold">Kontaktdaten des Stores:</p>
-    <p>{{ store_contact_data }}</p>
+    <p class="text-black">
+        {% for contact_line in store_contact_data %}
+            {{ contact_line }}<br>
+        {% endfor %}
+    </p>
     <p>Das Team von Lastenkarle</p>
 </body>
 </html>

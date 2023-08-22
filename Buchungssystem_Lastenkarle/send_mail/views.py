@@ -42,6 +42,7 @@ def send_test_emails(request):
                                      'lastenkarle_logo_url': lastenkarle_logo_url,
                                      'spenden_link': spenden_link,
                                      'lastenkarle_contact_data': splitted_lastenkarle_contact_data,
+                                     'admin_contact_data': ADMIN_CONTACT,
                                      'commentary': "User hat das Rad beschädigt zurückgegeben"})
     email = EmailMessage(subject, html_message, from_email, recipient_list)
     email.content_subtype = 'html'  # Setze den Inhaltstyp auf HTML
@@ -116,9 +117,10 @@ def test_send_booking_confirmation(request):
 
 
 def send_user_warning_to_admin(request, booking, user, commentary):
+    splitted_store_contact_data = split_string_by_delimiter(booking.bike.store.contact_data, ";")
     subject = "Benutzer %s wurde ermahnt" % (user.username)
     # Email-Template für Buchungsbestätigung mit Daten füllen
-    html_message = render_to_string("templates/email_templates/AdminUserWarningNotification.html",
+    html_message = render_to_string("email_templates/AdminUserWarningNotification.html",
                                     {'username': user.username,
                                      'station_name': booking.station_name,
                                      'lastenkarle_logo_url': lastenkarle_logo_url,
@@ -133,109 +135,129 @@ def send_user_warning_to_admin(request, booking, user, commentary):
 
 
 def send_bike_drop_off_confirmation(request, booking, user):
+    splitted_store_contact_data = split_string_by_delimiter(booking.bike.store.contact_data, ";")
     subject = "Statuswechsel deiner Buchung: Lastenrad %s wurde zurückgegeben" % (booking.bike.name)
-    html_message = render_to_string("templates/email_templates/BikeDropOffConfirmation.html",
+    html_message = render_to_string("email_templates/BikeDropOffConfirmation.html",
                                     {'username': user.username,
                                      'bike_name': booking.bike.name,
                                      'station_name': booking.station_name,
                                      'store_website_link': store_website_link,
                                      'lastenkarle_logo_url': lastenkarle_logo_url,
                                      'store_contact_data': splitted_store_contact_data})
-    plain_message = strip_tags(html_message)
     from_email = EMAIL_HOST_USER
     recipient_list = [user.contact_data]
+    email = EmailMessage(subject, html_message, from_email, recipient_list)
+    email.content_subtype = 'html'  # Setze den Inhaltstyp auf HTML
 
-    send_mail(subject, plain_message, from_email, recipient_list, html_message=html_message)
+    email.send()
 
 
 def send_bike_pick_up_confirmation(request, booking, user):
+    splitted_store_contact_data = split_string_by_delimiter(booking.bike.store.contact_data, ";")
     subject = "Statuswechsel deiner Buchung: Lastenrad %s wurde abgeholt" % (booking.bike.name)
-    html_message = render_to_string("templates/email_templates/BikeDropOffConfirmation.html",
+    html_message = render_to_string("email_templates/BikeDropOffConfirmation.html",
                                     {'username': user.username,
                                      'bike_name': booking.bike.name,
                                      'station_name': booking.station_name,
                                      'store_website_link': store_website_link,
                                      'lastenkarle_logo_url': lastenkarle_logo_url,
                                      'store_contact_data': splitted_store_contact_data})
-    plain_message = strip_tags(html_message)
     from_email = EMAIL_HOST_USER
     recipient_list = [user.contact_data]
+    email = EmailMessage(subject, html_message, from_email, recipient_list)
+    email.content_subtype = 'html'  # Setze den Inhaltstyp auf HTML
 
-    send_mail(subject, plain_message, from_email, recipient_list, html_message=html_message)
+    email.send()
 
 
 def send_cancellation_confirmation(request, booking, user):
     subject = "Stornierung von Buchung %s von %s bis %s" % (booking.pk, booking.begin, booking.end)
-    html_message = render_to_string("templates/email_templates/CancellationConfirmation.html",
-                                    {'username': user.username, 'bike_name': booking.bike.name,
-                                     'station_name': booking.station_name, 'lastenkarle_logo_url': lastenkarle_logo_url,
-                                     'start_date': booking.begin, 'end_date': booking.end})
-    plain_message = strip_tags(html_message)
+    html_message = render_to_string("email_templates/CancellationConfirmation.html",
+                                    {'username': user.username,
+                                     'bike_name': booking.bike.name,
+                                     'station_name': booking.station_name,
+                                     'start_date': booking.begin,
+                                     'end_date': booking.end,
+                                     'lastenkarle_logo_url': lastenkarle_logo_url})
     from_email = EMAIL_HOST_USER
     recipient_list = [user.contact_data]
+    email = EmailMessage(subject, html_message, from_email, recipient_list)
+    email.content_subtype = 'html'  # Setze den Inhaltstyp auf HTML
 
-    send_mail(subject, plain_message, from_email, recipient_list, html_message=html_message)
+    email.send()
 
 
 def send_cancellation_through_store_confirmation(request, booking, user):
     subject = "Stornierung von Buchung %s von %s bis %s" % (booking.pk, booking.begin, booking.end)
-    html_message = render_to_string("templates/email_templates/CancellationThroughStoreConfirmation.html",
-                                    {'username': user.username, 'bike_name': booking.bike.name,
-                                     'station_name': booking.station_name, 'lastenkarle_logo_url': lastenkarle_logo_url,
-                                     'start_date': booking.begin, 'end_date': booking.end})
-    plain_message = strip_tags(html_message)
+    html_message = render_to_string("email_templates/CancellationThroughStoreConfirmation.html",
+                                    {'username': user.username,
+                                     'bike_name': booking.bike.name,
+                                     'station_name': booking.station_name,
+                                     'start_date': booking.begin,
+                                     'end_date': booking.end,
+                                     'lastenkarle_logo_url': lastenkarle_logo_url})
     from_email = EMAIL_HOST_USER
     recipient_list = [user.contact_data]
+    email = EmailMessage(subject, html_message, from_email, recipient_list)
+    email.content_subtype = 'html'  # Setze den Inhaltstyp auf HTML
 
-    send_mail(subject, plain_message, from_email, recipient_list, html_message=html_message)
+    email.send()
 
 
 def send_banned_mail_to_user(request, booking, user):
     subject = "Statuswechsel deines Accounts: Du wurdest gebannt"
-    html_message = render_to_string("templates/email_templates/UserBannedMail.html",
-                                    {'username': user.username, 'lastenkarle_logo_url': lastenkarle_logo_url,
-                                     'store_contact_data': booking.bike.store.contact_data})
-    plain_message = strip_tags(html_message)
+    html_message = render_to_string("email_templates/UserBannedMail.html",
+                                    {'username': user.username,
+                                     'lastenkarle_logo_url': lastenkarle_logo_url,
+                                     'admin_contact_data': ADMIN_CONTACT})
     from_email = EMAIL_HOST_USER
     recipient_list = [user.contact_data]
+    email = EmailMessage(subject, html_message, from_email, recipient_list)
+    email.content_subtype = 'html'  # Setze den Inhaltstyp auf HTML
 
-    send_mail(subject, plain_message, from_email, recipient_list, html_message=html_message)
+    email.send()
 
 
 def send_user_registered_confirmation(request, user, registration_link):
     subject = "Dein Account bei Lastenkarle: Bitte bestätige deine E-Mail"
-    html_message = render_to_string("templates/email_templates/UserRegisteredConfirmation.html",
-                                    {'username': user.username, 'lastenkarle_logo_url': lastenkarle_logo_url,
+    html_message = render_to_string("email_templates/UserRegisteredConfirmation.html",
+                                    {'username': user.username,
+                                     'lastenkarle_logo_url': lastenkarle_logo_url,
                                      'registration_link': registration_link})
-    plain_message = strip_tags(html_message)
     from_email = EMAIL_HOST_USER
     recipient_list = [user.contact_data]
+    email = EmailMessage(subject, html_message, from_email, recipient_list)
+    email.content_subtype = 'html'  # Setze den Inhaltstyp auf HTML
 
-    send_mail(subject, plain_message, from_email, recipient_list, html_message=html_message)
+    email.send()
 
 
-def send_user_verified_confirmation(request, booking, user, admin_contact_data):
+def send_user_verified_confirmation(request, booking, user):
     subject = "Statuswechsel deines Accounts: Du bist verifiziert"
-    html_message = render_to_string("templates/email_templates/UserVerifiedConfirmation.html",
-                                    {'username': user.username, 'lastenkarle_logo_url': lastenkarle_logo_url,
-                                     'admin_contact_data': admin_contact_data})
-    plain_message = strip_tags(html_message)
+    html_message = render_to_string("email_templates/UserVerifiedConfirmation.html",
+                                    {'username': user.username,
+                                     'lastenkarle_logo_url': lastenkarle_logo_url,
+                                     'lastenkarle_contact_data': splitted_lastenkarle_contact_data})
     from_email = EMAIL_HOST_USER
     recipient_list = [user.contact_data]
+    email = EmailMessage(subject, html_message, from_email, recipient_list)
+    email.content_subtype = 'html'  # Setze den Inhaltstyp auf HTML
 
-    send_mail(subject, plain_message, from_email, recipient_list, html_message=html_message)
+    email.send()
 
 
-def send_user_warning(request, booking, user, admin_contact_data, commentary):
+def send_user_warning(request, booking, user, commentary):
+    splitted_store_contact_data = split_string_by_delimiter(booking.bike.store.contact_data, ";")
     subject = "Statuswechsel deines Accounts: Du wurdest ermahnt"
-    html_message = render_to_string("templates/email_templates/UserWarning.html",
+    html_message = render_to_string("email_templates/UserWarning.html",
                                     {'username': user.username,
                                      'station_name': booking.station_name,
                                      'commentary': commentary,
-                                     'station_contact_data': booking.bike.store.contact_data,
+                                     'station_contact_data': splitted_store_contact_data,
                                      'lastenkarle_logo_url': lastenkarle_logo_url})
-    plain_message = strip_tags(html_message)
     from_email = EMAIL_HOST_USER
     recipient_list = [user.contact_data]
+    email = EmailMessage(subject, html_message, from_email, recipient_list)
+    email.content_subtype = 'html'  # Setze den Inhaltstyp auf HTML
 
-    send_mail(subject, plain_message, from_email, recipient_list, html_message=html_message)
+    email.send()
