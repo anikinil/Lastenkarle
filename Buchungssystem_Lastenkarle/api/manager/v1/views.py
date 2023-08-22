@@ -107,6 +107,11 @@ class SelectedBike(APIView):
         serializer = BikeSerializer(bike, many=False, fields=fields_to_include)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
+class MakeInternalBooking(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsStaff & IsAuthenticated]
+
     def post(self, request, bike_id):
         try:
             Bike.objects.get(pk=bike_id)
@@ -140,6 +145,11 @@ class SelectedBike(APIView):
             serializer = BookingSerializer(booking, many=False)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UpdateSelectedBike(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsStaff & IsAuthenticated]
 
     def patch(self, request, bike_id, *args, **kwargs):
         store = self.request.user.is_staff_of_store()

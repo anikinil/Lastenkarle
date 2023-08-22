@@ -152,12 +152,22 @@ class SelectedBike(APIView):
         serializer = BikeSerializer(bike, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
+class UpdateSelectedBike(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated & IsSuperUser]
+
     def patch(self, request, bike_id, *args, **kwargs):
         instance = Bike.objects.get(pk=bike_id)
         serializer = BikeSerializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class EquipmentOfBike(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated & IsSuperUser]
 
     def post(self, request, bike_id):
         bike = Bike.objects.get(pk=bike_id)
@@ -237,6 +247,11 @@ class SelectedStore(APIView):
         store = Store.objects.get(pk=store_id)
         serializer = StoreSerializer(store, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class UpdateSelectedStore(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated & IsSuperUser]
 
     def patch(self, request, store_id, *args, **kwargs):
         instance = Store.objects.get(pk=store_id)

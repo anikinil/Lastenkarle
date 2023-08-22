@@ -18,12 +18,12 @@ urlpatterns = [
     path('bookings/<int:booking_id>/comment', views.CommentOfBooking.as_view()),
     path('bookings/bikes', views.AllBikes.as_view()),
     path('bookings/bikes/<int:bike_id>', views.SelectedBike.as_view()),
-    path('bookings/bikes/<int:bike_id>/update', views.SelectedBike.as_view()),
-    path('bookings/bikes/<int:bike_id>/add-equipment', views.SelectedBike.as_view()),
+    path('bookings/bikes/<int:bike_id>/update', views.UpdateSelectedBike.as_view()),
+    path('bookings/bikes/<int:bike_id>/add-equipment', views.EquipmentOfBike.as_view()),
     path('bookings/bikes/<int:bike_id>/availability', views.AvailabilityOfBike.as_view()),
     path('bookings/stores', views.AllStores.as_view()),
     path('bookings/stores/<int:store_id>', views.SelectedStore.as_view()),
     path('bookings/stores/<int:store_id>/config', views.SelectedStoreConfiguration.as_view()),
-    path('bookings/stores/<int:store_id>/update', views.SelectedStore.as_view()),
+    path('bookings/stores/<int:store_id>/update', views.UpdateSelectedStore.as_view()),
     path('bookings/stores/<int:store_id>/availability', views.AvailabilityOfBikesFromStore.as_view())
 ]
