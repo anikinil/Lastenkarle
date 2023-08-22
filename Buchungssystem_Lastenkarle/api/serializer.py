@@ -98,7 +98,16 @@ class LocalDataSerializer(serializers.ModelSerializer):
         return instance
 
 
+class EquipmentSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Equipment
+        fields = '__all__'
+
+
 class BikeSerializer(serializers.ModelSerializer):
+    equipment = EquipmentSerializer(many=True, read_only=True)
+
     class Meta:
         model = Bike
         fields = '__all__'
@@ -130,17 +139,29 @@ class BookingStatusSerializer(serializers.ModelSerializer):
         fields = ['booking_status']
 
 
-class BookingConfirmationSerializer(serializers.ModelSerializer):
+class MakeBookingSerializer(serializers.ModelSerializer):
     user = UserSerializer(many=False, read_only=True)
     booking_status = BookingStatusSerializer(many=True, read_only=True)
+    equipment = serializers.ListField(child=serializers.CharField(max_length=256))  # Keep this for validation
 
     class Meta:
         model = Booking
         fields = '__all__'
 
+    def create(self, validated_data):
+        equipment_data = validated_data.pop('equipment', [])
+        booking = Booking.objects.create(**validated_data)
+        for equipment_name in equipment_data:
+            equipment, _ = Equipment.objects.get_or_create(equipment=equipment_name)
+            booking.equipment.add(equipment)
+        return booking
+
 
 class BookingSerializer(serializers.ModelSerializer):
+    user = UserSerializer(many=False, read_only=True)
     booking_status = BookingStatusSerializer(many=True, read_only=True)
+    equipment = EquipmentSerializer(many=True, read_only=True)
+
     class Meta:
         model = Booking
         fields = '__all__'

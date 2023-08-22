@@ -158,6 +158,29 @@ class SelectedBike(APIView):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    def post(self, request, bike_id):
+        bike = Bike.objects.get(pk=bike_id)
+        equipment = request.data['equipment']
+        if Equipment.objects.filter(equipment=equipment).exists():
+            bike.equipment.add(Equipment.objects.get(equipment=equipment).pk)
+            return Response(status=status.HTTP_200_OK)
+        serializer = EquipmentSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        new_equipment = serializer.save()
+        bike.equipment.add(new_equipment.pk)
+        bike.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class RegisteredEquipment(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated & IsSuperUser]
+
+    def get(self, request):
+        equipment = Equipment.objects.all()
+        serializer = EquipmentSerializer(equipment, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class AvailabilityOfBike(APIView):
     authentication_classes = [TokenAuthentication]

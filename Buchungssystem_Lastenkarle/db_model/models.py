@@ -153,11 +153,16 @@ class LocalData(models.Model):
         return self
 
 
+class Equipment(models.Model):
+    equipment = models.TextField(max_length=256, unique=True)
+
+
 class Bike(models.Model):
     store = models.ForeignKey(Store, on_delete=models.CASCADE)
     name = models.TextField(default="ERROR")
     description = models.TextField(default="ERROR")
     image_link = models.TextField(default="ERROR")
+    equipment = models.ManyToManyField(Equipment)
 
     def delete(self, *args, **kwargs):
         self.availability_set.all().delete()
@@ -195,6 +200,7 @@ class Booking(models.Model):
     end = models.DateField(null=True)
     string = models.CharField(max_length=5, null=True, unique=True)
     booking_status = models.ManyToManyField(Booking_Status)
+    equipment = models.ManyToManyField(Equipment)
 
 
 class Mail_Template(models.Model):
