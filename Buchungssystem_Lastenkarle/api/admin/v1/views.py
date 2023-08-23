@@ -10,6 +10,7 @@ from api.algorithm import *
 from api.permissions import *
 from api.serializer import *
 from db_model.models import *
+from api.configs.ConfigFunctions import *
 
 
 class AllUserFlags(APIView):
@@ -29,7 +30,7 @@ class AllUserFlags(APIView):
         if user_flag.startswith("Store:"):
             user.is_staff = True
             user.save()
-        return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_202_ACCEPTED)
 
 
 class AllUsers(APIView):
@@ -89,7 +90,7 @@ class SelectedBooking(APIView):
         booking.save()
         merge_availabilities_algorithm(booking)
         #TODO: cancellation throught store confirmation mail call
-        return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_202_ACCEPTED)
 
 
 class CommentOfBooking(APIView):
@@ -151,11 +152,44 @@ class SelectedBike(APIView):
         serializer = BikeSerializer(bike, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
+class UpdateSelectedBike(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated & IsSuperUser]
+
     def patch(self, request, bike_id, *args, **kwargs):
         instance = Bike.objects.get(pk=bike_id)
         serializer = BikeSerializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class EquipmentOfBike(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated & IsSuperUser]
+
+    def post(self, request, bike_id):
+        bike = Bike.objects.get(pk=bike_id)
+        equipment = request.data['equipment']
+        if Equipment.objects.filter(equipment=equipment).exists():
+            bike.equipment.add(Equipment.objects.get(equipment=equipment).pk)
+            return Response(status=status.HTTP_202_ACCEPTED)
+        serializer = EquipmentSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        new_equipment = serializer.save()
+        bike.equipment.add(new_equipment.pk)
+        bike.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class RegisteredEquipment(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated & IsSuperUser]
+
+    def get(self, request):
+        equipment = Equipment.objects.all()
+        serializer = EquipmentSerializer(equipment, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -180,6 +214,7 @@ class AddStore(APIView):
             store_flag = User_Status.custom_create_store_flags(store)
             store.store_flag = store_flag
             store.save()
+            add_store(store.name)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -203,6 +238,7 @@ class AllStores(APIView):
         serializer = StoreSerializer(stores, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 class SelectedStore(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated & IsSuperUser]
@@ -211,6 +247,11 @@ class SelectedStore(APIView):
         store = Store.objects.get(pk=store_id)
         serializer = StoreSerializer(store, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class UpdateSelectedStore(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated & IsSuperUser]
 
     def patch(self, request, store_id, *args, **kwargs):
         instance = Store.objects.get(pk=store_id)
@@ -242,5 +283,26 @@ class BanUser(APIView):
         user.is_active = False
         user.save()
         #TODO: User banned mail call
-        return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_202_ACCEPTED)
 
+
+class AllStoreConfigurations(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated & IsSuperUser]
+
+    def get(self, request):
+        return Response(getAllStoresConfig(), status=status.HTTP_200_OK)
+
+
+class SelectedStoreConfiguration(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated & IsSuperUser]
+
+    def get(self, request, store_id):
+        store = Store.objects.get(pk=store_id)
+        return Response(getStoreConfig(store.name), status=status.HTTP_200_OK)
+
+    def patch(self, request, store_id):
+        store = Store.objects.get(pk=store_id)
+        update_store_config(store.name, request.data)
+        return Response(getStoreConfig(store.name), status=status.HTTP_200_OK)

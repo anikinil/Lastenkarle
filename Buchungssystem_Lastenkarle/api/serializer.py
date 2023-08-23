@@ -11,6 +11,7 @@ class UserStatusSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     user_status = UserStatusSerializer(many=True, read_only=True)
+
     class Meta:
         model = User
         fields = '__all__'
@@ -34,7 +35,6 @@ class UserSerializer(serializers.ModelSerializer):
                 self.fields.pop(field_name)
 
 
-
 class RegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -56,13 +56,10 @@ class RegistrationSerializer(serializers.ModelSerializer):
             auth_user = User.objects.create_user(username, password, **validated_data)
             return auth_user
 
-        return
-
 
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField(style={'input_type':'password'}, trim_whitespace=False)
-
 
     def validate(self, attrs):
         username = attrs.get('username')
@@ -98,7 +95,16 @@ class LocalDataSerializer(serializers.ModelSerializer):
         return instance
 
 
+class EquipmentSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Equipment
+        fields = '__all__'
+
+
 class BikeSerializer(serializers.ModelSerializer):
+    equipment = EquipmentSerializer(many=True, read_only=True)
+
     class Meta:
         model = Bike
         fields = '__all__'
@@ -125,22 +131,35 @@ class StoreSerializer(serializers.ModelSerializer):
 
 
 class BookingStatusSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Booking_Status
         fields = ['booking_status']
 
 
-class BookingConfirmationSerializer(serializers.ModelSerializer):
+class MakeBookingSerializer(serializers.ModelSerializer):
     user = UserSerializer(many=False, read_only=True)
     booking_status = BookingStatusSerializer(many=True, read_only=True)
+    equipment = serializers.ListField(child=serializers.CharField(max_length=256))  # Keep this for validation
 
     class Meta:
         model = Booking
         fields = '__all__'
 
+    def create(self, validated_data):
+        equipment_data = validated_data.pop('equipment', [])
+        booking = Booking.objects.create(**validated_data)
+        for equipment_name in equipment_data:
+            equipment, _ = Equipment.objects.get_or_create(equipment=equipment_name)
+            booking.equipment.add(equipment)
+        return booking
+
 
 class BookingSerializer(serializers.ModelSerializer):
+    user = UserSerializer(many=False, read_only=True)
     booking_status = BookingStatusSerializer(many=True, read_only=True)
+    equipment = EquipmentSerializer(many=True, read_only=True)
+
     class Meta:
         model = Booking
         fields = '__all__'
@@ -158,6 +177,7 @@ class AvailabilityStatusSerializer(serializers.ModelSerializer):
         model = Availability_Status
         fields = ['availability_status']
 
+
 class AvailabilitySerializer(serializers.ModelSerializer):
     availability_status = AvailabilityStatusSerializer(many=True, read_only=True)
 
@@ -174,6 +194,7 @@ class AvailabilitySerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Comment
         fields = '__all__'
@@ -188,3 +209,4 @@ class CommentSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance = super().update(instance, validated_data)
         return instance
+

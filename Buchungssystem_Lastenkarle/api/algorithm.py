@@ -27,13 +27,26 @@ def merge_availabilities_from_until_algorithm(from_date, until_date, store, bike
             bike=bike,
             availability_status=Availability_Status.objects.get(availability_status='Booked'))
     else:
-        latest_availability = Availability.objects.filter(
-            from_date__lte=from_date.isoformat(),
-            store=store,
-            bike=bike
+        left_availability = Availability.objects.filter(
+            Q(from_date__lt=from_date.isoformat()) &
+            Q(store=store) &
+            Q(bike=bike),
+            availability_status=Availability_Status.objects.get(availability_status='Booked')
         ).order_by('from_date').last()
-        if latest_availability.availability_status == Availability_Status.objects.get(availability_status='Booked'):
-            filtered_interval = latest_availability
+
+        right_availability = Availability.objects.filter(
+            Q(from_date__gte=from_date.isoformat()) &
+            Q(store=store) &
+            Q(bike=bike),
+            availability_status=Availability_Status.objects.get(availability_status='Booked')
+        ).order_by('from_date').first()
+
+        if left_availability is not None and right_availability is not None:
+            filtered_interval = [left_availability, right_availability]
+        elif left_availability is not None:
+            filtered_interval = [left_availability]
+        elif right_availability is not None:
+            filtered_interval = [right_availability]
         else:
             return True
     if not filtered_interval.exists():

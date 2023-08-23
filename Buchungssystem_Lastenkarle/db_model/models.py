@@ -1,6 +1,18 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from datetime import date
+from api.configs.ConfigFunctions import deleteStoreConfig
+import random
+import string
+
+
+def generate_random_string(length):
+    while (True):
+        characters = string.ascii_letters + string.digits  # Combining letters and digits
+        random_string = ''.join(random.choices(characters, k=length))
+        if not Booking.objects.filter(string=random_string).exists():
+            return random_string
+
 
 class UserManager(BaseUserManager):
 
@@ -34,6 +46,7 @@ class UserManager(BaseUserManager):
             user.assurance_lvl = 'M'
         else:
             user.assurance_lvl = 'L'
+        user.contact_data = userinfo['email']
         user.save()
         return user
 
@@ -58,10 +71,12 @@ class Store(models.Model):
     name = models.TextField(default="ERROR", unique=True)
 
     def delete(self, *args, **kwargs):
+        deleteStoreConfig(store_name=self.name)
         if self.store_flag:
             self.store_flag.delete()
         self.bike_set.all().delete()
         super(Store, self).delete(*args, **kwargs)
+
 
 class User_Status(models.Model):
     user_status = models.CharField(max_length=32)
@@ -153,11 +168,16 @@ class LocalData(models.Model):
         return self
 
 
+class Equipment(models.Model):
+    equipment = models.TextField(max_length=256, unique=True)
+
+
 class Bike(models.Model):
     store = models.ForeignKey(Store, on_delete=models.CASCADE)
     name = models.TextField(default="ERROR")
     description = models.TextField(default="ERROR")
     image_link = models.TextField(default="ERROR")
+    equipment = models.ManyToManyField(Equipment)
 
     def delete(self, *args, **kwargs):
         self.availability_set.all().delete()
@@ -195,6 +215,7 @@ class Booking(models.Model):
     end = models.DateField(null=True)
     string = models.CharField(max_length=5, null=True, unique=True)
     booking_status = models.ManyToManyField(Booking_Status)
+    equipment = models.ManyToManyField(Equipment)
 
 
 class Mail_Template(models.Model):
