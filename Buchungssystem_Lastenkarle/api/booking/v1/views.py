@@ -8,6 +8,7 @@ from django.http import Http404
 from api.serializer import *
 from db_model.models import *
 from api.algorithm import split_availabilities_algorithm
+from api.configs.ConfigFunctions import *
 
 
 class AllRegions(APIView):
@@ -59,7 +60,7 @@ class StoreByBike(APIView):
     permission_classes = (AllowAny,)
 
     def get(self, request, bike_id):
-        fields_to_include = ['region', 'address', 'name']
+        fields_to_include = ['region', 'contact_data', 'address', 'name']
         store = Bike.objects.get(pk=bike_id).store
         serializer = StoreSerializer(store, many=False, fields=fields_to_include)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -76,6 +77,14 @@ class AvailabilityOfBike(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+class AllStoreConfigurations(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = (AllowAny,)
+
+    def get(self, request):
+        return Response(getAllStoresConfig(), status=status.HTTP_200_OK)
+
+
 class MakeBooking(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
@@ -84,18 +93,18 @@ class MakeBooking(APIView):
         user = self.request.user
         bike = Bike.objects.get(pk=bike_id)
         additional_data = {
-            'user': user.pk,
             'bike': bike.pk,
         }
         data = {**request.data, **additional_data}
-        serializer = BookingSerializer(data=data)
+        serializer = MakeBookingSerializer(data=data)
         if serializer.is_valid():
-            booking = serializer.save()
-            booking.booking_status.set(Booking_Status.objects.filter(booking_status='B'))
+            booking = serializer.save(user=user)
+            booking.booking_status.set(Booking_Status.objects.filter(booking_status='Booked'))
+            booking_string = generate_random_string(5)
+            booking.string = booking_string
+            booking.save()
             split_availabilities_algorithm(booking)
-            # check if oidc user
-            # check verification date against time now and if need to be check to adjust mail
-            # adjustment: tell them to bring personal id
-            # send email
+            #TODO: booking mail call
+            serializer = BookingSerializer(booking, many=False)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

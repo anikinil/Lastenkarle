@@ -1,38 +1,42 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from datetime import date
+from api.configs.ConfigFunctions import deleteStoreConfig
+import random
+import string
 
 
-# Create internal user model here.
-
-
-def get_store_name_from_flag(user_status_flag, store_flag):
-    try:
-        for flag_tuple in user_status_flag:
-            if flag_tuple[0] == store_flag:
-                return flag_tuple[1]
-        return None  # If the store_flag is not found in the user_status_flag
-    except ValueError:
-        return None
+def generate_random_string(length):
+    while (True):
+        characters = string.ascii_letters + string.digits  # Combining letters and digits
+        random_string = ''.join(random.choices(characters, k=length))
+        if not Booking.objects.filter(string=random_string).exists():
+            return random_string
 
 
 class UserManager(BaseUserManager):
 
     def create_user(self, username, password, **extra_fields):
-        user = User.objects.create(username=username, password=password, **extra_fields)
+        user = User(username=username, **extra_fields)
         user.is_active = True
-        user.user_status.set(User_status.objects.filter(user_status='K'))
-        if user.is_superuser:
-            user.user_status.set(User_status.objects.filter(user_status='I'))
         user.set_password(password)
         user.save()
+
+        user_status_customer = User_Status.objects.get(user_status='Customer')
+        user.user_status.add(user_status_customer)
+
+        if user.is_superuser:
+            user_status_admin = User_Status.objects.get(user_status='Administrator')
+            user.user_status.add(user_status_admin)
+
         return user
 
     def create_helmholtz_user(self, userinfo):
         user = User.objects.create(username=userinfo['eduperson_unique_id'], password=" ")
         user.is_active = True
-        user.user_status.set(User_status.objects.filter(user_status='K'))
+        user.user_status.add(User_Status.objects.get(user_status='Customer'))
         if user.is_superuser:
-            user.user_status.set(User_status.objects.filter(user_status='I'))
+            user.user_status.add(User_Status.objects.get(user_status='Administrator'))
         return self.update_helmholtz_user(user, userinfo)
 
     def update_helmholtz_user(self, user, userinfo):
@@ -42,7 +46,7 @@ class UserManager(BaseUserManager):
             user.assurance_lvl = 'M'
         else:
             user.assurance_lvl = 'L'
-
+        user.contact_data = userinfo['email']
         user.save()
         return user
 
@@ -59,39 +63,55 @@ class UserManager(BaseUserManager):
 class Store(models.Model):
     REGION = [("KA", "Karlsruhe"), ("ETT", "Ettlingen"), ("BAD", "Baden-Baden"),
               ("BRU", "Bruchsal"), ("MAL", "Malsch"), ]
+    store_flag = models.OneToOneField('User_Status', on_delete=models.CASCADE, null=True)
     region = models.TextField(max_length=3, choices=REGION)
     address = models.TextField(default="ERROR")
+    phone_number = models.TextField(max_length=256)
+    email = models.TextField(max_length=256)
     name = models.TextField(default="ERROR", unique=True)
 
+    def delete(self, *args, **kwargs):
+        deleteStoreConfig(store_name=self.name)
+        if self.store_flag:
+            self.store_flag.delete()
+        self.bike_set.all().delete()
+        super(Store, self).delete(*args, **kwargs)
 
-class User_status(models.Model):
-    USER_STATUS_FLAG = [
-        ('V', 'Verified'),
-        ('D', 'Deleted'),
-        ('R', 'Reminded'),
-        ('A', 'Administrator'),
-        ('B', 'Banned'),
-        ('S1', 'Store1'),  # S+STORE_ID, STORENAME
-        ('S2', 'Store2'),
-        ('S3', 'Store3'),
-        ('C', 'Customer')
-    ]
-    user_status = models.CharField(max_length=3, choices=USER_STATUS_FLAG)
+
+class User_Status(models.Model):
+    user_status = models.CharField(max_length=32)
+
+    @classmethod
+    def custom_create_store_flags(cls, store):
+        store_name = store.name
+        flag = f"Store: {store_name}"
+        instance = cls(user_status=flag)
+        instance.save()
+        return instance
+
+    @classmethod
+    def get_store_of_flag(self):
+        if self.user_status.startswith("Store:"):
+            flag = self.user_status
+            _, store_name = flag.split(":", 1)
+            store = Store.objects.get(name=store_name)
+            return store
+        return None
 
 
 class User(AbstractBaseUser):
     ASSURANCE_LEVEL = [
         ("N", "None"), ("L", "Low"), ("M", "Medium"), ("H", "High"),
     ]
-    user_status = models.ManyToManyField(User_status, blank=True)
-    assurance_lvl = models.CharField(max_length=1, choices=ASSURANCE_LEVEL, null=True, blank=True)
+    user_status = models.ManyToManyField(User_Status, blank=True)
+    assurance_lvl = models.CharField(max_length=1, choices=ASSURANCE_LEVEL, default='N', null=True)
     year_of_birth = models.IntegerField(null=True, blank=True)
-    contact_data = models.TextField(null=True, blank=True)
+    contact_data = models.TextField(unique=True, null=True)
 
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    username = models.TextField(max_length=30, unique=True, null=True, blank=True)
+    username = models.TextField(max_length=1028, unique=True, null=True, blank=True)
     password = models.TextField(null=True, blank=True)
 
     USERNAME_FIELD = 'username'
@@ -119,12 +139,10 @@ class User(AbstractBaseUser):
         return True
 
     def is_staff_of_store(self):
-        store_flag = self.user_status.filter(user_status__startswith='S')
-        for first_part, second_part in User_status.USER_STATUS_FLAG:
-            if first_part == store_flag.first().user_status:
-                store_name = second_part
-                return Store.objects.get(name=store_name)
-        return None
+        store_flag = self.user_status.get(user_status__startswith='Store:').user_status
+        name_part = store_flag.split(': ')[1]
+        store = Store.objects.get(name=name_part)
+        return store
 
 
 class OIDCLoginData(models.Model):
@@ -150,38 +168,44 @@ class LocalData(models.Model):
         return self
 
 
+class Equipment(models.Model):
+    equipment = models.TextField(max_length=256, unique=True)
+
+
 class Bike(models.Model):
     store = models.ForeignKey(Store, on_delete=models.CASCADE)
     name = models.TextField(default="ERROR")
     description = models.TextField(default="ERROR")
     image_link = models.TextField(default="ERROR")
+    equipment = models.ManyToManyField(Equipment)
+
+    def delete(self, *args, **kwargs):
+        self.availability_set.all().delete()
+        super(Bike, self).delete(*args, **kwargs)
 
 
 class Availability_Status(models.Model):
-    AVAILABILITY_STATUS_FLAG = [
-        ('B', 'Booked'),
-        ('A', 'Available')
-    ]
-    availability_status = models.CharField(max_length=1, choices=AVAILABILITY_STATUS_FLAG)
+    availability_status = models.CharField(max_length=32)
 
 
 class Availability(models.Model):
-    from_date = models.DateField(null=True)
-    until_date = models.DateField(null=True)
+    from_date = models.DateField(default=date(1000, 1, 1))
+    until_date = models.DateField(default=date(5000, 1, 1))
     store = models.ForeignKey(Store, on_delete=models.CASCADE)
     bike = models.ForeignKey(Bike, on_delete=models.CASCADE)
     availability_status = models.ManyToManyField(Availability_Status)
 
+    @classmethod
+    def create_availability(cls, store, bike):
+        instance = cls(store=store, bike=bike)
+        instance.save()
+        instance.availability_status.set(Availability_Status.objects.filter(availability_status='Available'))
+        instance.save()
+        return instance
+
 
 class Booking_Status(models.Model):
-    BOOKING_STATUS_FLAG = [
-        ('B', 'Booked'),
-        ('I', 'Internal usage'),
-        ('P', 'Picked up'),
-        ('C', 'Cancelled'),
-        ('R', 'Returned')
-    ]
-    booking_status = models.CharField(max_length=20, choices=BOOKING_STATUS_FLAG)
+    booking_status = models.CharField(max_length=32)
 
 
 class Booking(models.Model):
@@ -191,6 +215,7 @@ class Booking(models.Model):
     end = models.DateField(null=True)
     string = models.CharField(max_length=5, null=True, unique=True)
     booking_status = models.ManyToManyField(Booking_Status)
+    equipment = models.ManyToManyField(Equipment)
 
 
 class Mail_Template(models.Model):

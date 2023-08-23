@@ -9,11 +9,11 @@ urlpatterns = [
     path('logout-all', LogoutAllView.as_view()),
     path('user/data', views.UserDataOfUser.as_view()),
     path('user/update', views.UpdateUserData.as_view()),
-    path('user/bookings/', views.AllBookingsFromUser.as_view()),
+    path('user/bookings', views.AllBookingsFromUser.as_view()),
     path('user/bookings/<int:booking_id>', views.BookingFromUser.as_view()),
     path('user/bookings/<int:booking_id>/bike', views.BookedBike.as_view()),
     path('user/bookings/<int:booking_id>/bike/store', views.StoreOfBookedBike.as_view()),
     path('user/delete-account', views.DeleteUserAccount.as_view()),
-    path('helmholtz/login', views.helmholtzLogin),
+    path('helmholtz/login', views.HelmholtzLoginView.as_view()),
     path('helmholtz/auth', views.HelmholtzAuthView.as_view()),
 ]
