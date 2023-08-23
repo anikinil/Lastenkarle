@@ -30,7 +30,7 @@ class AllUserFlags(APIView):
         if user_flag.startswith("Store:"):
             user.is_staff = True
             user.save()
-        return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_202_ACCEPTED)
 
 
 class AllUsers(APIView):
@@ -90,7 +90,7 @@ class SelectedBooking(APIView):
         booking.save()
         merge_availabilities_algorithm(booking)
         #TODO: cancellation throught store confirmation mail call
-        return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_202_ACCEPTED)
 
 
 class CommentOfBooking(APIView):
@@ -174,7 +174,7 @@ class EquipmentOfBike(APIView):
         equipment = request.data['equipment']
         if Equipment.objects.filter(equipment=equipment).exists():
             bike.equipment.add(Equipment.objects.get(equipment=equipment).pk)
-            return Response(status=status.HTTP_200_OK)
+            return Response(status=status.HTTP_202_ACCEPTED)
         serializer = EquipmentSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         new_equipment = serializer.save()
@@ -283,7 +283,7 @@ class BanUser(APIView):
         user.is_active = False
         user.save()
         #TODO: User banned mail call
-        return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_202_ACCEPTED)
 
 
 class AllStoreConfigurations(APIView):

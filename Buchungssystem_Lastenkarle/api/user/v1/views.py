@@ -30,6 +30,7 @@ class HelmholtzLoginView(APIView):
         return oauth.helmholtz.authorize_redirect(request, redirect_uri)
 
 
+
 class HelmholtzAuthView(KnoxLoginView):
     permission_classes = (AllowAny,)
 
@@ -72,7 +73,7 @@ class UpdateUserData(RetrieveUpdateAPIView):
         serializer = self.get_serializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class LoginView(KnoxLoginView):
@@ -105,7 +106,6 @@ class BookingFromUser(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
-    # get the booking details as the customer
     def get(self, request, booking_id):
         try:
             Booking.objects.get(pk=booking_id)
@@ -199,4 +199,4 @@ class DeleteUserAccount(APIView):
             LocalData.objects.get(user=user).anonymize().save()
         user.anonymize().save()
         user.user_status.clear()
-        return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_204_NO_CONTENT)

@@ -13,6 +13,7 @@ from api.serializer import *
 from db_model.models import *
 from api.configs.ConfigFunctions import *
 
+
 class AllUserFlags(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsStaff & IsAuthenticated]
@@ -48,13 +49,12 @@ class EnrollUser(APIView):
     def post(self, request):
         contact_data = request.data['contact_data']
         store = self.request.user.is_staff_of_store()
-        # check for optimization
         flag = store.store_flag
         user = User.objects.get(contact_data=contact_data)
         user.user_status.add(flag)
         user.is_staff = True
         user.save()
-        return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_202_ACCEPTED)
 
 
 class DeleteBike(DestroyAPIView):
@@ -170,7 +170,7 @@ class SelectedBikeEquipment(APIView):
         equipment = request.data['equipment']
         if Equipment.objects.filter(equipment=equipment).exists():
             bike.equipment.add(Equipment.objects.get(equipment=equipment).pk)
-            return Response(status=status.HTTP_200_OK)
+            return Response(status=status.HTTP_202_ACCEPTED)
         serializer = EquipmentSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         new_equipment = serializer.save()
@@ -230,7 +230,7 @@ class SelectedBookingOfStore(APIView):
         booking.save()
         # TODO: cancellation through store confirmation call
         merge_availabilities_algorithm(booking)
-        return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_202_ACCEPTED)
 
 
 class CommentToBooking(APIView):
@@ -343,10 +343,9 @@ class ConfirmBikeHandOut(APIView):
             booking.booking_status.remove(Booking_Status.objects.get(booking_status='Picked up').pk)
             booking.booking_status.add(Booking_Status.objects.get(booking_status='Returned').pk)
             booking.string = None
-            # design decision if bike returns earlier than expected it is available again by default
             merge_availabilities_algorithm(booking)
             #TODO: bike drop of confirmation call
-        return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_202_ACCEPTED)
 
 
 class FindByQRString(APIView):
@@ -379,7 +378,7 @@ class ReportComment(APIView):
         store = self.request.user.is_staff_of_store()
         #TODO: admin user warning notification call
         #TODO: user warning call
-        return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_202_ACCEPTED)
 
 
 class StoreConfigFile(APIView):
