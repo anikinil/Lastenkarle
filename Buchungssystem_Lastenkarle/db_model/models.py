@@ -2,6 +2,16 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from datetime import date
 from api.configs.ConfigFunctions import deleteStoreConfig
+import random
+import string
+
+
+def generate_random_string(length):
+    while (True):
+        characters = string.ascii_letters + string.digits  # Combining letters and digits
+        random_string = ''.join(random.choices(characters, k=length))
+        if not Booking.objects.filter(string=random_string).exists():
+            return random_string
 
 
 class UserManager(BaseUserManager):

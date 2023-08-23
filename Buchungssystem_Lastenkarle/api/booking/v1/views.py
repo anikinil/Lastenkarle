@@ -100,10 +100,8 @@ class MakeBooking(APIView):
         if serializer.is_valid():
             booking = serializer.save(user=user)
             booking.booking_status.set(Booking_Status.objects.filter(booking_status='Booked'))
-            string = generate_random_string(5)
-            while Booking.objects.filter(string=string).exists():
-                string = generate_random_string(5)
-            booking.string = string
+            booking_string = generate_random_string(5)
+            booking.string = booking_string
             booking.save()
             split_availabilities_algorithm(booking)
             #TODO: booking mail call
