@@ -49,7 +49,7 @@ def merge_availabilities_from_until_algorithm(from_date, until_date, store, bike
             filtered_interval = [right_availability]
         else:
             return True
-    if not filtered_interval.exists():
+    if filtered_interval is None:
         return True
     for ava in filtered_interval:
         booking = Booking.objects.filter(begin=ava.from_date.isoformat(),
@@ -58,10 +58,12 @@ def merge_availabilities_from_until_algorithm(from_date, until_date, store, bike
         if booking.filter(booking_status=Booking_Status.objects.get(booking_status='Picked up')).exists():
             return False
     for ava in filtered_interval:
-        booking = Booking.objects.get(begin=ava.from_date.isoformat(),
-                                      end=ava.until_date.isoformat(),
-                                      bike=ava.bike,
-                                      booking_status=Booking_Status.objects.get(booking_status='Booked'))
+        booking = Booking.objects.get(
+            Q(begin=ava.from_date.isoformat()) &
+            Q(end=ava.until_date.isoformat()) &
+            Q(bike=ava.bike) &
+            (Q(booking_status__booking_status='Booked') | Q(booking_status__booking_status='Internal usage'))
+        )
         booking.booking_status.clear()
         booking.booking_status.set(Booking_Status.objects.filter(booking_status='Cancelled'))
         #TODO: cancellation through store confirmation call
