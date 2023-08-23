@@ -21,7 +21,11 @@
     <p>Erst nach Ablauf dieser Zeit kannst du wieder Lastenräder buchen.</p>
     <p>Bei Rückfragen, melde dich bei uns.</p>
     <p class="bold">Unsere Kontaktdaten:</p>
-    <p class="text-black">{{ admin_contact_data }}</p>
+    <p class="text-black">
+        {% for contact_line in lastenkarle_contact_data %}
+            {{ contact_line }}<br>
+        {% endfor %}
+    </p>
 
     <p>Das Team von Lastenkarle</p>
 </body>

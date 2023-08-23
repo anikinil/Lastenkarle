@@ -20,11 +20,11 @@
     <p>Der Status deiner Buchung von {{ bike_name }} bei {{ station_name }} wurde auf "Abgeholt" geändert.</p>
     <p>Falls du das nicht warst, kann das an einem Fehler in der Station liegen oder etwas anderes ist schief gelaufen.</p>
     <p>Wende dich in diesem Fall bitte an die Station <a class="red-link" href="{{ store_website_link }}">{{ station_name }}</a>:</p>
-    <p class="bold">Kontaktdaten:</p>
+    <p class="bold-black">Kontaktdaten der Station:</p>
     <p class="text-black">
-    {% for contact_line in store_contact_data %}
-        {{ contact_line }}<br>
-    {% endfor %}
+        {{ store_name }}<br>
+        {{ store_phone_number }}<br>
+        {{ store_email }}<br>
     </p>
     <p>Das Team von Lastenkarle</p>
 </body>

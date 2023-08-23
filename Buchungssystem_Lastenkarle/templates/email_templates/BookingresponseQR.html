@@ -1,0 +1,26 @@
+{% load static %}
+<html>
+<head>
+    <style>
+        body {
+            font-family: 'Calibri', sans-serif;
+        }
+        .bold {
+            font-weight: bold;
+        }
+        .red-link {
+            color: red;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <img src="https://transport.data.kit.edu/static/Lastenkarle_header.png" alt="Header Image" style="width: 100%; max-width: 400px; display: block;">
+    <h2>Deine Buchung von {{ bike_name }} bei {{ station_name }} von {{ start_date }} bis {{ end_date }}</h2>
+    <p>Hallo {{ username }}!</p>
+    <p>Zur Abholung deines gebuchten Lastenfahrrads, zeige bitte diesen QR-Code vor:</p>
+    <img src="{{ qr_path }}" alt="QR Code" width="150" height="150">
+    <p>Wir wünschen eine gute Fahrt!</p>
+    <p>Das Team von Lastenkarle</p>
+</body>
+</html>

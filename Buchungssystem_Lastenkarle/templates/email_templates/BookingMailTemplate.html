@@ -44,9 +44,7 @@
   
   <p class="bold-black">Abholadresse:</p>
   <p class="text-black">
-    {% for address_line in store_address %}
-        {{ address_line }}<br>
-    {% endfor %}
+    {{ store_address }}
   </p>
   
   <p class="bold-black">Öffnungszeiten:</p>
@@ -55,13 +53,12 @@
     {% for openinghour_line in store_opening_hours %}
         {{ openinghour_line }}<br>
     {% endfor %}
-  </p>
-    Schau bitte unter <a class="red-link" href="{{ store_website_link }}">Shop-Website</a> die aktuellen Öffnungszeiten nach.</p>
+  Bitte beachte, dass die Öffnungszeiten der Station eventuell kurzzeitig von unseren Angaben abweichen können. Daher empfehlen wir dir, auf der Webseite des Shops die aktuellen Öffnungszeiten nachzuschauen.</p>
   <p class="bold-black">Kontaktdaten der Station:</p>
   <p class="text-black">
-    {% for contact_line in store_contact_data %}
-        {{ contact_line }}<br>
-    {% endfor %}
+    {{ store_name }}<br>
+    {{ store_phone_number }}<br>
+    {{ store_email }}<br>
   </p>
 
   <p class="bold-black">Danke! Das Team von Lastenkarle.</p>
