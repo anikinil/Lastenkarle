@@ -212,6 +212,30 @@ paths:
     security:
       - TokenAuth: []
 
+  /confirm_email/{user_id}/{verification_string}:
+    post:
+      operationId: confirm_email
+      summary: Confirm User Email
+      description: Confirm a user's email by verifying the verification string.
+      parameters:
+        - name: user_id
+          in: path
+          description: ID of the user to confirm the email for.
+          required: true
+          type: integer
+        - name: verification_string
+          in: path
+          description: Verification string associated with the user's email confirmation.
+          required: true
+          type: string
+      responses:
+        '202':
+          description: Email confirmed successfully.
+        '400':
+          description: Invalid user ID or verification string.
+      tags:
+        - confirm_email
+
   /user/data:
     get:
       operationId: user_data_list
@@ -384,6 +408,10 @@ definitions:
       is_active:
         title: Is active
         type: boolean
+      verification_string:
+        title: verification string
+        type: string
+        x-nullable: true
       username:
         title: Username
         type: string

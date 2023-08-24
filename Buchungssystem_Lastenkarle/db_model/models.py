@@ -8,7 +8,7 @@ import string
 
 def generate_random_string(length):
     while (True):
-        characters = string.ascii_letters + string.digits  # Combining letters and digits
+        characters = string.ascii_letters + string.digits
         random_string = ''.join(random.choices(characters, k=length))
         if not Booking.objects.filter(string=random_string).exists():
             return random_string
@@ -37,6 +37,7 @@ class UserManager(BaseUserManager):
         user.user_status.add(User_Status.objects.get(user_status='Customer'))
         if user.is_superuser:
             user.user_status.add(User_Status.objects.get(user_status='Administrator'))
+            user.user_status.add(User_Status.objects.get(user_status='Verified'))
         return self.update_helmholtz_user(user, userinfo)
 
     def update_helmholtz_user(self, user, userinfo):
@@ -106,13 +107,16 @@ class User(AbstractBaseUser):
     user_status = models.ManyToManyField(User_Status, blank=True)
     assurance_lvl = models.CharField(max_length=1, choices=ASSURANCE_LEVEL, default='N', null=True)
     year_of_birth = models.IntegerField(null=True, blank=True)
-    contact_data = models.TextField(unique=True, null=True)
+    contact_data = models.TextField(unique=True)
 
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
+    verification_string = models.TextField(max_length=256, null=True)
     username = models.TextField(max_length=1028, unique=True, null=True, blank=True)
     password = models.TextField(null=True, blank=True)
+
+    REQUIRED_FIELDS = ['contact_data']
 
     USERNAME_FIELD = 'username'
 

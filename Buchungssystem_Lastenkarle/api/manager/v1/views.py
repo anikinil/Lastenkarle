@@ -16,7 +16,7 @@ from api.configs.ConfigFunctions import *
 
 class AllUserFlags(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsStaff & IsAuthenticated]
+    permission_classes = [IsStaff & IsAuthenticated & IsVerfied]
 
     def get(self, request):
         store = self.request.user.is_staff_of_store()
@@ -26,7 +26,7 @@ class AllUserFlags(APIView):
 
 class StorePage(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsStaff & IsAuthenticated]
+    permission_classes = [IsStaff & IsAuthenticated & IsVerfied]
 
     def get(self, request):
         store = self.request.user.is_staff_of_store()
@@ -44,7 +44,7 @@ class StorePage(APIView):
 
 class EnrollUser(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsStaff & IsAuthenticated]
+    permission_classes = [IsStaff & IsAuthenticated & IsVerfied]
 
     def post(self, request):
         contact_data = request.data['contact_data']
@@ -61,7 +61,7 @@ class DeleteBike(DestroyAPIView):
     queryset = Bike.objects.all()
     serializer_class = BikeSerializer
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated & IsStaff]
+    permission_classes = [IsAuthenticated & IsStaff & IsVerfied]
 
     def perform_destroy(self, instance):
         instance.delete()
@@ -69,7 +69,7 @@ class DeleteBike(DestroyAPIView):
 
 class BikesOfStore(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsStaff & IsAuthenticated]
+    permission_classes = [IsStaff & IsAuthenticated & IsVerfied]
 
     def get(self, request):
         store = self.request.user.is_staff_of_store()
@@ -94,7 +94,7 @@ class BikesOfStore(APIView):
 
 class SelectedBike(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsStaff & IsAuthenticated]
+    permission_classes = [IsStaff & IsAuthenticated & IsVerfied]
 
     def get(self, request, bike_id):
         try:
@@ -110,7 +110,7 @@ class SelectedBike(APIView):
 
 class MakeInternalBooking(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsStaff & IsAuthenticated]
+    permission_classes = [IsStaff & IsAuthenticated & IsVerfied]
 
     def post(self, request, bike_id):
         try:
@@ -147,7 +147,7 @@ class MakeInternalBooking(APIView):
 
 class UpdateSelectedBike(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsStaff & IsAuthenticated]
+    permission_classes = [IsStaff & IsAuthenticated & IsVerfied]
 
     def patch(self, request, bike_id, *args, **kwargs):
         store = self.request.user.is_staff_of_store()
@@ -160,7 +160,7 @@ class UpdateSelectedBike(APIView):
 
 class SelectedBikeEquipment(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsStaff & IsAuthenticated]
+    permission_classes = [IsStaff & IsAuthenticated & IsVerfied]
 
     def post(self, request,bike_id):
         store = self.request.user.is_staff_of_store()
@@ -179,7 +179,7 @@ class SelectedBikeEquipment(APIView):
 
 class SelectedBikeAvailability(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsStaff & IsAuthenticated]
+    permission_classes = [IsStaff & IsAuthenticated & IsVerfied]
 
     def get(self, request, bike_id):
         try:
@@ -194,7 +194,7 @@ class SelectedBikeAvailability(APIView):
 
 class BookingsOfStore(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsStaff & IsAuthenticated]
+    permission_classes = [IsStaff & IsAuthenticated & IsVerfied]
 
     def get(self, request):
         store = self.request.user.is_staff_of_store()
@@ -205,7 +205,7 @@ class BookingsOfStore(APIView):
 
 class SelectedBookingOfStore(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsStaff]
+    permission_classes = [IsStaff & IsAuthenticated & IsVerfied]
 
     def get(self, request, booking_id):
         store = self.request.user.is_staff_of_store()
@@ -231,7 +231,7 @@ class SelectedBookingOfStore(APIView):
 
 class CommentToBooking(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated & IsStaff]
+    permission_classes = [IsAuthenticated & IsStaff & IsVerfied]
 
     def get(self, request, booking_id):
         store = self.request.user.is_staff_of_store()
@@ -268,7 +268,7 @@ class CommentToBooking(APIView):
 
 class CheckLocalData(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated & IsStaff]
+    permission_classes = [IsAuthenticated & IsStaff & IsVerfied]
 
     def get(self, request, booking_id):
         try:
@@ -313,7 +313,7 @@ class CheckLocalData(APIView):
 
 class ConfirmBikeHandOut(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated & IsStaff]
+    permission_classes = [IsAuthenticated & IsStaff & IsVerfied]
 
     def get(self, request, booking_id):
         try:
@@ -346,7 +346,7 @@ class ConfirmBikeHandOut(APIView):
 
 class FindByQRString(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated & IsStaff]
+    permission_classes = [IsAuthenticated & IsStaff & IsVerfied]
 
     def get(self, request, qr_string):
         booking = Booking.objects.get(string=qr_string)
@@ -357,7 +357,7 @@ class FindByQRString(APIView):
 
 class RegisteredEquipment(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated & IsStaff]
+    permission_classes = [IsAuthenticated & IsStaff & IsVerfied]
 
     def get(self, request):
         equipment = Equipment.objects.all()
@@ -367,7 +367,7 @@ class RegisteredEquipment(APIView):
 
 class ReportComment(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated & IsStaff]
+    permission_classes = [IsAuthenticated & IsStaff & IsVerfied]
 
     def post(self, request, booking_id):
         comment = Comment.objects.get(booking_id=booking_id)
@@ -379,7 +379,7 @@ class ReportComment(APIView):
 
 class StoreConfigFile(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated & IsStaff]
+    permission_classes = [IsAuthenticated & IsStaff & IsVerfied]
 
     def get(self, request):
         store = self.request.user.is_staff_of_store()

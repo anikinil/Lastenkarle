@@ -7,6 +7,7 @@ urlpatterns = [
     path('register', views.RegistrateUser.as_view()),
     path('logout', LogoutView.as_view()),
     path('logout-all', LogoutAllView.as_view()),
+    path('<int:user_id>/<str:verification_string>', views.ConfirmEmail.as_view()),
     path('user/data', views.UserDataOfUser.as_view()),
     path('user/update', views.UpdateUserData.as_view()),
     path('user/bookings', views.AllBookingsFromUser.as_view()),
