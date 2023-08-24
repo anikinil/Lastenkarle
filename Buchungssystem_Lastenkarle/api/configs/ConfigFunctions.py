@@ -1,5 +1,6 @@
 import json
 import os
+from datetime import datetime, timedelta
 
 # Find the path to your Django project's base directory
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -110,3 +111,40 @@ def add_store(store_name):
     store_configs = {"stores": stores}  # Wrap the list of stores in a dictionary with "stores" key
 
     _generateStoreConfig(store_configs)
+
+import json
+
+def _parse_opening_hours(openhours):
+    days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
+    parsed_hours = []
+    current_group = []
+    prev_hours = None
+
+    for day in days:
+        if openhours[day]["opened"]:
+            hours = f"{openhours[day]['start']} - {openhours[day]['end']}"
+            if hours == prev_hours:
+                current_group.append(day)
+            else:
+                if current_group:
+                    parsed_hours.append((current_group, prev_hours))
+                current_group = [day]
+                prev_hours = hours
+
+    if current_group:
+        parsed_hours.append((current_group, prev_hours))
+
+    return parsed_hours
+
+def format_opening_hours(store_name):
+    store = json.loads(getStoreConfig(store_name))
+    result = ""
+
+    grouped_hours = _parse_opening_hours(store["openhours"])
+    for day_group, hours in grouped_hours:
+        if len(day_group) > 1:
+            result += f"{', '.join([day.capitalize() for day in day_group])}: {hours}\n"
+        else:
+            day = day_group[0]
+            result += f"{day.capitalize()}: {hours}\n"
+    return result
