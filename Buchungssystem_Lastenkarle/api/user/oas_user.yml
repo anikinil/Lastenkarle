@@ -1,0 +1,597 @@
+swagger: '2.0'
+info:
+  title: User Rest API
+  description: This API is providing an logged in user all means to get the data which is related to them and they are permitted to access. Also it handles the whole login, logout procedure and account creation.
+  version: v1
+host: django
+schemes:
+  - http
+basePath: /api/user/v1
+consumes:
+  - application/json
+produces:
+  - application/json
+securityDefinitions:
+  TokenAuth:
+    type: apiKey
+    name: Authorization
+    in: header
+security:
+  - TokenAuth: []
+paths:
+  /helmholtz/auth:
+    get:
+      operationId: helmholtz_auth_list
+      description: Get authentication status for Helmholtz
+      responses:
+        '200':
+          description: User logged in
+      tags:
+        - helmholtz
+
+  /helmholtz/login:
+    get:
+      operationId: helmholtz_login_list
+      description: Get Helmholtz login redirect
+      responses:
+        '200':
+          description: Redirect to Helmholtz login
+      tags:
+        - helmholtz
+
+  /login:
+    post:
+      operationId: login_create
+      description: User login
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Login'
+      responses:
+        '200':
+          description: User logged in
+          schema:
+            $ref: '#/definitions/User'
+        '400':
+          description: Invalid data provided
+      tags:
+        - login
+
+  /logout:
+    post:
+      operationId: logout_create
+      description: User logout
+      responses:
+        '201':
+          description: User logged out
+      tags:
+        - logout
+    parameters:
+      - name: Authorization
+        in: header
+        required: true
+        type: string
+
+  /logout-all:
+    post:
+      operationId: logout-all_create
+      description: Log the user out of all sessions
+      responses:
+        '201':
+          description: All user sessions terminated
+      tags:
+        - logout-all
+    parameters:
+      - name: Authorization
+        in: header
+        required: true
+        type: string
+
+  /register:
+    post:
+      operationId: register_create
+      description: User registration
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Registration'
+      responses:
+        '201':
+          description: User registered
+        '400':
+          description: Invalid data provided
+      tags:
+        - register
+
+  /user/bookings:
+    get:
+      operationId: user_bookings_list
+      description: Get a list of user's bookings
+      responses:
+        '200':
+          description: List of user's bookings
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Booking'
+      tags:
+        - user
+    parameters:
+      - name: Authorization
+        in: header
+        required: true
+        type: string
+    security:
+      - TokenAuth: []
+  /user/bookings/{booking_id}:
+    get:
+      operationId: user_bookings_read
+      description: Get details of a booking
+      responses:
+        '200':
+          description: Booking details
+          schema:
+            $ref: '#/definitions/Booking'
+        '404':
+          description: Booking not found
+      tags:
+        - user
+    post:
+      operationId: user_bookings_create
+      description: Cancel a booking
+      responses:
+        '200':
+          description: Booking cancelled successfully
+        '404':
+          description: Booking not found
+      tags:
+        - user
+    parameters:
+      - name: booking_id
+        in: path
+        required: true
+        type: string
+      - name: Authorization
+        in: header
+        required: true
+        type: string
+    security:
+      - TokenAuth: []
+
+  /user/bookings/{booking_id}/bike:
+    get:
+      operationId: user_bookings_bike_list
+      description: Get details of a booked bike
+      responses:
+        '200':
+          description: Booked bike details
+          schema:
+            $ref: '#/definitions/Bike'
+        '404':
+          description: Booking not found or associated bike not found
+      tags:
+        - user
+    parameters:
+      - name: booking_id
+        in: path
+        required: true
+        type: string
+      - name: Authorization
+        in: header
+        required: true
+        type: string
+    security:
+      - TokenAuth: []
+
+  /user/bookings/{booking_id}/bike/store:
+    get:
+      operationId: user_bookings_bike_store_list
+      description: Get store details of the booked bike
+      responses:
+        '200':
+          description: Store details of the booked bike
+          schema:
+            $ref: '#/definitions/Store'
+        '404':
+          description: Booking not found or associated store not found
+      tags:
+        - user
+    parameters:
+      - name: booking_id
+        in: path
+        required: true
+        type: string
+      - name: Authorization
+        in: header
+        required: true
+        type: string
+    security:
+      - TokenAuth: []
+
+  /user/data:
+    get:
+      operationId: user_data_list
+      description: Get user data of the authenticated user
+      responses:
+        '200':
+          description: User data of the authenticated user
+          schema:
+            $ref: '#/definitions/User'
+        '404':
+          description: User data not found for the user
+      tags:
+        - user
+    parameters:
+      - name: Authorization
+        in: header
+        required: true
+        type: string
+    security:
+      - TokenAuth: []
+
+  /user/delete-account:
+    post:
+      operationId: user_delete-account_create
+      description: Delete the user account by anonymizing any data asociated with the user
+      responses:
+        '204':
+          description: User account successfully deleted
+      tags:
+        - user
+    parameters:
+      - name: Authorization
+        in: header
+        required: true
+        type: string
+    security:
+      - TokenAuth: []
+
+  /user/update:
+    get:
+      operationId: user_update_read
+      description: Get user data for update
+      responses:
+        '200':
+          description: User data for update
+          schema:
+            $ref: '#/definitions/User'
+      tags:
+        - user
+    put:
+      operationId: user_update_update
+      description: Update user data
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+      security:
+        - TokenAuth: []
+      responses:
+        '200':
+          description: User data updated successfully
+          schema:
+            $ref: '#/definitions/User'
+      tags:
+        - user
+
+    patch:
+      operationId: user_update_partial_update
+      description: Partially update user data
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        '200':
+          description: User data updated successfully
+          schema:
+            $ref: '#/definitions/User'
+      tags:
+        - user
+    parameters:
+      - name: Authorization
+        in: header
+        required: true
+        type: string
+    security:
+      - TokenAuth: []
+
+definitions:
+  Login:
+    required:
+      - username
+      - password
+    type: object
+    properties:
+      username:
+        title: Username
+        type: string
+        minLength: 1
+      password:
+        title: Password
+        type: string
+        minLength: 1
+    example:
+      username: example_username
+      password: example_password
+  UserStatus:
+    required:
+      - user_status
+    type: object
+    properties:
+      user_status:
+        title: User status
+        type: string
+        maxLength: 32
+        minLength: 1
+    example:
+      user_status: active
+  User:
+    type: object
+    properties:
+      id:
+        title: ID
+        type: integer
+        readOnly: true
+      user_status:
+        type: array
+        items:
+          $ref: '#/definitions/UserStatus'
+        readOnly: true
+      last_login:
+        title: Last login
+        type: string
+        format: date-time
+        x-nullable: true
+      assurance_lvl:
+        title: Assurance lvl
+        type: string
+        enum:
+          - 'N'
+          - L
+          - M
+          - H
+        x-nullable: true
+      year_of_birth:
+        title: Year of birth
+        type: integer
+        maximum: 2147483647
+        minimum: -2147483648
+        x-nullable: true
+      contact_data:
+        title: Contact data
+        type: string
+        minLength: 1
+        x-nullable: true
+      is_staff:
+        title: Is staff
+        type: boolean
+      is_superuser:
+        title: Is superuser
+        type: boolean
+      is_active:
+        title: Is active
+        type: boolean
+      username:
+        title: Username
+        type: string
+        maxLength: 1028
+        x-nullable: true
+      password:
+        title: Password
+        type: string
+        x-nullable: true
+    example:
+      id: 123
+      user_status: [ { user_status: "active" } ]
+      last_login: "2023-08-23T12:34:56Z"
+      assurance_lvl: "L"
+      year_of_birth: 1990
+      contact_data: "user@example.com"
+      is_staff: false
+      is_superuser: false
+      is_active: true
+      username: example_user
+  Registration:
+    type: object
+    properties:
+      contact_data:
+        title: Contact data
+        type: string
+        minLength: 1
+        x-nullable: true
+      year_of_birth:
+        title: Year of birth
+        type: integer
+        maximum: 2147483647
+        minimum: -2147483648
+        x-nullable: true
+      username:
+        title: Username
+        type: string
+        maxLength: 1028
+        x-nullable: true
+      password:
+        title: Password
+        type: string
+        x-nullable: true
+  BookingStatus:
+    required:
+      - booking_status
+    type: object
+    properties:
+      booking_status:
+        title: Booking status
+        type: string
+        maxLength: 32
+        minLength: 1
+    example:
+      booking_status: confirmed
+  Equipment:
+    required:
+      - equipment
+    type: object
+    properties:
+      id:
+        title: ID
+        type: integer
+        readOnly: true
+      equipment:
+        title: Equipment
+        type: string
+        maxLength: 256
+        minLength: 1
+    example:
+      id: 789
+      equipment: Helmet
+  Booking:
+    required:
+      - bike
+    type: object
+    properties:
+      id:
+        title: ID
+        type: integer
+        readOnly: true
+      user:
+        $ref: '#/definitions/User'
+      booking_status:
+        type: array
+        items:
+          $ref: '#/definitions/BookingStatus'
+        readOnly: true
+      equipment:
+        type: array
+        items:
+          $ref: '#/definitions/Equipment'
+        readOnly: true
+      begin:
+        title: Begin
+        type: string
+        format: date
+        x-nullable: true
+      end:
+        title: End
+        type: string
+        format: date
+        x-nullable: true
+      bike:
+        title: Bike
+        type: integer
+    example:
+      id: 456
+      user:
+        id: 123
+        user_status: [ { user_status: "active" } ]
+        last_login: "2023-08-23T12:34:56Z"
+        assurance_lvl: "L"
+        year_of_birth: 1990
+        contact_data: "user@example.com"
+        is_staff: false
+        is_superuser: false
+        is_active: true
+        username: example_user
+      booking_status: [ { booking_status: "confirmed" } ]
+      equipment:
+        - { id: 789, equipment: "Helmet" }
+      begin: "2023-08-25"
+      end: "2023-08-27"
+      bike: 987
+  Bike:
+    required:
+      - store
+    type: object
+    properties:
+      id:
+        title: ID
+        type: integer
+        readOnly: true
+      equipment:
+        type: array
+        items:
+          $ref: '#/definitions/Equipment'
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      description:
+        title: Description
+        type: string
+        minLength: 1
+      image_link:
+        title: Image link
+        type: string
+        minLength: 1
+      store:
+        title: Store
+        type: integer
+    example:
+      id: 987
+      equipment:
+        - { id: 789, equipment: "Helmet" }
+      name: BikeModel123
+      description: Mountain bike for rough terrains
+      image_link: https://example.com/bike_image.jpg
+      store: 456
+  Store:
+    required:
+      - region
+      - phone_number
+      - email
+    type: object
+    properties:
+      id:
+        title: ID
+        type: integer
+        readOnly: true
+      region:
+        title: Region
+        type: string
+        enum:
+          - KA
+          - ETT
+          - BAD
+          - BRU
+          - MAL
+      address:
+        title: Address
+        type: string
+        minLength: 1
+      phone_number:
+        title: Phone number
+        type: string
+        maxLength: 256
+        minLength: 1
+      email:
+        title: Email
+        type: string
+        maxLength: 256
+        minLength: 1
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      store_flag:
+        title: Store flag
+        type: integer
+    example:
+      id: 456
+      region: KA
+      address: 123 Main Street
+      phone_number: +1234567890
+      email: store@example.com
+      name: BikeStore123
+      store_flag: 1

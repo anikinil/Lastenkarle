@@ -11,14 +11,12 @@ from api.algorithm import split_availabilities_algorithm
 from api.configs.ConfigFunctions import *
 from send_mail.views import send_booking_confirmation
 
-
 class AllRegions(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = (AllowAny,)
 
     def get(self, request):
         return Response(Store.REGION, status=status.HTTP_200_OK)
-
 
 class AllAvailabilities(APIView):
     authentication_classes = [TokenAuthentication]
@@ -30,7 +28,6 @@ class AllAvailabilities(APIView):
         serializer = AvailabilitySerializer(availabilities, many=True, fields=fields_to_include)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
 class AllBikes(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = (AllowAny,)
@@ -39,7 +36,6 @@ class AllBikes(APIView):
         bikes = Bike.objects.all()
         serializer = BikeSerializer(bikes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
 
 class SelectedBike(APIView):
     authentication_classes = [TokenAuthentication]
@@ -50,11 +46,9 @@ class SelectedBike(APIView):
             Bike.objects.get(pk=bike_id)
         except ObjectDoesNotExist:
             raise Http404
-        fields_to_include = ['name', 'description', 'image_link']
         bike = Bike.objects.get(pk=bike_id)
-        serializer = BikeSerializer(bike, many=False, fields=fields_to_include)
+        serializer = BikeSerializer(bike, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
 
 class StoreByBike(APIView):
     authentication_classes = [TokenAuthentication]
@@ -66,7 +60,6 @@ class StoreByBike(APIView):
         serializer = StoreSerializer(store, many=False, fields=fields_to_include)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
 class AvailabilityOfBike(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = (AllowAny,)
@@ -77,14 +70,12 @@ class AvailabilityOfBike(APIView):
         serializer = AvailabilitySerializer(availability_of_bike, many=True, fields=fields_to_include)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
 class AllStoreConfigurations(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = (AllowAny,)
 
     def get(self, request):
         return Response(getAllStoresConfig(), status=status.HTTP_200_OK)
-
 
 class MakeBooking(APIView):
     authentication_classes = [TokenAuthentication]

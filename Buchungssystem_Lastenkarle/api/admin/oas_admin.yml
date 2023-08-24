@@ -1,0 +1,1306 @@
+swagger: '2.0'
+info:
+  title: Admin Rest API
+  description: The Admin API is used for global view on all components of the booking system. Also it allows to add important components like 'Stores' to the application. Furthermore it can alter data on most of the components as will since admins should have complete control over the system.
+  version: v1
+host: django
+schemes:
+  - http
+basePath: /api/admin/v1
+consumes:
+  - application/json
+produces:
+  - application/json
+securityDefinitions:
+  TokenAuth:
+    type: apiKey
+    in: header
+    name: Authorization
+security:
+  - TokenAuth: []
+
+paths:
+  /ban-user:
+    post:
+      operationId: ban-user_create
+      description: Ban a user by providing contact data.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            required:
+              - contact_data
+            type: object
+            properties:
+              contact_data:
+                type: string
+      responses:
+        '202':
+          description: User banned successfully
+          examples:
+            application/json:
+              message: User banned successfully
+        '400':
+          description: Invalid request data
+          examples:
+            application/json:
+              error: Invalid request data
+        '404':
+          description: User not found
+          examples:
+            application/json:
+              error: User not found
+      tags:
+        - ban-user
+      security:
+        - TokenAuth: []
+    parameters: []
+
+  /bookings:
+    get:
+      operationId: bookings_list
+      description: Get a list of all bookings.
+      parameters: []
+      responses:
+        '200':
+          description: List of all bookings
+          examples:
+            application/json:
+              - id: 1
+                user:
+                  id: 123
+                  user_status:
+                    - user_status: active
+                  last_login: "2023-08-01T12:00:00Z"
+                  assurance_lvl: L
+                  year_of_birth: 1990
+                  contact_data: user@example.com
+                  is_staff: false
+                  is_superuser: false
+                  is_active: true
+                  username: user123
+                booking_status:
+                  - booking_status: confirmed
+                equipment:
+                  - id: 1
+                    equipment: Helmet
+                begin: "2023-08-15"
+                end: "2023-08-20"
+                string: ABCDE
+                bike:
+                  id: 101
+                  store: 1
+                  name: Mountain Bike
+                  description: A versatile mountain bike.
+                  image_link: https://example.com/images/mountain_bike.jpg
+                  equipment:
+                    - Helmet
+                    - Lock
+              - ... another booking entry ...
+        '401':
+          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
+          examples:
+            application/json:
+              error: Unauthorized
+        '403':
+          description: 'Forbidden: The authenticated user does not have permission to access bookings.'
+          examples:
+            application/json:
+              error: Forbidden
+      tags:
+        - bookings
+    parameters: []
+
+  /bookings/bikes:
+    get:
+      operationId: bookings_bikes_list
+      description: Get all bikes.
+      parameters: []
+      responses:
+        '200':
+          description: 'Success: Retrieved list of all bikes.'
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                store:
+                  type: integer
+                name:
+                  type: string
+                description:
+                  type: string
+                image_link:
+                  type: string
+                equipment:
+                  type: array
+                  items:
+                    type: string
+          examples:
+            application/json:
+              - id: 101
+                store: 1
+                name: Mountain Bike
+                description: A versatile mountain bike.
+                image_link: https://example.com/images/mountain_bike.jpg
+                equipment:
+                  - Helmet
+                  - Lock
+              - ... another bike entry ...
+        '401':
+          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
+          examples:
+            application/json:
+              error: Unauthorized
+        '403':
+          description: 'Forbidden: The authenticated user does not have permission to access the bikes.'
+          examples:
+            application/json:
+              error: Forbidden
+      tags:
+        - bookings
+    parameters: []
+  /bookings/bikes/{bike_id}:
+    get:
+      operationId: bookings_bikes_read
+      description: Get details of a selected bike.
+      parameters:
+        - name: bike_id
+          in: path
+          description: ID of the selected bike
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: 'Success: Retrieved details of the selected bike.'
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+              store:
+                type: integer
+              name:
+                type: string
+              description:
+                type: string
+              image_link:
+                type: string
+              equipment:
+                type: array
+                items:
+                  type: string
+          examples:
+            application/json:
+              id: 101
+              store: 1
+              name: Mountain Bike
+              description: A versatile mountain bike.
+              image_link: https://example.com/images/mountain_bike.jpg
+              equipment:
+                - Helmet
+                - Lock
+        '401':
+          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
+          examples:
+            application/json:
+              error: Unauthorized
+        '403':
+          description: 'Forbidden: The authenticated user does not have permission to access the bike.'
+          examples:
+            application/json:
+              error: Forbidden
+        '404':
+          description: 'Not Found: The selected bike does not exist.'
+          examples:
+            application/json:
+              error: Bike not found
+      tags:
+        - bookings
+    parameters:
+      - name: bike_id
+        in: path
+        required: true
+        type: string
+
+  /bookings/bikes/{bike_id}/add-equipment:
+    post:
+      operationId: bookings_bikes_add-equipment_create
+      description: Add equipment to a bike.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              equipment:
+                type: string
+        - name: bike_id
+          in: path
+          description: ID of the bike
+          required: true
+          type: integer
+      responses:
+        '201':
+          description: 'Success: Equipment added to the bike.'
+          examples:
+            application/json:
+              message: Equipment added to the bike
+        '202':
+          description: 'Accepted: Equipment is already added to the bike.'
+          examples:
+            application/json:
+              message: Equipment is already added to the bike
+        '400':
+          description: 'Bad Request: The provided data is invalid.'
+          examples:
+            application/json:
+              error: Bad Request
+        '401':
+          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
+          examples:
+            application/json:
+              error: Unauthorized
+        '403':
+          description: 'Forbidden: The authenticated user does not have permission to add equipment to the bike.'
+          examples:
+            application/json:
+              error: Forbidden
+        '404':
+          description: 'Not Found: The bike or equipment does not exist.'
+          examples:
+            application/json:
+              error: Bike or equipment not found
+      tags:
+        - bookings
+    parameters:
+      - name: bike_id
+        in: path
+        required: true
+        type: string
+
+  /bookings/bikes/{bike_id}/availability:
+    get:
+      operationId: bookings_bikes_availability_list
+      description: Get availability information for a bike.
+      parameters:
+        - name: bike_id
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: List of availability information for the bike
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                from_date:
+                  type: date
+                until_date:
+                  type: date
+                availability_status:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      availability_status:
+                        type: string
+          examples:
+            application/json:
+              - id: 1
+                from_date: "2023-08-15"
+                until_date: "2023-08-20"
+                availability_status:
+                  - availability_status: available
+              - ... another availability entry ...
+        '401':
+          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
+          examples:
+            application/json:
+              error: Unauthorized
+        '403':
+          description: 'Forbidden: The authenticated user does not have permission to access availability information.'
+          examples:
+            application/json:
+              error: Forbidden
+      tags:
+        - bookings
+    parameters:
+      - name: bike_id
+        in: path
+        required: true
+        type: string
+  /bookings/bikes/{bike_id}/update:
+    patch:
+      operationId: bookings_bikes_update_partial_update
+      description: Update details of a selected bike.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              description:
+                type: string
+              image_link:
+                type: string
+              equipment:
+                type: array
+                items:
+                  type: string
+        - name: bike_id
+          in: path
+          description: ID of the selected bike
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: 'Success: Updated details of the selected bike.'
+          schema:
+            $ref: '#/definitions/Bike'
+          examples:
+            application/json:
+              id: 101
+              store: 1
+              name: Mountain Bike
+              description: An updated versatile mountain bike.
+              image_link: https://example.com/images/mountain_bike_updated.jpg
+              equipment:
+                - Helmet
+                - Lock
+        '400':
+          description: 'Bad Request: The provided data is invalid.'
+          examples:
+            application/json:
+              error: Bad Request
+        '401':
+          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
+          examples:
+            application/json:
+              error: Unauthorized
+        '403':
+          description: 'Forbidden: The authenticated user does not have permission to update the bike.'
+          examples:
+            application/json:
+              error: Forbidden
+        '404':
+          description: 'Not Found: The selected bike does not exist.'
+          examples:
+            application/json:
+              error: Bike not found
+      tags:
+        - bookings
+    parameters:
+      - name: bike_id
+        in: path
+        required: true
+        type: string
+
+  /bookings/stores:
+    get:
+      operationId: bookings_stores_list
+      description: Get list of all stores.
+      parameters: []
+      responses:
+        '200':
+          description: List of all stores
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                region:
+                  type: string
+                address:
+                  type: string
+                phone_number:
+                  type: string
+                email:
+                  type: string
+                name:
+                  type: string
+                store_flag:
+                  type: integer
+          examples:
+            application/json:
+              - id: 1
+                region: Central
+                address: 123 Main St, City
+                phone_number: (123) 456-7890
+                email: store@example.com
+                name: Central Bike Store
+                store_flag: 1
+              - ... another store entry ...
+        '401':
+          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
+          examples:
+            application/json:
+              error: Unauthorized
+      tags:
+        - bookings
+    parameters: []
+
+  /bookings/stores/{store_id}:
+    get:
+      operationId: bookings_stores_read
+      description: Get details of the selected store.
+      parameters:
+        - name: store_id
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Details of the selected store
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+              region:
+                type: string
+              address:
+                type: string
+              phone_number:
+                type: string
+              email:
+                type: string
+              name:
+                type: string
+              store_flag:
+                type: integer
+          examples:
+            application/json:
+              id: 1
+              region: Central
+              address: 123 Main St, City
+              phone_number: (123) 456-7890
+              email: store@example.com
+              name: Central Bike Store
+              store_flag: 1
+        '404':
+          description: Selected store not found
+          examples:
+            application/json:
+              error: Store not found
+      tags:
+        - bookings
+    parameters:
+      - name: store_id
+        in: path
+        required: true
+        type: string
+
+  /bookings/stores/{store_id}/availability:
+    get:
+      operationId: bookings_stores_availability_list
+      description: Get bike availability for the selected store.
+      parameters:
+        - name: store_id
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: List of bike availabilities for the selected store
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                from_date:
+                  type: string
+                until_date:
+                  type: string
+                store:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    region:
+                      type: string
+                    address:
+                      type: string
+                    phone_number:
+                      type: string
+                    email:
+                      type: string
+                    name:
+                      type: string
+                bike:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    description:
+                      type: string
+                    image_link:
+                      type: string
+                    equipment:
+                      type: array
+                      items:
+                        type: string
+                availability_status:
+                  type: array
+                  items:
+                    type: string
+          examples:
+            application/json:
+              - id: 1
+                from_date: "2023-08-15"
+                until_date: "2023-08-20"
+                store:
+                  id: 1
+                  region: Central
+                  address: 123 Main St, City
+                  phone_number: (123) 456-7890
+                  email: store@example.com
+                  name: Central Bike Store
+                bike:
+                  id: 101
+                  name: Mountain Bike
+                  description: A versatile mountain bike.
+                  image_link: https://example.com/images/mountain_bike.jpg
+                  equipment:
+                    - Helmet
+                availability_status:
+                  - availability_status: available
+              - ... another availability entry ...
+        '404':
+          description: Selected store not found
+          examples:
+            application/json:
+              error: Store not found
+      tags:
+        - bookings
+    parameters:
+      - name: store_id
+        in: path
+        required: true
+        type: string
+  /bookings/stores/{store_id}/config:
+    get:
+      operationId: bookings_stores_config_list
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          description: Successfully retrieved store configuration
+          schema:
+            $ref: '#/definitions/StoreInfo'
+        '403':
+          description: Permission denied
+      tags:
+        - bookings
+    patch:
+      operationId: bookings_stores_config_partial_update
+      description: ''
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/StoreInfo'
+      responses:
+        '200':
+          description: Successfully updated and retrieved store configuration
+          schema:
+            $ref: '#/definitions/StoreInfo'  # Reference the StoreInfo definition here
+        '400':
+          description: Invalid request data
+        '403':
+          description: Permission denied
+      tags:
+        - bookings
+    parameters:
+      - name: store_id
+        in: path
+        required: true
+        type: string
+
+  /bookings/stores/{store_id}/update:
+    patch:
+      operationId: bookings_stores_update_partial_update
+      description: Update details of a selected store.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              region:
+                type: string
+              address:
+                type: string
+              phone_number:
+                type: string
+              email:
+                type: string
+              name:
+                type: string
+              store_flag:
+                type: integer
+        - name: store_id
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Updated store details
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+              region:
+                type: string
+              address:
+                type: string
+              phone_number:
+                type: string
+              email:
+                type: string
+              name:
+                type: string
+              store_flag:
+                type: integer
+          examples:
+            application/json:
+              id: 1
+              region: Updated Region
+              address: Updated Address
+              phone_number: Updated Phone Number
+              email: updated@store.com
+              name: Updated Store Name
+              store_flag: 1
+        '400':
+          description: Invalid data
+          examples:
+            application/json:
+              error: Invalid data
+        '404':
+          description: Selected store not found
+          examples:
+            application/json:
+              error: Store not found
+      tags:
+        - bookings
+    parameters:
+      - name: store_id
+        in: path
+        required: true
+        type: string
+
+  /bookings/{booking_id}:
+    get:
+      operationId: bookings_read
+      description: Get details of a selected booking.
+      parameters:
+        - name: booking_id
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Details of the selected booking
+          examples:
+            application/json:
+              booking_id: 123
+              user_id: 456
+              bike_id: 789
+              start_date: "2023-08-15"
+              end_date: "2023-08-20"
+        '401':
+          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
+          examples:
+            application/json:
+              error: Unauthorized
+        '403':
+          description: 'Forbidden: The authenticated user does not have permission to view the booking.'
+          examples:
+            application/json:
+              error: Forbidden
+        '404':
+          description: 'Not Found: The booking with the given ID was not found.'
+          examples:
+            application/json:
+              error: Booking not found
+      tags:
+        - bookings
+    post:
+      operationId: bookings_create
+      description: Cancel the selected booking.
+      parameters:
+        - name: booking_id
+          in: path
+          required: true
+          type: string
+      responses:
+        '202':
+          description: Booking cancellation successful.
+          examples:
+            application/json:
+              message: Booking canceled successfully
+        '401':
+          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
+          examples:
+            application/json:
+              error: Unauthorized
+        '403':
+          description: 'Forbidden: The authenticated user does not have permission to cancel the booking.'
+          examples:
+            application/json:
+              error: Forbidden
+        '404':
+          description: 'Not Found: The booking with the given ID was not found.'
+          examples:
+            application/json:
+              error: Booking not found
+      tags:
+        - bookings
+    parameters:
+      - name: booking_id
+        in: path
+        required: true
+        type: string
+
+  /bookings/{booking_id}/comment:
+    get:
+      operationId: bookings_comment_list
+      description: Get comment of a booking.
+      parameters:
+        - name: booking_id
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Comment of the booking
+          examples:
+            application/json:
+              comment: This bike was in great condition.
+        '401':
+          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
+          examples:
+            application/json:
+              error: Unauthorized
+        '403':
+          description: 'Forbidden: The authenticated user does not have permission to view the comment.'
+          examples:
+            application/json:
+              error: Forbidden
+        '404':
+          description: 'Not Found: No comment found for the booking.'
+          examples:
+            application/json:
+              error: Comment not found
+      tags:
+        - bookings
+    parameters:
+      - name: booking_id
+        in: path
+        required: true
+        type: string
+
+  /configurations:
+    get:
+      operationId: configurations_list
+      description: Get a list of all store configurations.
+      parameters: []
+      responses:
+        '200':
+          description: Successfully retrieved store configurations
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/StoreInfo'
+      tags:
+        - configurations
+    parameters: []
+
+
+  /create/store:
+    post:
+      operationId: create_store_create
+      description: Create a new store.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Store'
+      responses:
+        '201':
+          description: Store created successfully
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+              region:
+                type: string
+              address:
+                type: string
+              phone_number:
+                type: string
+              email:
+                type: string
+              name:
+                type: string
+              store_flag:
+                type: object
+                properties:
+                  user_status:
+                    type: string
+          examples:
+            application/json:
+              id: 1
+              region: Central
+              address: 123 Main St, City
+              phone_number: (123) 456-7890
+              email: store@example.com
+              name: Central Bike Store
+              store_flag:
+                user_status: active
+        '400':
+          description: Invalid data provided
+          schema:
+            type: object
+            properties:
+              field_name:
+                type: array
+                items:
+                  type: string
+          examples:
+            application/json:
+              error: Invalid data provided
+        '401':
+          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
+          examples:
+            application/json:
+              error: Unauthorized
+      tags:
+        - create
+    parameters: []
+
+definitions:
+  Equipment:
+    required:
+      - equipment
+    type: object
+    properties:
+      id:
+        title: ID
+        type: integer
+        readOnly: true
+      equipment:
+        title: Equipment
+        type: string
+        maxLength: 256
+        minLength: 1
+  Bike:
+    required:
+      - store
+    type: object
+    properties:
+      id:
+        title: ID
+        type: integer
+        readOnly: true
+      equipment:
+        type: array
+        items:
+          $ref: '#/definitions/Equipment'
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      description:
+        title: Description
+        type: string
+        minLength: 1
+      image_link:
+        title: Image link
+        type: string
+        minLength: 1
+      store:
+        title: Store
+        type: integer
+  AvailabilityStatus:
+    required:
+      - availability_status
+    type: object
+    properties:
+      availability_status:
+        title: Availability status
+        type: string
+        maxLength: 32
+        minLength: 1
+  Availability:
+    required:
+      - store
+      - bike
+    type: object
+    properties:
+      id:
+        title: ID
+        type: integer
+        readOnly: true
+      availability_status:
+        type: array
+        items:
+          $ref: '#/definitions/AvailabilityStatus'
+        readOnly: true
+      from_date:
+        title: From date
+        type: string
+        format: date
+      until_date:
+        title: Until date
+        type: string
+        format: date
+      store:
+        title: Store
+        type: integer
+      bike:
+        title: Bike
+        type: integer
+  UserStatus:
+    required:
+      - user_status
+    type: object
+    properties:
+      user_status:
+        title: User status
+        type: string
+        maxLength: 32
+        minLength: 1
+  User:
+    type: object
+    properties:
+      id:
+        title: ID
+        type: integer
+        readOnly: true
+      user_status:
+        type: array
+        items:
+          $ref: '#/definitions/UserStatus'
+        readOnly: true
+      last_login:
+        title: Last login
+        type: string
+        format: date-time
+        x-nullable: true
+      assurance_lvl:
+        title: Assurance lvl
+        type: string
+        enum:
+          - 'N'
+          - L
+          - M
+          - H
+        x-nullable: true
+      year_of_birth:
+        title: Year of birth
+        type: integer
+        maximum: 2147483647
+        minimum: -2147483648
+        x-nullable: true
+      contact_data:
+        title: Contact data
+        type: string
+        minLength: 1
+        x-nullable: true
+      is_staff:
+        title: Is staff
+        type: boolean
+      is_superuser:
+        title: Is superuser
+        type: boolean
+      is_active:
+        title: Is active
+        type: boolean
+      username:
+        title: Username
+        type: string
+        maxLength: 1028
+        x-nullable: true
+      password:
+        title: Password
+        type: string
+        x-nullable: true
+  BookingStatus:
+    required:
+      - booking_status
+    type: object
+    properties:
+      booking_status:
+        title: Booking status
+        type: string
+        maxLength: 32
+        minLength: 1
+  MakeBooking:
+    required:
+      - equipment
+      - bike
+    type: object
+    properties:
+      id:
+        title: ID
+        type: integer
+        readOnly: true
+      user:
+        $ref: '#/definitions/User'
+      booking_status:
+        type: array
+        items:
+          $ref: '#/definitions/BookingStatus'
+        readOnly: true
+      equipment:
+        type: array
+        items:
+          type: string
+          maxLength: 256
+          minLength: 1
+      begin:
+        title: Begin
+        type: string
+        format: date
+        x-nullable: true
+      end:
+        title: End
+        type: string
+        format: date
+        x-nullable: true
+      string:
+        title: String
+        type: string
+        maxLength: 5
+        minLength: 1
+        x-nullable: true
+      bike:
+        title: Bike
+        type: integer
+  Booking:
+    required:
+      - bike
+    type: object
+    properties:
+      id:
+        title: ID
+        type: integer
+        readOnly: true
+      user:
+        $ref: '#/definitions/User'
+      booking_status:
+        type: array
+        items:
+          $ref: '#/definitions/BookingStatus'
+        readOnly: true
+      equipment:
+        type: array
+        items:
+          $ref: '#/definitions/Equipment'
+        readOnly: true
+      begin:
+        title: Begin
+        type: string
+        format: date
+        x-nullable: true
+      end:
+        title: End
+        type: string
+        format: date
+        x-nullable: true
+      string:
+        title: String
+        type: string
+        maxLength: 5
+        minLength: 1
+        x-nullable: true
+      bike:
+        title: Bike
+        type: integer
+  Comment:
+    required:
+      - store
+      - booking
+    type: object
+    properties:
+      id:
+        title: ID
+        type: integer
+        readOnly: true
+      content:
+        title: Content
+        type: string
+        minLength: 1
+      store:
+        title: Store
+        type: integer
+      booking:
+        title: Booking
+        type: integer
+  LocalData:
+    type: object
+    properties:
+      first_name:
+        title: First name
+        type: string
+        x-nullable: true
+      last_name:
+        title: Last name
+        type: string
+        x-nullable: true
+      address:
+        title: Address
+        type: string
+        x-nullable: true
+      date_of_verification:
+        title: Date of verification
+        type: string
+        format: date
+        x-nullable: true
+      id_number:
+        title: Id number
+        type: string
+        maxLength: 3
+        x-nullable: true
+  Store:
+    required:
+      - region
+      - phone_number
+      - email
+    type: object
+    properties:
+      id:
+        title: ID
+        type: integer
+        readOnly: true
+      region:
+        title: Region
+        type: string
+        enum:
+          - KA
+          - ETT
+          - BAD
+          - BRU
+          - MAL
+      address:
+        title: Address
+        type: string
+        minLength: 1
+      phone_number:
+        title: Phone number
+        type: string
+        maxLength: 256
+        minLength: 1
+      email:
+        title: Email
+        type: string
+        maxLength: 256
+        minLength: 1
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      store_flag:
+        title: Store flag
+        type: integer
+        x-nullable: true
+        definitions:
+  StoreInfo:
+    type: array
+    items:
+      type: object
+      properties:
+        name:
+          type: string
+        openhours:
+          type: object
+          properties:
+            mon:
+              type: object
+              properties:
+                opened:
+                  type: boolean
+                start:
+                  type: string
+                end:
+                  type: string
+            tue:
+              type: object
+              properties:
+                opened:
+                  type: boolean
+                start:
+                  type: string
+                end:
+                  type: string
+            wed:
+              type: object
+              properties:
+                opened:
+                  type: boolean
+                start:
+                  type: string
+                end:
+                  type: string
+            thu:
+              type: object
+              properties:
+                opened:
+                  type: boolean
+                start:
+                  type: string
+                end:
+                  type: string
+            fri:
+              type: object
+              properties:
+                opened:
+                  type: boolean
+                start:
+                  type: string
+                end:
+                  type: string
+            sat:
+              type: object
+              properties:
+                opened:
+                  type: boolean
+                start:
+                  type: string
+                end:
+                  type: string
+            sun:
+              type: object
+              properties:
+                opened:
+                  type: boolean
+                start:
+                  type: string
+                end:
+                  type: string
+        pretime:
+          type: string

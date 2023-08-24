@@ -1,0 +1,1078 @@
+swagger: '2.0'
+info:
+  title: Manager Rest API
+  description: The Manager API is used for store adminstration purposes. Therefore it provides all the necessary information which are related to the store and allows the user to update it.
+  version: v1
+host: django
+schemes:
+  - http
+basePath: /api/manager/v1
+consumes:
+  - application/json
+produces:
+  - application/json
+securityDefinitions:
+  TokenAuth:
+    type: apiKey
+    in: header
+    name: Authorization
+security:
+  - TokenAuth: []
+paths:
+  /bikes:
+    get:
+      operationId: bikes_list
+      description: Get the list of bikes in the store.
+      parameters: []
+      responses:
+        '200':
+          description: List of bikes in the store
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Bike'
+        '401':
+          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
+        '403':
+          description: 'Forbidden: The authenticated user does not have permission to access bikes in the store.'
+      tags:
+        - bikes
+    post:
+      operationId: bikes_create
+      description: Create a new bike in the store.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Bike'
+      responses:
+        '201':
+          description: Bike created successfully
+          schema:
+            $ref: '#/definitions/Bike'
+        '400':
+          description: 'Bad Request: The provided data is invalid.'
+        '401':
+          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
+        '403':
+          description: 'Forbidden: The authenticated user does not have permission to create a bike in the store.'
+      tags:
+        - bikes
+    parameters: []
+  /bikes/{bike_id}:
+    get:
+      operationId: bikes_read
+      description: Get details of a selected bike.
+      parameters: []
+      responses:
+        '200':
+          description: Bike details
+          schema:
+            $ref: '#/definitions/Bike'
+        '401':
+          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
+        '403':
+          description: 'Forbidden: The authenticated user does not have permission to access the bike.'
+        '404':
+          description: 'Not Found: Bike with the provided ID does not exist.'
+      tags:
+        - bikes
+    parameters:
+      - name: bike_id
+        in: path
+        required: true
+        type: string
+  /bikes/{bike_id}/add-equipment:
+    post:
+      operationId: bikes_add-equipment_create
+      description: Add equipment to a selected bike.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Equipment'
+      responses:
+        '201':
+          description: Equipment details of the bike after addition
+          schema:
+            $ref: '#/definitions/Equipment'
+        '202':
+          description: 'Accepted: Equipment already exists and was added to the bike.'
+        '400':
+          description: 'Bad Request: The request data is invalid.'
+        '401':
+          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
+        '403':
+          description: 'Forbidden: The authenticated user does not have permission to add equipment.'
+        '404':
+          description: 'Not Found: The bike or equipment does not exist.'
+      tags:
+        - bikes
+    parameters:
+      - name: bike_id
+        in: path
+        required: true
+        type: string
+  /bikes/{bike_id}/availability:
+    get:
+      operationId: bikes_availability_list
+      description: Get the availability status of the selected bike.
+      parameters: []
+      responses:
+        '200':
+          description: List of availability details for the selected bike
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Availability'
+        '401':
+          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
+        '403':
+          description: 'Forbidden: The authenticated user does not have permission to view availabilities.'
+        '404':
+          description: 'Not Found: The bike does not exist.'
+      tags:
+        - bikes
+    parameters:
+      - name: bike_id
+        in: path
+        required: true
+        type: string
+  /bikes/{bike_id}/delete:
+    delete:
+      operationId: bikes_delete_delete
+      description: Delete a bike by its ID.
+      parameters:
+        - name: bike_id
+          in: path
+          required: true
+          type: string
+      responses:
+        '204':
+          description: Bike deleted successfully.
+      tags:
+        - bikes
+  /bikes/{bike_id}/internal-booking:
+    post:
+      operationId: bikes_internal-booking_create
+      description: Make an internal booking for a bike.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/MakeBooking'
+      responses:
+        '201':
+          description: Booking details
+          schema:
+            $ref: '#/definitions/Booking'
+        '400':
+          description: 'Bad Request: The request data is invalid or the bike is not available during the specified time frame.'
+        '401':
+          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
+        '403':
+          description: 'Forbidden: The authenticated user does not have permission to make a booking.'
+      tags:
+        - bikes
+    parameters:
+      - name: bike_id
+        in: path
+        required: true
+        type: string
+  /bikes/{bike_id}/update:
+    patch:
+      operationId: bikes_update_partial_update
+      description: Update details of a selected bike.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Bike'
+      responses:
+        '200':
+          description: Bike details after update
+          schema:
+            $ref: '#/definitions/Bike'
+        '400':
+          description: 'Bad Request: The request data is invalid.'
+        '401':
+          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
+        '403':
+          description: 'Forbidden: The authenticated user does not have permission to update the bike.'
+        '404':
+          description: 'Not Found: The bike does not exist.'
+      tags:
+        - bikes
+    parameters:
+      - name: bike_id
+        in: path
+        required: true
+        type: string
+  /bookings:
+    get:
+      operationId: bookings_list
+      description: Get the list of bookings for the store.
+      parameters: []
+      responses:
+        '200':
+          description: List of bookings for the store
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Booking'
+        '401':
+          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
+        '403':
+          description: 'Forbidden: The authenticated user does not have permission to view bookings.'
+      tags:
+        - bookings
+    parameters: []
+  /bookings/{booking_id}:
+    get:
+      operationId: bookings_read
+      description: Get details of the selected booking.
+      parameters: []
+      responses:
+        '200':
+          description: Details of the selected booking
+          schema:
+            $ref: '#/definitions/Booking'
+        '401':
+          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
+        '403':
+          description: 'Forbidden: The authenticated user does not have permission to view the booking.'
+        '404':
+          description: 'Not Found: The booking with the given ID was not found.'
+      tags:
+        - bookings
+    post:
+      operationId: bookings_create
+      description: Cancel the selected booking.
+      parameters: []
+      responses:
+        '202':
+          description: Booking cancelled successfully.
+        '401':
+          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
+        '403':
+          description: 'Forbidden: The authenticated user does not have permission to cancel the booking.'
+        '404':
+          description: 'Not Found: The booking with the given ID was not found.'
+      tags:
+        - bookings
+    parameters:
+      - name: booking_id
+        in: path
+        required: true
+        type: string
+  /bookings/{booking_id}/comment:
+    get:
+      operationId: bookings_comment_list
+      description: Get comment details associated with the booking.
+      parameters: []
+      responses:
+        '200':
+          description: Comment details
+          schema:
+            $ref: '#/definitions/Comment'
+        '401':
+          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
+        '403':
+          description: 'Forbidden: The authenticated user does not have permission to view the comment.'
+        '404':
+          description: 'Not Found: No comment associated with the booking was found.'
+      tags:
+        - bookings
+    post:
+      operationId: bookings_comment_create
+      description: Create a new comment for the booking.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Comment'
+      responses:
+        '201':
+          description: Comment created successfully.
+        '400':
+          description: 'Bad Request: The request data is invalid.'
+        '401':
+          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
+        '403':
+          description: 'Forbidden: The authenticated user does not have permission to create a comment.'
+      tags:
+        - bookings
+    patch:
+      operationId: bookings_comment_partial_update
+      description: Update an existing comment associated with the booking.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Comment'
+      responses:
+        '200':
+          description: Comment updated successfully.
+        '400':
+          description: 'Bad Request: The request data is invalid.'
+        '401':
+          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
+        '403':
+          description: 'Forbidden: The authenticated user does not have permission to update the comment.'
+        '404':
+          description: 'Not Found: No comment associated with the booking was found.'
+      tags:
+        - bookings
+    parameters:
+      - name: booking_id
+        in: path
+        required: true
+        type: string
+  /bookings/{booking_id}/comment/report:
+    post:
+      operationId: bookings_comment_report_create
+      description: Report a comment.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              comment_id:
+                description: ID of the comment to report.
+                type: integer
+      responses:
+        '202':
+          description: Comment reported successfully.
+        '400':
+          description: 'Bad Request: The request data is invalid.'
+        '401':
+          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
+        '403':
+          description: 'Forbidden: The authenticated user does not have permission to perform the action.'
+      tags:
+        - bookings
+    parameters:
+      - name: booking_id
+        in: path
+        required: true
+        type: string
+  /bookings/{booking_id}/confirmation:
+    get:
+      operationId: bookings_confirmation_list
+      description: Get booking details for confirmation.
+      parameters: []
+      responses:
+        '200':
+          description: Booking details for confirmation.
+          schema:
+            $ref: '#/definitions/Booking'
+        '401':
+          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
+        '403':
+          description: 'Forbidden: The authenticated user does not have permission to view booking details.'
+        '404':
+          description: 'Not Found: Booking with the given ID was not found.'
+      tags:
+        - bookings
+    post:
+      operationId: bookings_confirmation_create
+      description: Confirm bike handout or return based on booking status.
+      parameters: []
+      responses:
+        '200':
+          description: Bike handout confirmed successfully.
+        '202':
+          description: Bike return confirmed successfully.
+        '400':
+          description: 'Bad Request: The request data is invalid.'
+        '401':
+          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
+        '403':
+          description: 'Forbidden: The authenticated user does not have permission for the action.'
+        '404':
+          description: 'Not Found: Booking with the given ID was not found.'
+      tags:
+        - bookings
+    parameters:
+      - name: booking_id
+        in: path
+        required: true
+        type: string
+  /bookings/{booking_id}/user-info:
+    get:
+      operationId: bookings_user-info_list
+      description: Get user's local data associated with the booking.
+      parameters: []
+      responses:
+        '200':
+          description: User's local data details
+          schema:
+            $ref: '#/definitions/LocalData'
+        '401':
+          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
+        '403':
+          description: 'Forbidden: The authenticated user does not have permission to view local data.'
+        '404':
+          description: 'Not Found: No local data associated with the user was found.'
+      tags:
+        - bookings
+    post:
+      operationId: bookings_user-info_create
+      description: Create new local data for the user associated with the booking.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/LocalData'
+      responses:
+        '201':
+          description: Local data created successfully.
+        '400':
+          description: 'Bad Request: The request data is invalid.'
+        '401':
+          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
+        '403':
+          description: 'Forbidden: The authenticated user does not have permission to create local data.'
+      tags:
+        - bookings
+    patch:
+      operationId: bookings_user-info_partial_update
+      description: Update existing local data for the user associated with the booking.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/LocalData'
+      responses:
+        '200':
+          description: Local data updated successfully.
+        '400':
+          description: 'Bad Request: The request data is invalid.'
+        '401':
+          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
+        '403':
+          description: 'Forbidden: The authenticated user does not have permission to update local data.'
+        '404':
+          description: 'Not Found: No local data associated with the user was found.'
+      tags:
+        - bookings
+    parameters:
+      - name: booking_id
+        in: path
+        required: true
+        type: string
+  /bookings/{qr_string}:
+    get:
+      operationId: bookings_read
+      description: Find booking by QR-code string.
+      parameters: []
+      responses:
+        '200':
+          description: Booking ID found for the given QR string.
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+        '401':
+          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
+        '403':
+          description: 'Forbidden: The authenticated user does not have permission to perform the action.'
+        '404':
+          description: 'Not Found: Booking with the given QR string was not found.'
+      tags:
+        - bookings
+    parameters:
+      - name: qr_string
+        in: path
+        required: true
+        type: string
+  /configuration:
+    get:
+      operationId: configuration_list
+      description: Get the store configuration.
+      parameters: []
+      responses:
+        '200':
+          description: Successful response with the store configuration.
+          schema:
+            $ref: '#/definitions/StoreInfo'
+        '401':
+          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
+        '403':
+          description: 'Forbidden: The authenticated user does not have permission to perform the action.'
+      tags:
+        - configuration
+    patch:
+      operationId: configuration_partial_update
+      description: Update the store configuration.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+              $ref: '#/definitions/StoreInfo'
+      responses:
+        '200':
+          description: Successful response with the updated store configuration.
+          schema:
+            $ref: '#/definitions/StoreInfo'
+        '400':
+          description: 'Bad Request: The request data is invalid.'
+        '401':
+          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
+        '403':
+          description: 'Forbidden: The authenticated user does not have permission to perform the action.'
+      tags:
+        - configuration
+    parameters: []
+  /enrollment:
+    post:
+      operationId: enrollment_create
+      description: Enroll a user as a staff member of the associated store.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            required:
+              - contact_data
+            type: object
+            properties:
+              contact_data:
+                description: User contact data
+                type: string
+      responses:
+        '202':
+          description: User enrolled successfully
+        '400':
+          description: 'Bad Request: The request data was invalid.'
+        '401':
+          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
+      tags:
+        - enrollment
+    parameters: []
+  /equipment:
+    get:
+      operationId: equipment_list
+      description: Get list of registered equipment.
+      parameters: []
+      responses:
+        '200':
+          description: List of registered equipment.
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                equipment:
+                  type: string
+        '401':
+          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
+        '403':
+          description: 'Forbidden: The authenticated user does not have permission to perform the action.'
+      tags:
+        - equipment
+    parameters: []
+  /store-page:
+    get:
+      operationId: store-page_list
+      description: Retrieve details of the authenticated staff user's associated store.
+      parameters: []
+      responses:
+        '200':
+          description: Store details retrieved successfully
+          schema:
+            $ref: '#/definitions/Store'
+        '401':
+          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
+      tags:
+        - store-page
+    patch:
+      operationId: store-page_partial_update
+      description: Update details of the authenticated staff user's associated store.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            required:
+              - region
+            type: object
+            properties:
+              region:
+                description: New region for the store
+                type: string
+              address:
+                description: New address for the store
+                type: string
+              phone_number:
+                description: New phone number for the store
+                type: string
+              email:
+                description: New email for the store
+                type: string
+      responses:
+        '200':
+          description: Store details updated successfully
+          schema:
+            $ref: '#/definitions/Store'
+        '400':
+          description: 'Bad Request: The request data was invalid.'
+        '401':
+          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
+      tags:
+        - store-page
+    parameters: []
+  /user-flag:
+    get:
+      operationId: user-flag_list
+      description: Retrieve user flags of the authenticated staff user's associated store.
+      parameters: []
+      responses:
+        '200':
+          description: User flags retrieved successfully
+          schema:
+            $ref: '#/definitions/UserStatus'
+        '401':
+          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
+      tags:
+        - user-flag
+    patch:
+      operationId: user-flag_partial_update
+      description: Update store data for the authenticated staff user's associated store.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            type: object
+            properties: {}
+      responses:
+        '200':
+          description: Successful response with updated store data.
+          schema:
+            $ref: '#/definitions/Store'
+        '400':
+          description: 'Bad Request: The request data is invalid.'
+        '401':
+          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
+        '403':
+          description: 'Forbidden: The authenticated user does not have permission to perform the action.'
+      tags:
+        - user-flag
+    parameters: []
+definitions:
+  Equipment:
+    required:
+      - equipment
+    type: object
+    properties:
+      id:
+        title: ID
+        type: integer
+        readOnly: true
+      equipment:
+        title: Equipment
+        type: string
+        maxLength: 256
+        minLength: 1
+  Bike:
+    required:
+      - store
+    type: object
+    properties:
+      id:
+        title: ID
+        type: integer
+        readOnly: true
+      equipment:
+        type: array
+        items:
+          $ref: '#/definitions/Equipment'
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      description:
+        title: Description
+        type: string
+        minLength: 1
+      image_link:
+        title: Image link
+        type: string
+        minLength: 1
+      store:
+        title: Store
+        type: integer
+  AvailabilityStatus:
+    required:
+      - availability_status
+    type: object
+    properties:
+      availability_status:
+        title: Availability status
+        type: string
+        maxLength: 32
+        minLength: 1
+  Availability:
+    required:
+      - store
+      - bike
+    type: object
+    properties:
+      id:
+        title: ID
+        type: integer
+        readOnly: true
+      availability_status:
+        type: array
+        items:
+          $ref: '#/definitions/AvailabilityStatus'
+        readOnly: true
+      from_date:
+        title: From date
+        type: string
+        format: date
+      until_date:
+        title: Until date
+        type: string
+        format: date
+      store:
+        title: Store
+        type: integer
+      bike:
+        title: Bike
+        type: integer
+  UserStatus:
+    required:
+      - user_status
+    type: object
+    properties:
+      user_status:
+        title: User status
+        type: string
+        maxLength: 32
+        minLength: 1
+  User:
+    type: object
+    properties:
+      id:
+        title: ID
+        type: integer
+        readOnly: true
+      user_status:
+        type: array
+        items:
+          $ref: '#/definitions/UserStatus'
+        readOnly: true
+      last_login:
+        title: Last login
+        type: string
+        format: date-time
+        x-nullable: true
+      assurance_lvl:
+        title: Assurance lvl
+        type: string
+        enum:
+          - 'N'
+          - L
+          - M
+          - H
+        x-nullable: true
+      year_of_birth:
+        title: Year of birth
+        type: integer
+        maximum: 2147483647
+        minimum: -2147483648
+        x-nullable: true
+      contact_data:
+        title: Contact data
+        type: string
+        minLength: 1
+        x-nullable: true
+      is_staff:
+        title: Is staff
+        type: boolean
+      is_superuser:
+        title: Is superuser
+        type: boolean
+      is_active:
+        title: Is active
+        type: boolean
+      username:
+        title: Username
+        type: string
+        maxLength: 1028
+        x-nullable: true
+      password:
+        title: Password
+        type: string
+        x-nullable: true
+  BookingStatus:
+    required:
+      - booking_status
+    type: object
+    properties:
+      booking_status:
+        title: Booking status
+        type: string
+        maxLength: 32
+        minLength: 1
+  MakeBooking:
+    required:
+      - equipment
+      - bike
+    type: object
+    properties:
+      id:
+        title: ID
+        type: integer
+        readOnly: true
+      user:
+        $ref: '#/definitions/User'
+      booking_status:
+        type: array
+        items:
+          $ref: '#/definitions/BookingStatus'
+        readOnly: true
+      equipment:
+        type: array
+        items:
+          type: string
+          maxLength: 256
+          minLength: 1
+      begin:
+        title: Begin
+        type: string
+        format: date
+        x-nullable: true
+      end:
+        title: End
+        type: string
+        format: date
+        x-nullable: true
+      string:
+        title: String
+        type: string
+        maxLength: 5
+        minLength: 1
+        x-nullable: true
+      bike:
+        title: Bike
+        type: integer
+  Booking:
+    required:
+      - bike
+    type: object
+    properties:
+      id:
+        title: ID
+        type: integer
+        readOnly: true
+      user:
+        $ref: '#/definitions/User'
+      booking_status:
+        type: array
+        items:
+          $ref: '#/definitions/BookingStatus'
+        readOnly: true
+      equipment:
+        type: array
+        items:
+          $ref: '#/definitions/Equipment'
+        readOnly: true
+      begin:
+        title: Begin
+        type: string
+        format: date
+        x-nullable: true
+      end:
+        title: End
+        type: string
+        format: date
+        x-nullable: true
+      string:
+        title: String
+        type: string
+        maxLength: 5
+        minLength: 1
+        x-nullable: true
+      bike:
+        title: Bike
+        type: integer
+  Comment:
+    required:
+      - store
+      - booking
+    type: object
+    properties:
+      id:
+        title: ID
+        type: integer
+        readOnly: true
+      content:
+        title: Content
+        type: string
+        minLength: 1
+      store:
+        title: Store
+        type: integer
+      booking:
+        title: Booking
+        type: integer
+  LocalData:
+    type: object
+    properties:
+      first_name:
+        title: First name
+        type: string
+        x-nullable: true
+      last_name:
+        title: Last name
+        type: string
+        x-nullable: true
+      address:
+        title: Address
+        type: string
+        x-nullable: true
+      date_of_verification:
+        title: Date of verification
+        type: string
+        format: date
+        x-nullable: true
+      id_number:
+        title: Id number
+        type: string
+        maxLength: 3
+        x-nullable: true
+  Store:
+    required:
+      - region
+      - phone_number
+      - email
+    type: object
+    properties:
+      id:
+        title: ID
+        type: integer
+        readOnly: true
+      region:
+        title: Region
+        type: string
+        enum:
+          - KA
+          - ETT
+          - BAD
+          - BRU
+          - MAL
+      address:
+        title: Address
+        type: string
+        minLength: 1
+      phone_number:
+        title: Phone number
+        type: string
+        maxLength: 256
+        minLength: 1
+      email:
+        title: Email
+        type: string
+        maxLength: 256
+        minLength: 1
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      store_flag:
+        title: Store flag
+        type: integer
+        x-nullable: true
+  StoreInfo:
+    type: array
+    items:
+      type: object
+      properties:
+        name:
+          type: string
+        openhours:
+          type: object
+          properties:
+            mon:
+              type: object
+              properties:
+                opened:
+                  type: boolean
+                start:
+                  type: string
+                end:
+                  type: string
+            tue:
+              type: object
+              properties:
+                opened:
+                  type: boolean
+                start:
+                  type: string
+                end:
+                  type: string
+            wed:
+              type: object
+              properties:
+                opened:
+                  type: boolean
+                start:
+                  type: string
+                end:
+                  type: string
+            thu:
+              type: object
+              properties:
+                opened:
+                  type: boolean
+                start:
+                  type: string
+                end:
+                  type: string
+            fri:
+              type: object
+              properties:
+                opened:
+                  type: boolean
+                start:
+                  type: string
+                end:
+                  type: string
+            sat:
+              type: object
+              properties:
+                opened:
+                  type: boolean
+                start:
+                  type: string
+                end:
+                  type: string
+            sun:
+              type: object
+              properties:
+                opened:
+                  type: boolean
+                start:
+                  type: string
+                end:
+                  type: string
+        pretime:
+          type: string
