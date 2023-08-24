@@ -5,3 +5,4 @@ psycopg
 django-rest-knox==4.2.0
 authlib==1.2.1
 requests==2.31.0
+drf-yasg==1.21.7
