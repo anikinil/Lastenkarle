@@ -12,15 +12,30 @@
             color: red;
             text-decoration: none;
         }
+        .largeText {
+            font-size: 18px;
+        }
+        .normalText {
+            font-size: 16px
+        }
+        .center {
+            text-align: center;
+        }
+        .smallText {
+            font-size: 12px
+        }
     </style>
 </head>
 <body>
-    <img src="https://transport.data.kit.edu/static/Lastenkarle_header.png" alt="Header Image" style="width: 100%; max-width: 400px; display: block;">
-    <h2>Deine Buchung von {{ bike_name }} bei {{ station_name }} von {{ start_date }} bis {{ end_date }}</h2>
-    <p>Hallo {{ username }}!</p>
-    <p>Zur Abholung deines gebuchten Lastenfahrrads, zeige bitte diesen QR-Code vor:</p>
+    <div class="center">
+        <img src="https://transport.data.kit.edu/static/Lastenkarle_header.png" alt="Header Image" style="max-width: 400px; display: block;">
+    </div>
+    <h2 class="largeText">Deine Buchung von {{ bike_name }} bei {{ store_name }} von {{ start_date }} bis {{ end_date }}</h2>
+    <p class="normalText">Hallo {{ username }}!</p>
+    <p class="normalText">Zur Abholung deines gebuchten Lastenfahrrads, zeige bitte diesen QR-Code vor:</p>
     <img src="{{ qr_path }}" alt="QR Code" width="150" height="150">
-    <p>Wir wünschen eine gute Fahrt!</p>
-    <p>Das Team von Lastenkarle</p>
+    <p class="smallText">Booking-ID: {{ booking_string }}</p>
+    <p class="normalText">Wir wünschen eine gute Fahrt!</p>
+    <p class="normalText">Das Team von Lastenkarle</p>
 </body>
 </html>

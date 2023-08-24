@@ -1,11 +1,11 @@
-Django==4.2.3
+Django==4.2.4
 gunicorn==20.1.0
 djangorestframework==3.14.0
-psycopg
+psycopg==3.1.10
 django-rest-knox==4.2.0
 authlib==1.2.1
 requests==2.31.0
-pypng
-pyqrcode
-xhtml2pdf
-python-magic
+pypng==0.20220715.0
+PyQRCode==1.2.1
+xhtml2pdf==0.2.11
+python-magic==0.4.27
