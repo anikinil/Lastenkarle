@@ -12,6 +12,12 @@ from api.permissions import *
 from api.serializer import *
 from db_model.models import *
 from api.configs.ConfigFunctions import *
+from send_mail.views import send_booking_confirmation
+from send_mail.views import send_cancellation_through_store_confirmation
+from send_mail.views import send_bike_drop_off_confirmation
+from send_mail.views import send_bike_pick_up_confirmation
+from send_mail.views import send_user_warning_to_admins
+from send_mail.views import send_user_warning
 
 
 class AllUserFlags(APIView):
@@ -139,7 +145,7 @@ class MakeInternalBooking(APIView):
             booking.string = booking_string
             booking.save()
             split_availabilities_algorithm(booking)
-            #TODO: booking mail call
+            send_booking_confirmation(booking)
             serializer = BookingSerializer(booking, many=False)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -226,7 +232,7 @@ class SelectedBookingOfStore(APIView):
         booking.booking_status.set(Booking_Status.objects.filter(booking_status='Cancelled'))
         booking.string = None
         booking.save()
-        # TODO: cancellation through store confirmation call
+        send_cancellation_through_store_confirmation(booking)
         merge_availabilities_algorithm(booking)
         return Response(status=status.HTTP_202_ACCEPTED)
 
@@ -335,14 +341,14 @@ class ConfirmBikeHandOut(APIView):
         if not booking.booking_status.contains(Booking_Status.objects.get(booking_status='Picked up')):
             booking.booking_status.remove(Booking_Status.objects.get(booking_status='Booked').pk)
             booking.booking_status.add(Booking_Status.objects.get(booking_status='Picked up').pk)
-            #TODO: bike pick up confirmation call
+            send_bike_pick_up_confirmation(booking)
             return Response(status=status.HTTP_200_OK)
         if booking.booking_status.contains(Booking_Status.objects.get(booking_status='Picked up')):
             booking.booking_status.remove(Booking_Status.objects.get(booking_status='Picked up').pk)
             booking.booking_status.add(Booking_Status.objects.get(booking_status='Returned').pk)
             booking.string = None
             merge_availabilities_algorithm(booking)
-            #TODO: bike drop of confirmation call
+            send_bike_drop_off_confirmation(booking)
         return Response(status=status.HTTP_202_ACCEPTED)
 
 
@@ -373,9 +379,10 @@ class ReportComment(APIView):
 
     def post(self, request, booking_id):
         comment = Comment.objects.get(booking_id=booking_id)
+        booking = Booking.objects.get(pk=booking_id)
         store = self.request.user.is_staff_of_store()
-        #TODO: admin user warning notification call
-        #TODO: user warning call
+        send_user_warning_to_admins(booking)
+        send_user_warning(booking)
         return Response(status=status.HTTP_202_ACCEPTED)
 
 

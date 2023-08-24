@@ -16,6 +16,9 @@ from api.serializer import *
 from db_model.models import *
 
 from Buchungssystem_Lastenkarle.settings import CANONICAL_HOST
+from send_mail.views import send_banned_mail_to_user
+from send_mail.views import send_user_registered_confirmation
+from send_mail.views import send_cancellation_confirmation
 
 oauth = OAuth()
 
@@ -57,6 +60,7 @@ class RegistrateUser(CreateAPIView):
         if serializer.is_valid():
             serializer.save()
             #TODO: user registered confirmation call
+            #Problem: welchen Registrierungslink übergeben?
             #TODO: view for redirect page and set user as verified
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -127,7 +131,7 @@ class BookingFromUser(APIView):
         booking.string = None
         booking.save()
         merge_availabilities_algorithm(booking)
-        #TODO: cancellation confirmation call
+        send_cancellation_confirmation(booking)
         return Response(status=status.HTTP_200_OK)
 
 

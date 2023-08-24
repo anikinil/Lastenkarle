@@ -171,6 +171,9 @@ class LocalData(models.Model):
 class Equipment(models.Model):
     equipment = models.TextField(max_length=256, unique=True)
 
+    def __str__(self):
+        return self.equipment
+
 
 class Bike(models.Model):
     store = models.ForeignKey(Store, on_delete=models.CASCADE)

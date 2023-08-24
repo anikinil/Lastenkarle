@@ -11,6 +11,8 @@ from api.permissions import *
 from api.serializer import *
 from db_model.models import *
 from api.configs.ConfigFunctions import *
+from send_mail.views import send_cancellation_through_store_confirmation
+from send_mail.views import send_banned_mail_to_user
 
 
 class AllUserFlags(APIView):
@@ -89,7 +91,7 @@ class SelectedBooking(APIView):
         booking.string = None
         booking.save()
         merge_availabilities_algorithm(booking)
-        #TODO: cancellation throught store confirmation mail call
+        send_cancellation_through_store_confirmation(booking)
         return Response(status=status.HTTP_202_ACCEPTED)
 
 
@@ -282,7 +284,7 @@ class BanUser(APIView):
         user.user_status.add(User_Status.objects.get(user_status='Banned').pk)
         user.is_active = False
         user.save()
-        #TODO: User banned mail call
+        send_banned_mail_to_user(user)
         return Response(status=status.HTTP_202_ACCEPTED)
 
 
