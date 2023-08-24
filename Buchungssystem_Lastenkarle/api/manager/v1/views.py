@@ -199,8 +199,7 @@ class BookingsOfStore(APIView):
     def get(self, request):
         store = self.request.user.is_staff_of_store()
         bookings = Booking.objects.filter(bike__store=store)
-        fields_to_include = ['id', 'user', 'bike', 'begin', 'end', 'booking_status']
-        serializer = BookingSerializer(bookings, many=True, fields=fields_to_include)
+        serializer = BookingSerializer(bookings, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -211,8 +210,7 @@ class SelectedBookingOfStore(APIView):
     def get(self, request, booking_id):
         store = self.request.user.is_staff_of_store()
         bookings = Booking.objects.get(pk=booking_id, bike__store=store)
-        fields_to_include = ['user', 'bike', 'begin', 'end', 'booking_status']
-        serializer = BookingSerializer(bookings, many=False, fields=fields_to_include)
+        serializer = BookingSerializer(bookings, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, booking_id):
