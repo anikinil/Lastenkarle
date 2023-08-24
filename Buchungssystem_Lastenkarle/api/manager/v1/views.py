@@ -74,8 +74,7 @@ class BikesOfStore(APIView):
     def get(self, request):
         store = self.request.user.is_staff_of_store()
         bikes = Bike.objects.filter(store=store)
-        fields_to_include = ['id', 'name', 'description', 'image_link']
-        serializer = BikeSerializer(bikes, many=True, fields=fields_to_include)
+        serializer = BikeSerializer(bikes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
@@ -101,10 +100,9 @@ class SelectedBike(APIView):
             Bike.objects.get(pk=bike_id)
         except ObjectDoesNotExist:
             raise Http404
-        fields_to_include = ['id', 'name', 'description', 'image_link']
         store = self.request.user.is_staff_of_store()
         bike = Bike.objects.get(pk=bike_id, store=store)
-        serializer = BikeSerializer(bike, many=False, fields=fields_to_include)
+        serializer = BikeSerializer(bike, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 

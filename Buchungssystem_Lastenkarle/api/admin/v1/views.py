@@ -353,17 +353,3 @@ class SelectedStoreConfiguration(APIView):
         store = Store.objects.get(pk=store_id)
         update_store_config(store.name, request.data)
         return Response(getStoreConfig(store.name), status=status.HTTP_200_OK)
-
-
-class ImageUploadView(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated & IsSuperUser & IsVerfied]
-    def post(self, request, format=None):
-        serializer = ImageUploadSerializer(data=request.data)
-        if serializer.is_valid():
-            image = serializer.validated_data['image']
-            # Here you can process and store the image
-            # For example, you can save it to the media directory
-            # or upload it to a cloud storage service
-            return Response({'message': 'Image uploaded successfully'}, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
