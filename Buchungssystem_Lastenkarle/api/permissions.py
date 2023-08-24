@@ -22,6 +22,6 @@ class IsVerfied(permissions.BasePermission):
 
     def has_permission(self, request, view):
         user = request.user
-        if user.user_status.contatins(User_Status.objects.get(user_status='Verified')):
+        if user.user_status.contains(User_Status.objects.get(user_status='Verified')):
             return True
         return False

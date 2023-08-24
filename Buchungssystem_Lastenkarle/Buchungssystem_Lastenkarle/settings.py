@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'api',
     'db_model',
     'knox',
+
 ]
 
 REST_FRAMEWORK = {
@@ -169,3 +170,7 @@ STATIC_ROOT = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #todo put this in an enviroment file for configuration
 CANONICAL_HOST = "http://localhost"
+
+DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'

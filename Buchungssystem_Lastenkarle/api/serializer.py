@@ -1,6 +1,6 @@
-from rest_framework import serializers
 from django.contrib.auth import authenticate
 from db_model.models import *
+from rest_framework import serializers
 
 
 class UserStatusSerializer(serializers.ModelSerializer):
@@ -191,22 +191,3 @@ class AvailabilitySerializer(serializers.ModelSerializer):
         if fields is not None:
             for field_name in set(self.fields.keys()) - set(fields):
                 self.fields.pop(field_name)
-
-
-class CommentSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Comment
-        fields = '__all__'
-
-    def __init__(self, *args, **kwargs):
-        fields = kwargs.pop('fields', None)
-        super().__init__(*args, **kwargs)
-        if fields is not None:
-            for field_name in set(self.fields.keys()) - set(fields):
-                self.fields.pop(field_name)
-
-    def update(self, instance, validated_data):
-        instance = super().update(instance, validated_data)
-        return instance
-

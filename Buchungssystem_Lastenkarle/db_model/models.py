@@ -182,7 +182,7 @@ class Bike(models.Model):
     store = models.ForeignKey(Store, on_delete=models.CASCADE)
     name = models.TextField(default="ERROR")
     description = models.TextField(default="ERROR")
-    image_link = models.TextField(default="ERROR")
+    image_link = models.ImageField(upload_to='bikes/')
     equipment = models.ManyToManyField(Equipment)
 
     def delete(self, *args, **kwargs):
@@ -220,16 +220,11 @@ class Booking(models.Model):
     begin = models.DateField(null=True)
     end = models.DateField(null=True)
     string = models.CharField(max_length=5, null=True, unique=True)
+    comment = models.TextField(max_length=1028, default="")
     booking_status = models.ManyToManyField(Booking_Status)
     equipment = models.ManyToManyField(Equipment)
 
 
 class Mail_Template(models.Model):
     subject = models.TextField(default="ERROR")
-    content = models.TextField(default="ERROR")
-
-
-class Comment(models.Model):
-    store = models.ForeignKey(Store, on_delete=models.CASCADE)
-    booking = models.OneToOneField(Booking, on_delete=models.CASCADE)
     content = models.TextField(default="ERROR")

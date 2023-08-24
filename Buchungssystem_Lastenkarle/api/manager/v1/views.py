@@ -235,32 +235,15 @@ class CommentToBooking(APIView):
 
     def get(self, request, booking_id):
         store = self.request.user.is_staff_of_store()
-        if not Comment.objects.filter(store=store, booking_id=booking_id).exists():
-            error_message = {'error': 'Booking has no associated comment'}
-            return Response(error_message, status=status.HTTP_404_NOT_FOUND)
-        fields_to_include = ['content']
-        comment = Comment.objects.get(store=store, booking_id=booking_id)
-        serializer = CommentSerializer(comment, fields=fields_to_include, many=False)
+        booking = Booking.objects.get(pk=booking_id)
+        fields_to_include = ['comment']
+        serializer = BookingSerializer(booking, fields=fields_to_include, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def post(self, request, booking_id):
-        store = self.request.user.is_staff_of_store()
-        additional_data = {
-            'store': store.pk,
-            'booking': booking_id,
-        }
-        data = {**request.data, **additional_data}
-        serializer = CommentSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
     def patch(self, request, booking_id, *args, **kwargs):
-        store = self.request.user.is_staff_of_store()
-        fields_to_include = ['content']
-        instance = Comment.objects.get(store=store, booking_id=booking_id)
-        serializer = CommentSerializer(instance, data=request.data, fields=fields_to_include, partial=True)
+        fields_to_include = ['comment']
+        instance = Booking.objects.get(pk=booking_id)
+        serializer = BookingSerializer(instance, data=request.data, fields=fields_to_include, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)

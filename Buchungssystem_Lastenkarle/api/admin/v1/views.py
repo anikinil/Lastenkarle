@@ -97,10 +97,11 @@ class CommentOfBooking(APIView):
     permission_classes = [IsAuthenticated & IsSuperUser & IsVerfied]
 
     def get(self, request, booking_id):
-        if not Comment.objects.filter(booking_id=booking_id).exists():
+        if not Booking.objects.filter(pk=booking_id).exists():
             raise Http404
-        comment = Comment.objects.get(booking_id=booking_id)
-        serializer = CommentSerializer(comment, many=False)
+        booking = Booking.objects.get(booking_id=booking_id)
+        fields_to_include = ['comment']
+        serializer = BookingSerializer(booking, many=False, fields=fields_to_include)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -113,6 +114,7 @@ class AddBike(APIView):
             'store': store_id,
         }
         data = {**request.data, **additional_data}
+
         serializer = BikeSerializer(data=data)
         if serializer.is_valid():
             bike = serializer.save()
@@ -351,3 +353,17 @@ class SelectedStoreConfiguration(APIView):
         store = Store.objects.get(pk=store_id)
         update_store_config(store.name, request.data)
         return Response(getStoreConfig(store.name), status=status.HTTP_200_OK)
+
+
+class ImageUploadView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated & IsSuperUser & IsVerfied]
+    def post(self, request, format=None):
+        serializer = ImageUploadSerializer(data=request.data)
+        if serializer.is_valid():
+            image = serializer.validated_data['image']
+            # Here you can process and store the image
+            # For example, you can save it to the media directory
+            # or upload it to a cloud storage service
+            return Response({'message': 'Image uploaded successfully'}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
