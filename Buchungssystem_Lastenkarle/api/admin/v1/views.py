@@ -92,7 +92,6 @@ class SelectedBooking(APIView):
         #TODO: cancellation throught store confirmation mail call
         return Response(status=status.HTTP_202_ACCEPTED)
 
-
 class CommentOfBooking(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated & IsSuperUser]
@@ -148,7 +147,14 @@ class SelectedBike(APIView):
     permission_classes = [IsAuthenticated & IsSuperUser]
 
     def get(self, request, bike_id):
-        bike = Bike.objects.get(pk=bike_id)
+        try:
+            bike = Bike.objects.get(pk=bike_id)
+        except Bike.DoesNotExist:
+            return Response(
+                {"detail": "The selected bike does not exist."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
         serializer = BikeSerializer(bike, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -158,23 +164,42 @@ class UpdateSelectedBike(APIView):
     permission_classes = [IsAuthenticated & IsSuperUser]
 
     def patch(self, request, bike_id, *args, **kwargs):
-        instance = Bike.objects.get(pk=bike_id)
+        try:
+            instance = Bike.objects.get(pk=bike_id)
+        except Bike.DoesNotExist:
+            return Response(
+                {"detail": "The selected bike does not exist."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
         serializer = BikeSerializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
-
 
 class EquipmentOfBike(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated & IsSuperUser]
 
     def post(self, request, bike_id):
-        bike = Bike.objects.get(pk=bike_id)
+        try:
+            bike = Bike.objects.get(pk=bike_id)
+        except Bike.DoesNotExist:
+            return Response(
+                {"detail": "The selected bike does not exist."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
         equipment = request.data['equipment']
         if Equipment.objects.filter(equipment=equipment).exists():
+            if bike.equipment.filter(equipment=equipment).exists():
+                return Response(
+                    {"detail": "Equipment is already added to the bike."},
+                    status=status.HTTP_202_ACCEPTED
+                )
             bike.equipment.add(Equipment.objects.get(equipment=equipment).pk)
             return Response(status=status.HTTP_202_ACCEPTED)
+
         serializer = EquipmentSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         new_equipment = serializer.save()
@@ -244,7 +269,11 @@ class SelectedStore(APIView):
     permission_classes = [IsAuthenticated & IsSuperUser]
 
     def get(self, request, store_id):
-        store = Store.objects.get(pk=store_id)
+        try:
+            store = Store.objects.get(pk=store_id)
+        except Store.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
         serializer = StoreSerializer(store, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -254,7 +283,11 @@ class UpdateSelectedStore(APIView):
     permission_classes = [IsAuthenticated & IsSuperUser]
 
     def patch(self, request, store_id, *args, **kwargs):
-        instance = Store.objects.get(pk=store_id)
+        try:
+            instance = Store.objects.get(pk=store_id)
+        except Store.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
         serializer = StoreSerializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -266,7 +299,11 @@ class AvailabilityOfBikesFromStore(APIView):
     permission_classes = [IsAuthenticated & IsSuperUser]
 
     def get(self, request, store_id):
-        store = Store.objects.get(pk=store_id)
+        try:
+            store = Store.objects.get(pk=store_id)
+        except Store.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
         availabilities = Availability.objects.filter(store=store)
         serializer = AvailabilitySerializer(availabilities, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -277,12 +314,20 @@ class BanUser(APIView):
     permission_classes = [IsAuthenticated & IsSuperUser]
 
     def post(self, request):
-        contact_data = request.data['contact_data']
-        user = User.objects.get(contact_data=contact_data)
-        user.user_status.add(User_Status.objects.get(user_status='Banned').pk)
+        contact_data = request.data.get('contact_data')
+
+        try:
+            user = User.objects.get(contact_data=contact_data)
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        user_status_banned = User_Status.objects.get(user_status='Banned')
+        user.user_status.add(user_status_banned)
         user.is_active = False
         user.save()
-        #TODO: User banned mail call
+
+        # TODO: Implement User banned mail call
+
         return Response(status=status.HTTP_202_ACCEPTED)
 
 

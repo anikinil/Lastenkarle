@@ -1,4 +1,3 @@
-from django.shortcuts import redirect
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -28,7 +27,6 @@ class HelmholtzLoginView(APIView):
     def get(self, request, *args, **kwargs):
         redirect_uri = CANONICAL_HOST + '/api/user/v1/helmholtz/auth'
         return oauth.helmholtz.authorize_redirect(request, redirect_uri)
-
 
 
 class HelmholtzAuthView(KnoxLoginView):
@@ -61,7 +59,6 @@ class RegistrateUser(CreateAPIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
 class UpdateUserData(RetrieveUpdateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -74,7 +71,6 @@ class UpdateUserData(RetrieveUpdateAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
-
 
 class LoginView(KnoxLoginView):
     permission_classes = (AllowAny,)
@@ -90,7 +86,6 @@ class LoginView(KnoxLoginView):
             return Response({'message': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
         return Response(response.data, status=status.HTTP_200_OK)
 
-
 class AllBookingsFromUser(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
@@ -100,7 +95,6 @@ class AllBookingsFromUser(APIView):
         bookings = Booking.objects.filter(user=request.user)
         serializer = BookingSerializer(bookings, many=True, fields=fields_to_include)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
 
 class BookingFromUser(APIView):
     authentication_classes = [TokenAuthentication]
@@ -127,9 +121,8 @@ class BookingFromUser(APIView):
         booking.string = None
         booking.save()
         merge_availabilities_algorithm(booking)
-        #TODO: cancellation confirmation call
+        # TODO: cancellation confirmation call
         return Response(status=status.HTTP_200_OK)
-
 
 class BookedBike(APIView):
     authentication_classes = [TokenAuthentication]
@@ -145,7 +138,6 @@ class BookedBike(APIView):
         serializer = BikeSerializer(bike, many=False, fields=fields_to_include)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
 class StoreOfBookedBike(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
@@ -160,20 +152,17 @@ class StoreOfBookedBike(APIView):
         serializer = StoreSerializer(store, many=False, fields=fields_to_include)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
 class LocalDataOfUser(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         try:
-            LocalData.objects.get(user=User.objects.get(pk=self.request.user.pk))
+            local_data = LocalData.objects.get(user=User.objects.get(pk=self.request.user.pk))
         except ObjectDoesNotExist:
             raise Http404
-        data = LocalData.objects.get(user=User.objects.get(pk=self.request.user.pk))
-        serializer = LocalDataSerializer(data, many=False)
+        serializer = LocalDataSerializer(local_data, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
 
 class UserDataOfUser(APIView):
     authentication_classes = [TokenAuthentication]
@@ -181,13 +170,11 @@ class UserDataOfUser(APIView):
 
     def get(self, request):
         try:
-            User.objects.get(pk=self.request.user.pk)
+            user_data = User.objects.get(pk=self.request.user.pk)
         except ObjectDoesNotExist:
             raise Http404
-        data = User.objects.get(pk=self.request.user.pk)
-        serializer = UserSerializer(data, many=False)
+        serializer = UserSerializer(user_data, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
 
 class DeleteUserAccount(APIView):
     authentication_classes = [TokenAuthentication]
