@@ -53,11 +53,28 @@ class RegistrateUser(CreateAPIView):
     def post(self, request, *args, **kwargs):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            user = serializer.save()
+            user.verification_string = generate_random_string(30)
+            user.save()
             #TODO: user registered confirmation call
             #TODO: view for redirect page and set user as verified
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ConfirmEmail(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = (AllowAny,)
+
+    def post(self, request, user_id, verification_string):
+        if User.objects.filter(pk=user_id, verification_string=verification_string).exists():
+            user = User.objects.get(pk=user_id)
+            user.user_status.add(User_Status.objects.get(user_status='Verified'))
+            user.verification_string = None
+            user.save()
+            return Response(status=status.HTTP_202_ACCEPTED)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
 
 class UpdateUserData(RetrieveUpdateAPIView):
     queryset = User.objects.all()
@@ -67,6 +84,13 @@ class UpdateUserData(RetrieveUpdateAPIView):
 
     def update(self, request, *args, **kwargs):
         instance = self.request.user
+        if request.data.get('contact_data') is not None:
+            user = request.user
+            if user.user_status.contains(User_Status.objects.get(user_status='Verified')):
+                user.user_status.remove(User_Status.objects.get(user_status='Verified'))
+                user.verification_string = generate_random_string(30)
+                #TODO email change call
+                user.save()
         serializer = self.get_serializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()

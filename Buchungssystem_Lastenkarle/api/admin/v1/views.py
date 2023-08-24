@@ -15,7 +15,7 @@ from api.configs.ConfigFunctions import *
 
 class AllUserFlags(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated & IsSuperUser]
+    permission_classes = [IsAuthenticated & IsSuperUser & IsVerfied]
 
     def get(self, request):
         user_status = User_Status.objects.all()
@@ -35,7 +35,7 @@ class AllUserFlags(APIView):
 
 class AllUsers(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated & IsSuperUser]
+    permission_classes = [IsAuthenticated & IsSuperUser & IsVerfied]
 
     def get(self, request):
         users = User.objects.all()
@@ -45,7 +45,7 @@ class AllUsers(APIView):
 
 class SelectedUser(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated & IsSuperUser]
+    permission_classes = [IsAuthenticated & IsSuperUser & IsVerfied]
 
     def get(self, request, user_id):
         user = User.objects.get(pk=user_id)
@@ -55,7 +55,7 @@ class SelectedUser(APIView):
 
 class AllBookingsOfUser(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated & IsSuperUser]
+    permission_classes = [IsAuthenticated & IsSuperUser & IsVerfied]
 
     def get(self, request, user_id):
         bookings = Booking.objects.filter(user_id=user_id)
@@ -65,7 +65,7 @@ class AllBookingsOfUser(APIView):
 
 class AllBookings(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated & IsSuperUser]
+    permission_classes = [IsAuthenticated & IsSuperUser & IsVerfied]
 
     def get(self, request):
         bookings = Booking.objects.all()
@@ -75,7 +75,7 @@ class AllBookings(APIView):
 
 class SelectedBooking(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated & IsSuperUser]
+    permission_classes = [IsAuthenticated & IsSuperUser & IsVerfied]
 
     def get(self, request, booking_id):
         bookings = Booking.objects.get(pk=booking_id)
@@ -94,25 +94,27 @@ class SelectedBooking(APIView):
 
 class CommentOfBooking(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated & IsSuperUser]
+    permission_classes = [IsAuthenticated & IsSuperUser & IsVerfied]
 
     def get(self, request, booking_id):
-        if not Comment.objects.filter(booking_id=booking_id).exists():
+        if not Booking.objects.filter(pk=booking_id).exists():
             raise Http404
-        comment = Comment.objects.get(booking_id=booking_id)
-        serializer = CommentSerializer(comment, many=False)
+        booking = Booking.objects.get(booking_id=booking_id)
+        fields_to_include = ['comment']
+        serializer = BookingSerializer(booking, many=False, fields=fields_to_include)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class AddBike(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated & IsSuperUser]
+    permission_classes = [IsAuthenticated & IsSuperUser & IsVerfied]
 
     def post(self, request, store_id):
         additional_data = {
             'store': store_id,
         }
         data = {**request.data, **additional_data}
+
         serializer = BikeSerializer(data=data)
         if serializer.is_valid():
             bike = serializer.save()
@@ -126,7 +128,7 @@ class DeleteBike(DestroyAPIView):
     queryset = Bike.objects.all()
     serializer_class = BikeSerializer
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated & IsSuperUser]
+    permission_classes = [IsAuthenticated & IsSuperUser & IsVerfied]
 
     def perform_destroy(self, instance):
         instance.delete()
@@ -134,7 +136,7 @@ class DeleteBike(DestroyAPIView):
 
 class AllBikes(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated & IsSuperUser]
+    permission_classes = [IsAuthenticated & IsSuperUser & IsVerfied]
 
     def get(self, request):
         bikes = Bike.objects.all()
@@ -144,7 +146,7 @@ class AllBikes(APIView):
 
 class SelectedBike(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated & IsSuperUser]
+    permission_classes = [IsAuthenticated & IsSuperUser & IsVerfied]
 
     def get(self, request, bike_id):
         try:
@@ -161,7 +163,7 @@ class SelectedBike(APIView):
 
 class UpdateSelectedBike(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated & IsSuperUser]
+    permission_classes = [IsAuthenticated & IsSuperUser & IsVerfied]
 
     def patch(self, request, bike_id, *args, **kwargs):
         try:
@@ -179,7 +181,7 @@ class UpdateSelectedBike(APIView):
 
 class EquipmentOfBike(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated & IsSuperUser]
+    permission_classes = [IsAuthenticated & IsSuperUser & IsVerfied]
 
     def post(self, request, bike_id):
         try:
@@ -210,7 +212,7 @@ class EquipmentOfBike(APIView):
 
 class RegisteredEquipment(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated & IsSuperUser]
+    permission_classes = [IsAuthenticated & IsSuperUser & IsVerfied]
 
     def get(self, request):
         equipment = Equipment.objects.all()
@@ -220,7 +222,7 @@ class RegisteredEquipment(APIView):
 
 class AvailabilityOfBike(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated & IsSuperUser]
+    permission_classes = [IsAuthenticated & IsSuperUser & IsVerfied]
 
     def get(self, request, bike_id):
         availability = Availability.objects.filter(bike_id=bike_id)
@@ -230,7 +232,7 @@ class AvailabilityOfBike(APIView):
 
 class AddStore(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated & IsSuperUser]
+    permission_classes = [IsAuthenticated & IsSuperUser & IsVerfied]
 
     def post(self, request):
         serializer = StoreSerializer(data=request.data)
@@ -248,7 +250,7 @@ class DeleteStore(DestroyAPIView):
     queryset = Store.objects.all()
     serializer_class = StoreSerializer
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated & IsSuperUser]
+    permission_classes = [IsAuthenticated & IsSuperUser & IsVerfied]
 
     def perform_destroy(self, instance):
         instance.delete()
@@ -256,7 +258,7 @@ class DeleteStore(DestroyAPIView):
 
 class AllStores(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated & IsSuperUser]
+    permission_classes = [IsAuthenticated & IsSuperUser & IsVerfied]
 
     def get(self, request):
         stores = Store.objects.all()
@@ -266,7 +268,7 @@ class AllStores(APIView):
 
 class SelectedStore(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated & IsSuperUser]
+    permission_classes = [IsAuthenticated & IsSuperUser & IsVerfied]
 
     def get(self, request, store_id):
         try:
@@ -280,7 +282,7 @@ class SelectedStore(APIView):
 
 class UpdateSelectedStore(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated & IsSuperUser]
+    permission_classes = [IsAuthenticated & IsSuperUser & IsVerfied]
 
     def patch(self, request, store_id, *args, **kwargs):
         try:
@@ -296,7 +298,7 @@ class UpdateSelectedStore(APIView):
 
 class AvailabilityOfBikesFromStore(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated & IsSuperUser]
+    permission_classes = [IsAuthenticated & IsSuperUser & IsVerfied]
 
     def get(self, request, store_id):
         try:
@@ -311,7 +313,7 @@ class AvailabilityOfBikesFromStore(APIView):
 
 class BanUser(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated & IsSuperUser]
+    permission_classes = [IsAuthenticated & IsSuperUser & IsVerfied]
 
     def post(self, request):
         contact_data = request.data.get('contact_data')
@@ -333,7 +335,7 @@ class BanUser(APIView):
 
 class AllStoreConfigurations(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated & IsSuperUser]
+    permission_classes = [IsAuthenticated & IsSuperUser & IsVerfied]
 
     def get(self, request):
         return Response(getAllStoresConfig(), status=status.HTTP_200_OK)
@@ -341,7 +343,7 @@ class AllStoreConfigurations(APIView):
 
 class SelectedStoreConfiguration(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated & IsSuperUser]
+    permission_classes = [IsAuthenticated & IsSuperUser & IsVerfied]
 
     def get(self, request, store_id):
         store = Store.objects.get(pk=store_id)

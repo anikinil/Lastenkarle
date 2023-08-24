@@ -30,16 +30,22 @@ def merge_availabilities_from_until_algorithm(from_date, until_date, store, bike
         left_availability = Availability.objects.filter(
             Q(from_date__lt=from_date.isoformat()) &
             Q(store=store) &
-            Q(bike=bike),
-            availability_status=Availability_Status.objects.get(availability_status='Booked')
+            Q(bike=bike)
         ).order_by('from_date').last()
+
+        if left_availability is not None and not \
+                left_availability.availability_status == Availability_Status.objects.get(availability_status='Booked'):
+            left_availability = None
 
         right_availability = Availability.objects.filter(
             Q(from_date__gte=from_date.isoformat()) &
             Q(store=store) &
             Q(bike=bike),
-            availability_status=Availability_Status.objects.get(availability_status='Booked')
         ).order_by('from_date').first()
+
+        if right_availability is not None and not \
+                right_availability.availability_status == Availability_Status.objects.get(availability_status='Booked'):
+            right_availability = None
 
         if left_availability is not None and right_availability is not None:
             filtered_interval = [left_availability, right_availability]
@@ -66,6 +72,8 @@ def merge_availabilities_from_until_algorithm(from_date, until_date, store, bike
         )
         booking.booking_status.clear()
         booking.booking_status.set(Booking_Status.objects.filter(booking_status='Cancelled'))
+        booking.string = None
+        booking.save()
         #TODO: cancellation through store confirmation call
         merge_availabilities_algorithm(booking)
     return True

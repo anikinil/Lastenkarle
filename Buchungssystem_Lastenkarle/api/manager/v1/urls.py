@@ -10,7 +10,7 @@ urlpatterns = [
     path('configuration', views.StoreConfigFile.as_view()),
     path('bikes', views.BikesOfStore.as_view()),
     path('bikes/<int:bike_id>', views.SelectedBike.as_view()),
-    path('bikes/<int:bike_id>/delete', views.DeleteBike.as_view()),
+    path('bikes/<int:pk>/delete', views.DeleteBike.as_view()),
     path('bikes/<int:bike_id>/update', views.UpdateSelectedBike.as_view()),
     path('bikes/<int:bike_id>/availability', views.SelectedBikeAvailability.as_view()),
     path('bikes/<int:bike_id>/add-equipment', views.SelectedBikeEquipment.as_view()),

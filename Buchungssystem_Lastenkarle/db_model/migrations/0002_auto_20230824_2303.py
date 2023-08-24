@@ -47,4 +47,4 @@ class Migration(migrations.Migration):
         migrations.RunPython(populate_booking_status_entries),
         migrations.RunPython(populate_availability_status_entries),
         migrations.RunPython(populate_bike_equipment_entries),
-    ] 
+    ]

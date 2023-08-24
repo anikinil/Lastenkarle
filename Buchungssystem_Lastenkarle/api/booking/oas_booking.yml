@@ -330,6 +330,10 @@ definitions:
       is_active:
         title: Is active
         type: boolean
+      verification_string:
+        title: verification string
+        type: string
+        x-nullable: true
       username:
         title: Username
         type: string

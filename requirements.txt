@@ -5,3 +5,5 @@ psycopg
 django-rest-knox==4.2.0
 authlib==1.2.1
 requests==2.31.0
+django-storages
+Pillow==10.0.0
