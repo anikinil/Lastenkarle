@@ -78,8 +78,8 @@ class SelectedBooking(APIView):
     permission_classes = [IsAuthenticated & IsSuperUser]
 
     def get(self, request, booking_id):
-        booking = Booking.objects.get(pk=booking_id)
-        serializer = BookingSerializer(booking, many=False)
+        bookings = Booking.objects.get(pk=booking_id)
+        serializer = BookingSerializer(bookings, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, booking_id):
@@ -89,8 +89,8 @@ class SelectedBooking(APIView):
         booking.string = None
         booking.save()
         merge_availabilities_algorithm(booking)
+        #TODO: cancellation throught store confirmation mail call
         return Response(status=status.HTTP_202_ACCEPTED)
-
 
 class CommentOfBooking(APIView):
     authentication_classes = [TokenAuthentication]

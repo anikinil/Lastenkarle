@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'api',
     'db_model',
     'knox',
-    'drf_yasg',
 ]
 
 REST_FRAMEWORK = {
