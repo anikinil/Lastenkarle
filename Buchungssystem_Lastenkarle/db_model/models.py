@@ -28,6 +28,8 @@ class UserManager(BaseUserManager):
         if user.is_superuser:
             user_status_admin = User_Status.objects.get(user_status='Administrator')
             user.user_status.add(user_status_admin)
+            user_status_verified = User_Status.objects.get(user_status='Verified')
+            user.user_status.add(user_status_verified)
 
         return user
 
