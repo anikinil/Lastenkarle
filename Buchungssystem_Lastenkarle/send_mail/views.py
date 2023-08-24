@@ -16,6 +16,7 @@ from xhtml2pdf import pisa
 from django.template.loader import get_template
 from io import BytesIO
 import urllib.parse
+import api.configs.ConfigFunctions
 
 # TODO: In Config-file auslagern
 lastenkarle_logo_url = "https://transport.data.kit.edu/static/Lastenkarle_header.png"
@@ -35,7 +36,8 @@ def send_booking_confirmation(booking):
 
     # Extract the filename from the attachment_path
     file_name = os.path.basename(attachment_path)
-
+    opening_hours = api.configs.ConfigFunctions.format_opening_hours(booking.bike.store.name)
+    print(booking.equipment)
     subject = "Deine Buchung von %s bei %s von %s bis %s" % (
         booking.bike.name, booking.bike.store.name, booking.begin, booking.end)
     # Email-Template für Buchungsbestätigung mit Daten füllen
@@ -46,12 +48,14 @@ def send_booking_confirmation(booking):
                                      'booking_link': booking_link,
                                      'start_date': booking.begin,
                                      'end_date': booking.end,
-                                     'store_opening_hours': "Hier könnten ihre Öffnungszeiten stehen",
+                                     'store_opening_hours': opening_hours,
+                                     'booking_equipment': booking.equipment,
                                      'lastenkarle_logo_url': lastenkarle_logo_url,
                                      'store_address': booking.bike.store.address,
                                      'store_phone_number': booking.bike.store.phone_number,
                                      'store_email': booking.bike.store.email,
                                      'spenden_link': spenden_link,
+                                     ''
                                      'lastenkarle_contact_data': split_string_by_delimiter(lastenkarle_contact_data,
                                                                                            ";")})
     from_email = EMAIL_HOST_USER

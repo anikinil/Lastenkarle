@@ -32,7 +32,9 @@
   <p class="headline-red">Buchungsdetails/Stornierung</p>
   
   <p class="text-black">Du kannst deine Buchungsdetails hier einsehen und die Buchung jederzeit stornieren: <a class="red-link" href="{{ booking_link }}">Link zu deiner Buchung</a>.</p>
-  
+  {% if booking_equipment %}
+    Du hast folgendes Equipment zu deiner Buchung hinzugefügt: {{ booking_equipment }}
+  {% endif %}
   <p class="headline-red">Informationen zur Abholung</p>
   
   <p class="text-black">Hole {{ bike_name }} am {{ start_date }} bei der Station {{ store_name }} ab.<br>
