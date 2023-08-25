@@ -227,11 +227,13 @@ def send_user_registered_confirmation(user, registration_link):
 
 
 def send_user_verified_confirmation(user):
+    registration_link = urllib.parse.urljoin(urllib.parse.urljoin(CANONICAL_HOST, user.pk), user.verification_string)
     # set email subject
     subject = "Statuswechsel deines Accounts: Du bist verifiziert"
     # fill email template with content
     html_message = render_to_string("email_templates/UserVerifiedConfirmation.html",
                                     {'username': user.username,
+                                     'registration_link': registration_link,
                                      'lastenkarle_logo_url': lastenkarle_logo_url,
                                      'lastenkarle_contact_data': split_string_by_delimiter(lastenkarle_contact_data,
                                                                                            ";")})
@@ -246,12 +248,14 @@ def send_user_verified_confirmation(user):
     email.send()
 
 
-def send_user_changed_mail(user, registration_link):
+def send_user_changed_mail(user):
+    verification_link = urllib.parse.urljoin(urllib.parse.urljoin(CANONICAL_HOST, user.pk), user.verification_string)
     # set email subject
     subject = "Dein Account bei Lastenkarle: Bitte bestätige deine E-Mail"
     # fill email template with content
     html_message = render_to_string("email_templates/EmailChangedTemplate.html",
                                     {'username': user.username,
+                                     'verification_string': verification_link,
                                      'lastenkarle_logo_url': lastenkarle_logo_url,
                                      'registration_link': registration_link})
     # set email-address to send from
@@ -345,7 +349,7 @@ def create_and_save_booking_pdf_from_html(html_content, booking_string):
     project_dir = os.path.abspath(
         os.path.dirname(__file__))
     # Construct the output PDF path
-    output_pdf_path = project_dir + '/pdf/%s.pdf' % (booking_string)  # Passe den Pfad an
+    output_pdf_path = os.path.join(project_dir, 'pdf', f'{booking_string}.pdf')
     # Open the PDF file for writing
     pdf_file = open(output_pdf_path, "wb")
     # Generate the PDF using xhtml2pdf library

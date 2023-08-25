@@ -58,7 +58,6 @@ class RegistrateUser(CreateAPIView):
         if serializer.is_valid():
             serializer.save()
             #TODO: user registered confirmation call
-            #Problem: welchen Registrierungslink übergeben?
             #TODO: view for redirect page and set user as verified
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
