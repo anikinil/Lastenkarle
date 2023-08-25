@@ -15,6 +15,11 @@ from api.serializer import *
 from db_model.models import *
 
 from Buchungssystem_Lastenkarle.settings import CANONICAL_HOST
+from send_mail.views import send_banned_mail_to_user
+from send_mail.views import send_user_registered_confirmation
+from send_mail.views import send_cancellation_confirmation
+from send_mail.views import send_user_changed_mail
+from send_mail.views import send_user_registered_confirmation
 
 oauth = OAuth()
 
@@ -56,7 +61,7 @@ class RegistrateUser(CreateAPIView):
             user = serializer.save()
             user.verification_string = generate_random_string(30)
             user.save()
-            #TODO: user registered confirmation call
+            send_user_registered_confirmation(user)
             #TODO: view for redirect page and set user as verified
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -84,16 +89,19 @@ class UpdateUserData(RetrieveUpdateAPIView):
 
     def update(self, request, *args, **kwargs):
         instance = self.request.user
+        print("i am here 1")
         if request.data.get('contact_data') is not None:
+            print("i am here 2")
             user = request.user
             if user.user_status.contains(User_Status.objects.get(user_status='Verified')):
                 user.user_status.remove(User_Status.objects.get(user_status='Verified'))
                 user.verification_string = generate_random_string(30)
-                #TODO email change call
+                print("i am here 3")
                 user.save()
         serializer = self.get_serializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
+        send_user_changed_mail(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class LoginView(KnoxLoginView):
@@ -145,7 +153,7 @@ class BookingFromUser(APIView):
         booking.string = None
         booking.save()
         merge_availabilities_algorithm(booking)
-        # TODO: cancellation confirmation call
+        send_cancellation_confirmation(booking)
         return Response(status=status.HTTP_200_OK)
 
 class BookedBike(APIView):

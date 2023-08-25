@@ -1,0 +1,32 @@
+{% load static %}
+<html>
+<head>
+    <style>
+        body {
+            font-family: 'Calibri', sans-serif;
+        }
+        .bold {
+            font-weight: bold;
+        }
+        .red-link {
+            color: red;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <img src="{{ lastenkarle_logo_url }}" alt="Header Image" style="width: 100%; max-width: 400px; display: block;">
+    <p>Hallo {{ username }}!</p>
+    <p>Der Status deines Accounts wurde auf "Gebannt" geändert. Das bedeutet, dass du von unseren Diensten ausgeschlossen bist.</p>
+    <p>Erst nach Ablauf dieser Zeit kannst du wieder Lastenräder buchen.</p>
+    <p>Bei Rückfragen, melde dich bei uns.</p>
+    <p class="bold">Unsere Kontaktdaten:</p>
+    <p class="text-black">
+        {% for contact_line in lastenkarle_contact_data %}
+            {{ contact_line }}<br>
+        {% endfor %}
+    </p>
+
+    <p>Das Team von Lastenkarle</p>
+</body>
+</html>
