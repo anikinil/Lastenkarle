@@ -18,6 +18,8 @@ from Buchungssystem_Lastenkarle.settings import CANONICAL_HOST
 from send_mail.views import send_banned_mail_to_user
 from send_mail.views import send_user_registered_confirmation
 from send_mail.views import send_cancellation_confirmation
+from send_mail.views import send_user_changed_mail
+from send_mail.views import send_user_registered_confirmation
 
 oauth = OAuth()
 
@@ -56,11 +58,28 @@ class RegistrateUser(CreateAPIView):
     def post(self, request, *args, **kwargs):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            #TODO: user registered confirmation call
+            user = serializer.save()
+            user.verification_string = generate_random_string(30)
+            user.save()
+            send_user_registered_confirmation(user)
             #TODO: view for redirect page and set user as verified
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ConfirmEmail(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = (AllowAny,)
+
+    def post(self, request, user_id, verification_string):
+        if User.objects.filter(pk=user_id, verification_string=verification_string).exists():
+            user = User.objects.get(pk=user_id)
+            user.user_status.add(User_Status.objects.get(user_status='Verified'))
+            user.verification_string = None
+            user.save()
+            return Response(status=status.HTTP_202_ACCEPTED)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
 
 class UpdateUserData(RetrieveUpdateAPIView):
     queryset = User.objects.all()
@@ -70,9 +89,19 @@ class UpdateUserData(RetrieveUpdateAPIView):
 
     def update(self, request, *args, **kwargs):
         instance = self.request.user
+        print("i am here 1")
+        if request.data.get('contact_data') is not None:
+            print("i am here 2")
+            user = request.user
+            if user.user_status.contains(User_Status.objects.get(user_status='Verified')):
+                user.user_status.remove(User_Status.objects.get(user_status='Verified'))
+                user.verification_string = generate_random_string(30)
+                print("i am here 3")
+                user.save()
         serializer = self.get_serializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
+        send_user_changed_mail(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class LoginView(KnoxLoginView):

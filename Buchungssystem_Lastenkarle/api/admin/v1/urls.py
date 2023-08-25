@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
 
 urlpatterns = [
@@ -7,7 +7,7 @@ urlpatterns = [
     path('ban-user', views.BanUser.as_view()),
     path('configurations', views.AllStoreConfigurations.as_view()),
     path('create/store', views.AddStore.as_view()),
-    path('create/store/<int:store_id>/bike', views.AddBike.as_view()),
+    path('create/store/<int:store_id>/bike/upload/', views.AddBike.as_view()),
     path('delete/store/<int:pk>', views.DeleteStore.as_view()),
     path('delete/bike/<int:pk>', views.DeleteBike.as_view()),
     path('users', views.AllUsers.as_view()),

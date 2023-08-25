@@ -22,7 +22,7 @@ from send_mail.views import send_user_warning
 
 class AllUserFlags(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsStaff & IsAuthenticated]
+    permission_classes = [IsStaff & IsAuthenticated & IsVerfied]
 
     def get(self, request):
         store = self.request.user.is_staff_of_store()
@@ -32,7 +32,7 @@ class AllUserFlags(APIView):
 
 class StorePage(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsStaff & IsAuthenticated]
+    permission_classes = [IsStaff & IsAuthenticated & IsVerfied]
 
     def get(self, request):
         store = self.request.user.is_staff_of_store()
@@ -50,7 +50,7 @@ class StorePage(APIView):
 
 class EnrollUser(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsStaff & IsAuthenticated]
+    permission_classes = [IsStaff & IsAuthenticated & IsVerfied]
 
     def post(self, request):
         contact_data = request.data['contact_data']
@@ -67,7 +67,7 @@ class DeleteBike(DestroyAPIView):
     queryset = Bike.objects.all()
     serializer_class = BikeSerializer
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated & IsStaff]
+    permission_classes = [IsAuthenticated & IsStaff & IsVerfied]
 
     def perform_destroy(self, instance):
         instance.delete()
@@ -75,13 +75,12 @@ class DeleteBike(DestroyAPIView):
 
 class BikesOfStore(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsStaff & IsAuthenticated]
+    permission_classes = [IsStaff & IsAuthenticated & IsVerfied]
 
     def get(self, request):
         store = self.request.user.is_staff_of_store()
         bikes = Bike.objects.filter(store=store)
-        fields_to_include = ['id', 'name', 'description', 'image_link']
-        serializer = BikeSerializer(bikes, many=True, fields=fields_to_include)
+        serializer = BikeSerializer(bikes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
@@ -100,23 +99,22 @@ class BikesOfStore(APIView):
 
 class SelectedBike(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsStaff & IsAuthenticated]
+    permission_classes = [IsStaff & IsAuthenticated & IsVerfied]
 
     def get(self, request, bike_id):
         try:
             Bike.objects.get(pk=bike_id)
         except ObjectDoesNotExist:
             raise Http404
-        fields_to_include = ['id', 'name', 'description', 'image_link']
         store = self.request.user.is_staff_of_store()
         bike = Bike.objects.get(pk=bike_id, store=store)
-        serializer = BikeSerializer(bike, many=False, fields=fields_to_include)
+        serializer = BikeSerializer(bike, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class MakeInternalBooking(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsStaff & IsAuthenticated]
+    permission_classes = [IsStaff & IsAuthenticated & IsVerfied]
 
     def post(self, request, bike_id):
         try:
@@ -153,7 +151,7 @@ class MakeInternalBooking(APIView):
 
 class UpdateSelectedBike(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsStaff & IsAuthenticated]
+    permission_classes = [IsStaff & IsAuthenticated & IsVerfied]
 
     def patch(self, request, bike_id, *args, **kwargs):
         store = self.request.user.is_staff_of_store()
@@ -166,7 +164,7 @@ class UpdateSelectedBike(APIView):
 
 class SelectedBikeEquipment(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsStaff & IsAuthenticated]
+    permission_classes = [IsStaff & IsAuthenticated & IsVerfied]
 
     def post(self, request,bike_id):
         store = self.request.user.is_staff_of_store()
@@ -185,7 +183,7 @@ class SelectedBikeEquipment(APIView):
 
 class SelectedBikeAvailability(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsStaff & IsAuthenticated]
+    permission_classes = [IsStaff & IsAuthenticated & IsVerfied]
 
     def get(self, request, bike_id):
         try:
@@ -200,25 +198,23 @@ class SelectedBikeAvailability(APIView):
 
 class BookingsOfStore(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsStaff & IsAuthenticated]
+    permission_classes = [IsStaff & IsAuthenticated & IsVerfied]
 
     def get(self, request):
         store = self.request.user.is_staff_of_store()
         bookings = Booking.objects.filter(bike__store=store)
-        fields_to_include = ['id', 'user', 'bike', 'begin', 'end', 'booking_status']
-        serializer = BookingSerializer(bookings, many=True, fields=fields_to_include)
+        serializer = BookingSerializer(bookings, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class SelectedBookingOfStore(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsStaff]
+    permission_classes = [IsStaff & IsAuthenticated & IsVerfied]
 
     def get(self, request, booking_id):
         store = self.request.user.is_staff_of_store()
         bookings = Booking.objects.get(pk=booking_id, bike__store=store)
-        fields_to_include = ['user', 'bike', 'begin', 'end', 'booking_status']
-        serializer = BookingSerializer(bookings, many=False, fields=fields_to_include)
+        serializer = BookingSerializer(bookings, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, booking_id):
@@ -239,36 +235,19 @@ class SelectedBookingOfStore(APIView):
 
 class CommentToBooking(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated & IsStaff]
+    permission_classes = [IsAuthenticated & IsStaff & IsVerfied]
 
     def get(self, request, booking_id):
         store = self.request.user.is_staff_of_store()
-        if not Comment.objects.filter(store=store, booking_id=booking_id).exists():
-            error_message = {'error': 'Booking has no associated comment'}
-            return Response(error_message, status=status.HTTP_404_NOT_FOUND)
-        fields_to_include = ['content']
-        comment = Comment.objects.get(store=store, booking_id=booking_id)
-        serializer = CommentSerializer(comment, fields=fields_to_include, many=False)
+        booking = Booking.objects.get(pk=booking_id)
+        fields_to_include = ['comment']
+        serializer = BookingSerializer(booking, fields=fields_to_include, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def post(self, request, booking_id):
-        store = self.request.user.is_staff_of_store()
-        additional_data = {
-            'store': store.pk,
-            'booking': booking_id,
-        }
-        data = {**request.data, **additional_data}
-        serializer = CommentSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
     def patch(self, request, booking_id, *args, **kwargs):
-        store = self.request.user.is_staff_of_store()
-        fields_to_include = ['content']
-        instance = Comment.objects.get(store=store, booking_id=booking_id)
-        serializer = CommentSerializer(instance, data=request.data, fields=fields_to_include, partial=True)
+        fields_to_include = ['comment']
+        instance = Booking.objects.get(pk=booking_id)
+        serializer = BookingSerializer(instance, data=request.data, fields=fields_to_include, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -276,7 +255,7 @@ class CommentToBooking(APIView):
 
 class CheckLocalData(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated & IsStaff]
+    permission_classes = [IsAuthenticated & IsStaff & IsVerfied]
 
     def get(self, request, booking_id):
         try:
@@ -321,7 +300,7 @@ class CheckLocalData(APIView):
 
 class ConfirmBikeHandOut(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated & IsStaff]
+    permission_classes = [IsAuthenticated & IsStaff & IsVerfied]
 
     def get(self, request, booking_id):
         try:
@@ -354,7 +333,7 @@ class ConfirmBikeHandOut(APIView):
 
 class FindByQRString(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated & IsStaff]
+    permission_classes = [IsAuthenticated & IsStaff & IsVerfied]
 
     def get(self, request, qr_string):
         booking = Booking.objects.get(string=qr_string)
@@ -365,7 +344,7 @@ class FindByQRString(APIView):
 
 class RegisteredEquipment(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated & IsStaff]
+    permission_classes = [IsAuthenticated & IsStaff & IsVerfied]
 
     def get(self, request):
         equipment = Equipment.objects.all()
@@ -375,7 +354,7 @@ class RegisteredEquipment(APIView):
 
 class ReportComment(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated & IsStaff]
+    permission_classes = [IsAuthenticated & IsStaff & IsVerfied]
 
     def post(self, request, booking_id):
         comment = Comment.objects.get(booking_id=booking_id)
@@ -388,7 +367,7 @@ class ReportComment(APIView):
 
 class StoreConfigFile(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated & IsStaff]
+    permission_classes = [IsAuthenticated & IsStaff & IsVerfied]
 
     def get(self, request):
         store = self.request.user.is_staff_of_store()

@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from knox.auth import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from api.permissions import IsVerfied
 from django.core.exceptions import *
 from django.http import Http404
 from api.serializer import *
@@ -79,7 +80,7 @@ class AllStoreConfigurations(APIView):
 
 class MakeBooking(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated & IsVerfied]
 
     def post(self, request, bike_id):
         user = self.request.user

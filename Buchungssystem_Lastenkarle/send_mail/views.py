@@ -207,7 +207,8 @@ def send_banned_mail_to_user(user):
     email.send()
 
 
-def send_user_registered_confirmation(user, registration_link):
+def send_user_registered_confirmation(user):
+    registration_link = CANONICAL_HOST + "/" + str(user.id) + "/" + user.verification_string
     # set email subject
     subject = "Dein Account bei Lastenkarle: Bitte bestätige deine E-Mail"
     # fill email template with content
@@ -227,13 +228,11 @@ def send_user_registered_confirmation(user, registration_link):
 
 
 def send_user_verified_confirmation(user):
-    registration_link = urllib.parse.urljoin(urllib.parse.urljoin(CANONICAL_HOST, user.pk), user.verification_string)
     # set email subject
     subject = "Statuswechsel deines Accounts: Du bist verifiziert"
     # fill email template with content
     html_message = render_to_string("email_templates/UserVerifiedConfirmation.html",
                                     {'username': user.username,
-                                     'registration_link': registration_link,
                                      'lastenkarle_logo_url': lastenkarle_logo_url,
                                      'lastenkarle_contact_data': split_string_by_delimiter(lastenkarle_contact_data,
                                                                                            ";")})
@@ -249,15 +248,14 @@ def send_user_verified_confirmation(user):
 
 
 def send_user_changed_mail(user):
-    verification_link = urllib.parse.urljoin(urllib.parse.urljoin(CANONICAL_HOST, user.pk), user.verification_string)
+    verification_link = CANONICAL_HOST + "/" + str(user.id) + "/" + user.verification_string
     # set email subject
     subject = "Dein Account bei Lastenkarle: Bitte bestätige deine E-Mail"
     # fill email template with content
     html_message = render_to_string("email_templates/EmailChangedTemplate.html",
                                     {'username': user.username,
-                                     'verification_string': verification_link,
-                                     'lastenkarle_logo_url': lastenkarle_logo_url,
-                                     'registration_link': registration_link})
+                                     'verification_link': verification_link,
+                                     'lastenkarle_logo_url': lastenkarle_logo_url})
     # set email-address to send from
     from_email = EMAIL_HOST_USER
     # set email-address to send at

@@ -278,33 +278,11 @@ paths:
         '200':
           description: Comment details
           schema:
-            $ref: '#/definitions/Comment'
+            $ref: '#/definitions/Booking'
         '401':
           description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
         '403':
           description: 'Forbidden: The authenticated user does not have permission to view the comment.'
-        '404':
-          description: 'Not Found: No comment associated with the booking was found.'
-      tags:
-        - bookings
-    post:
-      operationId: bookings_comment_create
-      description: Create a new comment for the booking.
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/Comment'
-      responses:
-        '201':
-          description: Comment created successfully.
-        '400':
-          description: 'Bad Request: The request data is invalid.'
-        '401':
-          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
-        '403':
-          description: 'Forbidden: The authenticated user does not have permission to create a comment.'
       tags:
         - bookings
     patch:
@@ -315,7 +293,7 @@ paths:
           in: body
           required: true
           schema:
-            $ref: '#/definitions/Comment'
+            $ref: '#/definitions/Booking'
       responses:
         '200':
           description: Comment updated successfully.
@@ -813,6 +791,10 @@ definitions:
       is_active:
         title: Is active
         type: boolean
+      verification_string:
+        title: verification string
+        type: string
+        x-nullable: true
       username:
         title: Username
         type: string
@@ -914,26 +896,9 @@ definitions:
       bike:
         title: Bike
         type: integer
-  Comment:
-    required:
-      - store
-      - booking
-    type: object
-    properties:
-      id:
-        title: ID
-        type: integer
-        readOnly: true
-      content:
-        title: Content
+      comment:
+        title: Comment
         type: string
-        minLength: 1
-      store:
-        title: Store
-        type: integer
-      booking:
-        title: Booking
-        type: integer
   LocalData:
     type: object
     properties:

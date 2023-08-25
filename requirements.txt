@@ -9,3 +9,5 @@ pypng==0.20220715.0
 PyQRCode==1.2.1
 xhtml2pdf==0.2.11
 python-magic==0.4.27
+django-storages
+Pillow==10.0.0
