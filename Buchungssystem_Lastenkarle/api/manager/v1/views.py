@@ -1,3 +1,4 @@
+from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.generics import DestroyAPIView
@@ -11,7 +12,6 @@ from api.algorithm import *
 from api.permissions import *
 from api.serializer import *
 from db_model.models import *
-from api.configs.ConfigFunctions import *
 
 
 class AllUserFlags(APIView):
@@ -70,6 +70,7 @@ class DeleteBike(DestroyAPIView):
 class BikesOfStore(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsStaff & IsAuthenticated & IsVerfied]
+    parser_classes = (MultiPartParser, FormParser)
 
     def get(self, request):
         store = self.request.user.is_staff_of_store()
@@ -82,6 +83,7 @@ class BikesOfStore(APIView):
         additional_data = {
             'store': store.pk,
         }
+        image_link = request.initial_data.pop('image_link')
         data = {**request.data, **additional_data}
         serializer = BikeSerializer(data=data)
         if serializer.is_valid():
@@ -234,14 +236,12 @@ class CommentToBooking(APIView):
     def get(self, request, booking_id):
         store = self.request.user.is_staff_of_store()
         booking = Booking.objects.get(pk=booking_id)
-        fields_to_include = ['comment']
-        serializer = BookingSerializer(booking, fields=fields_to_include, many=False)
+        serializer = BookingSerializer(booking, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def patch(self, request, booking_id, *args, **kwargs):
-        fields_to_include = ['comment']
         instance = Booking.objects.get(pk=booking_id)
-        serializer = BookingSerializer(instance, data=request.data, fields=fields_to_include, partial=True)
+        serializer = BookingSerializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -331,8 +331,7 @@ class FindByQRString(APIView):
 
     def get(self, request, qr_string):
         booking = Booking.objects.get(string=qr_string)
-        fields_to_include = ['id']
-        serializer = BookingSerializer(booking, many=False, fields=fields_to_include)
+        serializer = BookingSerializer(booking, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -351,22 +350,8 @@ class ReportComment(APIView):
     permission_classes = [IsAuthenticated & IsStaff & IsVerfied]
 
     def post(self, request, booking_id):
-        comment = Comment.objects.get(booking_id=booking_id)
+        comment = Booking.objects.get(pk=booking_id).comment
         store = self.request.user.is_staff_of_store()
         #TODO: admin user warning notification call
         #TODO: user warning call
         return Response(status=status.HTTP_202_ACCEPTED)
-
-
-class StoreConfigFile(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated & IsStaff & IsVerfied]
-
-    def get(self, request):
-        store = self.request.user.is_staff_of_store()
-        return Response(getStoreConfig(store.name), status=status.HTTP_200_OK)
-
-    def patch(self, request):
-        store = self.request.user.is_staff_of_store()
-        update_store_config(store.name, request.data)
-        return Response(getStoreConfig(store.name), status=status.HTTP_200_OK)

@@ -171,6 +171,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #todo put this in an enviroment file for configuration
 CANONICAL_HOST = "http://localhost"
 
-DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
+
+FILE_UPLOAD_PERMISSIONS = 0o644
+FILE_UPLOAD_DIRECTORY_PERMISSIONS = 0o755

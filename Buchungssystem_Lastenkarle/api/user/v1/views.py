@@ -115,9 +115,8 @@ class AllBookingsFromUser(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        fields_to_include = ['id', 'begin', 'end', 'booking_status']
         bookings = Booking.objects.filter(user=request.user)
-        serializer = BookingSerializer(bookings, many=True, fields=fields_to_include)
+        serializer = BookingSerializer(bookings, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class BookingFromUser(APIView):
@@ -129,9 +128,8 @@ class BookingFromUser(APIView):
             Booking.objects.get(pk=booking_id)
         except ObjectDoesNotExist:
             raise Http404
-        fields_to_include = ['id', 'begin', 'end', 'booking_status']
         booking = Booking.objects.get(pk=booking_id)
-        serializer = BookingSerializer(booking, many=False, fields=fields_to_include)
+        serializer = BookingSerializer(booking, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, booking_id):
@@ -157,9 +155,8 @@ class BookedBike(APIView):
             Booking.objects.get(pk=booking_id).bike
         except ObjectDoesNotExist:
             raise Http404
-        fields_to_include = ['id', 'name', 'description', 'image_link']
         bike = Booking.objects.get(pk=booking_id).bike
-        serializer = BikeSerializer(bike, many=False, fields=fields_to_include)
+        serializer = BikeSerializer(bike, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class StoreOfBookedBike(APIView):
@@ -171,9 +168,8 @@ class StoreOfBookedBike(APIView):
             Booking.objects.get(pk=booking_id).bike.store
         except ObjectDoesNotExist:
             raise Http404
-        fields_to_include = ['id', 'region', 'address', 'name']
         store = Booking.objects.get(pk=booking_id).bike.store
-        serializer = StoreSerializer(store, many=False, fields=fields_to_include)
+        serializer = StoreSerializer(store, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class LocalDataOfUser(APIView):

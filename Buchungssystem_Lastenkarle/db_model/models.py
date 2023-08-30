@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
-from datetime import date
-from api.configs.ConfigFunctions import deleteStoreConfig
+from datetime import date, time
 import random
 import string
 
@@ -70,8 +69,29 @@ class Store(models.Model):
     region = models.TextField(max_length=3, choices=REGION)
     address = models.TextField(default="ERROR")
     phone_number = models.TextField(max_length=256)
-    email = models.TextField(max_length=256)
+    email = models.EmailField(max_length=256)
     name = models.TextField(default="ERROR", unique=True)
+    mon_opened = models.BooleanField(default=False)
+    mon_open = models.TimeField(default=time(00, 00))
+    mon_close = models.TimeField(default=time(00, 00))
+    tue_opened = models.BooleanField(default=False)
+    tue_open = models.TimeField(default=time(00, 00))
+    tue_close = models.TimeField(default=time(00, 00))
+    wed_opened = models.BooleanField(default=False)
+    wed_open = models.TimeField(default=time(00, 00))
+    wed_close = models.TimeField(default=time(00, 00))
+    thu_opened = models.BooleanField(default=False)
+    thu_open = models.TimeField(default=time(00, 00))
+    thu_close = models.TimeField(default=time(00, 00))
+    fri_opened = models.BooleanField(default=False)
+    fri_open = models.TimeField(default=time(00, 00))
+    fri_close = models.TimeField(default=time(00, 00))
+    sat_opened = models.BooleanField(default=False)
+    sat_open = models.TimeField(default=time(00, 00))
+    sat_close = models.TimeField(default=time(00, 00))
+    sun_opened = models.BooleanField(default=False)
+    sun_open = models.TimeField(default=time(00, 00))
+    sun_close = models.TimeField(default=time(00, 00))
 
     def delete(self, *args, **kwargs):
         deleteStoreConfig(store_name=self.name)
@@ -177,12 +197,11 @@ class LocalData(models.Model):
 class Equipment(models.Model):
     equipment = models.TextField(max_length=256, unique=True)
 
-
 class Bike(models.Model):
     store = models.ForeignKey(Store, on_delete=models.CASCADE)
     name = models.TextField(default="ERROR")
     description = models.TextField(default="ERROR")
-    image_link = models.ImageField(upload_to='bikes/')
+    image_link = models.TextField(default="ERROR")
     equipment = models.ManyToManyField(Equipment)
 
     def delete(self, *args, **kwargs):

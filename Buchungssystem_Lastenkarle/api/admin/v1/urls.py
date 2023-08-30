@@ -5,9 +5,8 @@ urlpatterns = [
     path('equipment', views.RegisteredEquipment.as_view()),
     path('user-flags', views.AllUserFlags.as_view()),
     path('ban-user', views.BanUser.as_view()),
-    path('configurations', views.AllStoreConfigurations.as_view()),
     path('create/store', views.AddStore.as_view()),
-    path('create/store/<int:store_id>/bike/upload/', views.AddBike.as_view()),
+    path('create/store/<int:store_id>/bike', views.AddBike.as_view()),
     path('delete/store/<int:pk>', views.DeleteStore.as_view()),
     path('delete/bike/<int:pk>', views.DeleteBike.as_view()),
     path('users', views.AllUsers.as_view()),
@@ -23,7 +22,6 @@ urlpatterns = [
     path('bookings/bikes/<int:bike_id>/availability', views.AvailabilityOfBike.as_view()),
     path('bookings/stores', views.AllStores.as_view()),
     path('bookings/stores/<int:store_id>', views.SelectedStore.as_view()),
-    path('bookings/stores/<int:store_id>/config', views.SelectedStoreConfiguration.as_view()),
     path('bookings/stores/<int:store_id>/update', views.UpdateSelectedStore.as_view()),
     path('bookings/stores/<int:store_id>/availability', views.AvailabilityOfBikesFromStore.as_view())
 ]
