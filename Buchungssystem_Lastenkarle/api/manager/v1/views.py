@@ -296,14 +296,6 @@ class ConfirmBikeHandOut(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated & IsStaff & IsVerfied]
 
-    def get(self, request, booking_id):
-        try:
-            Booking.objects.get(pk=booking_id)
-        except ObjectDoesNotExist:
-            raise Http404
-        booking = Booking.objects.get(pk=booking_id)
-        serializer = BookingSerializer(booking, many=False)
-        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, booking_id):
         try:
@@ -311,19 +303,27 @@ class ConfirmBikeHandOut(APIView):
         except ObjectDoesNotExist:
             raise Http404
         booking = Booking.objects.get(pk=booking_id)
-        if not booking.booking_status.contains(Booking_Status.objects.get(booking_status='Picked up')):
-            booking.booking_status.remove(Booking_Status.objects.get(booking_status='Booked').pk)
-            booking.booking_status.add(Booking_Status.objects.get(booking_status='Picked up').pk)
-            #TODO: bike pick up confirmation call
-            return Response(status=status.HTTP_200_OK)
-        if booking.booking_status.contains(Booking_Status.objects.get(booking_status='Picked up')):
-            booking.booking_status.remove(Booking_Status.objects.get(booking_status='Picked up').pk)
-            booking.booking_status.add(Booking_Status.objects.get(booking_status='Returned').pk)
-            booking.string = None
-            merge_availabilities_algorithm(booking)
-            #TODO: bike drop of confirmation call
+        booking.booking_status.remove(Booking_Status.objects.get(booking_status='Booked').pk)
+        booking.booking_status.add(Booking_Status.objects.get(booking_status='Picked up').pk)
+        #TODO: bike pick up confirmation call
         return Response(status=status.HTTP_202_ACCEPTED)
 
+class ConfirmBikeReturn(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated & IsStaff & IsVerfied]
+
+    def post(self, request, booking_id):
+        try:
+            Booking.objects.get(pk=booking_id)
+        except ObjectDoesNotExist:
+            raise Http404
+        booking = Booking.objects.get(pk=booking_id)
+        booking.booking_status.remove(Booking_Status.objects.get(booking_status='Picked up').pk)
+        booking.booking_status.add(Booking_Status.objects.get(booking_status='Returned').pk)
+        booking.string = None
+        merge_availabilities_algorithm(booking)
+        # TODO: bike drop of confirmation call
+        return Response(status=status.HTTP_202_ACCEPTED)
 
 class FindByQRString(APIView):
     authentication_classes = [TokenAuthentication]

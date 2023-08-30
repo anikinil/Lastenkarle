@@ -19,6 +19,7 @@ urlpatterns = [
     path('bookings/<int:booking_id>/comment/report', views.ReportComment.as_view()),
     path('bikes/<int:bike_id>/internal-booking', views.MakeInternalBooking.as_view()),
     path('bookings/<int:booking_id>/user-info', views.CheckLocalData.as_view()),
-    path('bookings/<int:booking_id>/confirmation', views.ConfirmBikeHandOut.as_view()),
+    path('bookings/<int:booking_id>/hand-out', views.ConfirmBikeHandOut.as_view()),
+    path('bookings/<int:booking_id>/return', views.ConfirmBikeReturn.as_view()),
     path('bookings/by/<str:qr_string>', views.FindByQRString.as_view())
 ]

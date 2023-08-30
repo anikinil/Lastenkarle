@@ -16,7 +16,7 @@ def generate_random_string(length):
 class UserManager(BaseUserManager):
 
     def create_user(self, username, password, **extra_fields):
-        user = User(username=username, **extra_fields)
+        user = User(username=username, preferred_username=username, **extra_fields)
         user.is_active = True
         user.set_password(password)
         user.save()
@@ -34,6 +34,7 @@ class UserManager(BaseUserManager):
 
     def create_helmholtz_user(self, userinfo):
         user = User.objects.create(username=userinfo['eduperson_unique_id'], password=" ")
+        user.preferred_username = userinfo['preferred_username']
         user.is_active = True
         user.user_status.add(User_Status.objects.get(user_status='Customer'))
         if user.is_superuser:
@@ -71,6 +72,7 @@ class Store(models.Model):
     phone_number = models.TextField(max_length=256)
     email = models.EmailField(max_length=256)
     name = models.TextField(default="ERROR", unique=True)
+    prep_time = models.TimeField(default=time(00, 00))
     mon_opened = models.BooleanField(default=False)
     mon_open = models.TimeField(default=time(00, 00))
     mon_close = models.TimeField(default=time(00, 00))
@@ -94,7 +96,6 @@ class Store(models.Model):
     sun_close = models.TimeField(default=time(00, 00))
 
     def delete(self, *args, **kwargs):
-        deleteStoreConfig(store_name=self.name)
         if self.store_flag:
             self.store_flag.delete()
         self.bike_set.all().delete()
@@ -129,13 +130,14 @@ class User(AbstractBaseUser):
     user_status = models.ManyToManyField(User_Status, blank=True)
     assurance_lvl = models.CharField(max_length=1, choices=ASSURANCE_LEVEL, default='N', null=True)
     year_of_birth = models.IntegerField(null=True, blank=True)
-    contact_data = models.TextField(unique=True)
+    contact_data = models.EmailField(unique=True)
 
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     verification_string = models.TextField(max_length=256, null=True)
-    username = models.TextField(max_length=1028, unique=True, null=True, blank=True)
+    username = models.TextField(unique=True, null=True, blank=True)
+    preferred_username = models.TextField(null=True, blank=True)
     password = models.TextField(null=True, blank=True)
 
     REQUIRED_FIELDS = ['contact_data']
