@@ -1,0 +1,24 @@
+{% load static %}
+<html>
+<head>
+    <style>
+        body {
+            font-family: 'Calibri', sans-serif;
+        }
+        .bold {
+            font-weight: bold;
+        }
+        .red-link {
+            color: red;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <img src="{{ lastenkarle_logo_url }}" alt="Header Image" style="width: 100%; max-width: 400px; display: block;">
+    <p>Hallo {{ username }}!</p>
+    <p>Schön, dass du dich bei uns registrieren möchtest!</p> 
+    <p>Um den Vorgang abzuschließen, klicke bitte auf diesen Bestätigungslink: <a class="red-link" href="{{ registration_link }}">Vorgang abschließen</a></p>
+    <p>Das Team von Lastenkarle</p>
+</body>
+</html>

@@ -2,6 +2,7 @@ from datetime import timedelta
 from db_model.models import *
 from django.db.models import Q
 from datetime import datetime
+from send_mail.views import send_cancellation_through_store_confirmation
 
 
 def merge_availabilities_from_until_algorithm(from_date, until_date, store, bike):
@@ -72,9 +73,9 @@ def merge_availabilities_from_until_algorithm(from_date, until_date, store, bike
         )
         booking.booking_status.clear()
         booking.booking_status.set(Booking_Status.objects.filter(booking_status='Cancelled'))
+        send_cancellation_through_store_confirmation(booking)
         booking.string = None
         booking.save()
-        #TODO: cancellation through store confirmation call
         merge_availabilities_algorithm(booking)
     return True
 

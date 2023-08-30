@@ -9,6 +9,9 @@ from django.http import Http404
 from api.serializer import *
 from db_model.models import *
 from api.algorithm import split_availabilities_algorithm
+from api.configs.ConfigFunctions import *
+from send_mail.views import send_booking_confirmation
+
 
 
 class AllStores(APIView):
@@ -97,7 +100,7 @@ class MakeBooking(APIView):
             booking.string = booking_string
             booking.save()
             split_availabilities_algorithm(booking)
-            # TODO: booking mail call
+            send_booking_confirmation(booking)
             serializer = BookingSerializer(booking, many=False)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
