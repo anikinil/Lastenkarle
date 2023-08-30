@@ -86,11 +86,11 @@ class UpdateUserData(RetrieveUpdateAPIView):
         instance = self.request.user
         if request.data.get('contact_data') is not None:
             user = request.user
+            user.verification_string = generate_random_string(30)
             if user.user_status.contains(User_Status.objects.get(user_status='Verified')):
                 user.user_status.remove(User_Status.objects.get(user_status='Verified'))
-                user.verification_string = generate_random_string(30)
                 #TODO email change call
-                user.save()
+            user.save()
         serializer = self.get_serializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
