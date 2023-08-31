@@ -1,3 +1,4 @@
+from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.generics import DestroyAPIView
@@ -11,7 +12,6 @@ from api.algorithm import *
 from api.permissions import *
 from api.serializer import *
 from db_model.models import *
-from api.configs.ConfigFunctions import *
 from send_mail.views import send_booking_confirmation
 from send_mail.views import send_cancellation_through_store_confirmation
 from send_mail.views import send_bike_drop_off_confirmation
@@ -240,14 +240,12 @@ class CommentToBooking(APIView):
     def get(self, request, booking_id):
         store = self.request.user.is_staff_of_store()
         booking = Booking.objects.get(pk=booking_id)
-        fields_to_include = ['comment']
-        serializer = BookingSerializer(booking, fields=fields_to_include, many=False)
+        serializer = BookingSerializer(booking, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def patch(self, request, booking_id, *args, **kwargs):
-        fields_to_include = ['comment']
         instance = Booking.objects.get(pk=booking_id)
-        serializer = BookingSerializer(instance, data=request.data, fields=fields_to_include, partial=True)
+        serializer = BookingSerializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -302,14 +300,6 @@ class ConfirmBikeHandOut(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated & IsStaff & IsVerfied]
 
-    def get(self, request, booking_id):
-        try:
-            Booking.objects.get(pk=booking_id)
-        except ObjectDoesNotExist:
-            raise Http404
-        booking = Booking.objects.get(pk=booking_id)
-        serializer = BookingSerializer(booking, many=False)
-        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, booking_id):
         try:
@@ -317,19 +307,27 @@ class ConfirmBikeHandOut(APIView):
         except ObjectDoesNotExist:
             raise Http404
         booking = Booking.objects.get(pk=booking_id)
-        if not booking.booking_status.contains(Booking_Status.objects.get(booking_status='Picked up')):
-            booking.booking_status.remove(Booking_Status.objects.get(booking_status='Booked').pk)
-            booking.booking_status.add(Booking_Status.objects.get(booking_status='Picked up').pk)
-            send_bike_pick_up_confirmation(booking)
-            return Response(status=status.HTTP_200_OK)
-        if booking.booking_status.contains(Booking_Status.objects.get(booking_status='Picked up')):
-            booking.booking_status.remove(Booking_Status.objects.get(booking_status='Picked up').pk)
-            booking.booking_status.add(Booking_Status.objects.get(booking_status='Returned').pk)
-            booking.string = None
-            merge_availabilities_algorithm(booking)
-            send_bike_drop_off_confirmation(booking)
+        booking.booking_status.remove(Booking_Status.objects.get(booking_status='Booked').pk)
+        booking.booking_status.add(Booking_Status.objects.get(booking_status='Picked up').pk)
+        #TODO: bike pick up confirmation call
         return Response(status=status.HTTP_202_ACCEPTED)
 
+class ConfirmBikeReturn(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated & IsStaff & IsVerfied]
+
+    def post(self, request, booking_id):
+        try:
+            Booking.objects.get(pk=booking_id)
+        except ObjectDoesNotExist:
+            raise Http404
+        booking = Booking.objects.get(pk=booking_id)
+        booking.booking_status.remove(Booking_Status.objects.get(booking_status='Picked up').pk)
+        booking.booking_status.add(Booking_Status.objects.get(booking_status='Returned').pk)
+        booking.string = None
+        merge_availabilities_algorithm(booking)
+        # TODO: bike drop of confirmation call
+        return Response(status=status.HTTP_202_ACCEPTED)
 
 class FindByQRString(APIView):
     authentication_classes = [TokenAuthentication]
@@ -337,8 +335,7 @@ class FindByQRString(APIView):
 
     def get(self, request, qr_string):
         booking = Booking.objects.get(string=qr_string)
-        fields_to_include = ['id']
-        serializer = BookingSerializer(booking, many=False, fields=fields_to_include)
+        serializer = BookingSerializer(booking, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -357,23 +354,8 @@ class ReportComment(APIView):
     permission_classes = [IsAuthenticated & IsStaff & IsVerfied]
 
     def post(self, request, booking_id):
-        comment = Comment.objects.get(booking_id=booking_id)
         booking = Booking.objects.get(pk=booking_id)
         store = self.request.user.is_staff_of_store()
         send_user_warning_to_admins(booking)
         send_user_warning(booking)
         return Response(status=status.HTTP_202_ACCEPTED)
-
-
-class StoreConfigFile(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated & IsStaff & IsVerfied]
-
-    def get(self, request):
-        store = self.request.user.is_staff_of_store()
-        return Response(getStoreConfig(store.name), status=status.HTTP_200_OK)
-
-    def patch(self, request):
-        store = self.request.user.is_staff_of_store()
-        update_store_config(store.name, request.data)
-        return Response(getStoreConfig(store.name), status=status.HTTP_200_OK)

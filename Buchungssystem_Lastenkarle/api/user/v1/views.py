@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView
+from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView, DestroyAPIView
 from django.contrib.auth import login
 from knox.views import LoginView as KnoxLoginView
 from knox.auth import TokenAuthentication
@@ -89,15 +89,13 @@ class UpdateUserData(RetrieveUpdateAPIView):
 
     def update(self, request, *args, **kwargs):
         instance = self.request.user
-        print("i am here 1")
         if request.data.get('contact_data') is not None:
-            print("i am here 2")
             user = request.user
+            user.verification_string = generate_random_string(30)
             if user.user_status.contains(User_Status.objects.get(user_status='Verified')):
                 user.user_status.remove(User_Status.objects.get(user_status='Verified'))
-                user.verification_string = generate_random_string(30)
-                print("i am here 3")
-                user.save()
+                #TODO email change call
+            user.save()
         serializer = self.get_serializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -123,9 +121,8 @@ class AllBookingsFromUser(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        fields_to_include = ['id', 'begin', 'end', 'booking_status']
         bookings = Booking.objects.filter(user=request.user)
-        serializer = BookingSerializer(bookings, many=True, fields=fields_to_include)
+        serializer = BookingSerializer(bookings, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class BookingFromUser(APIView):
@@ -137,9 +134,8 @@ class BookingFromUser(APIView):
             Booking.objects.get(pk=booking_id)
         except ObjectDoesNotExist:
             raise Http404
-        fields_to_include = ['id', 'begin', 'end', 'booking_status']
         booking = Booking.objects.get(pk=booking_id)
-        serializer = BookingSerializer(booking, many=False, fields=fields_to_include)
+        serializer = BookingSerializer(booking, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, booking_id):
@@ -165,9 +161,8 @@ class BookedBike(APIView):
             Booking.objects.get(pk=booking_id).bike
         except ObjectDoesNotExist:
             raise Http404
-        fields_to_include = ['id', 'name', 'description', 'image_link']
         bike = Booking.objects.get(pk=booking_id).bike
-        serializer = BikeSerializer(bike, many=False, fields=fields_to_include)
+        serializer = BikeSerializer(bike, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class StoreOfBookedBike(APIView):
@@ -179,9 +174,8 @@ class StoreOfBookedBike(APIView):
             Booking.objects.get(pk=booking_id).bike.store
         except ObjectDoesNotExist:
             raise Http404
-        fields_to_include = ['id', 'region', 'address', 'name']
         store = Booking.objects.get(pk=booking_id).bike.store
-        serializer = StoreSerializer(store, many=False, fields=fields_to_include)
+        serializer = StoreSerializer(store, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class LocalDataOfUser(APIView):
@@ -208,11 +202,11 @@ class UserDataOfUser(APIView):
         serializer = UserSerializer(user_data, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-class DeleteUserAccount(APIView):
+class DeleteUserAccount(DestroyAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def post(self, request):
+    def delete(self, request, *args, **kwargs):
         user = self.request.user
         if LocalData.objects.filter(user=user).exists():
             LocalData.objects.get(user=user).anonymize().save()

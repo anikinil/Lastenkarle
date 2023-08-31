@@ -10,7 +10,6 @@ from api.algorithm import *
 from api.permissions import *
 from api.serializer import *
 from db_model.models import *
-from api.configs.ConfigFunctions import *
 from send_mail.views import send_cancellation_through_store_confirmation
 from send_mail.views import send_banned_mail_to_user
 
@@ -102,8 +101,7 @@ class CommentOfBooking(APIView):
         if not Booking.objects.filter(pk=booking_id).exists():
             raise Http404
         booking = Booking.objects.get(booking_id=booking_id)
-        fields_to_include = ['comment']
-        serializer = BookingSerializer(booking, many=False, fields=fields_to_include)
+        serializer = BookingSerializer(booking, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -116,7 +114,6 @@ class AddBike(APIView):
             'store': store_id,
         }
         data = {**request.data, **additional_data}
-
         serializer = BikeSerializer(data=data)
         if serializer.is_valid():
             bike = serializer.save()
@@ -243,7 +240,6 @@ class AddStore(APIView):
             store_flag = User_Status.custom_create_store_flags(store)
             store.store_flag = store_flag
             store.save()
-            add_store(store.name)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -332,24 +328,3 @@ class BanUser(APIView):
         send_banned_mail_to_user(user)
         return Response(status=status.HTTP_202_ACCEPTED)
 
-
-class AllStoreConfigurations(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated & IsSuperUser & IsVerfied]
-
-    def get(self, request):
-        return Response(getAllStoresConfig(), status=status.HTTP_200_OK)
-
-
-class SelectedStoreConfiguration(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated & IsSuperUser & IsVerfied]
-
-    def get(self, request, store_id):
-        store = Store.objects.get(pk=store_id)
-        return Response(getStoreConfig(store.name), status=status.HTTP_200_OK)
-
-    def patch(self, request, store_id):
-        store = Store.objects.get(pk=store_id)
-        update_store_config(store.name, request.data)
-        return Response(getStoreConfig(store.name), status=status.HTTP_200_OK)
