@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView
+from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView, DestroyAPIView
 from django.contrib.auth import login
 from knox.views import LoginView as KnoxLoginView
 from knox.auth import TokenAuthentication
@@ -15,6 +15,11 @@ from api.serializer import *
 from db_model.models import *
 
 from Buchungssystem_Lastenkarle.settings import CANONICAL_HOST
+from send_mail.views import send_banned_mail_to_user
+from send_mail.views import send_user_registered_confirmation
+from send_mail.views import send_cancellation_confirmation
+from send_mail.views import send_user_changed_mail
+from send_mail.views import send_user_registered_confirmation
 
 oauth = OAuth()
 
@@ -56,7 +61,7 @@ class RegistrateUser(CreateAPIView):
             user = serializer.save()
             user.verification_string = generate_random_string(30)
             user.save()
-            #TODO: user registered confirmation call
+            send_user_registered_confirmation(user)
             #TODO: view for redirect page and set user as verified
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -86,14 +91,15 @@ class UpdateUserData(RetrieveUpdateAPIView):
         instance = self.request.user
         if request.data.get('contact_data') is not None:
             user = request.user
+            user.verification_string = generate_random_string(30)
             if user.user_status.contains(User_Status.objects.get(user_status='Verified')):
                 user.user_status.remove(User_Status.objects.get(user_status='Verified'))
-                user.verification_string = generate_random_string(30)
                 #TODO email change call
-                user.save()
+            user.save()
         serializer = self.get_serializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
+        send_user_changed_mail(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class LoginView(KnoxLoginView):
@@ -115,9 +121,8 @@ class AllBookingsFromUser(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        fields_to_include = ['id', 'begin', 'end', 'booking_status']
         bookings = Booking.objects.filter(user=request.user)
-        serializer = BookingSerializer(bookings, many=True, fields=fields_to_include)
+        serializer = BookingSerializer(bookings, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class BookingFromUser(APIView):
@@ -129,9 +134,8 @@ class BookingFromUser(APIView):
             Booking.objects.get(pk=booking_id)
         except ObjectDoesNotExist:
             raise Http404
-        fields_to_include = ['id', 'begin', 'end', 'booking_status']
         booking = Booking.objects.get(pk=booking_id)
-        serializer = BookingSerializer(booking, many=False, fields=fields_to_include)
+        serializer = BookingSerializer(booking, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, booking_id):
@@ -145,7 +149,7 @@ class BookingFromUser(APIView):
         booking.string = None
         booking.save()
         merge_availabilities_algorithm(booking)
-        # TODO: cancellation confirmation call
+        send_cancellation_confirmation(booking)
         return Response(status=status.HTTP_200_OK)
 
 class BookedBike(APIView):
@@ -157,9 +161,8 @@ class BookedBike(APIView):
             Booking.objects.get(pk=booking_id).bike
         except ObjectDoesNotExist:
             raise Http404
-        fields_to_include = ['id', 'name', 'description', 'image_link']
         bike = Booking.objects.get(pk=booking_id).bike
-        serializer = BikeSerializer(bike, many=False, fields=fields_to_include)
+        serializer = BikeSerializer(bike, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class StoreOfBookedBike(APIView):
@@ -171,9 +174,8 @@ class StoreOfBookedBike(APIView):
             Booking.objects.get(pk=booking_id).bike.store
         except ObjectDoesNotExist:
             raise Http404
-        fields_to_include = ['id', 'region', 'address', 'name']
         store = Booking.objects.get(pk=booking_id).bike.store
-        serializer = StoreSerializer(store, many=False, fields=fields_to_include)
+        serializer = StoreSerializer(store, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class LocalDataOfUser(APIView):
@@ -200,11 +202,11 @@ class UserDataOfUser(APIView):
         serializer = UserSerializer(user_data, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-class DeleteUserAccount(APIView):
+class DeleteUserAccount(DestroyAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def post(self, request):
+    def delete(self, request, *args, **kwargs):
         user = self.request.user
         if LocalData.objects.filter(user=user).exists():
             LocalData.objects.get(user=user).anonymize().save()

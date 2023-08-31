@@ -449,9 +449,9 @@ paths:
         in: path
         required: true
         type: string
-  /bookings/{qr_string}:
+  /bookings/by/{qr_string}:
     get:
-      operationId: bookings_read
+      operationId: bookings_read_by_qr_code
       description: Find booking by QR-code string.
       parameters: []
       responses:

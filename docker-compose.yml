@@ -19,6 +19,8 @@ services:
     build: ./nginx
     volumes:
       - ./Buchungssystem_Lastenkarle/static:/static
+      - ./Buchungssystem_Lastenkarle/media:/media
+
     ports:
       - "80:80"
     depends_on:
