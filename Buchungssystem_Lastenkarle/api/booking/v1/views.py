@@ -9,7 +9,6 @@ from django.http import Http404
 from api.serializer import *
 from db_model.models import *
 from api.algorithm import split_availabilities_algorithm
-from api.configs.ConfigFunctions import *
 from send_mail.views import send_booking_confirmation
 
 

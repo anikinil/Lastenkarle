@@ -10,7 +10,6 @@ from api.algorithm import *
 from api.permissions import *
 from api.serializer import *
 from db_model.models import *
-from api.configs.ConfigFunctions import *
 from send_mail.views import send_cancellation_through_store_confirmation
 from send_mail.views import send_banned_mail_to_user
 

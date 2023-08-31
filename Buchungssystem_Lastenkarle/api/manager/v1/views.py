@@ -12,7 +12,6 @@ from api.algorithm import *
 from api.permissions import *
 from api.serializer import *
 from db_model.models import *
-from api.configs.ConfigFunctions import *
 from send_mail.views import send_booking_confirmation
 from send_mail.views import send_cancellation_through_store_confirmation
 from send_mail.views import send_bike_drop_off_confirmation
@@ -77,7 +76,6 @@ class DeleteBike(DestroyAPIView):
 class BikesOfStore(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsStaff & IsAuthenticated & IsVerfied]
-    parser_classes = (MultiPartParser, FormParser)
 
     def get(self, request):
         store = self.request.user.is_staff_of_store()
@@ -356,7 +354,7 @@ class ReportComment(APIView):
     permission_classes = [IsAuthenticated & IsStaff & IsVerfied]
 
     def post(self, request, booking_id):
-        booking = Booking.objects.get(pk=booking_id).comment
+        booking = Booking.objects.get(pk=booking_id)
         store = self.request.user.is_staff_of_store()
         send_user_warning_to_admins(booking)
         send_user_warning(booking)
