@@ -12,7 +12,6 @@ from api.algorithm import split_availabilities_algorithm
 from send_mail.views import send_booking_confirmation
 
 
-
 class AllStores(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = (AllowAny,)
@@ -30,6 +29,7 @@ class AllRegions(APIView):
     def get(self, request):
         return Response(Store.REGION, status=status.HTTP_200_OK)
 
+
 class AllAvailabilities(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = (AllowAny,)
@@ -38,6 +38,7 @@ class AllAvailabilities(APIView):
         availabilities = Availability.objects.all()
         serializer = AvailabilitySerializer(availabilities, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class AllBikes(APIView):
     authentication_classes = [TokenAuthentication]
@@ -48,34 +49,43 @@ class AllBikes(APIView):
         serializer = BikeSerializer(bikes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 class SelectedBike(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = (AllowAny,)
 
     def get(self, request, bike_id):
         try:
-            Bike.objects.get(pk=bike_id)
+            bike = Bike.objects.get(pk=bike_id)
         except ObjectDoesNotExist:
             raise Http404
-        bike = Bike.objects.get(pk=bike_id)
         serializer = BikeSerializer(bike, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class StoreByBike(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = (AllowAny,)
 
     def get(self, request, bike_id):
-        store = Bike.objects.get(pk=bike_id).store
-        serializer = StoreSerializer(store, many=False)
+        try:
+            bike = Bike.objects.get(pk=bike_id)
+        except ObjectDoesNotExist:
+            raise Http404
+        serializer = StoreSerializer(bike.store, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class AvailabilityOfBike(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = (AllowAny,)
 
     def get(self, request, bike_id):
-        availability_of_bike = Availability.objects.filter(bike=Bike.objects.get(pk=bike_id))
+        try:
+            bike = Bike.objects.get(pk=bike_id)
+        except ObjectDoesNotExist:
+            raise Http404
+        availability_of_bike = Availability.objects.filter(bike=bike)
         serializer = AvailabilitySerializer(availability_of_bike, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -85,8 +95,11 @@ class MakeBooking(APIView):
     permission_classes = [IsAuthenticated & IsVerfied]
 
     def post(self, request, bike_id):
+        try:
+            bike = Bike.objects.get(pk=bike_id)
+        except ObjectDoesNotExist:
+            raise Http404
         user = self.request.user
-        bike = Bike.objects.get(pk=bike_id)
         additional_data = {
             'bike': bike.pk,
         }

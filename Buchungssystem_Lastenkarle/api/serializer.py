@@ -35,6 +35,7 @@ class UserSerializer(serializers.ModelSerializer):
             for field_name in set(self.fields.keys()) - set(fields):
                 self.fields.pop(field_name)
 
+    #TODO add custom validation
 
 class RegistrationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -44,6 +45,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
                   'username',
                   'password')
 
+    #TODO tailor custom validation
     def validate(self, attrs):
         username = attrs.get('username')
         if User.objects.filter(username=username).exists():
@@ -137,6 +139,7 @@ class StoreSerializer(serializers.ModelSerializer):
             for field_name in set(self.fields.keys()) - set(fields):
                 self.fields.pop(field_name)
 
+    #TODO custom validations
 
 class BookingStatusSerializer(serializers.ModelSerializer):
 
@@ -161,6 +164,8 @@ class MakeBookingSerializer(serializers.ModelSerializer):
             equipment, _ = Equipment.objects.get_or_create(equipment=equipment_name)
             booking.equipment.add(equipment)
         return booking
+
+    #TODO custom make booking validation
 
 
 class BookingSerializer(serializers.ModelSerializer):
