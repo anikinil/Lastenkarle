@@ -1,6 +1,7 @@
 from django.contrib.auth import authenticate
 from db_model.models import *
 from rest_framework import serializers
+from django import forms
 
 
 class UserStatusSerializer(serializers.ModelSerializer):
@@ -104,6 +105,7 @@ class EquipmentSerializer(serializers.ModelSerializer):
 
 class BikeSerializer(serializers.ModelSerializer):
     equipment = EquipmentSerializer(many=True, read_only=True)
+    image = serializers.ImageField()
 
     class Meta:
         model = Bike
@@ -115,6 +117,12 @@ class BikeSerializer(serializers.ModelSerializer):
         if fields is not None:
             for field_name in set(self.fields.keys()) - set(fields):
                 self.fields.pop(field_name)
+
+    def update(self, instance, validated_data):
+        if validated_data.get('image', None) is not None:
+            instance.image.delete()
+        instance = super().update(instance, validated_data)
+        return instance
 
 
 class StoreSerializer(serializers.ModelSerializer):

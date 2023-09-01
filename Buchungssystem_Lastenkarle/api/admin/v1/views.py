@@ -1,3 +1,4 @@
+from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.generics import DestroyAPIView
@@ -108,19 +109,17 @@ class CommentOfBooking(APIView):
 class AddBike(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated & IsSuperUser & IsVerfied]
+    parser_classes = (MultiPartParser, FormParser)
 
     def post(self, request, store_id):
-        additional_data = {
-            'store': store_id,
-        }
-        data = {**request.data, **additional_data}
-        serializer = BikeSerializer(data=data)
-        if serializer.is_valid():
-            bike = serializer.save()
-            store = Store.objects.get(pk=store_id)
-            Availability.create_availability(store, bike)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        name = request.data.get('name', None)
+        description = request.data.get('description', None)
+        image = request.data.get('image', None)
+        bike = Bike.objects.create(name=name, description=description, image=image, store_id=store_id)
+        store = Store.objects.get(pk=store_id)
+        Availability.create_availability(store, bike)
+        serializer = BikeSerializer(bike, many=False)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class DeleteBike(DestroyAPIView):
@@ -163,6 +162,7 @@ class SelectedBike(APIView):
 class UpdateSelectedBike(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated & IsSuperUser & IsVerfied]
+    parser_classes = (MultiPartParser, FormParser)
 
     def patch(self, request, bike_id, *args, **kwargs):
         try:
@@ -172,7 +172,6 @@ class UpdateSelectedBike(APIView):
                 {"detail": "The selected bike does not exist."},
                 status=status.HTTP_404_NOT_FOUND
             )
-
         serializer = BikeSerializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
