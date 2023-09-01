@@ -76,6 +76,7 @@ class DeleteBike(DestroyAPIView):
 class BikesOfStore(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsStaff & IsAuthenticated & IsVerfied]
+    parser_classes = (MultiPartParser, FormParser)
 
     def get(self, request):
         store = self.request.user.is_staff_of_store()
@@ -85,16 +86,13 @@ class BikesOfStore(APIView):
 
     def post(self, request):
         store = self.request.user.is_staff_of_store()
-        additional_data = {
-            'store': store.pk,
-        }
-        data = {**request.data, **additional_data}
-        serializer = BikeSerializer(data=data)
-        if serializer.is_valid():
-            bike = serializer.save()
-            Availability.create_availability(store, bike)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        name = request.data.get('name', None)
+        description = request.data.get('description', None)
+        image = request.data.get('image', None)
+        bike = Bike.objects.create(name=name, description=description, image=image, store=store)
+        Availability.create_availability(store, bike)
+        serializer = BikeSerializer(bike, many=False)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class SelectedBike(APIView):
@@ -152,6 +150,7 @@ class MakeInternalBooking(APIView):
 class UpdateSelectedBike(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsStaff & IsAuthenticated & IsVerfied]
+    parser_classes = (MultiPartParser, FormParser)
 
     def patch(self, request, bike_id, *args, **kwargs):
         store = self.request.user.is_staff_of_store()
@@ -300,7 +299,6 @@ class ConfirmBikeHandOut(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated & IsStaff & IsVerfied]
 
-
     def post(self, request, booking_id):
         try:
             Booking.objects.get(pk=booking_id)
@@ -355,7 +353,10 @@ class ReportComment(APIView):
 
     def post(self, request, booking_id):
         booking = Booking.objects.get(pk=booking_id)
+        user = booking.user
+        user.user_status.add(User_Status.objects.get(user_status='Reminded'))
         store = self.request.user.is_staff_of_store()
         send_user_warning_to_admins(booking)
         send_user_warning(booking)
         return Response(status=status.HTTP_202_ACCEPTED)
+
