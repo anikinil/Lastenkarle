@@ -20,16 +20,6 @@ from send_mail.views import send_user_warning_to_admins
 from send_mail.views import send_user_warning
 
 
-class AllUserFlags(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsStaff & IsAuthenticated & IsVerfied]
-
-    def get(self, request):
-        store = self.request.user.is_staff_of_store()
-        serializer = UserStatusSerializer(store.store_flag, many=False)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-
 class StorePage(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsStaff & IsAuthenticated & IsVerfied]
@@ -37,12 +27,21 @@ class StorePage(APIView):
     def get(self, request):
         store = self.request.user.is_staff_of_store()
         serializer = StoreSerializer(store, many=False)
+        serializer.exclude_fields(['store_flag'])
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def patch(self, request):
         store = self.request.user.is_staff_of_store()
+        fields_to_include = ['address', 'phone_number', 'email', 'prep_time',
+                             'mon_opened', 'mon_open', 'mon_close',
+                             'tue_opened', 'tue_open', 'tue_close',
+                             'wed_opened', 'wed_open', 'wed_close',
+                             'thu_opened', 'thu_open', 'thu_close',
+                             'fri_opened', 'fri_open', 'fri_close',
+                             'sat_opened', 'sat_open', 'sat_close',
+                             'sun_opened', 'sun_open', 'sun_close']
         instance = store
-        serializer = StoreSerializer(instance, data=request.data, partial=True)
+        serializer = StoreSerializer(instance, data=request.data, fields=fields_to_include, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -85,6 +84,7 @@ class BikesOfStore(APIView):
         store = self.request.user.is_staff_of_store()
         bikes = Bike.objects.filter(store=store)
         serializer = BikeSerializer(bikes, many=True)
+        serializer.exclude_fields(['store'])
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
@@ -92,6 +92,7 @@ class BikesOfStore(APIView):
         bike = Bike.create_bike(store, **request.data)
         Availability.create_availability(store, bike)
         serializer = BikeSerializer(bike, many=False)
+        serializer.exclude_fields(['store'])
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
@@ -106,6 +107,7 @@ class SelectedBike(APIView):
         except ObjectDoesNotExist:
             raise Http404
         serializer = BikeSerializer(bike, many=False)
+        serializer.exclude_fields(['store'])
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -140,8 +142,7 @@ class MakeInternalBooking(APIView):
             booking.save()
             split_availabilities_algorithm(booking)
             send_booking_confirmation(booking)
-            serializer = BookingSerializer(booking, many=False)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -156,7 +157,11 @@ class UpdateSelectedBike(APIView):
             instance = Bike.objects.get(store=store, pk=bike_id)
         except ObjectDoesNotExist:
             raise Http404
-        serializer = BikeSerializer(instance, data=request.data, partial=True)
+        fields_to_include = ['name', 'description', 'image']
+        for field_name in request.data.keys():
+            if field_name not in fields_to_include:
+                return Response({f"Updating field '{field_name}' is not allowed."}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = BikeSerializer(instance, data=request.data, fields=fields_to_include, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -181,7 +186,7 @@ class SelectedBikeEquipment(APIView):
         new_equipment = serializer.save()
         bike.equipment.add(new_equipment.pk)
         bike.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_201_CREATED)
 
 
 class SelectedBikeAvailability(APIView):
@@ -205,8 +210,10 @@ class BookingsOfStore(APIView):
 
     def get(self, request):
         store = self.request.user.is_staff_of_store()
+        fields_to_include = ['preferred_username', 'bike', 'begin', 'end',
+                             'comment', 'booking_status', 'equipment']
         bookings = Booking.objects.filter(bike__store=store)
-        serializer = BookingSerializer(bookings, many=True)
+        serializer = BookingSerializer(bookings, fields=fields_to_include, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -216,11 +223,13 @@ class SelectedBookingOfStore(APIView):
 
     def get(self, request, booking_id):
         store = self.request.user.is_staff_of_store()
+        fields_to_include = ['preferred_username', 'bike', 'begin', 'end',
+                             'comment', 'booking_status', 'equipment']
         try:
             booking = Booking.objects.get(pk=booking_id, bike__store=store)
         except ObjectDoesNotExist:
             raise Http404
-        serializer = BookingSerializer(booking, many=False)
+        serializer = BookingSerializer(booking, fields=fields_to_include, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, booking_id):
@@ -242,22 +251,17 @@ class CommentToBooking(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated & IsStaff & IsVerfied]
 
-    def get(self, request, booking_id):
-        store = self.request.user.is_staff_of_store()
-        try:
-            booking = Booking.objects.get(pk=booking_id, bike__store=store)
-        except ObjectDoesNotExist:
-            raise Http404
-        serializer = BookingSerializer(booking, many=False)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
     def patch(self, request, booking_id, *args, **kwargs):
         store = self.request.user.is_staff_of_store()
+        fields_to_include = ['comment']
         try:
             instance = Booking.objects.get(pk=booking_id, bike__store=store)
         except ObjectDoesNotExist:
             raise Http404
-        serializer = BookingSerializer(instance, data=request.data, partial=True)
+        for field_name in request.data.keys():
+            if field_name not in fields_to_include:
+                return Response({f"Updating field '{field_name}' is not allowed."}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = BookingSerializer(instance, data=request.data, fields=fields_to_include, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -269,12 +273,13 @@ class CheckLocalData(APIView):
 
     def get(self, request, booking_id):
         store = self.request.user.is_staff_of_store()
+        fields_to_include = ['first_name', 'last_name', 'address', 'date_of_verification', 'id_number']
         try:
             booking = Booking.objects.get(pk=booking_id, bike__store=store)
             local_data = LocalData.objects.get(user=booking.user)
         except ObjectDoesNotExist:
             raise Http404
-        serializer = LocalDataSerializer(local_data, many=False)
+        serializer = LocalDataSerializer(local_data, fields=fields_to_include, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, booking_id):
@@ -294,12 +299,13 @@ class CheckLocalData(APIView):
 
     def patch(self, request, booking_id):
         store = self.request.user.is_staff_of_store()
+        fields_to_include = ['first_name', 'last_name', 'address', 'id_number']
         try:
             booking = Booking.objects.get(pk=booking_id, bike__store=store)
             instance = LocalData.objects.get(user=booking.user)
         except ObjectDoesNotExist:
             raise Http404
-        serializer = LocalDataSerializer(instance, data=request.data, partial=True)
+        serializer = LocalDataSerializer(instance, data=request.data, fields=fields_to_include, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -317,8 +323,8 @@ class ConfirmBikeHandOut(APIView):
             raise Http404
         booking.booking_status.remove(Booking_Status.objects.get(booking_status='Booked').pk)
         booking.booking_status.add(Booking_Status.objects.get(booking_status='Picked up').pk)
-        #TODO: bike pick up confirmation call
-        return Response(status=status.HTTP_202_ACCEPTED)
+        send_bike_pick_up_confirmation(booking)
+        return Response(status=status.HTTP_200_OK)
 
 
 class ConfirmBikeReturn(APIView):
@@ -335,8 +341,8 @@ class ConfirmBikeReturn(APIView):
         booking.booking_status.add(Booking_Status.objects.get(booking_status='Returned').pk)
         booking.string = None
         merge_availabilities_algorithm(booking)
-        # TODO: bike drop of confirmation call
-        return Response(status=status.HTTP_202_ACCEPTED)
+        send_bike_drop_off_confirmation(booking)
+        return Response(status=status.HTTP_200_OK)
 
 
 class FindByQRString(APIView):
@@ -345,11 +351,13 @@ class FindByQRString(APIView):
 
     def get(self, request, qr_string):
         store = self.request.user.is_staff_of_store()
+        fields_to_include = ['preferred_username', 'assurance_lvl', 'bike', 'begin', 'end',
+                             'comment', 'booking_status', 'equipment']
         try:
             booking = Booking.objects.get(string=qr_string, bike__store=store)
         except ObjectDoesNotExist:
             raise Http404
-        serializer = BookingSerializer(booking, many=False)
+        serializer = BookingSerializer(booking, fields=fields_to_include, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 

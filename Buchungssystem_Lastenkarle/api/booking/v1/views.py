@@ -19,6 +19,7 @@ class AllStores(APIView):
     def get(self, request):
         stores = Store.objects.all()
         serializer = StoreSerializer(stores, many=True)
+        serializer.exclude_fields(['store_flag'])
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -73,6 +74,7 @@ class StoreByBike(APIView):
         except ObjectDoesNotExist:
             raise Http404
         serializer = StoreSerializer(bike.store, many=False)
+        serializer.exclude_fields(['store_flag'])
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -113,6 +115,5 @@ class MakeBooking(APIView):
             booking.save()
             split_availabilities_algorithm(booking)
             send_booking_confirmation(booking)
-            serializer = BookingSerializer(booking, many=False)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

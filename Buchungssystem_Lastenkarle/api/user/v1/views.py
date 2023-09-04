@@ -15,8 +15,6 @@ from api.serializer import *
 from db_model.models import *
 
 from Buchungssystem_Lastenkarle.settings import CANONICAL_HOST
-from send_mail.views import send_banned_mail_to_user
-from send_mail.views import send_user_registered_confirmation
 from send_mail.views import send_cancellation_confirmation
 from send_mail.views import send_user_changed_mail
 from send_mail.views import send_user_registered_confirmation
@@ -62,7 +60,7 @@ class RegistrateUser(CreateAPIView):
             user.verification_string = generate_random_string(30)
             user.save()
             send_user_registered_confirmation(user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -90,8 +88,12 @@ class UpdateUserData(RetrieveUpdateAPIView):
     permission_classes = [IsAuthenticated]
 
     def update(self, request, *args, **kwargs):
+        fields_to_include = ['contact_data', 'username', 'password']
         instance = self.request.user
         data = request.data
+        for field_name in data.keys():
+            if field_name not in fields_to_include:
+                return Response({f"Updating field '{field_name}' is not allowed."}, status=status.HTTP_400_BAD_REQUEST)
         if data.get('contact_data') is not None:
             instance.verification_string = generate_random_string(30)
             if instance.user_status.contains(User_Status.objects.get(user_status='Verified')):
@@ -103,7 +105,7 @@ class UpdateUserData(RetrieveUpdateAPIView):
                 'preferred_username': request.data.get('username'),
             }
             data = {**request.data, **additional_data}
-        serializer = self.get_serializer(instance, data=data, partial=True)
+        serializer = self.get_serializer(instance, data=data, fields=fields_to_include, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -120,8 +122,9 @@ class LoginView(KnoxLoginView):
             login(request, user)
             response = super(LoginView, self).post(request, format=None)
         else:
-            return Response({'message': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-        return Response(response.data, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({'token': response.data.get('token')}, status=status.HTTP_200_OK)
 
 
 class AllBookingsFromUser(APIView):
@@ -129,8 +132,9 @@ class AllBookingsFromUser(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        bookings = Booking.objects.filter(user=request.user)
-        serializer = BookingSerializer(bookings, many=True)
+        fields_to_include = ['id', 'bike', 'begin', 'end', 'booking_status', 'equipment']
+        bookings = Booking.objects.filter(user=self.request.user)
+        serializer = BookingSerializer(bookings, fields=fields_to_include, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -143,7 +147,8 @@ class BookingFromUser(APIView):
             booking = Booking.objects.get(pk=booking_id)
         except ObjectDoesNotExist:
             raise Http404
-        serializer = BookingSerializer(booking, many=False)
+        fields_to_include = ['id', 'bike', 'begin', 'end', 'booking_status', 'equipment']
+        serializer = BookingSerializer(booking, fields=fields_to_include, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, booking_id):
@@ -183,6 +188,7 @@ class StoreOfBookedBike(APIView):
         except ObjectDoesNotExist:
             raise Http404
         serializer = StoreSerializer(booking.bike.store, many=False)
+        serializer.exclude_fields(['store_flag'])
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -191,11 +197,9 @@ class UserDataOfUser(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        try:
-            user_data = User.objects.get(user=request.user)
-        except ObjectDoesNotExist:
-            raise Http404
-        serializer = UserSerializer(user_data, many=False)
+        user = self.request.user
+        fields_to_include = ['contact_data', 'username', 'password']
+        serializer = UserSerializer(user, many=False, fields=fields_to_include)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
