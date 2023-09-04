@@ -62,7 +62,6 @@ class RegistrateUser(CreateAPIView):
             user.verification_string = generate_random_string(30)
             user.save()
             send_user_registered_confirmation(user)
-            #TODO: view for redirect page and set user as verified
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
