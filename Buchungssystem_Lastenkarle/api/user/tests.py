@@ -248,13 +248,24 @@ class LogoutTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_logout_with_token_of_other_user(self):
-        self.user_data = {
+        self.second_user_data = {
             'username': 'Wilderich',
             'password': 'password',
             'contact_data': 'ich_bin_fag@gmx.de',
             'year_of_birth': '1901'
         }
-        #hier weiter
-        self.client.credentials(HTTP_AUTHORIZATION='Token TtX84Me4RjFscdABKX60dh4Lj8cjtvPzJSubcfJ6IoB3FMAWydcHlgoycfxEddiw')
+        self.second_login_data = {
+            'username': 'Wilderich',
+            'password': 'password'
+        }
+        # create second user
+        self.second_user = User.objects.create_user(**self.second_user_data)
+        # login user
+        response = self.client.post("/api/user/v1/login", self.second_login_data)
+        # Parse the response content to get the token
+        response_data = json.loads(response.content.decode('utf-8'))
+        self.second_token = response_data.get('token', None)
+
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
         response = self.client.post(self.logout_url)
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
