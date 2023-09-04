@@ -7,6 +7,7 @@ from api.user.v1.views import RegistrateUser
 from rest_framework import status
 from django.core import mail
 from django.template.loader import render_to_string
+import json
 
 from Buchungssystem_Lastenkarle.settings import CANONICAL_HOST
 from configs.global_variables import lastenkarle_logo_url
@@ -219,15 +220,41 @@ class LogoutTest(TestCase):
             'contact_data': 'wilde.gard@gmx.de',
             'year_of_birth': '1901'
         }
+        self.login_data = {
+            'username': 'Wildegard',
+            'password': 'password',
+        }
+        # create User
         self.user = User.objects.create_user(**self.user_data)
-        self.token, _ = AuthToken.objects.create(self.user)
+        # login user
+        response = self.client.post("/api/user/v1/login", self.login_data)
+        # Parse the response content to get the token
+        response_data = json.loads(response.content.decode('utf-8'))
+        self.token = response_data.get('token', None)
         self.logout_url = "/api/user/v1/logout"
 
     def test_logout_with_valid_token(self):
-        self.client.credentials(HTTP_AUTHORIZATION='Token ' + str(self.token.digest))
-        response = self.client.post(self.logout_url, )
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+        response = self.client.post(self.logout_url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_logout_without_token(self):
+        response = self.client.post(self.logout_url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_logout_with_wrong_token(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token TtX84Me4RjFscdABKX60dh4Lj8cjtvPzJSubcfJ6IoB3FMAWydcHlgoycfxEddiw')
+        response = self.client.post(self.logout_url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_logout_with_token_of_other_user(self):
+        self.user_data = {
+            'username': 'Wilderich',
+            'password': 'password',
+            'contact_data': 'ich_bin_fag@gmx.de',
+            'year_of_birth': '1901'
+        }
+        #hier weiter
+        self.client.credentials(HTTP_AUTHORIZATION='Token TtX84Me4RjFscdABKX60dh4Lj8cjtvPzJSubcfJ6IoB3FMAWydcHlgoycfxEddiw')
         response = self.client.post(self.logout_url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
