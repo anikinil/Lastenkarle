@@ -354,7 +354,7 @@ class GetUserDataTest(TestCase):
         self.assertEqual(response_data['username'], self.user.username)
         self.assertEqual(response_data['contact_data'], self.user.contact_data)
 
-    def test_get_user_data_unauthenticated(self):
+    def test_get_user_data_without_token(self):
         # Unauthenticated request, remove the token
         self.client.credentials()
         # Try to get user data
@@ -371,3 +371,15 @@ class GetUserDataTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
+class UpdateUserDataTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user_data = user_data
+        self.login_data = login_data
+        # create User
+        self.user = User.objects.create_user(**self.user_data)
+        # login user
+        response = self.client.post("/api/user/v1/login", self.login_data)
+        response_data = json.loads(response.content.decode('utf-8'))
+        self.token = response_data.get('token', None)
+        self.update_user_data_url = "/api/user/v1/user/update"
