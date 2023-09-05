@@ -178,7 +178,6 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 CORS_ALLOW_ALL_ORIGINS = True
-CANONICAL_HOST = "https://transport.data.kit.edu"
-
+CANONICAL_HOST = os.environ.get('CANONICAL_HOST')
 DATA_UPLOAD_MAX_MEMORY_SIZE = 500 * 1024 * 1024
 ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'pdf']
