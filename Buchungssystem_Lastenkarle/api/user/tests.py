@@ -87,6 +87,14 @@ class RegistrateUserTest(TestCase):
         response = RegistrateUser.as_view()(request)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
+        # Try to register user with different username but same contact data
+        user_data_with_same_contact_data = {
+            'username': 'Wilderich',
+            'password': 'password',
+            'contact_data': 'ich_bin_fag@gmx.de',
+            'year_of_birth': '1901'
+        }
+
 
 class LoginTest(TestCase):
 
