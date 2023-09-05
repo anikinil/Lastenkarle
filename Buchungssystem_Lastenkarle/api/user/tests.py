@@ -18,19 +18,25 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 from django.contrib.auth import get_user_model
 
+user_data = {
+    'username': 'Wildegard',
+    'password': 'password',
+    'contact_data': 'wilde.gard@gmx.de',
+    'year_of_birth': '1901'
+}
+login_data = {
+    'username': 'Wildegard',
+    'password': 'password',
+}
+
 
 class RegistrateUserTest(TestCase):
     def setUp(self):
         self.factory = APIRequestFactory()
-        self.user_data = {
-            'username': 'Wildegard',
-            'password': 'password',
-            'contact_data': 'wilde.gard@gmx.de',
-            'year_of_birth': '1901'
-        }
+        self.user_data = user_data
         self.registrate_url = '/api/user/v1/register'
 
-    def test_user_registration(self):
+    def test_valid_user_registration(self):
         request = self.factory.post(self.registrate_url, self.user_data, format='json')
         response = RegistrateUser.as_view()(request)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -53,47 +59,71 @@ class RegistrateUserTest(TestCase):
                                          'registration_link': registration_link})
         self.assertEqual(first_message.body, html_message)
 
-    def test_invalid_user_registration(self):
-        request = self.factory.post(self.registrate_url, self.user_data, format='json')
-        response = RegistrateUser.as_view()(request)
+    def test_register_with_missing_credentials(self):
         # missing credentials
         invalid_user_data = {
             'username': 'testuser',
         }
         request = self.factory.post(self.registrate_url, invalid_user_data, format='json')
         response = RegistrateUser.as_view()(request)
+        # check Status Code
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        # Check if user is added to database
+        user_count = User.objects.filter(username=invalid_user_data['username']).count()
+        self.assertEqual(user_count, 0)
+        # Check that no emails are sent
+        self.assertEqual(0, len(mail.outbox))
 
+    def test_register_same_user_for_the_second_time(self):
+        request = self.factory.post(self.registrate_url, self.user_data, format='json')
+        response = RegistrateUser.as_view()(request)
         # Try to register same user for the second time
         request = self.factory.post(self.registrate_url, self.user_data, format='json')
         response = RegistrateUser.as_view()(request)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
         # Check if User is doubled in database
         user_count = User.objects.filter(username=self.user_data['username']).count()
         self.assertEqual(user_count, 1)
-
         # Check that no emails are sent
         self.assertEqual(0, len(mail.outbox))
 
+    def test_register_user_with_same_username_but_different_contact_data(self):
+        request = self.factory.post(self.registrate_url, self.user_data, format='json')
+        response = RegistrateUser.as_view()(request)
         # Try to register user with same username but different contact data
         user_data_with_same_username = {
             'username': 'Wildegard',
             'password': 'password',
-            'contact_data': 'ich_bin_fag@gmx.de',
+            'contact_data': 'pse_email@gmx.de',
             'year_of_birth': '1901'
         }
         request = self.factory.post(self.registrate_url, user_data_with_same_username, format='json')
         response = RegistrateUser.as_view()(request)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        # Check if User is doubled in database
+        user_count = User.objects.filter(username=user_data_with_same_username['username']).count()
+        self.assertEqual(user_count, 1)
+        # Check that no emails are sent
+        self.assertEqual(0, len(mail.outbox))
 
+    def test_register_user_with_different_username_but_same_contact_data(self):
+        request = self.factory.post(self.registrate_url, self.user_data, format='json')
+        response = RegistrateUser.as_view()(request)
         # Try to register user with different username but same contact data
         user_data_with_same_contact_data = {
             'username': 'Wilderich',
             'password': 'password',
-            'contact_data': 'ich_bin_fag@gmx.de',
+            'contact_data': 'wilde.gard@gmx.de',
             'year_of_birth': '1901'
         }
+        request = self.factory.post(self.registrate_url, user_data_with_same_contact_data, format='json')
+        response = RegistrateUser.as_view()(request)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        # Check if User is doubled in database
+        user_count = User.objects.filter(contact_data=user_data_with_same_contact_data['contact_data']).count()
+        self.assertEqual(user_count, 1)
+        # Check that no emails are sent
+        self.assertEqual(0, len(mail.outbox))
 
 
 class LoginTest(TestCase):
@@ -101,16 +131,8 @@ class LoginTest(TestCase):
     def setUp(self):
         self.factory = APIRequestFactory()
         self.client = APIClient()
-        self.user_data = {
-            'username': 'Wildegard',
-            'password': 'password',
-            'contact_data': 'wilde.gard@gmx.de',
-            'year_of_birth': '1901'
-        }
-        self.login_data = {
-            'username': 'Wildegard',
-            'password': 'password',
-        }
+        self.user_data = user_data
+        self.login_data = login_data
         self.user = User.objects.create_user(**self.user_data)
         self.token, _ = AuthToken.objects.create(self.user)
         self.login_url = '/api/user/v1/login'
@@ -222,16 +244,8 @@ class LoginTest(TestCase):
 class LogoutTest(TestCase):
     def setUp(self):
         self.client = APIClient()
-        self.user_data = {
-            'username': 'Wildegard',
-            'password': 'password',
-            'contact_data': 'wilde.gard@gmx.de',
-            'year_of_birth': '1901'
-        }
-        self.login_data = {
-            'username': 'Wildegard',
-            'password': 'password',
-        }
+        self.user_data = user_data
+        self.login_data = login_data
         # create User
         self.user = User.objects.create_user(**self.user_data)
         # login user
@@ -245,35 +259,115 @@ class LogoutTest(TestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
         response = self.client.post(self.logout_url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        # check if user is logged out
+        response = self.client.get('/api/user/v1/user/data')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_logout_without_token(self):
         response = self.client.post(self.logout_url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        # check if user is logged out
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+        response = self.client.get('/api/user/v1/user/data')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_logout_with_wrong_token(self):
-        self.client.credentials(HTTP_AUTHORIZATION='Token TtX84Me4RjFscdABKX60dh4Lj8cjtvPzJSubcfJ6IoB3FMAWydcHlgoycfxEddiw')
+    def test_logout_with_invalid_token(self):
+        self.client.credentials(
+            HTTP_AUTHORIZATION='Token invalid_token')
         response = self.client.post(self.logout_url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-
-    def test_logout_with_token_of_other_user(self):
-        self.second_user_data = {
-            'username': 'Wilderich',
-            'password': 'password',
-            'contact_data': 'ich_bin_fag@gmx.de',
-            'year_of_birth': '1901'
-        }
-        self.second_login_data = {
-            'username': 'Wilderich',
-            'password': 'password'
-        }
-        # create second user
-        self.second_user = User.objects.create_user(**self.second_user_data)
-        # login user
-        response = self.client.post("/api/user/v1/login", self.second_login_data)
-        # Parse the response content to get the token
-        response_data = json.loads(response.content.decode('utf-8'))
-        self.second_token = response_data.get('token', None)
-
+        # check if user is logged out
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
-        response = self.client.post(self.logout_url)
+        response = self.client.get('/api/user/v1/user/data')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+class LogoutAllTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user_data = user_data
+        self.login_data = login_data
+        # create User
+        self.user = User.objects.create_user(**self.user_data)
+        # Login User 3 times and store tokens
+        self.tokens = []
+        for _ in range(3):
+            response = self.client.post("/api/user/v1/login", self.login_data)
+            response_data = json.loads(response.content.decode('utf-8'))
+            token = response_data.get('token', None)
+            self.tokens.append(token)
+        self.logout_all_url = "/api/user/v1/logout-all"
+
+    def test_logout_all_sessions_with_valid_tokens(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.tokens[0])
+        response = self.client.post(self.logout_all_url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        # check if user is logged out
+        response = self.client.get('/api/user/v1/user/data')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        # check if all token are invalid now
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.tokens[1])
+        response = self.client.get('/api/user/v1/user/data')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.tokens[2])
+        response = self.client.get('/api/user/v1/user/data')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_logout_all_without_token(self):
+        # Ensure the user is not authenticated
+        self.client.credentials()
+        response = self.client.post(self.logout_all_url)
+        # Check if the status code is 401 Unauthorized
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_logout_all_with_invalid_token(self):
+        # Use an invalid token (e.g., a wrong string) for authentication
+        self.client.credentials(HTTP_AUTHORIZATION='Token invalid_token')
+        # Attempt to log out
+        response = self.client.post(self.logout_all_url)
+        # Check if the status code is 401 Unauthorized
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+
+class GetUserDataTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user_data = user_data
+        self.login_data = login_data
+        # create User
+        self.user = User.objects.create_user(**self.user_data)
+        # login user
+        response = self.client.post("/api/user/v1/login", self.login_data)
+        response_data = json.loads(response.content.decode('utf-8'))
+        self.token = response_data.get('token', None)
+        self.get_user_data_url = "/api/user/v1/user/data"
+
+    def test_get_user_data_valid(self):
+        # set token
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+        # try to get user data
+        response = self.client.get(self.get_user_data_url)
+        # check status code
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = response.json()
+        self.assertEqual(response_data['id'], self.user.pk)
+        self.assertEqual(response_data['username'], self.user.username)
+        self.assertEqual(response_data['contact_data'], self.user.contact_data)
+
+    def test_get_user_data_unauthenticated(self):
+        # Unauthenticated request, remove the token
+        self.client.credentials()
+        # Try to get user data
+        response = self.client.get(self.get_user_data_url)
+        # Check the status code, it should be 401 (UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_get_user_data_with_invalid_token(self):
+        # Set a token, but it should be invalid
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + 'invalidtoken')
+        # Try to get user data
+        response = self.client.get(self.get_user_data_url)
+        # Check the status code, it should be 401 (UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+
