@@ -15,6 +15,8 @@ from api.serializer import *
 from db_model.models import *
 
 from Buchungssystem_Lastenkarle.settings import CANONICAL_HOST
+from send_mail.views import send_banned_mail_to_user
+from send_mail.views import send_user_registered_confirmation
 from send_mail.views import send_cancellation_confirmation
 from send_mail.views import send_user_changed_mail
 from send_mail.views import send_user_registered_confirmation

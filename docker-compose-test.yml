@@ -10,15 +10,13 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    entrypoint: ["./testing.sh"]
 
 
   nginx:
-    image: nginx:1.24.0-bullseye
+    build: ./nginx
     volumes:
       - ./Buchungssystem_Lastenkarle/static:/static
-      - ./Buchungssystem_Lastenkarle/media:/media
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
-
     ports:
       - "80:80"
     depends_on:
@@ -39,15 +37,3 @@ services:
       interval: 10s
       timeout: 10s
       retries: 15
-
-
-  pgadmin:
-    container_name: pgadmin4_container
-    image: dpage/pgadmin4
-    restart: always
-    env_file:
-      - envvarsdb.env
-    depends_on:
-      - db
-    ports:
-      - "40001:80"
