@@ -1,0 +1,7 @@
+{
+  "heading":        "Buchungsübersicht",
+  "booked_dates":   "Gebuchte Tage",
+  "from":           "Von",
+  "to":             "Bis",
+  "cancel_booking": "Buchung stornieren"
+}

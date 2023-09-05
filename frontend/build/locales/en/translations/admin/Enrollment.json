@@ -1,0 +1,8 @@
+{
+  "heading":      "Enroll a new manager or admin",
+  "enter_to_id":  "Enter one of the following to identify the user",
+  "username":     "Username",
+  "email":        "E-mail",
+  "select_role":  "Select a role",
+  "enroll":       "Enroll user"
+}

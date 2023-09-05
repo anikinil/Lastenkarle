@@ -1,0 +1,14 @@
+{
+    "heading":              "Als Nutzer registrieren",
+    "username":             "Benutzername",
+    "year_of_birth":        "Geburtsjahr (freiwillig)",
+    "email":                "E-Mail",
+    "first_name":           "Vorname",
+    "last_name":            "Nachname",
+    "address":              "Adresse",
+    "id_number":            "Die letzen drei Ziffer der Passnummer",
+    "password":             "Passwort",
+    "sign_in":              "Registrieren",
+    "helmholtz_sign_in":    "Melde dich über deine Institution an",
+    "log_in":               "Bereits registriert? Logge dich ein."
+}
