@@ -2,9 +2,9 @@ version: "3.8"
 
 services:
   django_gunicorn:
-    #     restart: always
-    image: nginx:1.24.0-bullseye
-
+    build:
+      context: .
+      dockerfile: ./Buchungssystem_Lastenkarle/Dockerfile_Django
     volumes:
       - ./Buchungssystem_Lastenkarle/:/usr/src/app/
     env_file:
