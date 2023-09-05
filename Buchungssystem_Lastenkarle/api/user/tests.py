@@ -55,7 +55,7 @@ class RegistrateUserTest(TestCase):
         self.assertEqual(first_message.subject, subject)
         registration_link = CANONICAL_HOST + "/email-verification/" + str(user.pk) + "/" + user.verification_string
         html_message = render_to_string("email_templates/UserRegisteredConfirmation.html",
-                                        {'username': self.user_data['username'],
+                                        {'username': user.preferred_username,
                                          'lastenkarle_logo_url': lastenkarle_logo_url,
                                          'registration_link': registration_link})
         self.assertEqual(first_message.body, html_message)
@@ -387,3 +387,45 @@ class UpdateUserDataTest(TestCase):
         response_data = json.loads(response.content.decode('utf-8'))
         self.token = response_data.get('token', None)
         self.update_user_data_url = "/api/user/v1/user/update"
+
+    def test_update_user_data_valid(self):
+        changed_user_data = {
+            "username": "Wilderich",
+            "contact_data": "pse_email@gmx.de",
+            "password": "password2"
+        }
+        changed_login_data = {
+            "username": "Wilderich",
+            "password": "password2"
+        }
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+        # Try to update user data
+        response = self.client.patch(self.update_user_data_url, changed_user_data, format='json')
+        # Check the status code, it should be 200
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = response.json()
+        print(response_data)
+        self.assertEqual(response_data['username'], changed_user_data['username'])
+        self.assertEqual(response_data['contact_data'], changed_user_data['contact_data'])
+        #self.assertEqual(response_data['preferred_username'], changed_user_data['preferred_username'])
+        # try to login with new login data
+        response = self.client.post('/api/user/v1/login', changed_login_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # get user
+        user = User.objects.get(username=changed_user_data['username'])
+        # check if preferred_username changed
+        self.assertEqual(user.preferred_username, changed_user_data['username'])
+        # Check the number of emails, that have been sent
+        self.assertEqual(1, len(mail.outbox))
+        # Check if subject and body are the expected ones
+        first_message = mail.outbox[0]
+        subject = "Dein Account bei Lastenkarle: Bitte bestätige deine E-Mail"
+        self.assertEqual(first_message.subject, subject)
+        verification_link = CANONICAL_HOST + "/email-verification/" + str(user.pk) + "/" + user.verification_string
+        html_message = render_to_string("email_templates/EmailChangedTemplate.html",
+                                        {'username': user.preferred_username,
+                                         'lastenkarle_logo_url': lastenkarle_logo_url,
+                                         'verification_link': verification_link})
+        self.assertEqual(first_message.body, html_message)
+
+
