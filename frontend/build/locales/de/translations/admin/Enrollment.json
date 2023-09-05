@@ -1,0 +1,8 @@
+{
+  "heading":      "Neuen Administrator oder Manager ernennen",
+  "enter_to_id":  "Fülle eins der folgenden Felder aus, um den Nutzer zu identifizieren",
+  "username":     "Nutzername",
+  "email":        "E-Mail-Adresse",
+  "select_role":  "Rolle auswählen",
+  "enroll":       "Nutzer ernennen"
+}

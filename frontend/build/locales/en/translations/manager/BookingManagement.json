@@ -1,0 +1,9 @@
+{
+    "heading":     "Bookings in your store",
+    "start_date":  "Start date",
+    "end_date":    "End date",
+    "bike":        "Bike",
+    "user":        "User",
+    "comment":     "Comment",
+    "no_bookings": "There are no bookings at your store."
+}

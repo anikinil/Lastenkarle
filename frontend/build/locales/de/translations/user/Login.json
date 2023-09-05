@@ -1,0 +1,8 @@
+{
+    "heading":          "Login",
+    "username":         "Benutzername",
+    "password":         "Passwort",
+    "login":            "Einloggen",
+    "helmholtz_login":  "Melde dich über deine Institution an",
+    "sign_in":          "Noch kein Account? Registriere dich."
+}

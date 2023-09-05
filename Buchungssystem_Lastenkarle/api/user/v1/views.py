@@ -37,7 +37,7 @@ class HelmholtzLoginView(APIView):
 class HelmholtzAuthView(KnoxLoginView):
     permission_classes = (AllowAny,)
 
-    def get(self, request, format=None):
+    def get(self, request):
         token = oauth.helmholtz.authorize_access_token(request)
         userinfo = oauth.helmholtz.userinfo(request=request, token=token)
         if User.objects.filter(username=userinfo['eduperson_unique_id']).exists() is False:
@@ -62,7 +62,7 @@ class RegistrateUser(CreateAPIView):
             user.verification_string = generate_random_string(30)
             user.save()
             send_user_registered_confirmation(user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -71,12 +71,15 @@ class ConfirmEmail(APIView):
     permission_classes = (AllowAny,)
 
     def post(self, request, user_id, verification_string):
-        if User.objects.filter(pk=user_id, verification_string=verification_string).exists():
+        try:
             user = User.objects.get(pk=user_id)
+        except ObjectDoesNotExist:
+            raise Http404
+        if User.objects.filter(pk=user_id, verification_string=verification_string).exists():
             user.user_status.add(User_Status.objects.get(user_status='Verified'))
             user.verification_string = None
             user.save()
-            return Response(status=status.HTTP_202_ACCEPTED)
+            return Response(status=status.HTTP_200_OK)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -87,19 +90,28 @@ class UpdateUserData(RetrieveUpdateAPIView):
     permission_classes = [IsAuthenticated]
 
     def update(self, request, *args, **kwargs):
+        fields_to_include = ['contact_data', 'username', 'password']
         instance = self.request.user
-        if request.data.get('contact_data') is not None:
-            user = request.user
-            user.verification_string = generate_random_string(30)
-            if user.user_status.contains(User_Status.objects.get(user_status='Verified')):
-                user.user_status.remove(User_Status.objects.get(user_status='Verified'))
-                #TODO email change call
-            user.save()
-        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        data = request.data
+        for field_name in data.keys():
+            if field_name not in fields_to_include:
+                return Response({f"Updating field '{field_name}' is not allowed."}, status=status.HTTP_400_BAD_REQUEST)
+        if data.get('contact_data') is not None:
+            instance.verification_string = generate_random_string(30)
+            if instance.user_status.contains(User_Status.objects.get(user_status='Verified')):
+                instance.user_status.remove(User_Status.objects.get(user_status='Verified'))
+                send_user_changed_mail(instance)
+            instance.save()
+        if data.get('username') is not None:
+            additional_data = {
+                'preferred_username': request.data.get('username'),
+            }
+            data = {**request.data, **additional_data}
+        serializer = self.get_serializer(instance, data=data, fields=fields_to_include, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        send_user_changed_mail(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class LoginView(KnoxLoginView):
     permission_classes = (AllowAny,)
@@ -112,17 +124,21 @@ class LoginView(KnoxLoginView):
             login(request, user)
             response = super(LoginView, self).post(request, format=None)
         else:
-            return Response({'message': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-        return Response(response.data, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({'token': response.data.get('token')}, status=status.HTTP_200_OK)
+
 
 class AllBookingsFromUser(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        bookings = Booking.objects.filter(user=request.user)
-        serializer = BookingSerializer(bookings, many=True)
+        fields_to_include = ['id', 'bike', 'begin', 'end', 'booking_status', 'equipment']
+        bookings = Booking.objects.filter(user=self.request.user)
+        serializer = BookingSerializer(bookings, fields=fields_to_include, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class BookingFromUser(APIView):
     authentication_classes = [TokenAuthentication]
@@ -130,19 +146,18 @@ class BookingFromUser(APIView):
 
     def get(self, request, booking_id):
         try:
-            Booking.objects.get(pk=booking_id)
+            booking = Booking.objects.get(pk=booking_id)
         except ObjectDoesNotExist:
             raise Http404
-        booking = Booking.objects.get(pk=booking_id)
-        serializer = BookingSerializer(booking, many=False)
+        fields_to_include = ['id', 'bike', 'begin', 'end', 'booking_status', 'equipment']
+        serializer = BookingSerializer(booking, fields=fields_to_include, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, booking_id):
         try:
-            Booking.objects.get(pk=booking_id)
+            booking = Booking.objects.get(pk=booking_id)
         except ObjectDoesNotExist:
             raise Http404
-        booking = Booking.objects.get(pk=booking_id)
         booking.booking_status.clear()
         booking.booking_status.add(Booking_Status.objects.get(booking_status='Cancelled'))
         booking.string = None
@@ -151,18 +166,19 @@ class BookingFromUser(APIView):
         send_cancellation_confirmation(booking)
         return Response(status=status.HTTP_200_OK)
 
+
 class BookedBike(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request, booking_id):
         try:
-            Booking.objects.get(pk=booking_id).bike
+            booking = Booking.objects.get(pk=booking_id)
         except ObjectDoesNotExist:
             raise Http404
-        bike = Booking.objects.get(pk=booking_id).bike
-        serializer = BikeSerializer(bike, many=False)
+        serializer = BikeSerializer(booking.bike, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class StoreOfBookedBike(APIView):
     authentication_classes = [TokenAuthentication]
@@ -170,36 +186,24 @@ class StoreOfBookedBike(APIView):
 
     def get(self, request, booking_id):
         try:
-            Booking.objects.get(pk=booking_id).bike.store
+            booking = Booking.objects.get(pk=booking_id)
         except ObjectDoesNotExist:
             raise Http404
-        store = Booking.objects.get(pk=booking_id).bike.store
-        serializer = StoreSerializer(store, many=False)
+        serializer = StoreSerializer(booking.bike.store, many=False)
+        serializer.exclude_fields(['store_flag'])
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-class LocalDataOfUser(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        try:
-            local_data = LocalData.objects.get(user=User.objects.get(pk=self.request.user.pk))
-        except ObjectDoesNotExist:
-            raise Http404
-        serializer = LocalDataSerializer(local_data, many=False)
-        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class UserDataOfUser(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        try:
-            user_data = User.objects.get(pk=self.request.user.pk)
-        except ObjectDoesNotExist:
-            raise Http404
-        serializer = UserSerializer(user_data, many=False)
+        user = self.request.user
+        fields_to_include = ['contact_data', 'username', 'password']
+        serializer = UserSerializer(user, many=False, fields=fields_to_include)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class DeleteUserAccount(DestroyAPIView):
     authentication_classes = [TokenAuthentication]
@@ -211,4 +215,4 @@ class DeleteUserAccount(DestroyAPIView):
             LocalData.objects.get(user=user).anonymize().save()
         user.anonymize().save()
         user.user_status.clear()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_200_OK)

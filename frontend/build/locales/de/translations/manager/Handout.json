@@ -1,0 +1,17 @@
+{
+  "heading":                "Lastenradausgabe und -annahme",
+  "booking_info":           "Buchungsinformationen",
+  "bike":                   "Lastenrad",
+  "from":                   "Von",
+  "to":                     "Bis",
+  "client":                 "Kunde",
+  "id_verification":        "Verifikation des Ausweises",
+  "last_id_number_digits":  "Die letzten drei Ziffern der Ausweisnummer",
+  "renew_ass_lvl":          "Assurance-Level erneuern",
+  "first_name":             "Vorname",
+  "last_name":              "Nachname",
+  "address":                "Adresse",
+  "id_number":              "Ausweisnummer",
+  "handout":                "Lastenrad ausgeben",
+  "accept":                 "Lastenrad annehmen"
+}

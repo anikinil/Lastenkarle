@@ -1,6 +1,8 @@
 Django==4.2.4
 gunicorn==21.2.0
 djangorestframework==3.14.0
+psycopg
+django-cors-headers
 psycopg==3.1.10
 django-rest-knox==4.2.0
 authlib==1.2.1
@@ -11,3 +13,4 @@ xhtml2pdf==0.2.11
 python-magic
 django-storages
 Pillow==10.0.0
+django-cors-headers

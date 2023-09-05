@@ -34,6 +34,7 @@ class UserSerializer(serializers.ModelSerializer):
             for field_name in set(self.fields.keys()) - set(fields):
                 self.fields.pop(field_name)
 
+    #TODO add custom validation
 
 class RegistrationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -43,6 +44,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
                   'username',
                   'password')
 
+    #TODO tailor custom validation
     def validate(self, attrs):
         username = attrs.get('username')
         if User.objects.filter(username=username).exists():
@@ -104,6 +106,7 @@ class EquipmentSerializer(serializers.ModelSerializer):
 
 class BikeSerializer(serializers.ModelSerializer):
     equipment = EquipmentSerializer(many=True, read_only=True)
+    image = serializers.ImageField()
 
     class Meta:
         model = Bike
@@ -115,6 +118,17 @@ class BikeSerializer(serializers.ModelSerializer):
         if fields is not None:
             for field_name in set(self.fields.keys()) - set(fields):
                 self.fields.pop(field_name)
+
+    def exclude_fields(self, excluded_fields):
+        if excluded_fields:
+            for field_name in excluded_fields:
+                self.fields.pop(field_name)
+
+    def update(self, instance, validated_data):
+        if validated_data.get('image', None) is not None:
+            instance.image.delete()
+        instance = super().update(instance, validated_data)
+        return instance
 
 
 class StoreSerializer(serializers.ModelSerializer):
@@ -129,6 +143,12 @@ class StoreSerializer(serializers.ModelSerializer):
             for field_name in set(self.fields.keys()) - set(fields):
                 self.fields.pop(field_name)
 
+    def exclude_fields(self, excluded_fields):
+        if excluded_fields:
+            for field_name in excluded_fields:
+                self.fields.pop(field_name)
+
+    #TODO custom validations
 
 class BookingStatusSerializer(serializers.ModelSerializer):
 
@@ -154,8 +174,19 @@ class MakeBookingSerializer(serializers.ModelSerializer):
             booking.equipment.add(equipment)
         return booking
 
+    def __init__(self, *args, **kwargs):
+        fields = kwargs.pop('fields', None)
+        super().__init__(*args, **kwargs)
+        if fields is not None:
+            for field_name in set(self.fields.keys()) - set(fields):
+                self.fields.pop(field_name)
+
+    #TODO custom make booking validation
+
 
 class BookingSerializer(serializers.ModelSerializer):
+    preferred_username = serializers.ReadOnlyField(source='user.preferred_username')
+    assurance_lvl = serializers.ReadOnlyField(source='user.assurance_lvl')
     user = UserSerializer(many=False, read_only=True)
     booking_status = BookingStatusSerializer(many=True, read_only=True)
     equipment = EquipmentSerializer(many=True, read_only=True)

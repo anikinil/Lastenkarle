@@ -1,0 +1,8 @@
+{
+    "heading":      "Deine Buchungen",
+    "start_date":   "Abholdatum",
+    "end_date":     "Abgabedatum",
+    "store":        "Standort",
+    "bike":         "Lastenrad",
+    "no_bookings":  "Es gibt keine Buchungen von ihrem Account."
+}

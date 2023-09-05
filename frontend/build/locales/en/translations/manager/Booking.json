@@ -1,0 +1,11 @@
+{
+    "heading":              "Booking page",
+    "booked_dates":         "Booking period",
+    "from":                 "From",
+    "to":                   "To",
+    "comment":              "Comment",
+    "edit_comment":         "Edit comment",
+    "hand_out_bike":        "Hand out bike",
+    "accept_bike":          "Accept bike",
+    "cancel_booking":       "Cancel this booking"
+}
