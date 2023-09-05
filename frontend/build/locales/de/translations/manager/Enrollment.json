@@ -1,0 +1,7 @@
+{
+    "header":                       "Ernenne einen Manager in deinem Store",
+    "enter_to_id":                  "Fülle eins der folgenden Felder aus, um den Nutzer zu identifizieren",
+    "username":                     "Benutzername",
+    "enroll_manager":               "Neuen Manager ernennen",
+    "enrollment_successful":        "Sie haben erfolgreich den Nutzer zum Store-Manager ernannt."
+}
