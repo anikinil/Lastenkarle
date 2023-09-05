@@ -11,3 +11,5 @@ xhtml2pdf==0.2.11
 python-magic
 django-storages
 Pillow==10.0.0
+validate_email == 1.3
+py3dns == 4.0.0

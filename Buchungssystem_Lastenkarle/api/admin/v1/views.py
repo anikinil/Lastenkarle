@@ -30,10 +30,10 @@ class AllUserFlags(APIView):
         user_flag = request.data['user_status']
         try:
             user = User.objects.get(contact_data=contact_data)
-            User_Status.objects.get(user_status=user_flag)
+            user_flag = User_Status.objects.get(user_status=user_flag)
         except ObjectDoesNotExist:
             raise Http404
-        user.user_status.add(User_Status.objects.get(user_status=user_flag).pk)
+        user.user_status.add(user_flag.pk)
         if user_flag.startswith("Store:"):
             user.is_staff = True
             user.save()
@@ -178,16 +178,10 @@ class UpdateSelectedBike(APIView):
 
     def patch(self, request, bike_id, *args, **kwargs):
         try:
-            instance = Bike.objects.get(pk=bike_id)
-        except Bike.DoesNotExist:
+            bike = Bike.objects.get(pk=bike_id)
+        except ObjectDoesNotExist:
             raise Http404
-        fields_to_include = ['name', 'description', 'image']
-        for field_name in request.data.keys():
-            if field_name not in fields_to_include:
-                return Response({f"Updating field '{field_name}' is not allowed."}, status=status.HTTP_400_BAD_REQUEST)
-        serializer = BikeSerializer(instance, data=request.data, fields=fields_to_include, partial=True)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
+        serializer = partialUpdateOfBike(request, bike)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -294,20 +288,10 @@ class UpdateSelectedStore(APIView):
 
     def patch(self, request, store_id, *args, **kwargs):
         try:
-            instance = Store.objects.get(pk=store_id)
+            store = Store.objects.get(pk=store_id)
         except ObjectDoesNotExist:
             raise Http404
-        fields_to_include = ['address', 'phone_number', 'email', 'prep_time',
-                             'mon_opened', 'mon_open', 'mon_close',
-                             'tue_opened', 'tue_open', 'tue_close',
-                             'wed_opened', 'wed_open', 'wed_close',
-                             'thu_opened', 'thu_open', 'thu_close',
-                             'fri_opened', 'fri_open', 'fri_close',
-                             'sat_opened', 'sat_open', 'sat_close',
-                             'sun_opened', 'sun_open', 'sun_close']
-        serializer = StoreSerializer(instance, data=request.data, fields=fields_to_include, partial=True)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
+        serializer = partialUpdateOfStore(request, store)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
