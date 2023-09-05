@@ -2,9 +2,7 @@ version: "3.8"
 
 services:
   django_gunicorn:
-    build:
-      context: .
-      dockerfile: ./Buchungssystem_Lastenkarle/Dockerfile_Django
+    image: danjackson01/django_gunicorn:pse
     volumes:
       - ./Buchungssystem_Lastenkarle/:/usr/src/app/
     env_file:
