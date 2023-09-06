@@ -9,6 +9,7 @@ from django.core import mail
 from django.template.loader import render_to_string
 import json
 from unittest import skip
+from django.core import serializers
 
 from Buchungssystem_Lastenkarle.settings import CANONICAL_HOST
 from configs.global_variables import lastenkarle_logo_url
@@ -33,16 +34,35 @@ login_data = {
 # TODO: überprüfen der Migration
 
 class MigrationTest(TestCase):
+
     def test_migrations(self):
-        equipment = []
         equipment = Equipment.objects.all()
-        availabilities_status = []
+        equipment_json = serializers.serialize('json', equipment)
+        search_terms = ['Lock And Key', 'Child Safety Seat And Seatbelt', 'Tarp', 'Battery', 'Charger']
+        self.find_and_test_terms_in_json(search_terms, equipment_json, 'equipment')
+
         availabilities_status = Availability_Status.objects.all()
-        booking_status = []
+        availabilities_status_json = serializers.serialize('json', availabilities_status)
+        search_terms = ['Booked', 'Available']
+        #self.find_and_test_terms_in_json(search_terms, availabilities_status_json, 'equipment')
+
         booking_status = Booking_Status.objects.all()
-        user_status = []
+        booking_status_json = serializers.serialize('json', booking_status)
+        search_terms = ['Booked', 'Internal usage', 'Picked up', 'Cancelled', 'Returned']
+        #self.find_and_test_terms_in_json(search_terms, booking_status_json, 'equipment')
+
         user_status = User_Status.objects.all()
-        print(equipment)
+        user_status_json = serializers.serialize('json', user_status)
+        search_terms = ['Verified', 'Deleted', 'Reminded', 'Administrator', 'Banned', 'Customer']
+        self.find_and_test_terms_in_json(search_terms, user_status_json, 'equipment')
+
+    def find_and_test_terms_in_json(self, search_terms, search_json, field_name):
+        list = json.loads(search_json)
+        found_equipment = [item['fields'][field_name] for item in list]
+        for term in search_terms:
+            self.assertIn(term, found_equipment)
+
+
 
 
 class RegistrateUserTest(TestCase):
@@ -90,7 +110,7 @@ class RegistrateUserTest(TestCase):
         # Check that no emails are sent
         self.assertEqual(0, len(mail.outbox))
 
-    @skip("Don't want to test")
+
     def test_register_same_user_for_the_second_time(self):
         request = self.factory.post(self.registrate_url, self.user_data, format='json')
         response = RegistrateUser.as_view()(request)
@@ -102,9 +122,9 @@ class RegistrateUserTest(TestCase):
         user_count = User.objects.filter(username=self.user_data['username']).count()
         self.assertEqual(user_count, 1)
         # Check that no emails are sent
-        self.assertEqual(0, len(mail.outbox))
+        self.assertEqual(1, len(mail.outbox))
 
-    @skip("Don't want to test")
+
     def test_register_user_with_same_username_but_different_contact_data(self):
         request = self.factory.post(self.registrate_url, self.user_data, format='json')
         response = RegistrateUser.as_view()(request)
@@ -122,9 +142,9 @@ class RegistrateUserTest(TestCase):
         user_count = User.objects.filter(username=user_data_with_same_username['username']).count()
         self.assertEqual(user_count, 1)
         # Check that no emails are sent
-        self.assertEqual(0, len(mail.outbox))
+        self.assertEqual(1, len(mail.outbox))
 
-    @skip("Don't want to test")
+
     def test_register_user_with_different_username_but_same_contact_data(self):
         request = self.factory.post(self.registrate_url, self.user_data, format='json')
         response = RegistrateUser.as_view()(request)
@@ -142,7 +162,7 @@ class RegistrateUserTest(TestCase):
         user_count = User.objects.filter(contact_data=user_data_with_same_contact_data['contact_data']).count()
         self.assertEqual(user_count, 1)
         # Check that no emails are sent
-        self.assertEqual(0, len(mail.outbox))
+        self.assertEqual(1, len(mail.outbox))
 
 
 class LoginTest(TestCase):
@@ -473,7 +493,7 @@ class UpdateUserDataTest(TestCase):
         user = User.objects.get(username=user_data['username'])
         self.assertEqual(user.username, user_data['username'])
         self.assertEqual(user.contact_data, user_data['contact_data'])
-        # try to login
+        # try to log in
         response = self.client.post('/api/user/v1/login', login_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # Check the number of emails, that have been sent
@@ -503,7 +523,6 @@ class UpdateUserDataTest(TestCase):
         user = User.objects.get(contact_data=user_data['contact_data'])
         self.assertEqual(user.username, user_data['username'])
         # try to login with wrong credentials
-        print(user.username)
         response = self.client.post('/api/user/v1/login', changed_login_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         # try to login with right credentials
@@ -532,12 +551,10 @@ class UpdateUserDataTest(TestCase):
         # Check the status code, it should be 200
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         response_data = response.json()
-        print(response_data)
         self.assertNotEqual(response_data['contact_data'], changed_user_data['contact_data'])
         user = User.objects.get(contact_data=user_data['contact_data'])
         self.assertEqual(user.username, user_data['username'])
         # try to log in with wrong credentials
-        print(user.username)
         response = self.client.post('/api/user/v1/login', changed_login_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         # try to log in with right credentials
