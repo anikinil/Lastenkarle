@@ -14,9 +14,7 @@ services:
 
 
   nginx:
-    build: ./nginx
-    volumes:
-      - ./Buchungssystem_Lastenkarle/static:/static
+    image: nginx:1.24.0-bullseye
     ports:
       - "80:80"
     depends_on:

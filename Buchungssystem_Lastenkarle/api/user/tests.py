@@ -94,7 +94,7 @@ class RegistrateUserTest(TestCase):
                                          'registration_link': registration_link})
         self.assertEqual(first_message.body, html_message)
 
-    @skip
+
     def test_register_with_missing_credentials(self):
         # missing credentials
         invalid_user_data = {
