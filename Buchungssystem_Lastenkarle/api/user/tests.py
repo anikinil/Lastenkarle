@@ -2,7 +2,7 @@ from django.test import TestCase
 from knox.models import AuthToken
 from knox.auth import TokenAuthentication
 from rest_framework.test import APIRequestFactory
-from db_model.models import User_Status, User
+from db_model.models import User_Status, User, Equipment, Availability_Status, Booking_Status
 from api.user.v1.views import RegistrateUser
 from rest_framework import status
 from django.core import mail
@@ -29,6 +29,20 @@ login_data = {
     'username': 'Wildegard',
     'password': 'password',
 }
+
+# TODO: überprüfen der Migration
+
+class MigrationTest(TestCase):
+    def test_migrations(self):
+        equipment = []
+        equipment = Equipment.objects.all()
+        availabilities_status = []
+        availabilities_status = Availability_Status.objects.all()
+        booking_status = []
+        booking_status = Booking_Status.objects.all()
+        user_status = []
+        user_status = User_Status.objects.all()
+        print(equipment)
 
 
 class RegistrateUserTest(TestCase):
@@ -148,7 +162,7 @@ class LoginTest(TestCase):
         self.assertIn('token', response.data)
 
     def test_login_invalid_user(self):
-        # Check what happens when logging in nonexistentuser
+        # Check what happens when logging in nonexistent user
         invalid_user_data = {
             'username': 'nonexistentuser',
             'password': 'invalidpassword'
@@ -388,7 +402,7 @@ class UpdateUserDataTest(TestCase):
         self.token = response_data.get('token', None)
         self.update_user_data_url = "/api/user/v1/user/update"
 
-    def test_update_user_data_valid(self):
+    def test_update_user_data_with_valid_data(self):
         changed_user_data = {
             "username": "Wilderich",
             "contact_data": "pse_email@gmx.de",
@@ -404,10 +418,8 @@ class UpdateUserDataTest(TestCase):
         # Check the status code, it should be 200
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         response_data = response.json()
-        print(response_data)
         self.assertEqual(response_data['username'], changed_user_data['username'])
         self.assertEqual(response_data['contact_data'], changed_user_data['contact_data'])
-        #self.assertEqual(response_data['preferred_username'], changed_user_data['preferred_username'])
         # try to login with new login data
         response = self.client.post('/api/user/v1/login', changed_login_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -428,4 +440,108 @@ class UpdateUserDataTest(TestCase):
                                          'verification_link': verification_link})
         self.assertEqual(first_message.body, html_message)
 
+    def test_update_user_data_with_empty_data(self):
+        changed_user_data = {}
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+        # Try to update user data
+        response = self.client.patch(self.update_user_data_url, changed_user_data, format='json')
+        # Check the status code, it should be 200
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = response.json()
+        self.assertEqual(response_data['username'], user_data['username'])
+        self.assertEqual(response_data['contact_data'], user_data['contact_data'])
+        # try to login
+        response = self.client.post('/api/user/v1/login', user_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # Check the number of emails, that have been sent
+        self.assertEqual(0, len(mail.outbox))
 
+    def test_update_user_data_with_invalid_data(self):
+        changed_user_data = {
+            "username": "",
+            "contact_data": "",
+            "password": ""
+        }
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+        # Try to update user data
+        response = self.client.patch(self.update_user_data_url, changed_user_data, format='json')
+        # Check the status code, it should be 200
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        response_data = response.json()
+        self.assertNotEqual(response_data['username'], changed_user_data['username'])
+        self.assertNotEqual(response_data['contact_data'], changed_user_data['contact_data'])
+        user = User.objects.get(username=user_data['username'])
+        self.assertEqual(user.username, user_data['username'])
+        self.assertEqual(user.contact_data, user_data['contact_data'])
+        # try to login
+        response = self.client.post('/api/user/v1/login', login_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # Check the number of emails, that have been sent
+        self.assertEqual(0, len(mail.outbox))
+
+    def test_update_user_data_with_username_that_already_exists(self):
+        second_user_data = {
+            "username": "Gurke",
+            "contact_data": "pse_email@gmx.de",
+            "password": "password2"
+        }
+        changed_user_data = {
+            "username": "Gurke"
+        }
+        changed_login_data = {
+            "username": "Gurke",
+            "password": "password"
+        }
+        User.objects.create_user(**second_user_data)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+        # Try to update user data
+        response = self.client.patch(self.update_user_data_url, changed_user_data, format='json')
+        # Check the status code, it should be 200
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        response_data = response.json()
+        self.assertNotEqual(response_data['username'], changed_user_data['username'])
+        user = User.objects.get(contact_data=user_data['contact_data'])
+        self.assertEqual(user.username, user_data['username'])
+        # try to login with wrong credentials
+        print(user.username)
+        response = self.client.post('/api/user/v1/login', changed_login_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        # try to login with right credentials
+        response = self.client.post('/api/user/v1/login', login_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # Check the number of emails, that have been sent
+        self.assertEqual(0, len(mail.outbox))
+
+    def test_update_user_data_with_contact_data_that_already_exists(self):
+        second_user_data = {
+            "username": "Gurke",
+            "contact_data": "pse_email@gmx.de",
+            "password": "password2"
+        }
+        changed_user_data = {
+            "contact_data": "pse_email@gmx.de"
+        }
+        changed_login_data = {
+            "username": "Wildegard",
+            "password": "password"
+        }
+        User.objects.create_user(**second_user_data)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+        # Try to update user data
+        response = self.client.patch(self.update_user_data_url, changed_user_data, format='json')
+        # Check the status code, it should be 200
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        response_data = response.json()
+        print(response_data)
+        self.assertNotEqual(response_data['contact_data'], changed_user_data['contact_data'])
+        user = User.objects.get(contact_data=user_data['contact_data'])
+        self.assertEqual(user.username, user_data['username'])
+        # try to log in with wrong credentials
+        print(user.username)
+        response = self.client.post('/api/user/v1/login', changed_login_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        # try to log in with right credentials
+        response = self.client.post('/api/user/v1/login', login_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # Check the number of emails, that have been sent
+        self.assertEqual(0, len(mail.outbox))
