@@ -1,0 +1,7 @@
+{
+    "heading":                  "Lastenräder filtern",
+    "select_regions":           "Region auswählen",
+    "select_rental_days_range": "Wähle einen Ausleihzeitraum aus (max. 3 Tage)",
+    "filter":                   "Filtern",
+    "no_bikes":                 "Keine Lastenräder in ausgewählten Regionen oder zu ausgewählten Tagen verfügbar"
+}

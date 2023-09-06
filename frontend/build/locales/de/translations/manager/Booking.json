@@ -1,0 +1,11 @@
+{
+    "heading":              "Buchungsseite",
+    "booked_dates":         "Buchungszeitraum",
+    "from":                 "Von",
+    "to":                   "Bis",
+    "comment":              "Kommentar",
+    "edit_comment":         "Kommentar bearbeiten",
+    "hand_out_bike":        "Lastenrad rausgeben",
+    "accept_bike":          "Lastenrad zurücknehmen",
+    "cancel_booking":       "Diese Buchung stornieren"
+}

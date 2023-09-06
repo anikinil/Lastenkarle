@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+  django_gunicorn:
+    image: danjackson01/django_gunicorn:pse
+    volumes:
+      - ./Buchungssystem_Lastenkarle/:/usr/src/app/
+    env_file:
+      - envvarsdjango.env
+    depends_on:
+      db:
+        condition: service_healthy
+    entrypoint: ["./testing.sh"]
+
+
+  nginx:
+    build: ./nginx
+    volumes:
+      - ./Buchungssystem_Lastenkarle/static:/static
+    ports:
+      - "80:80"
+    depends_on:
+      - django_gunicorn
+
+  db:
+    container_name: pg_container
+    image: postgres:15.3-bullseye
+    restart: always
+    env_file:
+      - envvarsdb.env
+
+    volumes:
+      - ./postgress_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "Caro", "-d", "test_db" ]
+      interval: 10s
+      timeout: 10s
+      retries: 15

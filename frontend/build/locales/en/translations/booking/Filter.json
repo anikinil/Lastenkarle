@@ -1,0 +1,7 @@
+{
+    "heading":                  "Filter bikes",
+    "select_regions":           "Select regions",
+    "select_rental_days_range": "Select a rental period (at most 3 days)",
+    "filter":                   "Filter",
+    "no_bikes":                 "No bikes available in the selected regions or on selected dates"
+}

@@ -1,0 +1,15 @@
+{
+    "address":          "Address",
+    "contact_data":     "Contact data",
+    "email":            "E-Mail",
+    "phone":            "Phone",
+    "opening_hours":    "Opening hours",
+    "mon":              "Mon",
+    "tue":              "Tue",
+    "wed":              "Wed",
+    "thu":              "Thu",
+    "fri":              "Fri",
+    "sat":              "Sat",
+    "sun":              "Sun",
+    "bikes":            "Bikes"
+}

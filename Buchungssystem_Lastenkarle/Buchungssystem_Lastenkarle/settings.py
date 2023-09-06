@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'api',
     'db_model',
     'knox',
+    'corsheaders',
     'send_mail',
 ]
 
@@ -71,6 +72,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
+
 ]
 
 ROOT_URLCONF = 'Buchungssystem_Lastenkarle.urls'
@@ -166,7 +170,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # todo put this in an enviroment file for configuration
-CANONICAL_HOST = "http://localhost"
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.mail.de'
@@ -174,6 +177,7 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-
+CORS_ALLOW_ALL_ORIGINS = True
+CANONICAL_HOST = os.environ.get('CANONICAL_HOST')
 DATA_UPLOAD_MAX_MEMORY_SIZE = 500 * 1024 * 1024
 ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'pdf']

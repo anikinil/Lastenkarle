@@ -1,0 +1,8 @@
+{
+    "header":                       "Enroll a manager for your store",
+    "enter_to_id":                  "Enter one of the following to indentify the user",
+    "username":                     "Username",
+    "email":                        "E-Mail",
+    "enroll_manager":               "Enroll new manager",
+    "enrollment_successful":        "You successfully enrolled a new manager at your store"
+}

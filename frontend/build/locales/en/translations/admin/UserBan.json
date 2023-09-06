@@ -1,0 +1,7 @@
+{
+  "heading":      "User ban",
+  "enter_to_id":  "Enter one of the following to identify the user",
+  "username":     "Username",
+  "email":        "E-mail",
+  "ban_user":     "Ban user"
+}
