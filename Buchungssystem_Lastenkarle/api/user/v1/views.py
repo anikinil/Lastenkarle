@@ -56,7 +56,6 @@ class RegistrateUser(CreateAPIView):
         serializer = RegistrationSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
-            user.save()
             send_user_registered_confirmation(user)
             return Response(status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -81,20 +80,23 @@ class ConfirmEmail(APIView):
 
 class UpdateUserData(RetrieveUpdateAPIView):
     queryset = User.objects.all()
-    serializer_class = UserSerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def update(self, request, *args, **kwargs):
         fields_to_include = ['contact_data', 'username', 'password']
         partialUpdateInputValidation(request, fields_to_include)
-        serializer = self.get_serializer(self.request.user, data=request.data, fields=fields_to_include, partial=True)
+        serializer = UserSerializer(self.request.user, data=request.data, fields=fields_to_include, partial=True)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         if serializer.validated_data.get('contact_data', None) is not None:
             user.user_status.remove(User_Status.objects.get(user_status='Verified'))
             send_user_changed_mail(user)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        if serializer.validated_data.get('password', None) is not None:
+            user.set_password(user.password)
+            user.save()
+        data = UserSerializer(user, many=False, fields=['contact_data', 'username']).data
+        return Response(data, status=status.HTTP_200_OK)
 
 
 class LoginView(KnoxLoginView):
@@ -184,7 +186,7 @@ class UserDataOfUser(APIView):
 
     def get(self, request):
         user = self.request.user
-        fields_to_include = ['contact_data', 'username', 'password', 'user_status']
+        fields_to_include = ['contact_data', 'username', 'user_status']
         serializer = UserSerializer(user, many=False, fields=fields_to_include)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

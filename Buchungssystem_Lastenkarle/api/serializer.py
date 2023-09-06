@@ -65,7 +65,6 @@ class UserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Password required.')
         return attrs
 
-
     def __init__(self, *args, **kwargs):
         fields = kwargs.pop('fields', None)
         super().__init__(*args, **kwargs)
@@ -98,8 +97,9 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         username = validated_data.pop('username', None)
+        password = validated_data.pop('password', None)
         if username:
-            auth_user = User.objects.create_user(username, **validated_data)
+            auth_user = User.objects.create_user(username, password, **validated_data)
             return auth_user
 
 
@@ -114,6 +114,8 @@ class LoginSerializer(serializers.Serializer):
             raise serializers.ValidationError('Please give both username and password')
         if not User.objects.filter(username=username).exists():
             raise serializers.ValidationError('Username not found enter correct credentials')
+        print(username)
+        print(password)
         user = authenticate(
             request=self.context.get('request'),
             username=username,
@@ -138,6 +140,13 @@ class LocalDataSerializer(serializers.ModelSerializer):
         instance = super().update(instance, validated_data)
         return instance
 
+    def __init__(self, *args, **kwargs):
+        fields = kwargs.pop('fields', None)
+        super().__init__(*args, **kwargs)
+        if fields is not None:
+            for field_name in set(self.fields.keys()) - set(fields):
+                self.fields.pop(field_name)
+
 
 class EquipmentSerializer(serializers.ModelSerializer):
 
@@ -161,11 +170,6 @@ class BikeSerializer(serializers.ModelSerializer):
             for field_name in set(self.fields.keys()) - set(fields):
                 self.fields.pop(field_name)
 
-    def exclude_fields(self, excluded_fields):
-        if excluded_fields:
-            for field_name in excluded_fields:
-                self.fields.pop(field_name)
-
     def update(self, instance, validated_data):
         if validated_data.get('image', None) is not None:
             instance.image.delete()
@@ -177,6 +181,11 @@ class StoreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Store
         fields = '__all__'
+
+    def validate_email(self, attrs):
+        if not validate_email(attrs):
+            raise serializers.ValidationError('Not an valid email')
+        return attrs
 
     def __init__(self, *args, **kwargs):
         fields = kwargs.pop('fields', None)
@@ -201,7 +210,7 @@ class BookingStatusSerializer(serializers.ModelSerializer):
 class MakeBookingSerializer(serializers.ModelSerializer):
     user = UserSerializer(many=False, read_only=True)
     booking_status = BookingStatusSerializer(many=True, read_only=True)
-    equipment = serializers.ListField(child=serializers.CharField(max_length=256))  # Keep this for validation
+    equipment = serializers.ListField(child=serializers.CharField(max_length=256))
 
     class Meta:
         model = Booking
@@ -211,19 +220,19 @@ class MakeBookingSerializer(serializers.ModelSerializer):
         begin = attrs.get('begin')
         end = attrs.get('end')
         bike = attrs.get('bike')
-        store = attrs.get('store')
         left = Availability.objects.filter(until_date__gte=end,
-                                           store=store,
+                                           store=bike.store,
                                            bike=bike,
-                                           availability_status=Availability_Status.objects.get('Available'))
-        if left.order_by('until_date').first().exists():
-            availability = left.order_by('until_date').first()
-            if availability.from_date <= begin and availability.until_date >= end:
-                return attrs
-            else:
-                raise serializers.ValidationError('Bike not available in selected time frame.')
-        else:
+                                           availability_status=
+                                           Availability_Status.objects.get(availability_status='Available'))
+        if not left.exists():
             raise serializers.ValidationError('Bike not available in selected time frame.')
+        availability = left.order_by('until_date').first()
+        if not availability.from_date <= begin or not availability.until_date >= end:
+            raise serializers.ValidationError('Bike not available in selected time frame.')
+        if begin > end:
+            raise serializers.ValidationError('Time travel is not permitted.')
+        return attrs
 
     def create(self, validated_data):
         equipment_data = validated_data.pop('equipment', [])

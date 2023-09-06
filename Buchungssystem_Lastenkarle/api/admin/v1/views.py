@@ -34,7 +34,7 @@ class AllUserFlags(APIView):
         except ObjectDoesNotExist:
             raise Http404
         user.user_status.add(user_flag.pk)
-        if user_flag.startswith("Store:"):
+        if user_flag.user_status.startswith("Store:"):
             user.is_staff = True
             user.save()
         return Response(status=status.HTTP_200_OK)
@@ -181,7 +181,8 @@ class UpdateSelectedBike(APIView):
             bike = Bike.objects.get(pk=bike_id)
         except ObjectDoesNotExist:
             raise Http404
-        serializer = partialUpdateOfBike(request, bike)
+        partialUpdateOfBike(request, bike)
+        serializer = BikeSerializer(bike, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -224,7 +225,7 @@ class AvailabilityOfBike(APIView):
 
     def get(self, request, bike_id):
         try:
-            bike = Store.objects.get(pk=bike_id)
+            bike = Bike.objects.get(pk=bike_id)
         except ObjectDoesNotExist:
             raise Http404
         availability = Availability.objects.filter(bike=bike)
@@ -264,7 +265,6 @@ class AllStores(APIView):
     def get(self, request):
         stores = Store.objects.all()
         serializer = StoreSerializer(stores, many=True)
-        serializer.exclude_fields(['store_flag'])
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -291,7 +291,9 @@ class UpdateSelectedStore(APIView):
             store = Store.objects.get(pk=store_id)
         except ObjectDoesNotExist:
             raise Http404
-        serializer = partialUpdateOfStore(request, store)
+        partialUpdateOfStore(request, store)
+        serializer = StoreSerializer(store, many=False)
+        serializer.exclude_fields(['store_flag'])
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
