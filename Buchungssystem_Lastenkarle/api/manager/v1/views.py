@@ -20,9 +20,6 @@ from send_mail.views import send_user_warning_to_admins
 from send_mail.views import send_user_warning
 
 
-#TODO restrict manager of store own store objects
-
-
 class StorePage(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsStaff & IsAuthenticated & IsVerfied]
@@ -65,8 +62,14 @@ class DeleteBike(DestroyAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated & IsStaff & IsVerfied]
 
-    def perform_destroy(self, instance):
-        instance.delete()
+    def delete(self, request, bike_id, *args, **kwargs):
+        store = self.request.user.is_staff_of_store()
+        try:
+            bike = Bike.objects.get(pk=bike_id, store=store)
+        except ObjectDoesNotExist:
+            raise Http404
+        bike.delete()
+        return Response(status=status.HTTP_200_OK)
 
 
 class BikesOfStore(APIView):
@@ -110,11 +113,11 @@ class MakeInternalBooking(APIView):
     permission_classes = [IsStaff & IsAuthenticated & IsVerfied]
 
     def post(self, request, bike_id):
+        store = self.request.user.is_staff_of_store()
         try:
-            bike = Bike.objects.get(pk=bike_id)
+            bike = Bike.objects.get(pk=bike_id, store=store)
         except ObjectDoesNotExist:
             raise Http404
-        store = self.request.user.is_staff_of_store()
         begin = request.data['from_date']
         end = request.data['until_date']
         user = User.objects.get(pk=self.request.user.pk)
