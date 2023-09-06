@@ -82,15 +82,19 @@ class RegistrationSerializer(serializers.ModelSerializer):
                   'password')
 
     def validate(self, attrs):
-        username = attrs.get('username')
+        username = attrs.get('username', None)
+        if username is None:
+            raise serializers.ValidationError('Username required.')
         if User.objects.filter(username=username).exists():
             raise serializers.ValidationError('Username already exists.')
-        contact_data = attrs.get('contact_data')
+        contact_data = attrs.get('contact_data', None)
+        if contact_data is None:
+            raise serializers.ValidationError('Contact data required.')
         if not validate_email(contact_data):
             raise serializers.ValidationError('Contact data is not an valid email')
         if User.objects.filter(contact_data=contact_data).exists():
             raise serializers.ValidationError('Contact data already exists.')
-        password = attrs.get('password')
+        password = attrs.get('password', None)
         if password is None:
             raise serializers.ValidationError('Password required.')
         return attrs
@@ -114,8 +118,6 @@ class LoginSerializer(serializers.Serializer):
             raise serializers.ValidationError('Please give both username and password')
         if not User.objects.filter(username=username).exists():
             raise serializers.ValidationError('Username not found enter correct credentials')
-        print(username)
-        print(password)
         user = authenticate(
             request=self.context.get('request'),
             username=username,
