@@ -19,7 +19,6 @@ class AllStores(APIView):
     def get(self, request):
         stores = Store.objects.all()
         serializer = StoreSerializer(stores, many=True)
-        serializer.exclude_fields(['store_flag'])
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 

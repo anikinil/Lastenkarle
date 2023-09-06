@@ -60,7 +60,7 @@ class RegistrateUserTest(TestCase):
                                          'registration_link': registration_link})
         self.assertEqual(first_message.body, html_message)
 
-    @skip
+
     def test_register_with_missing_credentials(self):
         # missing credentials
         invalid_user_data = {
@@ -76,7 +76,7 @@ class RegistrateUserTest(TestCase):
         # Check that no emails are sent
         self.assertEqual(0, len(mail.outbox))
 
-    @skip("Don't want to test")
+
     def test_register_same_user_for_the_second_time(self):
         request = self.factory.post(self.registrate_url, self.user_data, format='json')
         response = RegistrateUser.as_view()(request)
@@ -88,9 +88,9 @@ class RegistrateUserTest(TestCase):
         user_count = User.objects.filter(username=self.user_data['username']).count()
         self.assertEqual(user_count, 1)
         # Check that no emails are sent
-        self.assertEqual(0, len(mail.outbox))
+        self.assertEqual(1, len(mail.outbox))
 
-    @skip("Don't want to test")
+
     def test_register_user_with_same_username_but_different_contact_data(self):
         request = self.factory.post(self.registrate_url, self.user_data, format='json')
         response = RegistrateUser.as_view()(request)
@@ -108,9 +108,9 @@ class RegistrateUserTest(TestCase):
         user_count = User.objects.filter(username=user_data_with_same_username['username']).count()
         self.assertEqual(user_count, 1)
         # Check that no emails are sent
-        self.assertEqual(0, len(mail.outbox))
+        self.assertEqual(1, len(mail.outbox))
 
-    @skip("Don't want to test")
+
     def test_register_user_with_different_username_but_same_contact_data(self):
         request = self.factory.post(self.registrate_url, self.user_data, format='json')
         response = RegistrateUser.as_view()(request)
@@ -128,7 +128,7 @@ class RegistrateUserTest(TestCase):
         user_count = User.objects.filter(contact_data=user_data_with_same_contact_data['contact_data']).count()
         self.assertEqual(user_count, 1)
         # Check that no emails are sent
-        self.assertEqual(0, len(mail.outbox))
+        self.assertEqual(1, len(mail.outbox))
 
 
 class LoginTest(TestCase):

@@ -52,15 +52,12 @@ class HelmholtzAuthView(KnoxLoginView):
 
 class RegistrateUser(CreateAPIView):
     queryset = User.objects.all()
-    serializer_class = RegistrationSerializer
     permission_classes = (AllowAny,)
 
     def post(self, request, *args, **kwargs):
-        serializer = UserSerializer(data=request.data)
+        serializer = RegistrationSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
-            user.verification_string = generate_random_string(30)
-            user.save()
             send_user_registered_confirmation(user)
             return Response(status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -85,32 +82,23 @@ class ConfirmEmail(APIView):
 
 class UpdateUserData(RetrieveUpdateAPIView):
     queryset = User.objects.all()
-    serializer_class = UserSerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def update(self, request, *args, **kwargs):
         fields_to_include = ['contact_data', 'username', 'password']
-        instance = self.request.user
-        data = request.data
-        for field_name in data.keys():
-            if field_name not in fields_to_include:
-                return Response({f"Updating field '{field_name}' is not allowed."}, status=status.HTTP_400_BAD_REQUEST)
-        if data.get('contact_data') is not None:
-            instance.verification_string = generate_random_string(30)
-            if instance.user_status.contains(User_Status.objects.get(user_status='Verified')):
-                instance.user_status.remove(User_Status.objects.get(user_status='Verified'))
-                send_user_changed_mail(instance)
-            instance.save()
-        if data.get('username') is not None:
-            additional_data = {
-                'preferred_username': request.data.get('username'),
-            }
-            data = {**request.data, **additional_data}
-        serializer = self.get_serializer(instance, data=data, fields=fields_to_include, partial=True)
+        partialUpdateInputValidation(request, fields_to_include)
+        serializer = UserSerializer(self.request.user, data=request.data, fields=fields_to_include, partial=True)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        user = serializer.save()
+        if serializer.validated_data.get('contact_data', None) is not None:
+            user.user_status.remove(User_Status.objects.get(user_status='Verified'))
+            send_user_changed_mail(user)
+        if serializer.validated_data.get('password', None) is not None:
+            user.set_password(user.password)
+            user.save()
+        data = UserSerializer(user, many=False, fields=['contact_data', 'username']).data
+        return Response(data, status=status.HTTP_200_OK)
 
 
 class LoginView(KnoxLoginView):
@@ -200,7 +188,7 @@ class UserDataOfUser(APIView):
 
     def get(self, request):
         user = self.request.user
-        fields_to_include = ['contact_data', 'username', 'password']
+        fields_to_include = ['contact_data', 'username', 'user_status']
         serializer = UserSerializer(user, many=False, fields=fields_to_include)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
