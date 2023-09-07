@@ -2,13 +2,14 @@ from django.test import TestCase
 from knox.models import AuthToken
 from knox.auth import TokenAuthentication
 from rest_framework.test import APIRequestFactory
-from db_model.models import User_Status, User
+from db_model.models import User_Status, User, Equipment, Availability_Status, Booking_Status, Booking, Store, Bike, Availability
 from api.user.v1.views import RegistrateUser
 from rest_framework import status
 from django.core import mail
 from django.template.loader import render_to_string
 import json
 from unittest import skip
+from django.core import serializers
 
 from Buchungssystem_Lastenkarle.settings import CANONICAL_HOST
 from configs.global_variables import lastenkarle_logo_url
@@ -29,6 +30,38 @@ login_data = {
     'username': 'Wildegard',
     'password': 'password',
 }
+
+
+# TODO: überprüfen der Migration
+
+class MigrationTest(TestCase):
+
+    def test_migrations(self):
+        equipment = Equipment.objects.all()
+        equipment_json = serializers.serialize('json', equipment)
+        search_terms = ['Lock And Key', 'Child Safety Seat And Seatbelt', 'Tarp', 'Battery', 'Charger']
+        self.find_and_test_terms_in_json(search_terms, equipment_json, 'equipment')
+
+        availabilities_status = Availability_Status.objects.all()
+        availabilities_status_json = serializers.serialize('json', availabilities_status)
+        search_terms = ['Booked', 'Available']
+        self.find_and_test_terms_in_json(search_terms, availabilities_status_json, 'availability_status')
+
+        booking_status = Booking_Status.objects.all()
+        booking_status_json = serializers.serialize('json', booking_status)
+        search_terms = ['Booked', 'Internal usage', 'Picked up', 'Cancelled', 'Returned']
+        self.find_and_test_terms_in_json(search_terms, booking_status_json, 'booking_status')
+
+        user_status = User_Status.objects.all()
+        user_status_json = serializers.serialize('json', user_status)
+        search_terms = ['Verified', 'Deleted', 'Reminded', 'Administrator', 'Banned', 'Customer']
+        self.find_and_test_terms_in_json(search_terms, user_status_json, 'user_status')
+
+    def find_and_test_terms_in_json(self, search_terms, search_json, field_name):
+        list = json.loads(search_json)
+        found_equipment = [item['fields'][field_name] for item in list]
+        for term in search_terms:
+            self.assertIn(term, found_equipment)
 
 
 class RegistrateUserTest(TestCase):
@@ -55,11 +88,10 @@ class RegistrateUserTest(TestCase):
         self.assertEqual(first_message.subject, subject)
         registration_link = CANONICAL_HOST + "/email-verification/" + str(user.pk) + "/" + user.verification_string
         html_message = render_to_string("email_templates/UserRegisteredConfirmation.html",
-                                        {'username': self.user_data['username'],
+                                        {'username': user.preferred_username,
                                          'lastenkarle_logo_url': lastenkarle_logo_url,
                                          'registration_link': registration_link})
         self.assertEqual(first_message.body, html_message)
-
 
     def test_register_with_missing_credentials(self):
         # missing credentials
@@ -76,10 +108,10 @@ class RegistrateUserTest(TestCase):
         # Check that no emails are sent
         self.assertEqual(0, len(mail.outbox))
 
-
     def test_register_same_user_for_the_second_time(self):
         request = self.factory.post(self.registrate_url, self.user_data, format='json')
         response = RegistrateUser.as_view()(request)
+        user = User.objects.get(username=self.user_data['username'])
         # Try to register same user for the second time
         request = self.factory.post(self.registrate_url, self.user_data, format='json')
         response = RegistrateUser.as_view()(request)
@@ -89,7 +121,6 @@ class RegistrateUserTest(TestCase):
         self.assertEqual(user_count, 1)
         # Check that no emails are sent
         self.assertEqual(1, len(mail.outbox))
-
 
     def test_register_user_with_same_username_but_different_contact_data(self):
         request = self.factory.post(self.registrate_url, self.user_data, format='json')
@@ -109,7 +140,6 @@ class RegistrateUserTest(TestCase):
         self.assertEqual(user_count, 1)
         # Check that no emails are sent
         self.assertEqual(1, len(mail.outbox))
-
 
     def test_register_user_with_different_username_but_same_contact_data(self):
         request = self.factory.post(self.registrate_url, self.user_data, format='json')
@@ -148,7 +178,7 @@ class LoginTest(TestCase):
         self.assertIn('token', response.data)
 
     def test_login_invalid_user(self):
-        # Check what happens when logging in nonexistentuser
+        # Check what happens when logging in nonexistent user
         invalid_user_data = {
             'username': 'nonexistentuser',
             'password': 'invalidpassword'
@@ -356,7 +386,7 @@ class GetUserDataTest(TestCase):
         self.assertEqual(response_data['username'], self.user.username)
         self.assertEqual(response_data['contact_data'], self.user.contact_data)
         # TODO: sobald API gefixt, diesen Test wieder anschalten
-        #self.assertNotIn('password', response_data)
+        # self.assertNotIn('password', response_data)
 
     def test_get_user_data_without_token(self):
         # Unauthenticated request, remove the token
@@ -387,3 +417,203 @@ class UpdateUserDataTest(TestCase):
         response_data = json.loads(response.content.decode('utf-8'))
         self.token = response_data.get('token', None)
         self.update_user_data_url = "/api/user/v1/user/update"
+
+    def test_update_user_data_with_valid_data(self):
+        changed_user_data = {
+            "username": "Wilderich",
+            "contact_data": "pse_email@gmx.de",
+            "password": "password2"
+        }
+        changed_login_data = {
+            "username": "Wilderich",
+            "password": "password2"
+        }
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+        # Try to update user data
+        response = self.client.patch(self.update_user_data_url, changed_user_data, format='json')
+        # Check the status code, it should be 200
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = response.json()
+        self.assertEqual(response_data['username'], changed_user_data['username'])
+        self.assertEqual(response_data['contact_data'], changed_user_data['contact_data'])
+        # try to login with new login data
+        response = self.client.post('/api/user/v1/login', changed_login_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # get user
+        user = User.objects.get(username=changed_user_data['username'])
+        # check if preferred_username changed
+        self.assertEqual(user.preferred_username, changed_user_data['username'])
+        # Check the number of emails, that have been sent
+        self.assertEqual(1, len(mail.outbox))
+        # Check if subject and body are the expected ones
+        first_message = mail.outbox[0]
+        subject = "Dein Account bei Lastenkarle: Bitte bestätige deine E-Mail"
+        self.assertEqual(first_message.subject, subject)
+        verification_link = CANONICAL_HOST + "/email-verification/" + str(user.pk) + "/" + user.verification_string
+        html_message = render_to_string("email_templates/EmailChangedTemplate.html",
+                                        {'username': user.preferred_username,
+                                         'lastenkarle_logo_url': lastenkarle_logo_url,
+                                         'verification_link': verification_link})
+        self.assertEqual(first_message.body, html_message)
+
+    def test_update_username(self):
+        user_before_change = User.objects.get(username=user_data['username'])
+        reg1 = user_before_change.verification_string
+        changed_user_data = {
+            "username": "Wilderich"
+        }
+        changed_login_data = {
+            "username": "Wilderich",
+            "password": "password"
+        }
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+        # Try to update user data
+        response = self.client.patch(self.update_user_data_url, changed_user_data, format='json')
+        # Check the status code, it should be 200
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        user_after_change = User.objects.get(contact_data=user_before_change.contact_data)
+        reg2 = user_after_change.verification_string
+        self.assertEqual(reg1, reg2)
+        # check if username is changed
+        self.assertEqual(changed_login_data['username'], user_after_change.username)
+
+    def test_update_user_data_with_empty_data(self):
+        changed_user_data = {}
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+        # Try to update user data
+        response = self.client.patch(self.update_user_data_url, changed_user_data, format='json')
+        # Check the status code, it should be 200
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = response.json()
+        self.assertEqual(response_data['username'], user_data['username'])
+        self.assertEqual(response_data['contact_data'], user_data['contact_data'])
+        # try to log in
+        response = self.client.post('/api/user/v1/login', user_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # Check the number of emails, that have been sent
+        self.assertEqual(0, len(mail.outbox))
+
+    def test_update_user_data_with_invalid_data(self):
+        changed_user_data = {
+            "username": "",
+            "contact_data": "",
+            "password": ""
+        }
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+        # Try to update user data
+        response = self.client.patch(self.update_user_data_url, changed_user_data, format='json')
+        # Check the status code, it should be 400
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        response_data = response.json()
+        self.assertNotEqual(response_data['username'], changed_user_data['username'])
+        self.assertNotEqual(response_data['contact_data'], changed_user_data['contact_data'])
+        user = User.objects.get(username=user_data['username'])
+        self.assertEqual(user.username, user_data['username'])
+        self.assertEqual(user.contact_data, user_data['contact_data'])
+        # try to log in
+        response = self.client.post('/api/user/v1/login', login_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # Check the number of emails, that have been sent
+        self.assertEqual(0, len(mail.outbox))
+
+    def test_update_user_data_with_username_that_already_exists(self):
+        second_user_data = {
+            "username": "Gurke",
+            "contact_data": "pse_email@gmx.de",
+            "password": "password2"
+        }
+        changed_user_data = {
+            "username": "Gurke"
+        }
+        changed_login_data = {
+            "username": "Gurke",
+            "password": "password"
+        }
+        User.objects.create_user(**second_user_data)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+        # Try to update user data
+        response = self.client.patch(self.update_user_data_url, changed_user_data, format='json')
+        # Check the status code, it should be 400
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        response_data = response.json()
+        self.assertNotEqual(response_data['username'], changed_user_data['username'])
+        user = User.objects.get(contact_data=user_data['contact_data'])
+        self.assertEqual(user.username, user_data['username'])
+        # try to login with wrong credentials
+        response = self.client.post('/api/user/v1/login', changed_login_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        # try to login with right credentials
+        response = self.client.post('/api/user/v1/login', login_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # Check the number of emails, that have been sent
+        self.assertEqual(0, len(mail.outbox))
+
+    def test_update_user_data_with_contact_data_that_already_exists(self):
+        second_user_data = {
+            "username": "Gurke",
+            "contact_data": "pse_email@gmx.de",
+            "password": "password2"
+        }
+        changed_user_data = {
+            "contact_data": "pse_email@gmx.de"
+        }
+        User.objects.create_user(**second_user_data)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+        # Try to update user data
+        response = self.client.patch(self.update_user_data_url, changed_user_data, format='json')
+        # Check the status code, it should be 400
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        response_data = response.json()
+        self.assertNotEqual(response_data['contact_data'], changed_user_data['contact_data'])
+        user = User.objects.get(username=user_data['username'])
+        self.assertEqual(user.username, user_data['username'])
+        # Check the number of emails, that have been sent
+        self.assertEqual(0, len(mail.outbox))
+
+class DeleteAccountTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user_data = user_data
+        self.login_data = login_data
+        # register user
+        self.client.post("/api/user/v1/register", self.user_data)
+        # login user
+        response = self.client.post("/api/user/v1/login", self.login_data)
+        response_data = json.loads(response.content.decode('utf-8'))
+        self.token = response_data.get('token', None)
+        self.user = User.objects.get(username=user_data['username'])
+        self.delete_account_url = "/api/user/v1/user/delete-account"
+
+    def test_delete_account_valid(self):
+        user_id = self.user.pk
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+        response = self.client.delete(self.delete_account_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        user = User.objects.get(pk=user_id)
+        # check if all data is deleted
+        self.assertEqual(user.username, None)
+        self.assertEqual(user.contact_data, None)
+        self.assertEqual(user.year_of_birth, None)
+        self.assertEqual(user.assurance_lvl, None)
+        self.assertEqual(user.is_active, False)
+        self.assertEqual(user.preferred_username, None)
+        self.assertEqual(user.password, None)
+        self.assertEqual(user.verification_string, None)
+
+    def test_delete_account_without_authentication(self):
+        # Test account deletion without authentication
+        response = self.client.delete(self.delete_account_url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_delete_account_twice(self):
+        # Test attempting to delete an account twice
+        user_id = self.user.pk
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+        # First deletion
+        response = self.client.delete(self.delete_account_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        user = User.objects.get(pk=user_id)
+        self.assertEqual(user.is_active, False)
+        # Attempt a second deletion
+        response = self.client.delete(self.delete_account_url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
