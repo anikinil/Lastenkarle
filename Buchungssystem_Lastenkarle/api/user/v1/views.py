@@ -93,6 +93,8 @@ class UpdateUserData(RetrieveUpdateAPIView):
         user = serializer.save()
         if serializer.validated_data.get('contact_data', None) is not None:
             user.user_status.remove(User_Status.objects.get(user_status='Verified'))
+            user.verification_string = generate_random_string(30)
+            user.save()
             send_user_changed_mail(user)
         if serializer.validated_data.get('password', None) is not None:
             user.set_password(user.password)
@@ -199,8 +201,17 @@ class DeleteUserAccount(DestroyAPIView):
 
     def delete(self, request, *args, **kwargs):
         user = self.request.user
+        if Booking.objects.filter(user=user, booking_status=Booking_Status.objects.get(booking_status='Picked up')).exists():
+            raise serializers.ValidationError('Account deletion not possible whilst having picked up a bike.')
         if LocalData.objects.filter(user=user).exists():
             LocalData.objects.get(user=user).anonymize().save()
+        bookings = Booking.objects.filter(user=user, booking_status=Booking_Status.objects.get(booking_status='Booked'))
+        for booking in bookings:
+            booking.booking_status.clear()
+            booking.booking_status.set(Booking_Status.objects.filter(booking_status='Cancelled'))
+            booking.string = None
+            booking.save()
+            merge_availabilities_algorithm(booking)
         user.anonymize().save()
         user.user_status.clear()
         return Response(status=status.HTTP_200_OK)
