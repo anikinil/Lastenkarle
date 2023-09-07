@@ -87,7 +87,6 @@ class BikesOfStore(APIView):
     def post(self, request):
         store = self.request.user.is_staff_of_store()
         bike = Bike.create_bike(store, **request.data)
-        Availability.create_availability(store, bike)
         fields_to_include = ['name', 'image', 'description', 'equipment']
         serializer = BikeSerializer(bike, fields=fields_to_include, many=False)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
