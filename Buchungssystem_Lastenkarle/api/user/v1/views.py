@@ -93,6 +93,8 @@ class UpdateUserData(RetrieveUpdateAPIView):
         user = serializer.save()
         if serializer.validated_data.get('contact_data', None) is not None:
             user.user_status.remove(User_Status.objects.get(user_status='Verified'))
+            user.verification_string = generate_random_string(30)
+            user.save()
             send_user_changed_mail(user)
         if serializer.validated_data.get('password', None) is not None:
             user.set_password(user.password)
