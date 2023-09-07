@@ -32,8 +32,6 @@ login_data = {
 }
 
 
-# TODO: überprüfen der Migration
-
 class MigrationTest(TestCase):
 
     def test_migrations(self):
@@ -617,3 +615,67 @@ class DeleteAccountTest(TestCase):
         # Attempt a second deletion
         response = self.client.delete(self.delete_account_url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+    def test_register_again_after_deleting(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+        self.client.delete(self.delete_account_url)
+        response = self.client.post("/api/user/v1/register", self.user_data)
+        # weiter
+
+    def test_delete_account_with_inactive_booking(self):
+        user_id = self.user.pk
+        # verify user to make booking
+        response = self.client.post('/api/user/v1/' + str(self.user.pk) + '/' + str(self.user.verification_string))
+        store_data = {
+            'name': 'Store1',
+            'address': 'Storestr. 1',
+            'email': 'pse_email@gmx.de',
+            'region': 'KA',
+            'phone_number': '012345'
+        }
+        store = Store.objects.create(**store_data)
+        store_flag = User_Status.custom_create_store_flags(store)
+        store.store_flag = store_flag
+        store.save()
+        bike_data = {
+            'name': 'Bike1',
+            'description': 'Es ist schnell'
+        }
+        bike = Bike.create_bike(store, **bike_data)
+        booking_data = {
+            'begin': '2023-10-02',
+            'end': '2023-10-03',
+            'equipment': []
+        }
+        booking_data_2 = {
+            'begin': '2023-10-04',
+            'end': '2023-10-05',
+            'equipment': []
+        }
+        booking_data_3 = {
+            'begin': '2023-10-09',
+            'end': '2023-10-10',
+            'equipment': []
+        }
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+        # make booking
+        response = self.client.post('/api/booking/v1/bikes/' + str(bike.pk) + '/booking', **booking_data, format='json')
+        print('/api/booking/v1/bikes/' + str(bike.pk) + '/booking')
+        print(response)
+        self.client.post('/api/booking/v1/bikes/' + str(bike.pk) + '/booking', **booking_data_2)
+        self.client.post('/api/booking/v1/bikes/' + str(bike.pk) + '/booking', **booking_data_3)
+        print(Booking.objects.all())
+        bookings_before_delete = Booking.objects.filter(user=self.user)
+        print(bookings_before_delete)
+        bookings_before_delete[1].booking_status = 'Returned'
+        bookings_before_delete[2].booking_status = 'Cancelled'
+        response = self.client.delete(self.delete_account_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        deleted_user = User.objects.get(pk=user_id)
+        bookings_after_delete = Booking.objects.filter(user=deleted_user)
+        # check if booking of deleted user is cancelled
+        self.assertEqual(bookings_after_delete[0].booking_status, 'Cancelled')
+        self.assertEqual(bookings_after_delete[1].booking_status, 'Returned')
+        self.assertEqual(bookings_after_delete[2].booking_status, 'Cancelled')
+
+
+
