@@ -1,3 +1,6 @@
+import os
+
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from knox.models import AuthToken
 from knox.auth import TokenAuthentication
@@ -11,7 +14,7 @@ import json
 from unittest import skip
 from django.core import serializers
 
-from Buchungssystem_Lastenkarle.settings import CANONICAL_HOST
+from Buchungssystem_Lastenkarle.settings import CANONICAL_HOST, BASE_DIR
 from configs.global_variables import lastenkarle_logo_url
 from configs.global_variables import spenden_link
 from configs.global_variables import lastenkarle_contact_data
@@ -19,6 +22,8 @@ from configs.global_variables import lastenkarle_contact_data
 from django.urls import reverse
 from rest_framework.test import APIClient
 from django.contrib.auth import get_user_model
+
+image_path = '/media/test_image/image.jpg'
 
 user_data_wildegard = {
     'username': 'Wildegard',
@@ -64,12 +69,12 @@ store_data_store1 = {
 
 store_data_store2 = {
     "region": "KA",
-    "address": "Storestr. 1123",
+    "address": "Str. 12",
     "phone_number": "012345",
     "email": "pse_email@gmx.de",
     "name": "Store2",
     "prep_time": "00:00:00",
-    "mon_opened": True,
+    "mon_opened": False,
     "mon_open": "08:00:00",
     "mon_close": "20:00:00",
     "tue_opened": True,
@@ -93,15 +98,19 @@ store_data_store2 = {
 }
 
 bike_data_bike1 = {
-    'name': 'Bike1',
-    'description': 'Es ist schnell'
+    'name': ['Bike1'],
+    'description': ['Es ist schnell']
 }
 
 bike_data_bike2 = {
-    'name': 'Bike2',
-    'description': 'Es ist weniger schnell'
+    'name': ['Bike2'],
+    'description': ['Es ist weniger schnell']
 }
 
+bike_data_bike3 = {
+    'name': ['Bike3'],
+    'description': ['Mag ich nicht essen']
+}
 
 def initialize_user_with_token(client, user_data, login_data):
     user = User.objects.create_user(**user_data)
@@ -111,7 +120,7 @@ def initialize_user_with_token(client, user_data, login_data):
     return user, token_user
 
 
-def intialize_store(store_data):
+def initialize_store(store_data):
     store = Store.objects.create(**store_data)
     store_flag = User_Status.custom_create_store_flags(store)
     store.store_flag = store_flag
@@ -120,6 +129,10 @@ def intialize_store(store_data):
 
 
 def initialize_bike_of_store(store, bike_data):
+    image_path = os.path.join(BASE_DIR, 'media/test_image/', 'image.jpg')
+    with open(image_path, 'rb') as image_file:
+        image = SimpleUploadedFile("bike_image.jpg", image_file.read(), content_type="image/jpeg")
+    bike_data['image'] = [image]
     bike = Bike.create_bike(store, **bike_data)
     return bike
 
@@ -130,9 +143,8 @@ class test_all_regions(TestCase):
         self.wildegard, self.token_wildegard = initialize_user_with_token(
             self.client, user_data_wildegard, login_data_wildegard
         )
-        self.region_url = '/region'
 
-    def test_region_content_not_logged_in(self):
+    def check_region_content(self):
         response = self.client.get('/api/booking/v1/region')
         expected_json = [
             ["KA", "Karlsruhe"],
@@ -144,20 +156,13 @@ class test_all_regions(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         response_data = json.loads(response.content.decode('utf-8'))
         self.assertEqual(response_data, expected_json)
+
+    def test_region_content_not_logged_in(self):
+        self.check_region_content()
 
     def test_region_content_logged_in(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token_wildegard)
-        response = self.client.get('/api/booking/v1/region')
-        expected_json = [
-            ["KA", "Karlsruhe"],
-            ["ETT", "Ettlingen"],
-            ["BAD", "Baden-Baden"],
-            ["BRU", "Bruchsal"],
-            ["MAL", "Malsch"]
-        ]
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response_data = json.loads(response.content.decode('utf-8'))
-        self.assertEqual(response_data, expected_json)
+        self.check_region_content()
 
 
 class test_all_availabilities(TestCase):
@@ -166,27 +171,29 @@ class test_all_availabilities(TestCase):
         self.wildegard, self.token_wildegard = initialize_user_with_token(
             self.client, user_data_wildegard, login_data_wildegard
         )
-        self.store1 = intialize_store(store_data_store1)
+        self.store1 = initialize_store(store_data_store1)
         self.bike1 = initialize_bike_of_store(self.store1, bike_data_bike1)
         self.bike2 = initialize_bike_of_store(self.store1, bike_data_bike2)
-        self.region_url = '/availabilities'
 
-    def test_availabilities_amount_not_logged_in(self):
+    def tearDown(self):
+        for bike in Bike.objects.all():
+            os.remove(os.path.join(BASE_DIR, 'media/', str(bike.image)))
+        super().tearDown()
+
+    def check_amount_of_availabilities(self):
         response = self.client.get('/api/booking/v1/availabilities')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         response_data = json.loads(response.content.decode('utf-8'))
         self.assertIsInstance(response_data, list)
-        expected_object_count = 2
+        expected_object_count = Availability.objects.all().count()
         self.assertEqual(len(response_data), expected_object_count)
+
+    def test_availabilities_amount_not_logged_in(self):
+        self.check_amount_of_availabilities()
 
     def test_availabilities_amount_logged_in(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token_wildegard)
-        response = self.client.get('/api/booking/v1/availabilities')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response_data = json.loads(response.content.decode('utf-8'))
-        self.assertIsInstance(response_data, list)
-        expected_object_count = 2
-        self.assertEqual(len(response_data), expected_object_count)
+        self.check_amount_of_availabilities()
 
     def test_availabilities_content(self):
         response = self.client.get('/api/booking/v1/availabilities')
@@ -208,27 +215,46 @@ class test_all_bikes(TestCase):
         self.wildegard, self.token_wildegard = initialize_user_with_token(
             self.client, user_data_wildegard, login_data_wildegard
         )
-        self.store1 = intialize_store(store_data_store1)
+        self.store1 = initialize_store(store_data_store1)
         self.bike1 = initialize_bike_of_store(self.store1, bike_data_bike1)
         self.bike2 = initialize_bike_of_store(self.store1, bike_data_bike2)
-        self.region_url = '/bikes'
+
+    def tearDown(self):
+        for bike in Bike.objects.all():
+            os.remove(os.path.join(BASE_DIR, 'media/', str(bike.image)))
+        super().tearDown()
+
+    def check_amount_of_bikes(self):
+        response = self.client.get('/api/booking/v1/bikes')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = json.loads(response.content.decode('utf-8'))
+        self.assertIsInstance(response_data, list)
+        expected_object_count = Bike.objects.all().count()
+        self.assertEqual(len(response_data), expected_object_count)
 
     def test_bikes_amount_not_logged_in(self):
         response = self.client.get('/api/booking/v1/bikes')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response_data = json.loads(response.content.decode('utf-8'))
-        self.assertIsInstance(response_data, list)
-        expected_object_count = 2
-        self.assertEqual(len(response_data), expected_object_count)
+        self.check_amount_of_bikes()
 
     def test_bikes_amount_logged_in(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token_wildegard)
+        self.check_amount_of_bikes()
+
+    def test_bikes_content(self):
         response = self.client.get('/api/booking/v1/bikes')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         response_data = json.loads(response.content.decode('utf-8'))
-        self.assertIsInstance(response_data, list)
-        expected_object_count = 2
-        self.assertEqual(len(response_data), expected_object_count)
+        for item in response_data:
+            self.assertTrue(isinstance(item.get("id"), int))
+            self.assertTrue(isinstance(item.get("name"), str))
+            self.assertTrue(isinstance(item.get("description"), str))
+            self.assertTrue(isinstance(item.get("store"), int))
+            self.assertTrue(isinstance(item.get("image"), str))
+
+            equipment = item.get("equipment", [])
+            self.assertTrue(isinstance(equipment, list))
+            for equip in equipment:
+                self.assertTrue(isinstance(equip, str))
 
 
 class test_all_stores(TestCase):
@@ -237,23 +263,240 @@ class test_all_stores(TestCase):
         self.wildegard, self.token_wildegard = initialize_user_with_token(
             self.client, user_data_wildegard, login_data_wildegard
         )
-        self.store1 = intialize_store(store_data_store1)
-        self.store2 = intialize_store(store_data_store2)
-        self.region_url = '/stores'
+        self.store1 = initialize_store(store_data_store1)
+        self.store2 = initialize_store(store_data_store2)
 
-    def test_stores_amount_not_logged_in(self):
+    def tearDown(self):
+        for bike in Bike.objects.all():
+            os.remove(os.path.join(BASE_DIR, 'media/', str(bike.image)))
+        super().tearDown()
+
+    def check_store_amount(self):
         response = self.client.get('/api/booking/v1/stores')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         response_data = json.loads(response.content.decode('utf-8'))
         self.assertIsInstance(response_data, list)
-        expected_object_count = 2
+        expected_object_count = Store.objects.count()
         self.assertEqual(len(response_data), expected_object_count)
+
+    def test_stores_amount_not_logged_in(self):
+        self.check_store_amount()
 
     def test_stores_amount_logged_in(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token_wildegard)
+        self.check_store_amount()
+
+    def test_stores_content(self):
         response = self.client.get('/api/booking/v1/stores')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         response_data = json.loads(response.content.decode('utf-8'))
+        for item in response_data:
+            self.assertTrue(isinstance(item.get("id"), int))
+            self.assertTrue(isinstance(item.get("region"), str))
+            self.assertTrue(isinstance(item.get("address"), str))
+            self.assertTrue(isinstance(item.get("phone_number"), str))
+            self.assertTrue(isinstance(item.get("email"), str))
+            self.assertTrue(isinstance(item.get("name"), str))
+            self.assertTrue(isinstance(item.get("prep_time"), str))
+            self.assertTrue(isinstance(item.get("mon_opened"), bool))
+            self.assertTrue(isinstance(item.get("mon_open"), str))
+            self.assertTrue(isinstance(item.get("mon_close"), str))
+            self.assertTrue(isinstance(item.get("tue_opened"), bool))
+            self.assertTrue(isinstance(item.get("tue_open"), str))
+            self.assertTrue(isinstance(item.get("tue_close"), str))
+            self.assertTrue(isinstance(item.get("wed_opened"), bool))
+            self.assertTrue(isinstance(item.get("wed_open"), str))
+            self.assertTrue(isinstance(item.get("wed_close"), str))
+            self.assertTrue(isinstance(item.get("thu_opened"), bool))
+            self.assertTrue(isinstance(item.get("thu_open"), str))
+            self.assertTrue(isinstance(item.get("thu_close"), str))
+            self.assertTrue(isinstance(item.get("fri_opened"), bool))
+            self.assertTrue(isinstance(item.get("fri_open"), str))
+            self.assertTrue(isinstance(item.get("fri_close"), str))
+            self.assertTrue(isinstance(item.get("sat_opened"), bool))
+            self.assertTrue(isinstance(item.get("sat_open"), str))
+            self.assertTrue(isinstance(item.get("sat_close"), str))
+            self.assertTrue(isinstance(item.get("sun_opened"), bool))
+            self.assertTrue(isinstance(item.get("sun_open"), str))
+            self.assertTrue(isinstance(item.get("sun_close"), str))
+
+class test_selected_bike(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.wildegard, self.token_wildegard = initialize_user_with_token(
+            self.client, user_data_wildegard, login_data_wildegard
+        )
+        self.store1 = initialize_store(store_data_store1)
+        self.bike1 = initialize_bike_of_store(self.store1, bike_data_bike1)
+        self.bike2 = initialize_bike_of_store(self.store1, bike_data_bike2)
+
+    def tearDown(self):
+        for bike in Bike.objects.all():
+            os.remove(os.path.join(BASE_DIR, 'media/', str(bike.image)))
+        super().tearDown()
+
+    def check_bike_content(self):
+        response = self.client.get(f'/api/booking/v1/bikes/{self.bike1.pk}')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = json.loads(response.content.decode('utf-8'))
+        self.assertTrue(isinstance(response_data.get("id"), int))
+        self.assertTrue(isinstance(response_data.get("name"), str))
+        self.assertTrue(isinstance(response_data.get("description"), str))
+        self.assertTrue(isinstance(response_data.get("store"), int))
+        self.assertTrue(isinstance(response_data.get("image"), str))
+        equipment = response_data.get("equipment", [])
+        self.assertTrue(isinstance(equipment, list))
+        for equip in equipment:
+            self.assertTrue(isinstance(equip, str))
+
+    def test_bike_content(self):
+        self.check_bike_content()
+
+    def test_bike_content_logged_in(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token_wildegard)
+        self.check_bike_content()
+
+    def test_bike_response(self):
+        response = self.client.get(f'/api/booking/v1/bikes/{self.bike1.pk}')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = json.loads(response.content.decode('utf-8'))
+        expected_json = {
+            'id': self.bike1.pk,
+            'store': self.bike1.store.pk,
+            'name': 'Bike1',
+            'description': 'Es ist schnell',
+            'image': '/media/bikes/bike_image.jpg',
+            'equipment': [],
+        }
+        self.assertEqual(response_data, expected_json)
+
+    def test_bike_id_in_uri_incorrect(self):
+        response = self.client.get('/api/booking/v1/bikes/-1')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        response = self.client.get('/api/booking/v1/bikes/0xF')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        response = self.client.get('/api/booking/v1/bikes/ ')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+class test_store_by_bike(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.wildegard, self.token_wildegard = initialize_user_with_token(
+            self.client, user_data_wildegard, login_data_wildegard
+        )
+        self.store1 = initialize_store(store_data_store1)
+        self.store2 = initialize_store(store_data_store2)
+        self.bike1 = initialize_bike_of_store(self.store1, bike_data_bike1)
+        self.bike2 = initialize_bike_of_store(self.store2, bike_data_bike2)
+
+    def tearDown(self):
+        for bike in Bike.objects.all():
+            os.remove(os.path.join(BASE_DIR, 'media/', str(bike.image)))
+        super().tearDown()
+
+    def check_response_data_format(self):
+        response = self.client.get(f'/api/booking/v1/bikes/{self.bike1.pk}/store')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = json.loads(response.content.decode('utf-8'))
+        self.assertTrue(isinstance(response_data.get("id"), int))
+        self.assertTrue(isinstance(response_data.get("region"), str))
+        self.assertTrue(isinstance(response_data.get("address"), str))
+        self.assertTrue(isinstance(response_data.get("phone_number"), str))
+        self.assertTrue(isinstance(response_data.get("email"), str))
+        self.assertTrue(isinstance(response_data.get("name"), str))
+        self.assertTrue(isinstance(response_data.get("prep_time"), str))
+        self.assertTrue(isinstance(response_data.get("mon_opened"), bool))
+        self.assertTrue(isinstance(response_data.get("mon_open"), str))
+        self.assertTrue(isinstance(response_data.get("mon_close"), str))
+        self.assertTrue(isinstance(response_data.get("tue_opened"), bool))
+        self.assertTrue(isinstance(response_data.get("tue_open"), str))
+        self.assertTrue(isinstance(response_data.get("tue_close"), str))
+        self.assertTrue(isinstance(response_data.get("wed_opened"), bool))
+        self.assertTrue(isinstance(response_data.get("wed_open"), str))
+        self.assertTrue(isinstance(response_data.get("wed_close"), str))
+        self.assertTrue(isinstance(response_data.get("thu_opened"), bool))
+        self.assertTrue(isinstance(response_data.get("thu_open"), str))
+        self.assertTrue(isinstance(response_data.get("thu_close"), str))
+        self.assertTrue(isinstance(response_data.get("fri_opened"), bool))
+        self.assertTrue(isinstance(response_data.get("fri_open"), str))
+        self.assertTrue(isinstance(response_data.get("fri_close"), str))
+        self.assertTrue(isinstance(response_data.get("sat_opened"), bool))
+        self.assertTrue(isinstance(response_data.get("sat_open"), str))
+        self.assertTrue(isinstance(response_data.get("sat_close"), str))
+        self.assertTrue(isinstance(response_data.get("sun_opened"), bool))
+        self.assertTrue(isinstance(response_data.get("sun_open"), str))
+        self.assertTrue(isinstance(response_data.get("sun_close"), str))
+
+    def test_store_of_bike_content(self):
+        self.check_response_data_format()
+
+    def test_store_of_bike_content_logged_in(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token_wildegard)
+        self.check_response_data_format()
+
+    def test_store_of_bike_response(self):
+        response = self.client.get(f'/api/booking/v1/bikes/{self.bike1.pk}/store')
+        response_data = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(response_data, {**store_data_store1, **{"id":self.store1.pk}})
+        self.assertNotEqual(response_data, {**store_data_store2, **{"id":self.store2.pk}})
+
+    def test_bike_id_in_uri_incorrect(self):
+        response = self.client.get('/api/booking/v1/bikes/-1/store')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        response = self.client.get('/api/booking/v1/bikes/0xF/store')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        response = self.client.get('/api/booking/v1/bikes/ /store')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+class test_bike_availability(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.wildegard, self.token_wildegard = initialize_user_with_token(
+            self.client, user_data_wildegard, login_data_wildegard
+        )
+        self.store1 = initialize_store(store_data_store1)
+        self.bike1 = initialize_bike_of_store(self.store1, bike_data_bike1)
+        self.bike2 = initialize_bike_of_store(self.store1, bike_data_bike2)
+
+    def tearDown(self):
+        for bike in Bike.objects.all():
+            os.remove(os.path.join(BASE_DIR, 'media/', str(bike.image)))
+        super().tearDown()
+
+    def check_availabilities_of_bike_amount(self):
+        response = self.client.get(f'/api/booking/v1/bikes/{self.bike1.pk}/availability')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = json.loads(response.content.decode('utf-8'))
         self.assertIsInstance(response_data, list)
-        expected_object_count = 2
+        expected_object_count = Availability.objects.filter(bike=self.bike1).count()
         self.assertEqual(len(response_data), expected_object_count)
+
+    def test_availabilities_amount_not_logged_in(self):
+        self.check_availabilities_of_bike_amount()
+
+    def test_availabilities_amount_logged_in(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token_wildegard)
+        self.check_availabilities_of_bike_amount()
+
+    def test_availabilities_content(self):
+        response = self.client.get(f'/api/booking/v1/bikes/{self.bike1.pk}/availability')
+        response_data = json.loads(response.content.decode('utf-8'))
+        for item in response_data:
+            self.assertTrue(isinstance(item.get("id"), int))
+            self.assertTrue(isinstance(item.get("from_date"), str))
+            self.assertTrue(isinstance(item.get("until_date"), str))
+            self.assertTrue(isinstance(item.get("store"), int))
+            self.assertTrue(isinstance(item.get("bike"), int))
+            availability_status = item.get("availability_status", [])
+            for status in availability_status:
+                self.assertTrue(isinstance(status.get("availability_status"), str))
+
+    def test_availability_of_bike_response(self):
+        response = self.client.get(f'/api/booking/v1/bikes/{self.bike1.pk}/availability')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = json.loads(response.content.decode('utf-8'))
+        # Check if {'bike': self.bike1.pk} exists in any dictionary within response_data
+        self.assertTrue(any(item.get("bike") == self.bike1.pk for item in response_data))
+
