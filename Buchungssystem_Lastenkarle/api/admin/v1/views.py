@@ -46,7 +46,7 @@ class AllUsers(APIView):
 
     def get(self, request):
         users = User.objects.all()
-        fields_to_include = ['user_status', 'assurance_lvl', 'year_of_birth',
+        fields_to_include = ['id', 'user_status', 'assurance_lvl', 'year_of_birth',
                              'contact_data', 'username', 'preferred_username']
         serializer = UserSerializer(users, fields=fields_to_include, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -89,7 +89,7 @@ class AllBookings(APIView):
     def get(self, request):
         bookings = Booking.objects.all()
         fields_to_include = ['preferred_username', 'assurance_lvl', 'bike', 'begin', 'end',
-                             'comment', 'booking_status', 'equipment']
+                             'comment', 'booking_status', 'equipment', 'id']
         serializer = BookingSerializer(bookings, fields=fields_to_include, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -133,7 +133,6 @@ class AddBike(APIView):
         except ObjectDoesNotExist:
             raise Http404
         bike = Bike.create_bike(store, **request.data)
-        Availability.create_availability(store, bike)
         serializer = BikeSerializer(bike, many=False)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 

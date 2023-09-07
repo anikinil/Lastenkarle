@@ -80,7 +80,7 @@ class BikesOfStore(APIView):
     def get(self, request):
         store = self.request.user.is_staff_of_store()
         bikes = Bike.objects.filter(store=store)
-        fields_to_include = ['name', 'image', 'description', 'equipment']
+        fields_to_include = ['id' ,'name', 'image', 'description', 'equipment']
         serializer = BikeSerializer(bikes, fields=fields_to_include, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -202,7 +202,7 @@ class BookingsOfStore(APIView):
 
     def get(self, request):
         store = self.request.user.is_staff_of_store()
-        fields_to_include = ['preferred_username', 'bike', 'begin', 'end',
+        fields_to_include = ['id' ,'preferred_username', 'bike', 'begin', 'end',
                              'comment', 'booking_status', 'equipment']
         bookings = Booking.objects.filter(bike__store=store)
         serializer = BookingSerializer(bookings, fields=fields_to_include, many=True)

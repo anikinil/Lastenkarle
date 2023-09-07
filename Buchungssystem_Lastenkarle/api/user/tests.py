@@ -26,6 +26,7 @@ user_data = {
     'contact_data': 'wilde.gard@gmx.de',
     'year_of_birth': '1901'
 }
+
 login_data = {
     'username': 'Wildegard',
     'password': 'password',

@@ -201,6 +201,8 @@ class DeleteUserAccount(DestroyAPIView):
 
     def delete(self, request, *args, **kwargs):
         user = self.request.user
+        if Booking.objects.filter(user=user, booking_status=Booking_Status.objects.get(booking_status='Picked up')).exists():
+            raise serializers.ValidationError('Account deletion not possible whilst having picked up a bike.')
         if LocalData.objects.filter(user=user).exists():
             LocalData.objects.get(user=user).anonymize().save()
         bookings = Booking.objects.filter(user=user, booking_status=Booking_Status.objects.get(booking_status='Booked'))
