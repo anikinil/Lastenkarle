@@ -201,6 +201,13 @@ class DeleteUserAccount(DestroyAPIView):
         user = self.request.user
         if LocalData.objects.filter(user=user).exists():
             LocalData.objects.get(user=user).anonymize().save()
+        bookings = Booking.objects.filter(user=user, booking_status=Booking_Status.objects.get(booking_status='Booked'))
+        for booking in bookings:
+            booking.booking_status.clear()
+            booking.booking_status.set(Booking_Status.objects.filter(booking_status='Cancelled'))
+            booking.string = None
+            booking.save()
+            merge_availabilities_algorithm(booking)
         user.anonymize().save()
         user.user_status.clear()
         return Response(status=status.HTTP_200_OK)

@@ -186,7 +186,7 @@ class StoreSerializer(serializers.ModelSerializer):
 
     def validate_email(self, attrs):
         if not validate_email(attrs):
-            raise serializers.ValidationError('Not an valid email')
+            raise serializers.ValidationError('Not an valid email.')
         return attrs
 
     def __init__(self, *args, **kwargs):
