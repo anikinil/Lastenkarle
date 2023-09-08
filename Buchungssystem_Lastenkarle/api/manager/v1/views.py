@@ -126,10 +126,10 @@ class MakeInternalBooking(APIView):
         booking_data = {
             'bike': bike.pk,
             'begin': begin,
-            'end': end
+            'end': end,
         }
         data = {**booking_data, **request.data}
-        serializer = MakeBookingSerializer(data=data)
+        serializer = MakeBookingSerializer(data=data, context={'no_limit': True})
         if serializer.is_valid():
             booking = serializer.save(user=user)
             booking.booking_status.add(Booking_Status.objects.get(booking_status='Internal usage').pk)
