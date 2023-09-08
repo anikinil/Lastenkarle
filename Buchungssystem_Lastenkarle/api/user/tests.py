@@ -701,5 +701,38 @@ class DeleteAccountTest(TestCase):
         self.assertTrue(reordered_bookings[0].pk < reordered_bookings[1].pk)
         self.assertTrue(reordered_bookings[1].pk < reordered_bookings[2].pk)
 
-   # def test_delete_account_with_active_booking(self):
+    def test_delete_account_with_active_booking(self):
+        user_id = self.user.pk
+        # verify user to make booking
+        response = self.client.post('/api/user/v1/' + str(self.user.pk) + '/' + str(self.user.verification_string))
+        store_data = {
+            'name': 'Store1',
+            'address': 'Storestr. 1',
+            'email': 'pse_email@gmx.de',
+            'region': 'KA',
+            'phone_number': '012345'
+        }
+        store = Store.objects.create(**store_data)
+        store_flag = User_Status.custom_create_store_flags(store)
+        store.store_flag = store_flag
+        store.save()
+        bike_data = {
+            'name': 'Bike1',
+            'description': 'Es ist schnell'
+        }
+        bike = Bike.create_bike(store, **bike_data)
+        booking_data = {
+            "begin": "2023-10-02",
+            "end": "2023-10-03",
+            "equipment": []
+        }
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+        # make booking
+        self.client.post('/api/booking/v1/bikes/' + str(bike.pk) + '/booking', booking_data, format='json')
+        bookings = Booking.objects.filter(user=self.user)
+        bookings[0].booking_status.clear()
+        bookings[0].booking_status.add(Booking_Status.objects.get(booking_status='Picked up'))
+        response = self.client.delete(self.delete_account_url)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
 
