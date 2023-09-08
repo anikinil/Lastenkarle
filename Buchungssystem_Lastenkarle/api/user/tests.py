@@ -2,7 +2,8 @@ from django.test import TestCase
 from knox.models import AuthToken
 from knox.auth import TokenAuthentication
 from rest_framework.test import APIRequestFactory
-from db_model.models import User_Status, User, Equipment, Availability_Status, Booking_Status, Booking, Store, Bike, Availability
+from db_model.models import User_Status, User, Equipment, Availability_Status, Booking_Status, Booking, Store, Bike, \
+    Availability
 from api.user.v1.views import RegistrateUser
 from rest_framework import status
 from django.core import mail
@@ -10,6 +11,7 @@ from django.template.loader import render_to_string
 import json
 from unittest import skip
 from django.core import serializers
+import requests
 
 from Buchungssystem_Lastenkarle.settings import CANONICAL_HOST
 from configs.global_variables import lastenkarle_logo_url
@@ -62,6 +64,22 @@ class MigrationTest(TestCase):
             self.assertIn(term, found_equipment)
 
 
+class ImageExistsTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.image_url = "https://transport.data.kit.edu/static/media/logo.2f51c6d45972d24d4330.png"
+
+    def test_image_exists(self):
+        # Send a GET request to the specified image URL
+        response = requests.get(self.image_url)
+        # Check if the request was successful (Status code 200)
+        self.assertEqual(response.status_code, 200)
+        # Check if the content is not empty
+        self.assertNotEqual(response.content, b'')
+        # Check if the content type of the image is correct (starts with 'image/')
+        self.assertTrue(response.headers['Content-Type'] == 'image/png')
+
+
 class RegistrateUserTest(TestCase):
     def setUp(self):
         self.factory = APIRequestFactory()
@@ -84,7 +102,7 @@ class RegistrateUserTest(TestCase):
         first_message = mail.outbox[0]
         subject = "Dein Account bei Lastenkarle: Bitte bestätige deine E-Mail"
         self.assertEqual(first_message.subject, subject)
-        registration_link = CANONICAL_HOST + "/email-verification/" + str(user.pk) + "/" + user.verification_string
+        registration_link = CANONICAL_HOST + "email-verification/" + str(user.pk) + "/" + user.verification_string
         html_message = render_to_string("email_templates/UserRegisteredConfirmation.html",
                                         {'username': user.preferred_username,
                                          'lastenkarle_logo_url': lastenkarle_logo_url,
@@ -568,6 +586,7 @@ class UpdateUserDataTest(TestCase):
         # Check the number of emails, that have been sent
         self.assertEqual(0, len(mail.outbox))
 
+
 class DeleteAccountTest(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -615,6 +634,7 @@ class DeleteAccountTest(TestCase):
         # Attempt a second deletion
         response = self.client.delete(self.delete_account_url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
     def test_register_again_after_deleting(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
         self.client.delete(self.delete_account_url)
@@ -642,40 +662,44 @@ class DeleteAccountTest(TestCase):
         }
         bike = Bike.create_bike(store, **bike_data)
         booking_data = {
-            'begin': '2023-10-02',
-            'end': '2023-10-03',
-            'equipment': []
+            "begin": "2023-10-02",
+            "end": "2023-10-03",
+            "equipment": []
         }
         booking_data_2 = {
-            'begin': '2023-10-04',
-            'end': '2023-10-05',
-            'equipment': []
+            "begin": "2023-10-04",
+            "end": "2023-10-05",
+            "equipment": []
         }
         booking_data_3 = {
-            'begin': '2023-10-09',
-            'end': '2023-10-10',
-            'equipment': []
+            "begin": "2023-10-09",
+            "end": "2023-10-10",
+            "equipment": []
         }
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
         # make booking
-        response = self.client.post('/api/booking/v1/bikes/' + str(bike.pk) + '/booking', **booking_data, format='json')
-        print('/api/booking/v1/bikes/' + str(bike.pk) + '/booking')
-        print(response)
-        self.client.post('/api/booking/v1/bikes/' + str(bike.pk) + '/booking', **booking_data_2)
-        self.client.post('/api/booking/v1/bikes/' + str(bike.pk) + '/booking', **booking_data_3)
-        print(Booking.objects.all())
-        bookings_before_delete = Booking.objects.filter(user=self.user)
-        print(bookings_before_delete)
-        bookings_before_delete[1].booking_status = 'Returned'
-        bookings_before_delete[2].booking_status = 'Cancelled'
+        self.client.post('/api/booking/v1/bikes/' + str(bike.pk) + '/booking', booking_data, format='json')
+        self.client.post('/api/booking/v1/bikes/' + str(bike.pk) + '/booking', booking_data_2, format='json')
+        self.client.post('/api/booking/v1/bikes/' + str(bike.pk) + '/booking', booking_data_3, format='json')
+        bookings = Booking.objects.filter(user=self.user)
+        bookings[1].booking_status.clear()
+        bookings[1].booking_status.add(Booking_Status.objects.get(booking_status='Returned'))
+        bookings[1].save()
+        bookings[2].booking_status.clear()
+        bookings[2].booking_status.add(Booking_Status.objects.get(booking_status='Cancelled'))
+        bookings[2].save()
+
         response = self.client.delete(self.delete_account_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         deleted_user = User.objects.get(pk=user_id)
-        bookings_after_delete = Booking.objects.filter(user=deleted_user)
+        bookings_after_delete = Booking.objects.filter(user_id=deleted_user.pk)
+        reordered_bookings =[bookings_after_delete[2], bookings_after_delete[0], bookings_after_delete[1]]
         # check if booking of deleted user is cancelled
-        self.assertEqual(bookings_after_delete[0].booking_status, 'Cancelled')
-        self.assertEqual(bookings_after_delete[1].booking_status, 'Returned')
-        self.assertEqual(bookings_after_delete[2].booking_status, 'Cancelled')
+        self.assertEqual(reordered_bookings[0].booking_status.all().first().booking_status, Booking_Status.objects.get(booking_status='Cancelled').booking_status)
+        self.assertEqual(reordered_bookings[1].booking_status.all().first().booking_status, Booking_Status.objects.get(booking_status='Returned').booking_status)
+        self.assertEqual(reordered_bookings[2].booking_status.all().first().booking_status, Booking_Status.objects.get(booking_status='Cancelled').booking_status)
+        self.assertTrue(reordered_bookings[0].pk < reordered_bookings[1].pk)
+        self.assertTrue(reordered_bookings[1].pk < reordered_bookings[2].pk)
 
-
+   # def test_delete_account_with_active_booking(self):
 
