@@ -87,7 +87,7 @@ class RegistrateUserTest(TestCase):
         first_message = mail.outbox[0]
         subject = "Dein Account bei Lastenkarle: Bitte bestätige deine E-Mail"
         self.assertEqual(first_message.subject, subject)
-        registration_link = CANONICAL_HOST + "email-verification/" + str(user.pk) + "/" + user.verification_string
+        registration_link = CANONICAL_HOST + "/email-verification/" + str(user.pk) + "/" + user.verification_string
         html_message = render_to_string("email_templates/UserRegisteredConfirmation.html",
                                         {'username': user.preferred_username,
                                          'lastenkarle_logo_url': lastenkarle_logo_url,
@@ -450,7 +450,7 @@ class UpdateUserDataTest(TestCase):
         first_message = mail.outbox[0]
         subject = "Dein Account bei Lastenkarle: Bitte bestätige deine E-Mail"
         self.assertEqual(first_message.subject, subject)
-        verification_link = CANONICAL_HOST + "email-verification/" + str(user.pk) + "/" + user.verification_string
+        verification_link = CANONICAL_HOST + "/email-verification/" + str(user.pk) + "/" + user.verification_string
         html_message = render_to_string("email_templates/EmailChangedTemplate.html",
                                         {'username': user.preferred_username,
                                          'lastenkarle_logo_url': lastenkarle_logo_url,

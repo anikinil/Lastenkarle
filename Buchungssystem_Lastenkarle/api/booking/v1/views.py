@@ -105,7 +105,7 @@ class MakeBooking(APIView):
             'bike': bike.pk,
         }
         data = {**request.data, **additional_data}
-        serializer = MakeBookingSerializer(data=data)
+        serializer = MakeBookingSerializer(data=data, context={'no_limit': False})
         if serializer.is_valid():
             booking = serializer.save(user=user)
             booking.booking_status.set(Booking_Status.objects.filter(booking_status='Booked'))

@@ -2,6 +2,26 @@ from django.contrib.auth import authenticate
 from db_model.models import *
 from rest_framework import serializers
 from validate_email import validate_email
+from datetime import datetime, date, time, timedelta
+from django.utils import timezone
+
+
+def weekday_prefix_of_date(date_obj):
+    if date_obj:
+        try:
+            # Convert the date object to a datetime object
+            date = datetime(date_obj.year, date_obj.month, date_obj.day)
+
+            # Extract the weekday as a string
+            weekday = date.strftime("%a")
+
+            return weekday
+        except ValueError:
+            # Handle invalid date format
+            return None
+    else:
+        # Handle missing date parameter
+        return None
 
 
 def partialUpdateInputValidation(request, fields_to_include):
@@ -221,7 +241,12 @@ class MakeBookingSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         begin = attrs.get('begin')
         end = attrs.get('end')
+        no_limit = self.context.get('no_limit')
+        if not no_limit:
+            if (end - begin).days > 7:
+                raise serializers.ValidationError('Customers are not allowed to make booking of attempted length.')
         bike = attrs.get('bike')
+        store = bike.store
         left = Availability.objects.filter(until_date__gte=end,
                                            store=bike.store,
                                            bike=bike,
@@ -234,6 +259,21 @@ class MakeBookingSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Bike not available in selected time frame.')
         if begin > end:
             raise serializers.ValidationError('Time travel is not permitted.')
+        day_prefix_begin = weekday_prefix_of_date(begin)
+        settings_for_day = store.get_settings_for_day(day_prefix_begin)
+        if not settings_for_day[0]:
+            raise serializers.ValidationError('Store closed on starting day of booking.')
+        prep_time = store.prep_time
+        current_time = timezone.now()
+        earliest_booking_begin = current_time + timedelta(hours=prep_time.hour, minutes=prep_time.minute)
+        start_time = datetime.strptime(settings_for_day[1], "%H:%M").time()
+        start_booking = timezone.make_aware(datetime.combine(begin, start_time), timezone.get_current_timezone())
+        if earliest_booking_begin > start_booking:
+            raise serializers.ValidationError('Store does not provide bike this early.')
+        day_prefix_end = weekday_prefix_of_date(end)
+        settings_for_day = store.get_settings_for_day(day_prefix_end)
+        if not settings_for_day[0]:
+            raise serializers.ValidationError('Store closed on ending day of booking.')
         return attrs
 
     def create(self, validated_data):
