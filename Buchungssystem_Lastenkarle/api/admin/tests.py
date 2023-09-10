@@ -188,7 +188,8 @@ def initialize_store(store_data):
 def initialize_bike_of_store(store, bike_data):
     with open(image_path, 'rb') as image_file:
         image = SimpleUploadedFile("bike_image.jpg", image_file.read(), content_type="image/jpg")
-    bike = Bike.objects.create(name=bike_data.get('name')[0], description=bike_data.get('description')[0], image=image, store=store)
+    bike = Bike.objects.create(name=bike_data.get('name')[0], description=bike_data.get('description')[0], image=image,
+                               store=store)
     Availability.create_availability(store, bike)
     return bike
 
@@ -357,7 +358,8 @@ class Test_user_flags_interactions(TestCase):
             'user_status': 'Administrator'
         }
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
-        response = self.client.post('/api/admin/v1/user-flags', enrollment_data_for_caro_as_administrator, format='json')
+        response = self.client.post('/api/admin/v1/user-flags', enrollment_data_for_caro_as_administrator,
+                                    format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_enrollment_with_various_request_payloads(self):
@@ -497,7 +499,8 @@ class Test_user_banning(TestCase):
             'contact_data': 'the_voices_in_my_head@gmx.de'
         }
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
-        response = self.client.post('/api/admin/v1/ban-user', contact_data_user_with_contact_data_does_not_exists, format='json')
+        response = self.client.post('/api/admin/v1/ban-user', contact_data_user_with_contact_data_does_not_exists,
+                                    format='json')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
@@ -827,7 +830,8 @@ class Test_create_bike_of_store(TestCase):
             ]
         }
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
-        response = self.client.post(f'/api/admin/v1/create/store/{self.store.pk}/bike', bike_data_missing_name, format='multipart')
+        response = self.client.post(f'/api/admin/v1/create/store/{self.store.pk}/bike', bike_data_missing_name,
+                                    format='multipart')
         response_data = json.loads(response.content.decode('utf-8'))
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response_data, expected_json)
@@ -841,7 +845,8 @@ class Test_create_bike_of_store(TestCase):
             ]
         }
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
-        response = self.client.post(f'/api/admin/v1/create/store/{self.store.pk}/bike', bike_data_missing_description, format='multipart')
+        response = self.client.post(f'/api/admin/v1/create/store/{self.store.pk}/bike', bike_data_missing_description,
+                                    format='multipart')
         response_data = json.loads(response.content.decode('utf-8'))
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response_data, expected_json)
@@ -855,7 +860,8 @@ class Test_create_bike_of_store(TestCase):
             ]
         }
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
-        response = self.client.post(f'/api/admin/v1/create/store/{self.store.pk}/bike', bike_data_missing_image, format='multipart')
+        response = self.client.post(f'/api/admin/v1/create/store/{self.store.pk}/bike', bike_data_missing_image,
+                                    format='multipart')
         response_data = json.loads(response.content.decode('utf-8'))
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response_data, expected_json)
@@ -931,6 +937,8 @@ class Test_bike_deletion_via_admin(TestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
         response = self.client.delete(f'/api/admin/v1/delete/bike/{self.bike1_of_store1.pk}')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(not Bike.objects.filter(name=self.bike1_of_store1.name).exists())
+        self.assertTrue(not Availability.objects.filter(bike=self.bike1_of_store1).exists())
 
     def test_bike_deletion_via_admin_bike_id_in_uri_incorrect(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
@@ -960,8 +968,10 @@ class Test_bike_deletion_via_admin(TestCase):
         self.assertNotEqual(booking.bike, None)
 
     def test_bike_deletion_amount_bookings(self):
-        booking1 = initialize_booking_of_bike_with_flag(self.caro, self.bike1_of_store1, 'Booked', '2100-01-04', '2100-01-11')
-        booking2 = initialize_booking_of_bike_with_flag(self.caro, self.bike1_of_store1, 'Booked', '2100-01-18', '2100-01-25')
+        booking1 = initialize_booking_of_bike_with_flag(self.caro, self.bike1_of_store1, 'Booked', '2100-01-04',
+                                                        '2100-01-11')
+        booking2 = initialize_booking_of_bike_with_flag(self.caro, self.bike1_of_store1, 'Booked', '2100-01-18',
+                                                        '2100-01-25')
         initialize_booking_of_bike_with_flag(self.caro, self.bike2_of_store1, 'Booked', '2100-01-04', '2100-01-11')
         initialize_booking_of_bike_with_flag(self.caro, self.bike2_of_store1, 'Booked', '2100-01-18', '2100-01-25')
         initialize_booking_of_bike_with_flag(self.caro, self.bike1_of_store2, 'Booked', '2100-01-04', '2100-01-11')
@@ -979,3 +989,1215 @@ class Test_bike_deletion_via_admin(TestCase):
         self.assertEqual(booking2.bike, None)
         self.assertIn(expected_booking_status, booking2.booking_status.all())
 
+
+class Test_store_deletion_via_admin(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.store1 = initialize_store(store_data_store1)
+        self.bike1_of_store1 = initialize_bike_of_store(self.store1, bike_data_bike1)
+        self.bike2_of_store1 = initialize_bike_of_store(self.store1, bike_data_bike2)
+        self.store2 = initialize_store(store_data_store2)
+        self.bike1_of_store2 = initialize_bike_of_store(self.store2, bike_data_bike3)
+        self.wildegard, self.token_wildegard = initialize_user_with_token(
+            self.client, user_data_wildegard, login_data_wildegard
+        )
+        self.hilda_verified, self.token_hilda_verified = initialize_user_with_token(
+            self.client, user_data_hilda, login_data_hilda
+        )
+        add_verified_flag_to_user(self.hilda_verified)
+        self.store_manager, self.store_manager_token = initialize_user_with_token(
+            self.client, user_data_store_manager, login_data_store_manager
+        )
+        add_verified_flag_to_user(self.store_manager)
+        add_store_manager_flag_to_user(self.store_manager, self.store1)
+        self.caro, self.caro_token = initialize_user_with_token(
+            self.client, user_data_caro, login_data_caro
+        )
+        add_verified_flag_to_user(self.caro)
+        add_admin_flag_to_user(self.caro)
+
+    def tearDown(self):
+        for bike in Bike.objects.all():
+            os.remove(os.path.join(BASE_DIR, 'media/', str(bike.image)))
+        super().tearDown()
+
+    def test_store_deletion_via_admin_various_user_authentication(self):
+        response = self.client.delete(f'/api/admin/v1/delete/store/{self.store1.pk}')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token_wildegard)
+        response = self.client.delete(f'/api/admin/v1/delete/store/{self.store1.pk}')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token_hilda_verified)
+        response = self.client.delete(f'/api/admin/v1/delete/store/{self.store1.pk}')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.store_manager_token)
+        response = self.client.delete(f'/api/admin/v1/delete/store/{self.store1.pk}')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.delete(f'/api/admin/v1/delete/store/{self.store1.pk}')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_store_deletion_via_admin(self):
+        bikes = Bike.objects.filter(store=self.store1)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.delete(f'/api/admin/v1/delete/store/{self.store1.pk}')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        for bike in bikes:
+            self.assertTrue(not Bike.objects.filter(name=bike.name).exists())
+            self.assertTrue(not Availability.objects.filter(bike=bike).exists())
+        self.assertTrue(not Store.objects.filter(name=self.store1.name))
+
+    def test_store_deletion_via_admin_bike_id_in_uri_incorrect(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.delete(f'/api/admin/v1/delete/store/-1')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.delete(f'/api/admin/v1/delete/store/0xFFFFFFF')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.delete(f'/api/admin/v1/delete/store/')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_store_deletion_via_admin_when_bike_picked_up(self):
+        booking = initialize_booking_of_bike_with_flag(self.caro, self.bike1_of_store1, 'Picked up', '2100-01-04',
+                                                       '2100-01-11')
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.delete(f'/api/admin/v1/delete/store/{self.store1.pk}')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertNotEqual(booking.bike, None)
+        booking = initialize_booking_of_bike_with_flag(self.caro, self.bike1_of_store1, 'Picked up', '2100-01-18',
+                                                       '2100-01-25')
+        booking.booking_status.add(Booking_Status.objects.filter(booking_status='Internal usage')[0].pk)
+        booking.save()
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.delete(f'/api/admin/v1/delete/store/{self.store1.pk}')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertNotEqual(booking.bike, None)
+
+    def test_store_deletion_amount_bookings(self):
+        booking1 = initialize_booking_of_bike_with_flag(self.caro, self.bike1_of_store1, 'Booked', '2100-01-04',
+                                                        '2100-01-11')
+        booking2 = initialize_booking_of_bike_with_flag(self.caro, self.bike1_of_store1, 'Booked', '2100-01-18',
+                                                        '2100-01-25')
+        booking3 = initialize_booking_of_bike_with_flag(self.caro, self.bike2_of_store1, 'Booked', '2100-01-04',
+                                                        '2100-01-11')
+        booking4 = initialize_booking_of_bike_with_flag(self.caro, self.bike2_of_store1, 'Booked', '2100-01-18',
+                                                        '2100-01-25')
+        initialize_booking_of_bike_with_flag(self.caro, self.bike1_of_store2, 'Booked', '2100-01-04', '2100-01-11')
+        initialize_booking_of_bike_with_flag(self.caro, self.bike1_of_store2, 'Booked', '2100-01-18', '2100-01-25')
+        amount_bookings = Booking.objects.all().count()
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.delete(f'/api/admin/v1/delete/store/{self.store1.pk}')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        booking1.refresh_from_db()
+        booking2.refresh_from_db()
+        booking3.refresh_from_db()
+        booking4.refresh_from_db()
+        expected_booking_status = Booking_Status.objects.get(booking_status='Cancelled')
+        self.assertEqual(amount_bookings, Booking.objects.all().count())
+        self.assertEqual(booking1.bike, None)
+        self.assertIn(expected_booking_status, booking1.booking_status.all())
+        self.assertEqual(booking2.bike, None)
+        self.assertIn(expected_booking_status, booking2.booking_status.all())
+        self.assertEqual(booking3.bike, None)
+        self.assertIn(expected_booking_status, booking3.booking_status.all())
+        self.assertEqual(booking4.bike, None)
+        self.assertIn(expected_booking_status, booking4.booking_status.all())
+
+
+class Test_all_users(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.store = initialize_store(store_data_store1)
+        self.wildegard, self.token_wildegard = initialize_user_with_token(
+            self.client, user_data_wildegard, login_data_wildegard
+        )
+        self.hilda_verified, self.token_hilda_verified = initialize_user_with_token(
+            self.client, user_data_hilda, login_data_hilda
+        )
+        add_verified_flag_to_user(self.hilda_verified)
+        self.store_manager, self.store_manager_token = initialize_user_with_token(
+            self.client, user_data_store_manager, login_data_store_manager
+        )
+        add_verified_flag_to_user(self.store_manager)
+        add_store_manager_flag_to_user(self.store_manager, self.store)
+        self.caro, self.caro_token = initialize_user_with_token(
+            self.client, user_data_caro, login_data_caro
+        )
+        add_verified_flag_to_user(self.caro)
+        add_admin_flag_to_user(self.caro)
+
+    def tearDown(self):
+        for bike in Bike.objects.all():
+            os.remove(os.path.join(BASE_DIR, 'media/', str(bike.image)))
+        super().tearDown()
+
+    def test_retrieving_all_users_various_user_authentication(self):
+        response = self.client.get(f'/api/admin/v1/users')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token_wildegard)
+        response = self.client.get(f'/api/admin/v1/users')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token_hilda_verified)
+        response = self.client.get(f'/api/admin/v1/users')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.store_manager_token)
+        response = self.client.get(f'/api/admin/v1/users')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get(f'/api/admin/v1/users')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_retrieving_all_users_amount(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get(f'/api/admin/v1/users')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = json.loads(response.content.decode('utf-8'))
+        self.assertIsInstance(response_data, list)
+        expected_object_count = User.objects.all().count()
+        self.assertEqual(len(response_data), expected_object_count)
+
+    def test_retrieve_all_user_response_payload_format(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get(f'/api/admin/v1/users')
+        response_data = json.loads(response.content.decode('utf-8'))
+        for item in response_data:
+            self.assertTrue(isinstance(item.get("id"), int))
+            self.assertTrue(isinstance(item.get("assurance_lvl"), str))
+            self.assertTrue(isinstance(item.get("year_of_birth"), int))
+            self.assertTrue(isinstance(item.get("contact_data"), str))
+            self.assertTrue(isinstance(item.get("username"), str))
+            self.assertTrue(isinstance(item.get("preferred_username"), str))
+            user_status = item.get("user_status", [])
+            for status in user_status:
+                self.assertTrue(isinstance(status.get("user_status"), str))
+
+    def test_retrieve_all_users_response(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get(f'/api/admin/v1/users')
+        response_data = json.loads(response.content.decode('utf-8'))
+        for item in response_data:
+            user = User.objects.get(pk=item.get("id"))
+            self.assertEqual(item.get("id"), user.pk)
+            self.assertEqual(item.get("assurance_lvl"), user.assurance_lvl)
+            self.assertEqual(item.get("year_of_birth"), user.year_of_birth)
+            self.assertEqual(item.get("contact_data"), user.contact_data)
+            self.assertEqual(item.get("username"), user.username)
+            self.assertEqual(item.get("preferred_username"), user.preferred_username)
+            user_status = item.get("user_status", [])
+            self.assertIsInstance(user_status, list)
+            user_status_strings = [status.user_status for status in user.user_status.all()]
+            for status in user_status:
+                self.assertIn(status.get("user_status"), user_status_strings)
+
+
+class test_retrieve_one_user_as_admin(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.store = initialize_store(store_data_store1)
+        self.wildegard, self.token_wildegard = initialize_user_with_token(
+            self.client, user_data_wildegard, login_data_wildegard
+        )
+        self.hilda_verified, self.token_hilda_verified = initialize_user_with_token(
+            self.client, user_data_hilda, login_data_hilda
+        )
+        add_verified_flag_to_user(self.hilda_verified)
+        self.store_manager, self.store_manager_token = initialize_user_with_token(
+            self.client, user_data_store_manager, login_data_store_manager
+        )
+        add_verified_flag_to_user(self.store_manager)
+        add_store_manager_flag_to_user(self.store_manager, self.store)
+        self.caro, self.caro_token = initialize_user_with_token(
+            self.client, user_data_caro, login_data_caro
+        )
+        add_verified_flag_to_user(self.caro)
+        add_admin_flag_to_user(self.caro)
+
+    def tearDown(self):
+        for bike in Bike.objects.all():
+            os.remove(os.path.join(BASE_DIR, 'media/', str(bike.image)))
+        super().tearDown()
+
+    def test_retrieving_one_user_various_user_authentication(self):
+        response = self.client.get(f'/api/admin/v1/users/{self.wildegard.pk}')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token_wildegard)
+        response = self.client.get(f'/api/admin/v1/users/{self.wildegard.pk}')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token_hilda_verified)
+        response = self.client.get(f'/api/admin/v1/users/{self.wildegard.pk}')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.store_manager_token)
+        response = self.client.get(f'/api/admin/v1/users/{self.wildegard.pk}')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get(f'/api/admin/v1/users/{self.wildegard.pk}')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_retrieve_one_user_user_id_in_uri_incorrect(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get(f'/api/admin/v1/users/-1')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get(f'/api/admin/v1/users/0xFAF')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get(f'/api/admin/v1/users/ ')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_retrieve_one_user_response_payload_format(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get(f'/api/admin/v1/users/{self.wildegard.pk}')
+        response_data = json.loads(response.content.decode('utf-8'))
+        self.assertTrue(isinstance(response_data.get("assurance_lvl"), str))
+        self.assertTrue(isinstance(response_data.get("year_of_birth"), int))
+        self.assertTrue(isinstance(response_data.get("contact_data"), str))
+        self.assertTrue(isinstance(response_data.get("username"), str))
+        self.assertTrue(isinstance(response_data.get("preferred_username"), str))
+        user_status = response_data.get("user_status", [])
+        for status in user_status:
+            self.assertTrue(isinstance(status.get("user_status"), str))
+
+    def test_retrieve_one_user_response(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get(f'/api/admin/v1/users/{self.wildegard.pk}')
+        response_data = json.loads(response.content.decode('utf-8'))
+        user = User.objects.get(contact_data=response_data.get("contact_data"))
+        self.assertEqual(response_data.get("assurance_lvl"), user.assurance_lvl)
+        self.assertEqual(response_data.get("year_of_birth"), user.year_of_birth)
+        self.assertEqual(response_data.get("contact_data"), user.contact_data)
+        self.assertEqual(response_data.get("username"), user.username)
+        self.assertEqual(response_data.get("preferred_username"), user.preferred_username)
+        user_status = response_data.get("user_status", [])
+        self.assertIsInstance(user_status, list)
+        user_status_strings = [status.user_status for status in user.user_status.all()]
+        for status in user_status:
+            self.assertIn(status.get("user_status"), user_status_strings)
+
+
+class Test_all_bookings_of_user_as_admin(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.store = initialize_store(store_data_store1)
+        self.bike1 = initialize_bike_of_store(self.store, bike_data_bike1)
+        self.bike2 = initialize_bike_of_store(self.store, bike_data_bike2)
+        self.bike3 = initialize_bike_of_store(self.store, bike_data_bike3)
+        self.wildegard, self.token_wildegard = initialize_user_with_token(
+            self.client, user_data_wildegard, login_data_wildegard
+        )
+        self.hilda_verified, self.token_hilda_verified = initialize_user_with_token(
+            self.client, user_data_hilda, login_data_hilda
+        )
+        add_verified_flag_to_user(self.hilda_verified)
+        self.store_manager, self.store_manager_token = initialize_user_with_token(
+            self.client, user_data_store_manager, login_data_store_manager
+        )
+        add_verified_flag_to_user(self.store_manager)
+        add_store_manager_flag_to_user(self.store_manager, self.store)
+        self.caro, self.caro_token = initialize_user_with_token(
+            self.client, user_data_caro, login_data_caro
+        )
+        add_verified_flag_to_user(self.caro)
+        add_admin_flag_to_user(self.caro)
+        initialize_booking_of_bike_with_flag(self.caro, self.bike1, 'Booked', '2100-01-04', '2100-01-11')
+        initialize_booking_of_bike_with_flag(self.caro, self.bike1, 'Booked', '2100-01-18', '2100-01-25')
+        initialize_booking_of_bike_with_flag(self.caro, self.bike2, 'Booked', '2100-01-04', '2100-01-11')
+        initialize_booking_of_bike_with_flag(self.caro, self.bike2, 'Booked', '2100-01-18', '2100-01-25')
+        initialize_booking_of_bike_with_flag(self.hilda_verified, self.bike3, 'Booked', '2100-01-04', '2100-01-11')
+        initialize_booking_of_bike_with_flag(self.hilda_verified, self.bike3, 'Booked', '2100-01-18', '2100-01-25')
+
+    def tearDown(self):
+        for bike in Bike.objects.all():
+            os.remove(os.path.join(BASE_DIR, 'media/', str(bike.image)))
+        super().tearDown()
+
+    def test_retrieving_all_bookings_from_user_various_user_authentication(self):
+        response = self.client.get(f'/api/admin/v1/users/{self.caro.pk}/bookings')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token_wildegard)
+        response = self.client.get(f'/api/admin/v1/users/{self.caro.pk}/bookings')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token_hilda_verified)
+        response = self.client.get(f'/api/admin/v1/users/{self.caro.pk}/bookings')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.store_manager_token)
+        response = self.client.get(f'/api/admin/v1/users/{self.caro.pk}/bookings')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get(f'/api/admin/v1/users/{self.caro.pk}/bookings')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_retrieving_all_bookings_from_user_amount(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get(f'/api/admin/v1/users/{self.caro.pk}/bookings')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = json.loads(response.content.decode('utf-8'))
+        self.assertIsInstance(response_data, list)
+        expected_object_count = Booking.objects.filter(user=self.caro).count()
+        self.assertEqual(len(response_data), expected_object_count)
+
+    def test_retrieving_all_bookings_from_user_response_payload_format(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get(f'/api/admin/v1/users/{self.caro.pk}/bookings')
+        response_data = json.loads(response.content.decode('utf-8'))
+        for item in response_data:
+            self.assertTrue(isinstance(item.get("id"), int))
+            self.assertTrue(isinstance(item.get("bike"), int))
+            self.assertTrue(isinstance(item.get("begin"), str))
+            self.assertTrue(isinstance(item.get("end"), str))
+            self.assertTrue(isinstance(item.get("comment"), str))
+            booking_status = item.get("booking_status", [])
+            for status in booking_status:
+                self.assertTrue(isinstance(status.get("booking_status"), str))
+            equipment = item.get("equipment", [])
+            for value in equipment:
+                self.assertTrue(isinstance(value.get("equipment"), str))
+            self.assertIsInstance(item.get("assurance_lvl"), str)
+            self.assertIsInstance(item.get("preferred_username"), str)
+            user_status = item.get("user_status", [])
+            for status in user_status:
+                self.assertTrue(isinstance(status.get("user_status"), str))
+
+    def test_retrieving_all_bookings_from_user_response(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get(f'/api/admin/v1/users/{self.caro.pk}/bookings')
+        response_data = json.loads(response.content.decode('utf-8'))
+        for item in response_data:
+            booking = Booking.objects.get(pk=item.get("id"))
+            self.assertEqual(item.get("id"), booking.pk)
+            self.assertEqual(datetime.strptime(item.get("begin"), "%Y-%m-%d").date(), booking.begin)
+            self.assertEqual(datetime.strptime(item.get("end"), "%Y-%m-%d").date(), booking.end)
+            self.assertEqual(item.get("comment"), booking.comment)
+            self.assertEqual(item.get("bike"), booking.bike.pk)
+            self.assertEqual(item.get("assurance_lvl"), booking.user.assurance_lvl)
+            self.assertEqual(item.get("preferred_username"), booking.user.preferred_username)
+            booking_status = item.get("booking_status", [])
+            booking_status_label = [status.get("booking_status") for status in booking_status]
+            for status in booking_status:
+                self.assertIn(status.get("booking_status"), booking_status_label)
+            equipment = item.get("equipment", [])
+            equipment_strings = [value.get("equipment") for value in equipment]
+            for value in equipment:
+                self.assertIn(value.get("equipment"), equipment_strings)
+
+
+class Test_all_bookings_as_admin(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.store = initialize_store(store_data_store1)
+        self.bike1 = initialize_bike_of_store(self.store, bike_data_bike1)
+        self.bike2 = initialize_bike_of_store(self.store, bike_data_bike2)
+        self.bike3 = initialize_bike_of_store(self.store, bike_data_bike3)
+        self.wildegard, self.token_wildegard = initialize_user_with_token(
+            self.client, user_data_wildegard, login_data_wildegard
+        )
+        self.hilda_verified, self.token_hilda_verified = initialize_user_with_token(
+            self.client, user_data_hilda, login_data_hilda
+        )
+        add_verified_flag_to_user(self.hilda_verified)
+        self.store_manager, self.store_manager_token = initialize_user_with_token(
+            self.client, user_data_store_manager, login_data_store_manager
+        )
+        add_verified_flag_to_user(self.store_manager)
+        add_store_manager_flag_to_user(self.store_manager, self.store)
+        self.caro, self.caro_token = initialize_user_with_token(
+            self.client, user_data_caro, login_data_caro
+        )
+        add_verified_flag_to_user(self.caro)
+        add_admin_flag_to_user(self.caro)
+        initialize_booking_of_bike_with_flag(self.caro, self.bike1, 'Booked', '2100-01-04', '2100-01-11')
+        initialize_booking_of_bike_with_flag(self.hilda_verified, self.bike1, 'Booked', '2100-01-18', '2100-01-25')
+        initialize_booking_of_bike_with_flag(self.hilda_verified, self.bike2, 'Booked', '2100-01-04', '2100-01-11')
+        initialize_booking_of_bike_with_flag(self.caro, self.bike2, 'Booked', '2100-01-18', '2100-01-25')
+        initialize_booking_of_bike_with_flag(self.hilda_verified, self.bike3, 'Booked', '2100-01-04', '2100-01-11')
+        initialize_booking_of_bike_with_flag(self.hilda_verified, self.bike3, 'Booked', '2100-01-18', '2100-01-25')
+
+    def tearDown(self):
+        for bike in Bike.objects.all():
+            os.remove(os.path.join(BASE_DIR, 'media/', str(bike.image)))
+        super().tearDown()
+
+    def test_retrieving_all_bookings_various_user_authentication(self):
+        response = self.client.get('/api/admin/v1/bookings')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token_wildegard)
+        response = self.client.get('/api/admin/v1/bookings')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token_hilda_verified)
+        response = self.client.get('/api/admin/v1/bookings')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.store_manager_token)
+        response = self.client.get('/api/admin/v1/bookings')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get('/api/admin/v1/bookings')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_retrieving_all_bookings_amount(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get('/api/admin/v1/bookings')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = json.loads(response.content.decode('utf-8'))
+        self.assertIsInstance(response_data, list)
+        expected_object_count = Booking.objects.all().count()
+        self.assertEqual(len(response_data), expected_object_count)
+
+    def test_retrieving_all_bookings_response_payload_format(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get('/api/admin/v1/bookings')
+        response_data = json.loads(response.content.decode('utf-8'))
+        for item in response_data:
+            self.assertTrue(isinstance(item.get("id"), int))
+            self.assertTrue(isinstance(item.get("bike"), int))
+            self.assertTrue(isinstance(item.get("begin"), str))
+            self.assertTrue(isinstance(item.get("end"), str))
+            self.assertTrue(isinstance(item.get("assurance_lvl"), str))
+            self.assertTrue(isinstance(item.get("preferred_username"), str))
+            booking_status = item.get("booking_status", [])
+            for status in booking_status:
+                self.assertTrue(isinstance(status.get("booking_status"), str))
+            equipment = item.get("equipment", [])
+            for value in equipment:
+                self.assertTrue(isinstance(value.get("equipment"), str))
+            user_status = item.get("user_status", [])
+            for status in user_status:
+                self.assertTrue(isinstance(status.get("user_status"), str))
+
+    def test_retrieving_all_bookings_response(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get('/api/admin/v1/bookings')
+        response_data = json.loads(response.content.decode('utf-8'))
+        for item in response_data:
+            booking = Booking.objects.get(pk=item.get("id"))
+            self.assertEqual(item.get("id"), booking.pk)
+            self.assertEqual(datetime.strptime(item.get("begin"), "%Y-%m-%d").date(), booking.begin)
+            self.assertEqual(datetime.strptime(item.get("end"), "%Y-%m-%d").date(), booking.end)
+            self.assertEqual(item.get("comment"), booking.comment)
+            self.assertEqual(item.get("bike"), booking.bike.pk)
+            self.assertEqual(item.get("assurance_lvl"), booking.user.assurance_lvl)
+            self.assertEqual(item.get("preferred_username"), booking.user.preferred_username)
+            booking_status = item.get("booking_status", [])
+            booking_status_label = [status.get("booking_status") for status in booking_status]
+            for status in booking_status:
+                self.assertIn(status.get("booking_status"), booking_status_label)
+            equipment = item.get("equipment", [])
+            equipment_strings = [value.get("equipment") for value in equipment]
+            for value in equipment:
+                self.assertIn(value.get("equipment"), equipment_strings)
+
+
+class Test_retrieve_booking_as_admin(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.store = initialize_store(store_data_store1)
+        self.bike1 = initialize_bike_of_store(self.store, bike_data_bike1)
+        self.bike2 = initialize_bike_of_store(self.store, bike_data_bike2)
+        self.bike3 = initialize_bike_of_store(self.store, bike_data_bike3)
+        self.wildegard, self.token_wildegard = initialize_user_with_token(
+            self.client, user_data_wildegard, login_data_wildegard
+        )
+        self.hilda_verified, self.token_hilda_verified = initialize_user_with_token(
+            self.client, user_data_hilda, login_data_hilda
+        )
+        add_verified_flag_to_user(self.hilda_verified)
+        self.store_manager, self.store_manager_token = initialize_user_with_token(
+            self.client, user_data_store_manager, login_data_store_manager
+        )
+        add_verified_flag_to_user(self.store_manager)
+        add_store_manager_flag_to_user(self.store_manager, self.store)
+        self.caro, self.caro_token = initialize_user_with_token(
+            self.client, user_data_caro, login_data_caro
+        )
+        add_verified_flag_to_user(self.caro)
+        add_admin_flag_to_user(self.caro)
+        self.booking = initialize_booking_of_bike_with_flag(self.hilda_verified, self.bike2, 'Booked', '2100-01-04',
+                                                            '2100-01-11')
+
+    def tearDown(self):
+        for bike in Bike.objects.all():
+            os.remove(os.path.join(BASE_DIR, 'media/', str(bike.image)))
+        super().tearDown()
+
+    def test_retrieving_all_bookings_various_user_authentication(self):
+        response = self.client.get(f'/api/admin/v1/bookings/{self.booking.pk}')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token_wildegard)
+        response = self.client.get(f'/api/admin/v1/bookings/{self.booking.pk}')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token_hilda_verified)
+        response = self.client.get(f'/api/admin/v1/bookings/{self.booking.pk}')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.store_manager_token)
+        response = self.client.get(f'/api/admin/v1/bookings/{self.booking.pk}')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get(f'/api/admin/v1/bookings/{self.booking.pk}')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_retrieve_booking_as_admin(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get(f'/api/admin/v1/bookings/{self.booking.pk}')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_retrieve_booking_as_admin_booking_id_in_uri_incorrect(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get(f'/api/admin/v1/bookings/-1')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get(f'/api/admin/v1/bookings/0xFAF')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get(f'/api/admin/v1/bookings/ ')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_retrieving_booking_as_admin_response_payload_format(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get(f'/api/admin/v1/bookings/{self.booking.pk}')
+        response_data = json.loads(response.content.decode('utf-8'))
+        self.assertTrue(isinstance(response_data.get("bike"), int))
+        self.assertTrue(isinstance(response_data.get("begin"), str))
+        self.assertTrue(isinstance(response_data.get("end"), str))
+        self.assertTrue(isinstance(response_data.get("assurance_lvl"), str))
+        self.assertTrue(isinstance(response_data.get("preferred_username"), str))
+        booking_status = response_data.get("booking_status", [])
+        for status in booking_status:
+            self.assertTrue(isinstance(status.get("booking_status"), str))
+        equipment = response_data.get("equipment", [])
+        for value in equipment:
+            self.assertTrue(isinstance(value.get("equipment"), str))
+        user_status = response_data.get("user_status", [])
+        for status in user_status:
+            self.assertTrue(isinstance(status.get("user_status"), str))
+
+    def test_retrieving_booking_as_admin_response(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get(f'/api/admin/v1/bookings/{self.booking.pk}')
+        response_data = json.loads(response.content.decode('utf-8'))
+        booking = Booking.objects.get(pk=self.booking.pk)
+        self.assertEqual(datetime.strptime(response_data.get("begin"), "%Y-%m-%d").date(), booking.begin)
+        self.assertEqual(datetime.strptime(response_data.get("end"), "%Y-%m-%d").date(), booking.end)
+        self.assertEqual(response_data.get("comment"), booking.comment)
+        self.assertEqual(response_data.get("bike"), booking.bike.pk)
+        self.assertEqual(response_data.get("assurance_lvl"), booking.user.assurance_lvl)
+        self.assertEqual(response_data.get("preferred_username"), booking.user.preferred_username)
+        booking_status = response_data.get("booking_status", [])
+        booking_status_label = [status.get("booking_status") for status in booking_status]
+        for status in booking_status:
+            self.assertIn(status.get("booking_status"), booking_status_label)
+        equipment = response_data.get("equipment", [])
+        equipment_strings = [value.get("equipment") for value in equipment]
+        for value in equipment:
+            self.assertIn(value.get("equipment"), equipment_strings)
+
+    # TODO POST
+
+
+class Test_retrieve_all_bikes_as_admin(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.store = initialize_store(store_data_store1)
+        self.bike1 = initialize_bike_of_store(self.store, bike_data_bike1)
+        self.bike2 = initialize_bike_of_store(self.store, bike_data_bike2)
+        self.bike3 = initialize_bike_of_store(self.store, bike_data_bike3)
+        self.wildegard, self.token_wildegard = initialize_user_with_token(
+            self.client, user_data_wildegard, login_data_wildegard
+        )
+        self.hilda_verified, self.token_hilda_verified = initialize_user_with_token(
+            self.client, user_data_hilda, login_data_hilda
+        )
+        add_verified_flag_to_user(self.hilda_verified)
+        self.store_manager, self.store_manager_token = initialize_user_with_token(
+            self.client, user_data_store_manager, login_data_store_manager
+        )
+        add_verified_flag_to_user(self.store_manager)
+        add_store_manager_flag_to_user(self.store_manager, self.store)
+        self.caro, self.caro_token = initialize_user_with_token(
+            self.client, user_data_caro, login_data_caro
+        )
+        add_verified_flag_to_user(self.caro)
+        add_admin_flag_to_user(self.caro)
+
+    def tearDown(self):
+        for bike in Bike.objects.all():
+            os.remove(os.path.join(BASE_DIR, 'media/', str(bike.image)))
+        super().tearDown()
+
+    def test_retrieve_all_bikes_various_user_authentication(self):
+        response = self.client.get('/api/admin/v1/bikes')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token_wildegard)
+        response = self.client.get('/api/admin/v1/bikes')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token_hilda_verified)
+        response = self.client.get('/api/admin/v1/bikes')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.store_manager_token)
+        response = self.client.get('/api/admin/v1/bikes')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get('/api/admin/v1/bikes')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_all_bikes_amount_as_admin(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get('/api/admin/v1/bikes')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = json.loads(response.content.decode('utf-8'))
+        self.assertIsInstance(response_data, list)
+        expected_object_count = Bike.objects.all().count()
+        self.assertEqual(len(response_data), expected_object_count)
+
+    def test_all_bikes_response_payload_format(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get('/api/admin/v1/bikes')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = json.loads(response.content.decode('utf-8'))
+        for item in response_data:
+            self.assertTrue(isinstance(item.get("id"), int))
+            self.assertTrue(isinstance(item.get("name"), str))
+            self.assertTrue(isinstance(item.get("description"), str))
+            self.assertTrue(isinstance(item.get("store"), int))
+            self.assertTrue(isinstance(item.get("image"), str))
+            equipment = item.get("equipment", [])
+            self.assertTrue(isinstance(equipment, list))
+            for equip in equipment:
+                self.assertTrue(isinstance(equip, str))
+
+    def test_all_bikes_as_admin_response_payload(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get('/api/admin/v1/bikes')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = json.loads(response.content.decode('utf-8'))
+        for item in response_data:
+            bike = Bike.objects.get(pk=item.get("id"))
+            self.assertEqual(item.get("id"), bike.pk)
+            self.assertEqual(item.get("store"), bike.store.pk)
+            self.assertEqual(item.get("name"), bike.name)
+            self.assertEqual(item.get("description"), bike.description)
+            self.assertEqual(item.get("image"), bike.image.url)
+            equipment = item.get("equipment", [])
+            equipment_strings = [value.get("equipment") for value in equipment]
+            for value in equipment:
+                self.assertIn(value.get("equipment"), equipment_strings)
+
+
+class Test_retrieve_bike_as_admin(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.store = initialize_store(store_data_store1)
+        self.bike1 = initialize_bike_of_store(self.store, bike_data_bike1)
+        self.bike2 = initialize_bike_of_store(self.store, bike_data_bike2)
+        self.bike3 = initialize_bike_of_store(self.store, bike_data_bike3)
+        self.wildegard, self.token_wildegard = initialize_user_with_token(
+            self.client, user_data_wildegard, login_data_wildegard
+        )
+        self.hilda_verified, self.token_hilda_verified = initialize_user_with_token(
+            self.client, user_data_hilda, login_data_hilda
+        )
+        add_verified_flag_to_user(self.hilda_verified)
+        self.store_manager, self.store_manager_token = initialize_user_with_token(
+            self.client, user_data_store_manager, login_data_store_manager
+        )
+        add_verified_flag_to_user(self.store_manager)
+        add_store_manager_flag_to_user(self.store_manager, self.store)
+        self.caro, self.caro_token = initialize_user_with_token(
+            self.client, user_data_caro, login_data_caro
+        )
+        add_verified_flag_to_user(self.caro)
+        add_admin_flag_to_user(self.caro)
+
+    def tearDown(self):
+        for bike in Bike.objects.all():
+            os.remove(os.path.join(BASE_DIR, 'media/', str(bike.image)))
+        super().tearDown()
+
+    def test_retrieve_bike_as_admin_various_user_authentication(self):
+        response = self.client.get(f'/api/admin/v1/bikes/{self.bike1.pk}')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token_wildegard)
+        response = self.client.get(f'/api/admin/v1/bikes/{self.bike1.pk}')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token_hilda_verified)
+        response = self.client.get(f'/api/admin/v1/bikes/{self.bike1.pk}')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.store_manager_token)
+        response = self.client.get(f'/api/admin/v1/bikes/{self.bike1.pk}')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get(f'/api/admin/v1/bikes/{self.bike1.pk}')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_bike_as_admin_response_payload_format(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get(f'/api/admin/v1/bikes/{self.bike1.pk}')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = json.loads(response.content.decode('utf-8'))
+        self.assertTrue(isinstance(response_data.get("id"), int))
+        self.assertTrue(isinstance(response_data.get("name"), str))
+        self.assertTrue(isinstance(response_data.get("description"), str))
+        self.assertTrue(isinstance(response_data.get("store"), int))
+        self.assertTrue(isinstance(response_data.get("image"), str))
+        equipment = response_data.get("equipment", [])
+        self.assertTrue(isinstance(equipment, list))
+        for equip in equipment:
+            self.assertTrue(isinstance(equip, str))
+
+    def test_bike_as_admin_response_payload(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get(f'/api/admin/v1/bikes/{self.bike1.pk}')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = json.loads(response.content.decode('utf-8'))
+        bike = Bike.objects.get(pk=response_data.get("id"))
+        self.assertEqual(response_data.get("id"), bike.pk)
+        self.assertEqual(response_data.get("store"), bike.store.pk)
+        self.assertEqual(response_data.get("name"), bike.name)
+        self.assertEqual(response_data.get("description"), bike.description)
+        self.assertEqual(response_data.get("image"), bike.image.url)
+        equipment = response_data.get("equipment", [])
+        equipment_strings = [value.get("equipment") for value in equipment]
+        for value in equipment:
+            self.assertIn(value.get("equipment"), equipment_strings)
+
+    def test_bike_id_in_uri_incorrect(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get('/api/booking/v1/bikes/-1')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get('/api/booking/v1/bikes/0xF')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get('/api/booking/v1/bikes/ ')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+class Test_retrieve_availabilities_of_bike_as_admin(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.store = initialize_store(store_data_store1)
+        self.bike1 = initialize_bike_of_store(self.store, bike_data_bike1)
+        self.bike2 = initialize_bike_of_store(self.store, bike_data_bike2)
+        self.bike3 = initialize_bike_of_store(self.store, bike_data_bike3)
+        self.wildegard, self.token_wildegard = initialize_user_with_token(
+            self.client, user_data_wildegard, login_data_wildegard
+        )
+        self.hilda_verified, self.token_hilda_verified = initialize_user_with_token(
+            self.client, user_data_hilda, login_data_hilda
+        )
+        add_verified_flag_to_user(self.hilda_verified)
+        self.store_manager, self.store_manager_token = initialize_user_with_token(
+            self.client, user_data_store_manager, login_data_store_manager
+        )
+        add_verified_flag_to_user(self.store_manager)
+        add_store_manager_flag_to_user(self.store_manager, self.store)
+        self.caro, self.caro_token = initialize_user_with_token(
+            self.client, user_data_caro, login_data_caro
+        )
+        add_verified_flag_to_user(self.caro)
+        add_admin_flag_to_user(self.caro)
+
+    def tearDown(self):
+        for bike in Bike.objects.all():
+            os.remove(os.path.join(BASE_DIR, 'media/', str(bike.image)))
+        super().tearDown()
+
+    def test_retrieve_availabilities_of_bike_as_admin_various_user_authentication(self):
+        response = self.client.get(f'/api/admin/v1/bikes/{self.bike1.pk}/availability')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token_wildegard)
+        response = self.client.get(f'/api/admin/v1/bikes/{self.bike1.pk}/availability')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token_hilda_verified)
+        response = self.client.get(f'/api/admin/v1/bikes/{self.bike1.pk}/availability')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.store_manager_token)
+        response = self.client.get(f'/api/admin/v1/bikes/{self.bike1.pk}/availability')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get(f'/api/admin/v1/bikes/{self.bike1.pk}/availability')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_retrieve_availabilities_of_bike_as_admin_response_payload_format(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        initialize_booking_of_bike_with_flag(self.caro, self.bike1, 'Booked', '2100-01-04', '2100-01-11')
+        response = self.client.get(f'/api/admin/v1/bikes/{self.bike1.pk}/availability')
+        response_data = json.loads(response.content.decode('utf-8'))
+        for item in response_data:
+            self.assertTrue(isinstance(item.get("id"), int))
+            self.assertTrue(isinstance(item.get("from_date"), str))
+            self.assertTrue(isinstance(item.get("until_date"), str))
+            self.assertTrue(isinstance(item.get("store"), int))
+            self.assertTrue(isinstance(item.get("bike"), int))
+            availability_status = item.get("availability_status", [])
+            for status in availability_status:
+                self.assertTrue(isinstance(status.get("availability_status"), str))
+
+    def test_retrieve_availabilities_of_bike_amount_as_admin(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        initialize_booking_of_bike_with_flag(self.caro, self.bike1, 'Booked', '2100-01-04', '2100-01-11')
+        response = self.client.get(f'/api/admin/v1/bikes/{self.bike1.pk}/availability')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = json.loads(response.content.decode('utf-8'))
+        self.assertIsInstance(response_data, list)
+        expected_object_count = Availability.objects.filter(bike=self.bike1).count()
+        self.assertEqual(len(response_data), expected_object_count)
+
+    def test_retrieve_availabilities_of_bike_as_admin_response_payload(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get(f'/api/admin/v1/bikes/{self.bike1.pk}/availability')
+        response_data = json.loads(response.content.decode('utf-8'))
+        for item in response_data:
+            availability = Availability.objects.get(pk=item.get("id"))
+            self.assertEqual(item.get("id"), availability.pk)
+            self.assertEqual(datetime.strptime(item.get("from_date"), "%Y-%m-%d").date(), availability.from_date)
+            self.assertEqual(datetime.strptime(item.get("until_date"), "%Y-%m-%d").date(), availability.until_date)
+            self.assertEqual(item.get("store"), availability.store.pk)
+            self.assertEqual(item.get("bike"), availability.bike.pk)
+            availability_status = item.get("availability_status", [])
+            availability_strings = [value.get("availability_status") for value in availability_status]
+            for value in availability_status:
+                self.assertIn(value.get("availability_status"), availability_strings)
+
+
+class Test_all_stores_as_admin(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.store = initialize_store(store_data_store1)
+        self.bike1 = initialize_bike_of_store(self.store, bike_data_bike1)
+        self.bike2 = initialize_bike_of_store(self.store, bike_data_bike2)
+        self.bike3 = initialize_bike_of_store(self.store, bike_data_bike3)
+        self.wildegard, self.token_wildegard = initialize_user_with_token(
+            self.client, user_data_wildegard, login_data_wildegard
+        )
+        self.hilda_verified, self.token_hilda_verified = initialize_user_with_token(
+            self.client, user_data_hilda, login_data_hilda
+        )
+        add_verified_flag_to_user(self.hilda_verified)
+        self.store_manager, self.store_manager_token = initialize_user_with_token(
+            self.client, user_data_store_manager, login_data_store_manager
+        )
+        add_verified_flag_to_user(self.store_manager)
+        add_store_manager_flag_to_user(self.store_manager, self.store)
+        self.caro, self.caro_token = initialize_user_with_token(
+            self.client, user_data_caro, login_data_caro
+        )
+        add_verified_flag_to_user(self.caro)
+        add_admin_flag_to_user(self.caro)
+
+    def tearDown(self):
+        for bike in Bike.objects.all():
+            os.remove(os.path.join(BASE_DIR, 'media/', str(bike.image)))
+        super().tearDown()
+
+    def test_all_stores_as_admin_various_user_authentication(self):
+        response = self.client.get(f'/api/admin/v1/stores')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token_wildegard)
+        response = self.client.get(f'/api/admin/v1/stores')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token_hilda_verified)
+        response = self.client.get(f'/api/admin/v1/stores')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.store_manager_token)
+        response = self.client.get(f'/api/admin/v1/stores')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get(f'/api/admin/v1/stores')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_all_stores_amount_as_admin(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get(f'/api/admin/v1/stores')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = json.loads(response.content.decode('utf-8'))
+        self.assertIsInstance(response_data, list)
+        expected_object_count = Store.objects.count()
+        self.assertEqual(len(response_data), expected_object_count)
+
+    def test_all_stores_as_admin_response_payload_format(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get(f'/api/admin/v1/stores')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = json.loads(response.content.decode('utf-8'))
+        for item in response_data:
+            self.assertTrue(isinstance(item.get("id"), int))
+            self.assertTrue(isinstance(item.get("region"), str))
+            self.assertTrue(isinstance(item.get("address"), str))
+            self.assertTrue(isinstance(item.get("phone_number"), str))
+            self.assertTrue(isinstance(item.get("email"), str))
+            self.assertTrue(isinstance(item.get("name"), str))
+            self.assertTrue(isinstance(item.get("prep_time"), str))
+            self.assertTrue(isinstance(item.get("mon_opened"), bool))
+            self.assertTrue(isinstance(item.get("mon_open"), str))
+            self.assertTrue(isinstance(item.get("mon_close"), str))
+            self.assertTrue(isinstance(item.get("tue_opened"), bool))
+            self.assertTrue(isinstance(item.get("tue_open"), str))
+            self.assertTrue(isinstance(item.get("tue_close"), str))
+            self.assertTrue(isinstance(item.get("wed_opened"), bool))
+            self.assertTrue(isinstance(item.get("wed_open"), str))
+            self.assertTrue(isinstance(item.get("wed_close"), str))
+            self.assertTrue(isinstance(item.get("thu_opened"), bool))
+            self.assertTrue(isinstance(item.get("thu_open"), str))
+            self.assertTrue(isinstance(item.get("thu_close"), str))
+            self.assertTrue(isinstance(item.get("fri_opened"), bool))
+            self.assertTrue(isinstance(item.get("fri_open"), str))
+            self.assertTrue(isinstance(item.get("fri_close"), str))
+            self.assertTrue(isinstance(item.get("sat_opened"), bool))
+            self.assertTrue(isinstance(item.get("sat_open"), str))
+            self.assertTrue(isinstance(item.get("sat_close"), str))
+            self.assertTrue(isinstance(item.get("sun_opened"), bool))
+            self.assertTrue(isinstance(item.get("sun_open"), str))
+            self.assertTrue(isinstance(item.get("sun_close"), str))
+            self.assertTrue(isinstance(item.get("store_flag"), int))
+
+    def test_all_stores_as_admin_response_payload(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get(f'/api/admin/v1/stores')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = json.loads(response.content.decode('utf-8'))
+        for item in response_data:
+            store = Store.objects.get(pk=item.get("id"))
+            self.assertEqual(item.get("id"), store.id)
+            self.assertEqual(item.get("region"), store.region)
+            self.assertEqual(item.get("address"), store.address)
+            self.assertEqual(item.get("phone_number"), store.phone_number)
+            self.assertEqual(item.get("email"), store.email)
+            self.assertEqual(item.get("name"), store.name)
+            self.assertEqual(item.get("prep_time"), str(store.prep_time))
+            self.assertEqual(item.get("mon_opened"), store.mon_opened)
+            self.assertEqual(item.get("mon_open"), str(store.mon_open))
+            self.assertEqual(item.get("mon_close"), str(store.mon_close))
+            self.assertEqual(item.get("tue_opened"), store.tue_opened)
+            self.assertEqual(item.get("tue_open"), str(store.tue_open))
+            self.assertEqual(item.get("tue_close"), str(store.tue_close))
+            self.assertEqual(item.get("wed_opened"), store.wed_opened)
+            self.assertEqual(item.get("wed_open"), str(store.wed_open))
+            self.assertEqual(item.get("wed_close"), str(store.wed_close))
+            self.assertEqual(item.get("thu_opened"), store.thu_opened)
+            self.assertEqual(item.get("thu_open"), str(store.thu_open))
+            self.assertEqual(item.get("thu_close"), str(store.thu_close))
+            self.assertEqual(item.get("fri_opened"), store.fri_opened)
+            self.assertEqual(item.get("fri_open"), str(store.fri_open))
+            self.assertEqual(item.get("fri_close"), str(store.fri_close))
+            self.assertEqual(item.get("sat_opened"), store.sat_opened)
+            self.assertEqual(item.get("sat_open"), str(store.sat_open))
+            self.assertEqual(item.get("sat_close"), str(store.sat_close))
+            self.assertEqual(item.get("sun_opened"), store.sun_opened)
+            self.assertEqual(item.get("sun_open"), str(store.sun_open))
+            self.assertEqual(item.get("sun_close"), str(store.sun_close))
+            self.assertEqual(item.get("store_flag"), store.store_flag.pk)
+
+class Test_retrieve_store_as_admin(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.store = initialize_store(store_data_store1)
+        self.bike1 = initialize_bike_of_store(self.store, bike_data_bike1)
+        self.bike2 = initialize_bike_of_store(self.store, bike_data_bike2)
+        self.bike3 = initialize_bike_of_store(self.store, bike_data_bike3)
+        self.wildegard, self.token_wildegard = initialize_user_with_token(
+            self.client, user_data_wildegard, login_data_wildegard
+        )
+        self.hilda_verified, self.token_hilda_verified = initialize_user_with_token(
+            self.client, user_data_hilda, login_data_hilda
+        )
+        add_verified_flag_to_user(self.hilda_verified)
+        self.store_manager, self.store_manager_token = initialize_user_with_token(
+            self.client, user_data_store_manager, login_data_store_manager
+        )
+        add_verified_flag_to_user(self.store_manager)
+        add_store_manager_flag_to_user(self.store_manager, self.store)
+        self.caro, self.caro_token = initialize_user_with_token(
+            self.client, user_data_caro, login_data_caro
+        )
+        add_verified_flag_to_user(self.caro)
+        add_admin_flag_to_user(self.caro)
+
+    def tearDown(self):
+        for bike in Bike.objects.all():
+            os.remove(os.path.join(BASE_DIR, 'media/', str(bike.image)))
+        super().tearDown()
+
+    def test_retrieve_store_as_admin_various_user_authentication(self):
+        response = self.client.get(f'/api/admin/v1/stores/{self.store.pk}')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token_wildegard)
+        response = self.client.get(f'/api/admin/v1/stores/{self.store.pk}')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token_hilda_verified)
+        response = self.client.get(f'/api/admin/v1/stores/{self.store.pk}')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.store_manager_token)
+        response = self.client.get(f'/api/admin/v1/stores/{self.store.pk}')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get(f'/api/admin/v1/stores/{self.store.pk}')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_retrieve_store_as_admin_store_id_in_uri_incorrect(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get(f'/api/admin/v1/stores/-1')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get(f'/api/admin/v1/stores/0xf69F')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get(f'/api/admin/v1/stores/ ')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_retrieve_store_as_admin_response_payload_format(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get(f'/api/admin/v1/stores/{self.store.pk}')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = json.loads(response.content.decode('utf-8'))
+        self.assertTrue(isinstance(response_data.get("id"), int))
+        self.assertTrue(isinstance(response_data.get("region"), str))
+        self.assertTrue(isinstance(response_data.get("address"), str))
+        self.assertTrue(isinstance(response_data.get("phone_number"), str))
+        self.assertTrue(isinstance(response_data.get("email"), str))
+        self.assertTrue(isinstance(response_data.get("name"), str))
+        self.assertTrue(isinstance(response_data.get("prep_time"), str))
+        self.assertTrue(isinstance(response_data.get("mon_opened"), bool))
+        self.assertTrue(isinstance(response_data.get("mon_open"), str))
+        self.assertTrue(isinstance(response_data.get("mon_close"), str))
+        self.assertTrue(isinstance(response_data.get("tue_opened"), bool))
+        self.assertTrue(isinstance(response_data.get("tue_open"), str))
+        self.assertTrue(isinstance(response_data.get("tue_close"), str))
+        self.assertTrue(isinstance(response_data.get("wed_opened"), bool))
+        self.assertTrue(isinstance(response_data.get("wed_open"), str))
+        self.assertTrue(isinstance(response_data.get("wed_close"), str))
+        self.assertTrue(isinstance(response_data.get("thu_opened"), bool))
+        self.assertTrue(isinstance(response_data.get("thu_open"), str))
+        self.assertTrue(isinstance(response_data.get("thu_close"), str))
+        self.assertTrue(isinstance(response_data.get("fri_opened"), bool))
+        self.assertTrue(isinstance(response_data.get("fri_open"), str))
+        self.assertTrue(isinstance(response_data.get("fri_close"), str))
+        self.assertTrue(isinstance(response_data.get("sat_opened"), bool))
+        self.assertTrue(isinstance(response_data.get("sat_open"), str))
+        self.assertTrue(isinstance(response_data.get("sat_close"), str))
+        self.assertTrue(isinstance(response_data.get("sun_opened"), bool))
+        self.assertTrue(isinstance(response_data.get("sun_open"), str))
+        self.assertTrue(isinstance(response_data.get("sun_close"), str))
+        self.assertTrue(isinstance(response_data.get("store_flag"), int))
+
+    def test_retrieve_store_as_admin_response_payload(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get(f'/api/admin/v1/stores/{self.store.pk}')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = json.loads(response.content.decode('utf-8'))
+        store = Store.objects.get(pk=response_data.get("id"))
+        self.assertEqual(response_data.get("id"), store.id)
+        self.assertEqual(response_data.get("region"), store.region)
+        self.assertEqual(response_data.get("address"), store.address)
+        self.assertEqual(response_data.get("phone_number"), store.phone_number)
+        self.assertEqual(response_data.get("email"), store.email)
+        self.assertEqual(response_data.get("name"), store.name)
+        self.assertEqual(response_data.get("prep_time"), str(store.prep_time))
+        self.assertEqual(response_data.get("mon_opened"), store.mon_opened)
+        self.assertEqual(response_data.get("mon_open"), str(store.mon_open))
+        self.assertEqual(response_data.get("mon_close"), str(store.mon_close))
+        self.assertEqual(response_data.get("tue_opened"), store.tue_opened)
+        self.assertEqual(response_data.get("tue_open"), str(store.tue_open))
+        self.assertEqual(response_data.get("tue_close"), str(store.tue_close))
+        self.assertEqual(response_data.get("wed_opened"), store.wed_opened)
+        self.assertEqual(response_data.get("wed_open"), str(store.wed_open))
+        self.assertEqual(response_data.get("wed_close"), str(store.wed_close))
+        self.assertEqual(response_data.get("thu_opened"), store.thu_opened)
+        self.assertEqual(response_data.get("thu_open"), str(store.thu_open))
+        self.assertEqual(response_data.get("thu_close"), str(store.thu_close))
+        self.assertEqual(response_data.get("fri_opened"), store.fri_opened)
+        self.assertEqual(response_data.get("fri_open"), str(store.fri_open))
+        self.assertEqual(response_data.get("fri_close"), str(store.fri_close))
+        self.assertEqual(response_data.get("sat_opened"), store.sat_opened)
+        self.assertEqual(response_data.get("sat_open"), str(store.sat_open))
+        self.assertEqual(response_data.get("sat_close"), str(store.sat_close))
+        self.assertEqual(response_data.get("sun_opened"), store.sun_opened)
+        self.assertEqual(response_data.get("sun_open"), str(store.sun_open))
+        self.assertEqual(response_data.get("sun_close"), str(store.sun_close))
+        self.assertEqual(response_data.get("store_flag"), store.store_flag.pk)
+
+
+class Test_retrieve_availabilities_of_store_as_admin(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.store = initialize_store(store_data_store1)
+        self.bike1 = initialize_bike_of_store(self.store, bike_data_bike1)
+        self.bike2 = initialize_bike_of_store(self.store, bike_data_bike2)
+        self.bike3 = initialize_bike_of_store(self.store, bike_data_bike3)
+        self.wildegard, self.token_wildegard = initialize_user_with_token(
+            self.client, user_data_wildegard, login_data_wildegard
+        )
+        self.hilda_verified, self.token_hilda_verified = initialize_user_with_token(
+            self.client, user_data_hilda, login_data_hilda
+        )
+        add_verified_flag_to_user(self.hilda_verified)
+        self.store_manager, self.store_manager_token = initialize_user_with_token(
+            self.client, user_data_store_manager, login_data_store_manager
+        )
+        add_verified_flag_to_user(self.store_manager)
+        add_store_manager_flag_to_user(self.store_manager, self.store)
+        self.caro, self.caro_token = initialize_user_with_token(
+            self.client, user_data_caro, login_data_caro
+        )
+        add_verified_flag_to_user(self.caro)
+        add_admin_flag_to_user(self.caro)
+
+    def tearDown(self):
+        for bike in Bike.objects.all():
+            os.remove(os.path.join(BASE_DIR, 'media/', str(bike.image)))
+        super().tearDown()
+
+    def test_retrieve_availabilities_of_store_as_admin_various_user_authentication(self):
+        response = self.client.get(f'/api/admin/v1/stores/{self.store.pk}/availability')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token_wildegard)
+        response = self.client.get(f'/api/admin/v1/stores/{self.store.pk}/availability')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token_hilda_verified)
+        response = self.client.get(f'/api/admin/v1/stores/{self.store.pk}/availability')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.store_manager_token)
+        response = self.client.get(f'/api/admin/v1/stores/{self.store.pk}/availability')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get(f'/api/admin/v1/stores/{self.store.pk}/availability')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_retrieve_availabilities_of_store_amount_as_admin(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        initialize_booking_of_bike_with_flag(self.caro, self.bike1, 'Booked', '2100-01-04', '2100-01-11')
+        response = self.client.get(f'/api/admin/v1/stores/{self.store.pk}/availability')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = json.loads(response.content.decode('utf-8'))
+        self.assertIsInstance(response_data, list)
+        expected_object_count = Availability.objects.filter(bike__store=self.store).count()
+        self.assertEqual(len(response_data), expected_object_count)
+
+    def test_retrieve_availabilities_of_store_as_admin_response_payload_format(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        initialize_booking_of_bike_with_flag(self.caro, self.bike1, 'Booked', '2100-01-04', '2100-01-11')
+        response = self.client.get(f'/api/admin/v1/stores/{self.store.pk}/availability')
+        response_data = json.loads(response.content.decode('utf-8'))
+        for item in response_data:
+            self.assertTrue(isinstance(item.get("id"), int))
+            self.assertTrue(isinstance(item.get("from_date"), str))
+            self.assertTrue(isinstance(item.get("until_date"), str))
+            self.assertTrue(isinstance(item.get("store"), int))
+            self.assertTrue(isinstance(item.get("bike"), int))
+            availability_status = item.get("availability_status", [])
+            for status in availability_status:
+                self.assertTrue(isinstance(status.get("availability_status"), str))
+
+    def test_retrieve_availabilities_of_store_as_admin_response_payload(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.get(f'/api/admin/v1/stores/{self.store.pk}/availability')
+        response_data = json.loads(response.content.decode('utf-8'))
+        for item in response_data:
+            availability = Availability.objects.get(pk=item.get("id"))
+            self.assertEqual(item.get("id"), availability.pk)
+            self.assertEqual(datetime.strptime(item.get("from_date"), "%Y-%m-%d").date(), availability.from_date)
+            self.assertEqual(datetime.strptime(item.get("until_date"), "%Y-%m-%d").date(), availability.until_date)
+            self.assertEqual(item.get("store"), availability.store.pk)
+            self.assertEqual(item.get("bike"), availability.bike.pk)
+            availability_status = item.get("availability_status", [])
+            availability_strings = [value.get("availability_status") for value in availability_status]
+            for value in availability_status:
+                self.assertIn(value.get("availability_status"), availability_strings)

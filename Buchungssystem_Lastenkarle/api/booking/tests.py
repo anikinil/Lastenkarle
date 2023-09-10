@@ -447,8 +447,8 @@ class Test_store_by_bike(TestCase):
     def test_store_of_bike_response(self):
         response = self.client.get(f'/api/booking/v1/bikes/{self.bike1.pk}/store')
         response_data = json.loads(response.content.decode('utf-8'))
-        self.assertEqual(response_data, {**store_data_store1, **{"id":self.store1.pk}})
-        self.assertNotEqual(response_data, {**store_data_store2, **{"id":self.store2.pk}})
+        self.assertEqual(response_data, {**store_data_store1, **{"id": self.store1.pk}})
+        self.assertNotEqual(response_data, {**store_data_store2, **{"id": self.store2.pk}})
 
     def test_bike_id_in_uri_incorrect(self):
         response = self.client.get('/api/booking/v1/bikes/-1/store')

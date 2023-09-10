@@ -117,6 +117,9 @@ class RegistrationSerializer(serializers.ModelSerializer):
         password = attrs.get('password', None)
         if password is None:
             raise serializers.ValidationError('Password required.')
+        year_of_birth = attrs.get('year_of_birth', None)
+        if year_of_birth is not None and year_of_birth < datetime.now().year - 122:
+            raise serializers.ValidationError('You are definitely not older than Jeanne Calment.')
         return attrs
 
     def create(self, validated_data):

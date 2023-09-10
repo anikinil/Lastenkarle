@@ -85,7 +85,7 @@ class AllBookingsOfUser(APIView):
         except ObjectDoesNotExist:
             raise Http404
         fields_to_include = ['preferred_username', 'assurance_lvl', 'bike', 'begin', 'end',
-                             'comment', 'booking_status', 'equipment']
+                             'comment', 'booking_status', 'equipment', 'id']
         serializer = BookingSerializer(bookings, fields=fields_to_include, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -312,7 +312,6 @@ class SelectedStore(APIView):
         except ObjectDoesNotExist:
             raise Http404
         serializer = StoreSerializer(store, many=False)
-        serializer.exclude_fields(['store_flag'])
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
