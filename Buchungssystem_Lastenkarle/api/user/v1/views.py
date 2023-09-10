@@ -136,7 +136,7 @@ class BookingFromUser(APIView):
 
     def get(self, request, booking_id):
         try:
-            booking = Booking.objects.get(pk=booking_id)
+            booking = Booking.objects.get(pk=booking_id, user=request.user)
         except ObjectDoesNotExist:
             raise Http404
         fields_to_include = ['id', 'bike', 'begin', 'end', 'booking_status', 'equipment']
@@ -145,7 +145,7 @@ class BookingFromUser(APIView):
 
     def post(self, request, booking_id):
         try:
-            booking = Booking.objects.get(pk=booking_id)
+            booking = Booking.objects.get(pk=booking_id, user=request.user)
         except ObjectDoesNotExist:
             raise Http404
         booking.booking_status.clear()
@@ -163,7 +163,7 @@ class BookedBike(APIView):
 
     def get(self, request, booking_id):
         try:
-            booking = Booking.objects.get(pk=booking_id)
+            booking = Booking.objects.get(pk=booking_id, user=request.user)
         except ObjectDoesNotExist:
             raise Http404
         serializer = BikeSerializer(booking.bike, many=False)
@@ -176,7 +176,7 @@ class StoreOfBookedBike(APIView):
 
     def get(self, request, booking_id):
         try:
-            booking = Booking.objects.get(pk=booking_id)
+            booking = Booking.objects.get(pk=booking_id, user=request.user)
         except ObjectDoesNotExist:
             raise Http404
         serializer = StoreSerializer(booking.bike.store, many=False)
@@ -201,6 +201,11 @@ class DeleteUserAccount(DestroyAPIView):
 
     def delete(self, request, *args, **kwargs):
         user = self.request.user
+        if Booking.objects.filter(user=user, booking_status=Booking_Status.objects.get(booking_status='Picked up')).exists():
+            raise serializers.ValidationError('Account deletion not possible whilst having picked up a bike.')
+        if user.user_status.contains(User_Status.objects.get(user_status='Administrator')) and \
+                User.objects.filter(user_status__user_status='Administrator').count() == 1:
+            raise serializers.ValidationError('Account deletion not possible as only administrator.')
         if LocalData.objects.filter(user=user).exists():
             LocalData.objects.get(user=user).anonymize().save()
         bookings = Booking.objects.filter(user=user, booking_status=Booking_Status.objects.get(booking_status='Booked'))

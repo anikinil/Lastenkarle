@@ -7,6 +7,7 @@ from rest_framework import status
 from knox.auth import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django.http import Http404
+import logging
 
 from api.algorithm import *
 from api.permissions import *
@@ -33,10 +34,17 @@ class AllUserFlags(APIView):
             user_flag = User_Status.objects.get(user_status=user_flag)
         except ObjectDoesNotExist:
             raise Http404
+        invalid_flags = ['Verified', 'Deleted', 'Reminded', 'Banned', 'Customer']
+        if user_flag.user_status in invalid_flags:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        if user.user_status.contains(user_flag):
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        if user_flag.user_status.startswith('Store:') and user.is_staff_of_store() is not None:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
         user.user_status.add(user_flag.pk)
-        if user_flag.user_status.startswith("Store:"):
+        if user_flag.user_status.startswith('Store:'):
             user.is_staff = True
-            user.save()
+        user.save()
         return Response(status=status.HTTP_200_OK)
 
 
@@ -46,7 +54,7 @@ class AllUsers(APIView):
 
     def get(self, request):
         users = User.objects.all()
-        fields_to_include = ['user_status', 'assurance_lvl', 'year_of_birth',
+        fields_to_include = ['id', 'user_status', 'assurance_lvl', 'year_of_birth',
                              'contact_data', 'username', 'preferred_username']
         serializer = UserSerializer(users, fields=fields_to_include, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -89,7 +97,7 @@ class AllBookings(APIView):
     def get(self, request):
         bookings = Booking.objects.all()
         fields_to_include = ['preferred_username', 'assurance_lvl', 'bike', 'begin', 'end',
-                             'comment', 'booking_status', 'equipment']
+                             'comment', 'booking_status', 'equipment', 'id']
         serializer = BookingSerializer(bookings, fields=fields_to_include, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -132,20 +140,35 @@ class AddBike(APIView):
             store = Store.objects.get(pk=store_id)
         except ObjectDoesNotExist:
             raise Http404
-        bike = Bike.create_bike(store, **request.data)
-        Availability.create_availability(store, bike)
-        serializer = BikeSerializer(bike, many=False)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        data = {key: value[0] if isinstance(value, list) and len(value) == 1 else value for key, value in request.data.items()}
+        data = {**data, **{'store': store.pk}}
+        serializer = BikeSerializer(data=data)
+        if serializer.is_valid():
+            bike = serializer.save()
+            Availability.create_availability(store, bike)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class DeleteBike(DestroyAPIView):
-    queryset = Bike.objects.all()
-    serializer_class = BikeSerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated & IsSuperUser & IsVerfied]
 
-    def perform_destroy(self, instance):
-        instance.delete()
+    def delete(self, request, bike_id, *args, **kwargs):
+        try:
+            bike = Bike.objects.get(pk=bike_id)
+        except ObjectDoesNotExist:
+            raise Http404
+        if Booking.objects.filter(bike=bike, booking_status__booking_status='Picked up').exists():
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        for booking in Booking.objects.filter(bike=bike, booking_status__booking_status='Booked'):
+            booking.booking_status.clear()
+            booking.booking_status.set(Booking_Status.objects.filter(booking_status='Cancelled'))
+            send_cancellation_through_store_confirmation(booking)
+            booking.string = None
+            booking.save()
+        bike.delete()
+        return Response(status=status.HTTP_200_OK)
 
 
 class AllBikes(APIView):
@@ -249,13 +272,24 @@ class AddStore(APIView):
 
 
 class DeleteStore(DestroyAPIView):
-    queryset = Store.objects.all()
-    serializer_class = StoreSerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated & IsSuperUser & IsVerfied]
 
-    def perform_destroy(self, instance):
-        instance.delete()
+    def delete(self, request, store_id, *args, **kwargs):
+        try:
+            store = Store.objects.get(pk=store_id)
+        except ObjectDoesNotExist:
+            raise Http404
+        if Booking.objects.filter(bike__store=store, booking_status__booking_status='Picked up').exists():
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        for booking in Booking.objects.filter(bike__store=store, booking_status__booking_status='Booked'):
+            booking.booking_status.clear()
+            booking.booking_status.set(Booking_Status.objects.filter(booking_status='Cancelled'))
+            send_cancellation_through_store_confirmation(booking)
+            booking.string = None
+            booking.save()
+        store.delete()
+        return Response(status=status.HTTP_200_OK)
 
 
 class AllStores(APIView):
@@ -321,8 +355,10 @@ class BanUser(APIView):
             user = User.objects.get(contact_data=contact_data)
         except ObjectDoesNotExist:
             raise Http404
-        user_status_banned = User_Status.objects.get(user_status='Banned')
-        user.user_status.add(user_status_banned)
+        banned = User_Status.objects.get(user_status='Banned')
+        if user.user_status.contains(banned):
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        user.user_status.add(banned)
         user.is_active = False
         user.save()
         send_banned_mail_to_user(user)
