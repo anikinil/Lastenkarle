@@ -3,7 +3,7 @@ from knox.models import AuthToken
 from knox.auth import TokenAuthentication
 from rest_framework.test import APIRequestFactory
 from db_model.models import User_Status, User, Equipment, Availability_Status, Booking_Status, Booking, Store, Bike, \
-    Availability
+    Availability, UserManager
 from api.user.v1.views import RegistrateUser
 from rest_framework import status
 from django.core import mail
@@ -86,6 +86,9 @@ class RegistrateUserTest(TestCase):
         self.user_data = user_data
         self.registrate_url = '/api/user/v1/register'
 
+    def tearDown(self):
+        User.objects.all().delete()
+
     def test_valid_user_registration(self):
         request = self.factory.post(self.registrate_url, self.user_data, format='json')
         response = RegistrateUser.as_view()(request)
@@ -102,7 +105,7 @@ class RegistrateUserTest(TestCase):
         first_message = mail.outbox[0]
         subject = "Dein Account bei Lastenkarle: Bitte bestätige deine E-Mail"
         self.assertEqual(first_message.subject, subject)
-        registration_link = CANONICAL_HOST + "email-verification/" + str(user.pk) + "/" + user.verification_string
+        registration_link = CANONICAL_HOST + "/email-verification/" + str(user.pk) + "/" + user.verification_string
         html_message = render_to_string("email_templates/UserRegisteredConfirmation.html",
                                         {'username': user.preferred_username,
                                          'lastenkarle_logo_url': lastenkarle_logo_url,
@@ -188,6 +191,8 @@ class LoginTest(TestCase):
         self.token, _ = AuthToken.objects.create(self.user)
         self.login_url = '/api/user/v1/login'
 
+    def tearDown(self):
+        User.objects.all().delete()
     def test_login_valid_user(self):
         response = self.client.post(self.login_url, self.login_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -304,6 +309,9 @@ class LogoutTest(TestCase):
         self.token = response_data.get('token', None)
         self.logout_url = "/api/user/v1/logout"
 
+    def tearDown(self):
+        User.objects.all().delete()
+
     def test_logout_with_valid_token(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
         response = self.client.post(self.logout_url)
@@ -346,6 +354,10 @@ class LogoutAllTest(TestCase):
             token = response_data.get('token', None)
             self.tokens.append(token)
         self.logout_all_url = "/api/user/v1/logout-all"
+
+    def tearDown(self):
+        User.objects.all().delete()
+
 
     def test_logout_all_sessions_with_valid_tokens(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.tokens[0])
@@ -391,6 +403,10 @@ class GetUserDataTest(TestCase):
         self.token = response_data.get('token', None)
         self.get_user_data_url = "/api/user/v1/user/data"
 
+    def tearDown(self):
+        User.objects.all().delete()
+
+
     def test_get_user_data_valid(self):
         # set token
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
@@ -433,6 +449,10 @@ class UpdateUserDataTest(TestCase):
         response_data = json.loads(response.content.decode('utf-8'))
         self.token = response_data.get('token', None)
         self.update_user_data_url = "/api/user/v1/user/update"
+
+    def tearDown(self):
+        User.objects.all().delete()
+
 
     def test_update_user_data_with_valid_data(self):
         changed_user_data = {
@@ -601,6 +621,12 @@ class DeleteAccountTest(TestCase):
         self.user = User.objects.get(username=user_data['username'])
         self.delete_account_url = "/api/user/v1/user/delete-account"
 
+    def tearDown(self):
+        User.objects.all().delete()
+        Store.objects.all().delete()
+        Bike.objects.all().delete()
+        Booking.objects.all().delete()
+
     def test_delete_account_valid(self):
         user_id = self.user.pk
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
@@ -635,11 +661,22 @@ class DeleteAccountTest(TestCase):
         response = self.client.delete(self.delete_account_url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-    def test_register_again_after_deleting(self):
+    def test_register_again_after_deleting_without_verification(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
         self.client.delete(self.delete_account_url)
+        self.client.credentials()
         response = self.client.post("/api/user/v1/register", self.user_data)
-        # weiter
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_register_again_after_deleting_with_verification(self):
+        user_id = self.user.pk
+        # verify user
+        response = self.client.post('/api/user/v1/' + str(self.user.pk) + '/' + str(self.user.verification_string))
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+        self.client.delete(self.delete_account_url)
+        self.client.credentials()
+        response = self.client.post("/api/user/v1/register", self.user_data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_delete_account_with_inactive_booking(self):
         user_id = self.user.pk
@@ -693,18 +730,20 @@ class DeleteAccountTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         deleted_user = User.objects.get(pk=user_id)
         bookings_after_delete = Booking.objects.filter(user_id=deleted_user.pk)
-        reordered_bookings =[bookings_after_delete[2], bookings_after_delete[0], bookings_after_delete[1]]
+        reordered_bookings = [bookings_after_delete[2], bookings_after_delete[0], bookings_after_delete[1]]
         # check if booking of deleted user is cancelled
-        self.assertEqual(reordered_bookings[0].booking_status.all().first().booking_status, Booking_Status.objects.get(booking_status='Cancelled').booking_status)
-        self.assertEqual(reordered_bookings[1].booking_status.all().first().booking_status, Booking_Status.objects.get(booking_status='Returned').booking_status)
-        self.assertEqual(reordered_bookings[2].booking_status.all().first().booking_status, Booking_Status.objects.get(booking_status='Cancelled').booking_status)
+        self.assertEqual(reordered_bookings[0].booking_status.all().first().booking_status,
+                         Booking_Status.objects.get(booking_status='Cancelled').booking_status)
+        self.assertEqual(reordered_bookings[1].booking_status.all().first().booking_status,
+                         Booking_Status.objects.get(booking_status='Returned').booking_status)
+        self.assertEqual(reordered_bookings[2].booking_status.all().first().booking_status,
+                         Booking_Status.objects.get(booking_status='Cancelled').booking_status)
         self.assertTrue(reordered_bookings[0].pk < reordered_bookings[1].pk)
         self.assertTrue(reordered_bookings[1].pk < reordered_bookings[2].pk)
 
     def test_delete_account_with_active_booking(self):
-        user_id = self.user.pk
         # verify user to make booking
-        response = self.client.post('/api/user/v1/' + str(self.user.pk) + '/' + str(self.user.verification_string))
+        self.client.post('/api/user/v1/' + str(self.user.pk) + '/' + str(self.user.verification_string))
         store_data = {
             'name': 'Store1',
             'address': 'Storestr. 1',
@@ -734,5 +773,303 @@ class DeleteAccountTest(TestCase):
         bookings[0].booking_status.add(Booking_Status.objects.get(booking_status='Picked up'))
         response = self.client.delete(self.delete_account_url)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        response_data = json.loads(response.content.decode('utf-8'))
+        expected_json = {
+            'detail': 'Account deletion not possible whilst having picked up a bike.'
+        }
+        self.assertEqual(response_data, expected_json)
 
+    def test_delete_the_only_admin(self):
+        admin_login_data = {
+            'username': 'Caro',
+            'password': 'password'
+        }
+        self.admin = User.objects.create_superuser(username="Caro", password="password",
+                                                   contact_data="pse_email@gmx.de")
+        admin_status = User_Status.objects.get(user_status="Administrator")
+        users_with_admin_status = User.objects.filter(user_status=admin_status)
+        self.assertEqual(len(users_with_admin_status), 1)
+        response = self.client.post("/api/user/v1/login", admin_login_data)
+        response_data = json.loads(response.content.decode('utf-8'))
+        self.admin_token = response_data.get('token', None)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.admin_token)
+        response = self.client.delete(self.delete_account_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = json.loads(response.content.decode('utf-8'))
+        expected_json = {
+            'detail': 'Account deletion not possible as only administrator.'
+        }
+        self.assertEqual(response_data, expected_json)
+
+
+class GetAllBookingsOfUserTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user_data = user_data
+        self.login_data = login_data
+        # register user
+        self.client.post("/api/user/v1/register", self.user_data)
+        # login user
+        response = self.client.post("/api/user/v1/login", self.login_data)
+        response_data = json.loads(response.content.decode('utf-8'))
+        self.token = response_data.get('token', None)
+        self.user = User.objects.get(username=user_data['username'])
+        self.get_all_bookings_of_user_url = '/api/user/v1/user/bookings'
+
+    def tearDown(self):
+        User.objects.all().delete()
+        Store.objects.all().delete()
+        Bike.objects.all().delete()
+        Booking.objects.all().delete()
+
+    def test_get_all_bookings_of_user_unverified(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+        response = self.client.get(self.get_all_bookings_of_user_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = json.loads(response.content.decode('utf-8'))
+        empty_set = []
+        self.assertEqual(response_data, empty_set)
+
+    def test_get_all_bookings_of_verified_user_without_bookings(self):
+        # verify user
+        response = self.client.post('/api/user/v1/' + str(self.user.pk) + '/' + str(self.user.verification_string))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+        response = self.client.get(self.get_all_bookings_of_user_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = json.loads(response.content.decode('utf-8'))
+        empty_set = []
+        self.assertEqual(response_data, empty_set)
+
+    def test_get_all_bookings_of_user_with_made_bookings(self):
+        # verify user
+        response = self.client.post('/api/user/v1/' + str(self.user.pk) + '/' + str(self.user.verification_string))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+        user_id = self.user.pk
+        # create store
+        store_data = {
+            'name': 'Store1',
+            'address': 'Storestr. 1',
+            'email': 'pse_email@gmx.de',
+            'region': 'KA',
+            'phone_number': '012345'
+        }
+        store = Store.objects.create(**store_data)
+        store_flag = User_Status.custom_create_store_flags(store)
+        store.store_flag = store_flag
+        store.save()
+        # create bike
+        bike_data = {
+            'name': 'Bike1',
+            'description': 'Es ist schnell'
+        }
+        bike = Bike.create_bike(store, **bike_data)
+        booking_data = {
+            "begin": "2023-10-02",
+            "end": "2023-10-03",
+            "equipment": []
+        }
+        booking_data_2 = {
+            "begin": "2023-10-04",
+            "end": "2023-10-05",
+            "equipment": ["Tarp", "Charger"]
+        }
+        booking_data_3 = {
+            "begin": "2023-10-09",
+            "end": "2023-10-10",
+            "equipment": []
+        }
+        booking_data_4 ={
+            "begin": "2023-10-11",
+            "end": "2023-10-12",
+            "equipment": []
+        }
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+        # make booking
+        self.client.post('/api/booking/v1/bikes/' + str(bike.pk) + '/booking', booking_data, format='json')
+        self.client.post('/api/booking/v1/bikes/' + str(bike.pk) + '/booking', booking_data_2, format='json')
+        self.client.post('/api/booking/v1/bikes/' + str(bike.pk) + '/booking', booking_data_3, format='json')
+        self.client.post('/api/booking/v1/bikes/' + str(bike.pk) + '/booking', booking_data_4, format='json')
+        bookings = Booking.objects.filter(user=self.user)
+        bookings[1].booking_status.clear()
+        bookings[1].booking_status.add(Booking_Status.objects.get(booking_status='Returned'))
+        bookings[1].save()
+        bookings[2].booking_status.clear()
+        bookings[2].booking_status.add(Booking_Status.objects.get(booking_status='Cancelled'))
+        bookings[2].save()
+        bookings[3].booking_status.clear()
+        bookings[3].booking_status.add(Booking_Status.objects.get(booking_status='Picked up'))
+        bookings[3].save()
+
+        response = self.client.get(self.get_all_bookings_of_user_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = json.loads(response.content.decode('utf-8'))
+        empty_set = []
+        # check if booking 1 is correct
+        self.assertEqual(response_data[0]['id'], bookings[0].pk)
+        self.assertEqual(response_data[0]['booking_status'][0]['booking_status'], Booking_Status.objects.get(booking_status='Booked').booking_status)
+        self.assertEqual(response_data[0]['equipment'], empty_set)
+        self.assertEqual(response_data[0]['begin'], booking_data["begin"])
+        self.assertEqual(response_data[0]['end'], booking_data["end"])
+        self.assertEqual(response_data[0]['begin'], booking_data["begin"])
+        self.assertEqual(response_data[0]['bike'], bike.pk)
+
+        # check if booking 2 is correct
+        equipment_list = [{
+            'id': Equipment.objects.get(equipment='Tarp').pk,
+            'equipment': Equipment.objects.get(equipment='Tarp').equipment
+        }, {
+            'id': Equipment.objects.get(equipment='Charger').pk,
+            'equipment': Equipment.objects.get(equipment='Charger').equipment
+        }]
+        self.assertEqual(response_data[1]['id'], bookings[1].pk)
+        self.assertEqual(response_data[1]['booking_status'][0]['booking_status'], Booking_Status.objects.get(booking_status='Returned').booking_status)
+        self.assertEqual(response_data[1]['equipment'], equipment_list)
+        self.assertEqual(response_data[1]['begin'], booking_data_2["begin"])
+        self.assertEqual(response_data[1]['end'], booking_data_2["end"])
+        self.assertEqual(response_data[1]['begin'], booking_data_2["begin"])
+        self.assertEqual(response_data[1]['bike'], bike.pk)
+
+        # check booking 3
+        self.assertEqual(response_data[2]['id'], bookings[2].pk)
+        self.assertEqual(response_data[2]['booking_status'][0]['booking_status'], Booking_Status.objects.get(booking_status='Cancelled').booking_status)
+        self.assertEqual(response_data[2]['equipment'], empty_set)
+        self.assertEqual(response_data[2]['begin'], booking_data_3["begin"])
+        self.assertEqual(response_data[2]['end'], booking_data_3["end"])
+        self.assertEqual(response_data[2]['begin'], booking_data_3["begin"])
+        self.assertEqual(response_data[2]['bike'], bike.pk)
+
+        # check booking 4
+        self.assertEqual(response_data[3]['id'], bookings[3].pk)
+        self.assertEqual(response_data[3]['booking_status'][0]['booking_status'], Booking_Status.objects.get(booking_status='Picked up').booking_status)
+        self.assertEqual(response_data[3]['equipment'], empty_set)
+        self.assertEqual(response_data[3]['begin'], booking_data_4["begin"])
+        self.assertEqual(response_data[3]['end'], booking_data_4["end"])
+        self.assertEqual(response_data[3]['begin'], booking_data_4["begin"])
+        self.assertEqual(response_data[3]['bike'], bike.pk)
+
+    def test_get_all_bookings_of_user_without_token(self):
+        self.client.credentials()
+        response = self.client.get(self.get_all_bookings_of_user_url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_get_all_bookings_of_user_with_wrong_token(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + 'invalid token')
+        response = self.client.get(self.get_all_bookings_of_user_url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+class BookingDataTest(TestCase):
+
+    def setUp(self):
+        self.client = APIClient()
+        self.user_data = user_data
+        self.login_data = login_data
+        # register user
+        self.client.post("/api/user/v1/register", self.user_data)
+        # login user
+        response = self.client.post("/api/user/v1/login", self.login_data)
+        response_data = json.loads(response.content.decode('utf-8'))
+        self.token = response_data.get('token', None)
+        self.user = User.objects.get(username=user_data['username'])
+        self.get_booking_data_url = '/api/user/v1/user/bookings/'
+        # verify user
+        self.client.post('/api/user/v1/' + str(self.user.pk) + '/' + str(self.user.verification_string))
+        self.store_data = {
+            'name': 'Store1',
+            'address': 'Storestr. 1',
+            'email': 'pse_email@gmx.de',
+            'region': 'KA',
+            'phone_number': '012345'
+        }
+        self.store = Store.objects.create(**self.store_data)
+        store_flag = User_Status.custom_create_store_flags(self.store)
+        self.store.store_flag = store_flag
+        self.store.save()
+        # create bike
+        self.bike_data = {
+            'name': 'Bike1',
+            'description': 'Es ist schnell'
+        }
+        self.bike = Bike.create_bike(self.store, **self.bike_data)
+
+        # make Booking
+        self.booking_data = {
+            "begin": "2023-10-02",
+            "end": "2023-10-03",
+            "equipment": ['Charger']
+        }
+    def tearDown(self):
+        User.objects.all().delete()
+        Store.objects.all().delete()
+        Bike.objects.all().delete()
+        Booking.objects.all().delete()
+
+    def test_get_booking_data_valid(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+        # make booking
+        self.client.post('/api/booking/v1/bikes/' + str(self.bike.pk) + '/booking', self.booking_data, format='json')
+        booking_id = Booking.objects.get(user=self.user).pk
+        # get Booking data
+        response = self.client.get('/api/user/v1/user/bookings/' + str(booking_id))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = response.json()
+        equipment_list = [{
+            'id': Equipment.objects.get(equipment='Charger').pk,
+            'equipment': Equipment.objects.get(equipment='Charger').equipment
+        }]
+        # check if booking data is correct
+        self.assertEqual(response_data['id'], booking_id)
+        self.assertEqual(response_data['booking_status'][0]['booking_status'], Booking_Status.objects.get(booking_status='Booked').booking_status)
+        self.assertEqual(response_data['equipment'], equipment_list)
+        self.assertEqual(response_data['begin'], self.booking_data['begin'])
+        self.assertEqual(response_data['end'], self.booking_data['end'])
+        self.assertEqual(response_data['bike'], self.bike.pk)
+    def test_get_booking_data_without_token(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+        # make booking
+        self.client.post('/api/booking/v1/bikes/' + str(self.bike.pk) + '/booking', self.booking_data, format='json')
+        booking_id = Booking.objects.get(user=self.user).pk
+        self.client.credentials()
+        # get booking data
+        response = self.client.get('/api/user/v1/user/bookings/' + str(booking_id))
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+    def test_get_booking_data_with_wrong_token(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+        self.client.post('/api/booking/v1/bikes/' + str(self.bike.pk) + '/booking', self.booking_data, format='json')
+        booking_id = Booking.objects.get(user=self.user).pk
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + 'invalid token')
+        response = self.client.get('/api/user/v1/user/bookings/' + str(booking_id))
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+    def test_get_booking_data_of_other_user(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+        # make booking
+        self.client.post('/api/booking/v1/bikes/' + str(self.bike.pk) + '/booking', self.booking_data, format='json')
+        booking_id = Booking.objects.get(user=self.user).pk
+        # create user 2
+        user_data_2 = {
+            'username': 'Wilderich',
+            'password': 'password',
+            'contact_data': 'the_voices_in_my_head@gmx.de',
+            'year_of_birth': '1901'
+        }
+        login_data_2 = {
+            'username': 'Wilderich',
+            'password': 'password',
+        }
+        # register user 2
+        self.client.post("/api/user/v1/register", user_data_2)
+        # login user 2
+        response = self.client.post("/api/user/v1/login", login_data_2)
+        response_data = json.loads(response.content.decode('utf-8'))
+        token_user_2 = response_data.get('token', None)
+        # try to get user1's booking data
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token_user_2)
+        response = self.client.get('/api/user/v1/user/bookings/' + str(booking_id))
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+
+
+    #def test_get_booking_data_with_invalid_id(self):
 
