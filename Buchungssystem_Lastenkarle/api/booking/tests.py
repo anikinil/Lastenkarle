@@ -5,6 +5,8 @@ from django.test import TestCase
 from knox.models import AuthToken
 from knox.auth import TokenAuthentication
 from rest_framework.test import APIRequestFactory
+
+from api.serializer import BikeSerializer
 from db_model.models import *
 from api.user.v1.views import RegistrateUser
 from rest_framework import status
@@ -23,7 +25,7 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 from django.contrib.auth import get_user_model
 
-image_path = '/media/test_image/image.jpg'
+image_path = os.path.join(BASE_DIR, 'media/test_image/', 'image.jpg')
 
 user_data_wildegard = {
     'username': 'Wildegard',
@@ -147,12 +149,12 @@ def initialize_store(store_data):
 
 
 def initialize_bike_of_store(store, bike_data):
-    image_path = os.path.join(BASE_DIR, 'media/test_image/', 'image.jpg')
     with open(image_path, 'rb') as image_file:
         image = SimpleUploadedFile("bike_image.jpg", image_file.read(), content_type="image/jpeg")
-    bike_data['image'] = [image]
-    bike = Bike.create_bike(store, **bike_data)
+    bike = Bike.objects.create(name=bike_data.get('name')[0], description=bike_data.get('description')[0], image=image, store=store)
+    Availability.create_availability(store, bike)
     return bike
+
 
 
 class Test_all_regions(TestCase):
@@ -162,7 +164,8 @@ class Test_all_regions(TestCase):
             self.client, user_data_wildegard, login_data_wildegard
         )
 
-    def check_region_content(self):
+    def check_region_response_payload_format\
+                    (self):
         response = self.client.get('/api/booking/v1/region')
         expected_json = [
             ["KA", "Karlsruhe"],
@@ -175,10 +178,10 @@ class Test_all_regions(TestCase):
         response_data = json.loads(response.content.decode('utf-8'))
         self.assertEqual(response_data, expected_json)
 
-    def test_region_content_various_user_authentication(self):
-        self.check_region_content()
+    def test_region_response_payload_format_various_user_authentication(self):
+        self.check_region_response_payload_format()
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token_wildegard)
-        self.check_region_content()
+        self.check_region_response_payload_format()
 
 
 class Test_all_availabilities(TestCase):
@@ -209,7 +212,7 @@ class Test_all_availabilities(TestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token_wildegard)
         self.check_amount_of_availabilities()
 
-    def test_availabilities_content(self):
+    def test_availabilities_response_payload_format(self):
         response = self.client.get('/api/booking/v1/availabilities')
         response_data = json.loads(response.content.decode('utf-8'))
         for item in response_data:
@@ -251,7 +254,7 @@ class Test_all_bikes(TestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token_wildegard)
         self.check_amount_of_bikes()
 
-    def test_bikes_content(self):
+    def test_bikes_response_payload_format(self):
         response = self.client.get('/api/booking/v1/bikes')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         response_data = json.loads(response.content.decode('utf-8'))
@@ -295,7 +298,7 @@ class Test_all_stores(TestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token_wildegard)
         self.check_store_amount()
 
-    def test_stores_content(self):
+    def test_stores_response_payload_format(self):
         response = self.client.get('/api/booking/v1/stores')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         response_data = json.loads(response.content.decode('utf-8'))
@@ -345,7 +348,7 @@ class Test_selected_bike(TestCase):
             os.remove(os.path.join(BASE_DIR, 'media/', str(bike.image)))
         super().tearDown()
 
-    def check_bike_content(self):
+    def check_bike_response_payload_format(self):
         response = self.client.get(f'/api/booking/v1/bikes/{self.bike1.pk}')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         response_data = json.loads(response.content.decode('utf-8'))
@@ -359,10 +362,10 @@ class Test_selected_bike(TestCase):
         for equip in equipment:
             self.assertTrue(isinstance(equip, str))
 
-    def test_bike_content_various_user_authentication(self):
-        self.check_bike_content()
+    def test_bike_response_payload_format_various_user_authentication(self):
+        self.check_bike_response_payload_format()
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token_wildegard)
-        self.check_bike_content()
+        self.check_bike_response_payload_format()
 
     def test_bike_response(self):
         response = self.client.get(f'/api/booking/v1/bikes/{self.bike1.pk}')
@@ -373,7 +376,7 @@ class Test_selected_bike(TestCase):
             'store': self.bike1.store.pk,
             'name': 'Bike1',
             'description': 'Es ist schnell',
-            'image': '/media/bikes/bike_image.jpg',
+            'image': self.bike1.image.url,
             'equipment': [],
         }
         self.assertEqual(response_data, expected_json)
@@ -436,7 +439,7 @@ class Test_store_by_bike(TestCase):
         self.assertTrue(isinstance(response_data.get("sun_open"), str))
         self.assertTrue(isinstance(response_data.get("sun_close"), str))
 
-    def test_store_of_bike_content_various_user_authentication(self):
+    def test_store_of_bike_response_payload_format_various_user_authentication(self):
         self.check_response_data_format()
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token_wildegard)
         self.check_response_data_format()
@@ -444,8 +447,8 @@ class Test_store_by_bike(TestCase):
     def test_store_of_bike_response(self):
         response = self.client.get(f'/api/booking/v1/bikes/{self.bike1.pk}/store')
         response_data = json.loads(response.content.decode('utf-8'))
-        self.assertEqual(response_data, {**store_data_store1, **{"id":self.store1.pk}})
-        self.assertNotEqual(response_data, {**store_data_store2, **{"id":self.store2.pk}})
+        self.assertEqual(response_data, {**store_data_store1, **{"id": self.store1.pk}})
+        self.assertNotEqual(response_data, {**store_data_store2, **{"id": self.store2.pk}})
 
     def test_bike_id_in_uri_incorrect(self):
         response = self.client.get('/api/booking/v1/bikes/-1/store')
@@ -484,7 +487,7 @@ class Test_bike_availability(TestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token_wildegard)
         self.check_availabilities_of_bike_amount()
 
-    def test_availabilities_content(self):
+    def test_availabilities_response_payload_format(self):
         response = self.client.get(f'/api/booking/v1/bikes/{self.bike1.pk}/availability')
         response_data = json.loads(response.content.decode('utf-8'))
         for item in response_data:
@@ -540,6 +543,19 @@ class Test_make_booking(TestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token_hilda_verified)
         response = self.client.post(f'/api/booking/v1/bikes/{self.bike1.pk}/booking', booking_data1_bike1, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_booking_availability_handling_edge_case(self):
+        booking_data1_bike1 = {
+            'begin': '4999-12-27',
+            'end': '5000-01-01',
+            'equipment': []
+        }
+        availability_count_after_booking = Availability.objects.all().count() + 1
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token_hilda_verified)
+        response = self.client.post(f'/api/booking/v1/bikes/{self.bike1.pk}/booking', booking_data1_bike1,
+                                    format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(availability_count_after_booking, Availability.objects.all().count())
 
     def test_make_booking_various_request_payloads(self):
         booking_data_for_past = {
