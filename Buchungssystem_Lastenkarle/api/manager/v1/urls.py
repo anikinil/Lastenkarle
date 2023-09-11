@@ -11,7 +11,7 @@ urlpatterns = [
     path('bikes/<int:bike_id>/delete', views.DeleteBike.as_view()),
     path('bikes/<int:bike_id>/update', views.UpdateSelectedBike.as_view()),
     path('bikes/<int:bike_id>/availability', views.SelectedBikeAvailability.as_view()),
-    path('bikes/<int:bike_id>/add-equipment', views.SelectedBikeEquipment.as_view()),
+    path('bikes/<int:bike_id>/equipment', views.SelectedBikeEquipment.as_view()),
     path('bookings', views.BookingsOfStore.as_view()),
     path('bookings/<int:booking_id>', views.SelectedBookingOfStore.as_view()),
     path('bookings/<int:booking_id>/comment', views.CommentToBooking.as_view()),

@@ -47,6 +47,7 @@ def partialUpdateOfStore(request, store):
                          'fri_opened', 'fri_open', 'fri_close',
                          'sat_opened', 'sat_open', 'sat_close',
                          'sun_opened', 'sun_open', 'sun_close']
+    partialUpdateInputValidation(request, fields_to_include)
     serializer = StoreSerializer(store, data=request.data, fields=fields_to_include, partial=True)
     serializer.is_valid(raise_exception=True)
     return serializer.save()
