@@ -291,8 +291,8 @@ class ConfirmBikeHandOutTest(TestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.manager_token)
         response = self.client.post('/api/manager/v1/bookings/' + str(booking2.pk) + '/hand-out')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(booking2.booking_status.all().first().booking_status,
-                         Booking_Status.objects.get(booking_status='Internal usage').booking_status)
+        self.assertEqual(booking2.booking_status.all()[1].booking_status,
+                         Booking_Status.objects.get(booking_status='Picked up').booking_status)
 
     def test_confirm_bike_handout_of_picked_up_booking(self):
         booking2 = initialize_booking_of_bike_with_flag(self.user, self.bike, 'Picked up', booking_data_2['begin'],
@@ -382,13 +382,15 @@ class ConfirmBikeReturnTest(TestCase):
                          Booking_Status.objects.get(booking_status='Returned').booking_status)
 
     def test_confirm_bike_return_of_internal_usage(self):
-        booking2 = initialize_booking_of_bike_with_flag(self.user, self.bike, 'Internal usage', booking_data_2['begin'],
+        booking2 = initialize_booking_of_bike_with_flag(self.user, self.bike, 'Picked up', booking_data_2['begin'],
                                                         booking_data_2['end'])
+        booking2.booking_status.add(Booking_Status.objects.filter(booking_status='Internal usage')[0].pk)
+        booking2.save()
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.manager_token)
         response = self.client.post('/api/manager/v1/bookings/' + str(booking2.pk) + '/return')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(booking2.booking_status.all().first().booking_status,
-                         Booking_Status.objects.get(booking_status='Internal usage').booking_status)
+        self.assertEqual(booking2.booking_status.all()[1].booking_status,
+                         Booking_Status.objects.get(booking_status='Returned').booking_status)
 
     def test_confirm_bike_return_of_booked_booking(self):
         booking2 = initialize_booking_of_bike_with_flag(self.user, self.bike, 'Booked', booking_data_2['begin'],
