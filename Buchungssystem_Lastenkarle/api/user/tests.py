@@ -135,7 +135,7 @@ def initialize_booking_of_bike_with_flag(user, bike, booking_status_label, begin
                                      begin=datetime.strptime(begin, '%Y-%m-%d').date(),
                                      end=datetime.strptime(end, '%Y-%m-%d').date())
     booking.booking_status.add(Booking_Status.objects.filter(booking_status=booking_status_label)[0].pk)
-    if booking_status_label is 'Internal usage':
+    if booking_status_label == 'Internal usage':
         booking.booking_status.add(Booking_Status.objects.filter(booking_status='Booked')[0].pk)
     booking_string = generate_random_string(5)
     booking.string = booking_string
@@ -238,7 +238,7 @@ class RegistrateUserTest(TestCase):
     def test_register_same_user_for_the_second_time(self):
         request = self.factory.post(self.registrate_url, user_data, format='json')
         response = RegistrateUser.as_view()(request)
-        user = User.objects.get(username=self.user_data['username'])
+        user = User.objects.get(username=user_data['username'])
         # Try to register same user for the second time
         request = self.factory.post(self.registrate_url, user_data, format='json')
         response = RegistrateUser.as_view()(request)
@@ -730,7 +730,7 @@ class DeleteAccountTest(TestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
         self.client.delete(self.delete_account_url)
         self.client.credentials()
-        response = self.client.post("/api/user/v1/register", self.user_data)
+        response = self.client.post("/api/user/v1/register", user_data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_register_again_after_deleting_with_verification(self):
@@ -740,7 +740,7 @@ class DeleteAccountTest(TestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
         self.client.delete(self.delete_account_url)
         self.client.credentials()
-        response = self.client.post("/api/user/v1/register", self.user_data)
+        response = self.client.post("/api/user/v1/register", user_data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_delete_account_with_inactive_booking(self):
@@ -1205,17 +1205,34 @@ class GetBookedBikeOfStoreTest(TestCase):
         self.assertEqual(response_data['detail'], 'Not found.')
 
 
-class VerifyUserTest(TestCase):
+class VerificationTest(TestCase):
     def setUp(self):
-        self.client = APIClient
-        self.client.post('/api/user/v1/register', user_data)
-        # login user
-        response = self.client.post("/api/user/v1/login", login_data)
-        response_data = json.loads(response.content.decode('utf-8'))
-        self.token = response_data.get('token', None)
-        self.user = User.objects.get(username=user_data['username'])
+        self.client = APIClient()
+        self.user, self.token = initialize_user_with_token(self.client, user_data, login_data)
         self.verify_url = '/api/user/v1/'  # + user_id + user_verification_string
 
     def test_verify_user_valid(self):
-        response = self.client.post(self.verify_url + str(self.user.pk) + str(self.user.verification_string))
-        assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.post(self.verify_url + str(self.user.pk) + '/' + str(self.user.verification_string))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        user_after_verification = User.objects.get(username=self.user.username)
+        self.assertEqual(user_after_verification.verification_string, None)
+
+    def test_verify_user_with_wrong_id(self):
+        wrong_id = int(self.user.pk) + 1
+        response = self.client.post(self.verify_url + str(wrong_id) + '/' + str(self.user.verification_string))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_verify_user_with_wrong_verification_code(self):
+        wrong_verif_code = 'wrong_verification_code'
+        response = self.client.post(self.verify_url + str(self.user.pk) + '/' + wrong_verif_code)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_verify_other_users_id(self):
+        user2, token2 = initialize_user_with_token(self.client, user_data_2, login_data_2)
+        response = self.client.post(self.verify_url + str(self.user.pk) + '/' + user2.verification_string)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_verify_other_users_verification_code(self):
+        user2, token2 = initialize_user_with_token(self.client, user_data_2, login_data_2)
+        response = self.client.post(self.verify_url + str(user2.pk) + '/' + self.user.verification_string)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
