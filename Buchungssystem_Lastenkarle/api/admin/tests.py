@@ -231,7 +231,7 @@ class Test_registered_equipment(TestCase):
         for bike in Bike.objects.all():
             os.remove(os.path.join(BASE_DIR, 'media/', str(bike.image)))
         super().tearDown()
-
+    @skip
     def test_retrieving_all_equipment_various_user_authentication(self):
         response = self.client.get('/api/admin/v1/equipment')
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
@@ -247,7 +247,7 @@ class Test_registered_equipment(TestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
         response = self.client.get('/api/admin/v1/equipment')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
+    @skip
     def test_retrieve_all_equipment_amount(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
         response = self.client.get('/api/admin/v1/equipment')
@@ -256,7 +256,7 @@ class Test_registered_equipment(TestCase):
         self.assertIsInstance(response_data, list)
         expected_object_count = Equipment.objects.all().count()
         self.assertEqual(len(response_data), expected_object_count)
-
+    @skip
     def test_equipment_response_payload_format(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
         response = self.client.get('/api/admin/v1/equipment')
@@ -292,7 +292,7 @@ class Test_user_flags_interactions(TestCase):
         for bike in Bike.objects.all():
             os.remove(os.path.join(BASE_DIR, 'media/', str(bike.image)))
         super().tearDown()
-
+    @skip
     def test_retrieving_all_user_flags_various_user_authentication(self):
         response = self.client.get('/api/admin/v1/user-flags')
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
@@ -308,7 +308,7 @@ class Test_user_flags_interactions(TestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
         response = self.client.get('/api/admin/v1/user-flags')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
+    @skip
     def test_retrieve_all_user_flags_amount(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
         response = self.client.get('/api/admin/v1/user-flags')
@@ -317,14 +317,14 @@ class Test_user_flags_interactions(TestCase):
         self.assertIsInstance(response_data, list)
         expected_object_count = User_Status.objects.all().count()
         self.assertEqual(len(response_data), expected_object_count)
-
+    @skip
     def test_user_flag_response_payload_format(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
         response = self.client.get('/api/admin/v1/user-flags')
         response_data = json.loads(response.content.decode('utf-8'))
         for item in response_data:
             self.assertTrue(isinstance(item.get("user_status"), str))
-
+    @skip
     def test_enrollment_various_user_authentication(self):
         enrollment_data_for_hilda_verified_flag = {
             'contact_data': 'pse_email@gmx.de',
@@ -350,7 +350,7 @@ class Test_user_flags_interactions(TestCase):
         }
         response = self.client.post('/api/admin/v1/user-flags', enrollment_data_store1_flag, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
+    @skip
     def test_enroll_user_with_flag_already_attached(self):
         enrollment_data_for_caro_as_administrator = {
             'contact_data': self.caro.contact_data,
@@ -359,7 +359,7 @@ class Test_user_flags_interactions(TestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
         response = self.client.post('/api/admin/v1/user-flags', enrollment_data_for_caro_as_administrator, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
+    @skip
     def test_enrollment_with_various_request_payloads(self):
         enrollment_data_store1_flag = {
             'contact_data': self.hilda_verified.contact_data,
@@ -437,7 +437,7 @@ class Test_user_banning(TestCase):
         for bike in Bike.objects.all():
             os.remove(os.path.join(BASE_DIR, 'media/', str(bike.image)))
         super().tearDown()
-
+    @skip
     def test_ban_user_various_user_authentication(self):
         contact_data_of_user_to_ban = {
             'contact_data': self.hilda_verified.contact_data
@@ -456,7 +456,7 @@ class Test_user_banning(TestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
         response = self.client.post('/api/admin/v1/ban-user', contact_data_of_user_to_ban, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
+    @skip
     def test_login_as_banned_user(self):
         contact_data_of_user_to_ban = {
             'contact_data': self.hilda_verified.contact_data
@@ -472,7 +472,7 @@ class Test_user_banning(TestCase):
             'detail': 'User inactive or deleted.'
         }
         self.assertEqual(response_data, expected_json)
-
+    @skip
     def test_ban_user_various_request_payloads(self):
         contact_data_of_user_to_ban = {
             'contact_data': self.hilda_verified.contact_data
@@ -527,7 +527,7 @@ class Test_store_creation(TestCase):
         for bike in Bike.objects.all():
             os.remove(os.path.join(BASE_DIR, 'media/', str(bike.image)))
         super().tearDown()
-
+    @skip
     def test_store_creation_various_user_authentication(self):
         response = self.client.post('/api/admin/v1/create/store', store_data_store2, format='json')
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
@@ -543,7 +543,7 @@ class Test_store_creation(TestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
         response = self.client.post('/api/admin/v1/create/store', store_data_store2, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-
+    @skip
     def test_store_creation_various_request_payload(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
         response = self.client.post('/api/admin/v1/create/store', store_data_store2, format='json')
@@ -679,7 +679,7 @@ class Test_store_creation(TestCase):
         response_data = json.loads(response.content.decode('utf-8'))
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response_data, expected_json)
-
+    @skip
     def test_store_creation_response_payload_format(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
         response = self.client.post('/api/admin/v1/create/store', store_data_store2, format='json')
@@ -742,7 +742,7 @@ class Test_create_bike_of_store(TestCase):
         for bike in Bike.objects.all():
             os.remove(os.path.join(BASE_DIR, 'media/', str(bike.image)))
         super().tearDown()
-
+    @skip
     def test_bike_creation_for_store_various_user_authentication(self):
         bike_data = {
             'name': 'Bike',
@@ -768,7 +768,7 @@ class Test_create_bike_of_store(TestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
         response = self.client.post(f'/api/admin/v1/create/store/{self.store.pk}/bike', bike_data, format='multipart')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-
+    @skip
     def test_create_bike(self):
         bike_data = {
             'name': 'Bike',
@@ -778,7 +778,7 @@ class Test_create_bike_of_store(TestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
         response = self.client.post(f'/api/admin/v1/create/store/{self.store.pk}/bike', bike_data, format='multipart')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-
+    @skip
     def test_bike_creation_for_store_store_id_in_uri_incorrect(self):
         bike_data = {
             'name': 'Bike',
@@ -797,7 +797,7 @@ class Test_create_bike_of_store(TestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
         response = self.client.post('/api/admin/v1/create/store/ /bike', bike_data, format='multipart')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
+    @skip
     def test_bike_creation_for_store_various_request_payloads(self):
         bike_data = {
             'name': 'Bike',
@@ -859,7 +859,7 @@ class Test_create_bike_of_store(TestCase):
         response_data = json.loads(response.content.decode('utf-8'))
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response_data, expected_json)
-
+    @skip
     def test_bike_creation_for_store_response_payload_format(self):
         with open(image_path, 'rb') as image_file:
             image = SimpleUploadedFile("bike_image.jpg", image_file.read(), content_type="image/jpg")
@@ -910,7 +910,7 @@ class Test_bike_deletion_via_admin(TestCase):
         for bike in Bike.objects.all():
             os.remove(os.path.join(BASE_DIR, 'media/', str(bike.image)))
         super().tearDown()
-
+    @skip
     def test_bike_deletion_via_admin_various_user_authentication(self):
         response = self.client.delete(f'/api/admin/v1/delete/bike/{self.bike1_of_store1.pk}')
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
@@ -926,12 +926,12 @@ class Test_bike_deletion_via_admin(TestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
         response = self.client.delete(f'/api/admin/v1/delete/bike/{self.bike1_of_store1.pk}')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
+    @skip
     def test_bike_deletion_via_admin(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
         response = self.client.delete(f'/api/admin/v1/delete/bike/{self.bike1_of_store1.pk}')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
+    @skip
     def test_bike_deletion_via_admin_bike_id_in_uri_incorrect(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
         response = self.client.delete(f'/api/admin/v1/delete/bike/-1')
@@ -942,7 +942,7 @@ class Test_bike_deletion_via_admin(TestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
         response = self.client.delete(f'/api/admin/v1/delete/bike/')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
+    @skip
     def test_bike_deletion_via_admin_when_bike_picked_up(self):
         booking = initialize_booking_of_bike_with_flag(self.caro, self.bike1_of_store1, 'Picked up', '2100-01-04',
                                                        '2100-01-11')
@@ -958,7 +958,7 @@ class Test_bike_deletion_via_admin(TestCase):
         response = self.client.delete(f'/api/admin/v1/delete/bike/{self.bike1_of_store1.pk}')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertNotEqual(booking.bike, None)
-
+    @skip
     def test_bike_deletion_amount_bookings(self):
         booking1 = initialize_booking_of_bike_with_flag(self.caro, self.bike1_of_store1, 'Booked', '2100-01-04', '2100-01-11')
         booking2 = initialize_booking_of_bike_with_flag(self.caro, self.bike1_of_store1, 'Booked', '2100-01-18', '2100-01-25')

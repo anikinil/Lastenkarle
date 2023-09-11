@@ -52,7 +52,9 @@
   <p class="bold-black">Öffnungszeiten:</p>
 
   <p class="text-black">
-    {{ store_opening_hours }}<br><br>
+      {% for weekday in store_opening_hours %}
+            {{ weekday }}<br>
+      {% endfor %}<br>
     Bitte beachte, dass die Öffnungszeiten der Station eventuell kurzzeitig von unseren Angaben abweichen können. Daher empfehlen wir dir, auf der Webseite des Shops die aktuellen Öffnungszeiten nachzuschauen.</p> <br>
   <p class="bold-black">Kontaktdaten der Station:</p>
   <p class="text-black">
