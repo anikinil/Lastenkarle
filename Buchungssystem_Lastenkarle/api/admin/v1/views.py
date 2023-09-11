@@ -138,7 +138,10 @@ class AddBike(APIView):
     parser_classes = (MultiPartParser, FormParser)
 
     def post(self, request, store_id):
-        store = Store.objects.get(pk=store_id)
+        try:
+            store = Store.objects.get(pk=store_id)
+        except ObjectDoesNotExist:
+            raise Http404
         data = {
             "store": store.pk,
             "name": request.data.get('name'),
