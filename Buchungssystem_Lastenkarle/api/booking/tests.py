@@ -446,8 +446,8 @@ class Test_store_by_bike(TestCase):
     def test_store_of_bike_response(self):
         response = self.client.get(f'/api/booking/v1/bikes/{self.bike1.pk}/store')
         response_data = json.loads(response.content.decode('utf-8'))
-        self.assertEqual(response_data, {**store_data_store1, **{"id":self.store1.pk}})
-        self.assertNotEqual(response_data, {**store_data_store2, **{"id":self.store2.pk}})
+        self.assertEqual(response_data, {**store_data_store1, **{"id": self.store1.pk}})
+        self.assertNotEqual(response_data, {**store_data_store2, **{"id": self.store2.pk}})
 
     def test_bike_id_in_uri_incorrect(self):
         response = self.client.get('/api/booking/v1/bikes/-1/store')
@@ -542,6 +542,19 @@ class Test_make_booking(TestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token_hilda_verified)
         response = self.client.post(f'/api/booking/v1/bikes/{self.bike1.pk}/booking', booking_data1_bike1, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_booking_availability_handling_edge_case(self):
+        booking_data1_bike1 = {
+            'begin': '4999-12-27',
+            'end': '5000-01-01',
+            'equipment': []
+        }
+        availability_count_after_booking = Availability.objects.all().count() + 1
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token_hilda_verified)
+        response = self.client.post(f'/api/booking/v1/bikes/{self.bike1.pk}/booking', booking_data1_bike1,
+                                    format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(availability_count_after_booking, Availability.objects.all().count())
 
     def test_make_booking_various_request_payloads(self):
         booking_data_for_past = {

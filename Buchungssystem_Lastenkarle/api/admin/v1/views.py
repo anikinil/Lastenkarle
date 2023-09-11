@@ -85,7 +85,7 @@ class AllBookingsOfUser(APIView):
         except ObjectDoesNotExist:
             raise Http404
         fields_to_include = ['preferred_username', 'assurance_lvl', 'bike', 'begin', 'end',
-                             'comment', 'booking_status', 'equipment']
+                             'comment', 'booking_status', 'equipment', 'id']
         serializer = BookingSerializer(bookings, fields=fields_to_include, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -121,6 +121,8 @@ class SelectedBooking(APIView):
             booking = Booking.objects.get(pk=booking_id)
         except ObjectDoesNotExist:
             raise Http404
+        if not booking.booking_status.contains(Booking_Status.objects.get(booking_status='Booked')):
+            return Response(status=status.HTTP_400_BAD_REQUEST)
         booking.booking_status.clear()
         booking.booking_status.set(Booking_Status.objects.filter(booking_status='Cancelled'))
         booking.string = None
@@ -140,14 +142,17 @@ class AddBike(APIView):
             store = Store.objects.get(pk=store_id)
         except ObjectDoesNotExist:
             raise Http404
-        data = {key: value[0] if isinstance(value, list) and len(value) == 1 else value for key, value in request.data.items()}
-        data = {**data, **{'store': store.pk}}
+        data = {
+            "store": store.pk,
+            "name": request.data.get('name'),
+            "description": request.data.get('description'),
+            "image": request.FILES.get('image')
+        }
         serializer = BikeSerializer(data=data)
-        if serializer.is_valid():
-            bike = serializer.save()
-            Availability.create_availability(store, bike)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
+        bike = serializer.save()
+        Availability.create_availability(store, bike)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class DeleteBike(DestroyAPIView):
@@ -204,7 +209,7 @@ class UpdateSelectedBike(APIView):
             bike = Bike.objects.get(pk=bike_id)
         except ObjectDoesNotExist:
             raise Http404
-        partialUpdateOfBike(request, bike)
+        bike = partialUpdateOfBike(request, bike)
         serializer = BikeSerializer(bike, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -229,8 +234,18 @@ class EquipmentOfBike(APIView):
         new_equipment = serializer.save()
         bike.equipment.add(new_equipment.pk)
         bike.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_201_CREATED)
 
+    def delete(self, request, bike_id):
+        equipment = request.data['equipment']
+        try:
+            bike = Bike.objects.get(pk=bike_id)
+            equipment_remove = Equipment.objects.get(equipment=equipment)
+            bike.equipment.contains(equipment_remove)
+        except ObjectDoesNotExist:
+            raise Http404
+        bike.equipment.remove(equipment_remove)
+        return Response(status=status.HTTP_200_OK)
 
 class RegisteredEquipment(APIView):
     authentication_classes = [TokenAuthentication]
@@ -312,7 +327,6 @@ class SelectedStore(APIView):
         except ObjectDoesNotExist:
             raise Http404
         serializer = StoreSerializer(store, many=False)
-        serializer.exclude_fields(['store_flag'])
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -327,7 +341,6 @@ class UpdateSelectedStore(APIView):
             raise Http404
         partialUpdateOfStore(request, store)
         serializer = StoreSerializer(store, many=False)
-        serializer.exclude_fields(['store_flag'])
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 

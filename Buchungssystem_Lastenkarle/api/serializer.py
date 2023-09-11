@@ -47,6 +47,7 @@ def partialUpdateOfStore(request, store):
                          'fri_opened', 'fri_open', 'fri_close',
                          'sat_opened', 'sat_open', 'sat_close',
                          'sun_opened', 'sun_open', 'sun_close']
+    partialUpdateInputValidation(request, fields_to_include)
     serializer = StoreSerializer(store, data=request.data, fields=fields_to_include, partial=True)
     serializer.is_valid(raise_exception=True)
     return serializer.save()
@@ -117,6 +118,9 @@ class RegistrationSerializer(serializers.ModelSerializer):
         password = attrs.get('password', None)
         if password is None:
             raise serializers.ValidationError('Password required.')
+        year_of_birth = attrs.get('year_of_birth', None)
+        if year_of_birth is not None and year_of_birth < datetime.now().year - 122:
+            raise serializers.ValidationError('You are definitely not older than Jeanne Calment.')
         return attrs
 
     def create(self, validated_data):
