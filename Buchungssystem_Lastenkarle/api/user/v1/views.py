@@ -148,6 +148,8 @@ class BookingFromUser(APIView):
             booking = Booking.objects.get(pk=booking_id, user=request.user)
         except ObjectDoesNotExist:
             raise Http404
+        if not booking.booking_status.contains(Booking_Status.objects.get(booking_status='Booked')):
+            return Response(status=status.HTTP_400_BAD_REQUEST)
         booking.booking_status.clear()
         booking.booking_status.add(Booking_Status.objects.get(booking_status='Cancelled'))
         booking.string = None
