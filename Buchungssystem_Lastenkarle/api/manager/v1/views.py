@@ -59,9 +59,7 @@ class EnrollUser(APIView):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-class DeleteBike(DestroyAPIView):
-    queryset = Bike.objects.all()
-    serializer_class = BikeSerializer
+class DeleteBike(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated & IsStaff & IsVerfied]
 
@@ -81,6 +79,7 @@ class DeleteBike(DestroyAPIView):
             booking.save()
         bike.delete()
         return Response(status=status.HTTP_200_OK)
+
 
 class BikesOfStore(APIView):
     authentication_classes = [TokenAuthentication]
@@ -138,7 +137,7 @@ class MakeInternalBooking(APIView):
         end = request.data['until_date']
         user = User.objects.get(pk=self.request.user.pk)
         if not merge_availabilities_from_until_algorithm(begin, end, store, bike):
-            error_message = {'error': 'Please select a different time frame in which the bike is available'}
+            error_message = {'error': 'Please select a different time frame in which the bike is available.'}
             return Response(error_message, status=status.HTTP_400_BAD_REQUEST)
         booking_data = {
             'bike': bike.pk,
@@ -147,17 +146,16 @@ class MakeInternalBooking(APIView):
         }
         data = {**booking_data, **request.data}
         serializer = MakeBookingSerializer(data=data, context={'no_limit': True})
-        if serializer.is_valid():
-            booking = serializer.save(user=user)
-            booking.booking_status.add(Booking_Status.objects.filter(booking_status='Booked')[0].pk)
-            booking.booking_status.add(Booking_Status.objects.filter(booking_status='Internal usage')[0].pk)
-            booking_string = generate_random_string(5)
-            booking.string = booking_string
-            booking.save()
-            split_availabilities_algorithm(booking)
-            send_booking_confirmation(booking)
-            return Response(status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
+        booking = serializer.save(user=user)
+        booking.booking_status.add(Booking_Status.objects.filter(booking_status='Booked')[0].pk)
+        booking.booking_status.add(Booking_Status.objects.filter(booking_status='Internal usage')[0].pk)
+        booking_string = generate_random_string(5)
+        booking.string = booking_string
+        booking.save()
+        split_availabilities_algorithm(booking)
+        send_booking_confirmation(booking)
+        return Response(status=status.HTTP_201_CREATED)
 
 
 class UpdateSelectedBike(APIView):
@@ -245,12 +243,12 @@ class SelectedBookingOfStore(APIView):
 
     def get(self, request, booking_id):
         store = self.request.user.is_staff_of_store()
-        fields_to_include = ['preferred_username', 'bike', 'begin', 'end',
-                             'comment', 'booking_status', 'equipment']
         try:
-            booking = Booking.objects.filter(pk=booking_id, bike__store=store)
+            booking = Booking.objects.get(pk=booking_id, bike__store=store)
         except ObjectDoesNotExist:
             raise Http404
+        fields_to_include = ['preferred_username', 'bike', 'begin', 'end',
+                             'comment', 'booking_status', 'equipment']
         serializer = BookingSerializer(booking, fields=fields_to_include, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
