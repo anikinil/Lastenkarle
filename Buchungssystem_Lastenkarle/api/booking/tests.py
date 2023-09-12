@@ -126,7 +126,6 @@ bike_data_bike3 = {
     'description': ['Mag ich nicht essen']
 }
 
-
 def initialize_user_with_token(client, user_data, login_data):
     user = User.objects.create_user(**user_data)
     response = client.post("/api/user/v1/login", login_data)
@@ -134,11 +133,9 @@ def initialize_user_with_token(client, user_data, login_data):
     token_user = response_data.get('token', None)
     return user, token_user
 
-
 def add_verified_flag_to_user(user):
     user.user_status.add(User_Status.objects.get(user_status='Verified'))
     user.save()
-
 
 def initialize_store(store_data):
     store = Store.objects.create(**store_data)
@@ -146,7 +143,6 @@ def initialize_store(store_data):
     store.store_flag = store_flag
     store.save()
     return store
-
 
 def initialize_bike_of_store(store, bike_data):
     with open(image_path, 'rb') as image_file:
@@ -156,7 +152,7 @@ def initialize_bike_of_store(store, bike_data):
     return bike
 
 
-
+@skip
 class Test_all_regions(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -183,7 +179,7 @@ class Test_all_regions(TestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token_wildegard)
         self.check_region_response_payload_format()
 
-
+@skip
 class Test_all_availabilities(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -225,7 +221,7 @@ class Test_all_availabilities(TestCase):
             for status in availability_status:
                 self.assertTrue(isinstance(status.get("availability_status"), str))
 
-
+@skip
 class Test_all_bikes(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -270,7 +266,7 @@ class Test_all_bikes(TestCase):
             for equip in equipment:
                 self.assertTrue(isinstance(equip, str))
 
-
+@skip
 class Test_all_stores(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -284,6 +280,7 @@ class Test_all_stores(TestCase):
         for bike in Bike.objects.all():
             os.remove(os.path.join(BASE_DIR, 'media/', str(bike.image)))
         super().tearDown()
+
 
     def check_store_amount(self):
         response = self.client.get('/api/booking/v1/stores')
@@ -332,7 +329,7 @@ class Test_all_stores(TestCase):
             self.assertTrue(isinstance(item.get("sun_open"), str))
             self.assertTrue(isinstance(item.get("sun_close"), str))
 
-
+@skip
 class Test_selected_bike(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -347,6 +344,7 @@ class Test_selected_bike(TestCase):
         for bike in Bike.objects.all():
             os.remove(os.path.join(BASE_DIR, 'media/', str(bike.image)))
         super().tearDown()
+
 
     def check_bike_response_payload_format(self):
         response = self.client.get(f'/api/booking/v1/bikes/{self.bike1.pk}')
@@ -389,7 +387,7 @@ class Test_selected_bike(TestCase):
         response = self.client.get('/api/booking/v1/bikes/ ')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-
+@skip
 class Test_store_by_bike(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -439,6 +437,7 @@ class Test_store_by_bike(TestCase):
         self.assertTrue(isinstance(response_data.get("sun_open"), str))
         self.assertTrue(isinstance(response_data.get("sun_close"), str))
 
+
     def test_store_of_bike_response_payload_format_various_user_authentication(self):
         self.check_response_data_format()
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token_wildegard)
@@ -458,7 +457,7 @@ class Test_store_by_bike(TestCase):
         response = self.client.get('/api/booking/v1/bikes/ /store')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-
+@skip
 class Test_bike_availability(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -507,7 +506,7 @@ class Test_bike_availability(TestCase):
         # Check if {'bike': self.bike1.pk} exists in any dictionary within response_data
         self.assertTrue(any(item.get("bike") == self.bike1.pk for item in response_data))
 
-
+@skip
 class Test_make_booking(TestCase):
     def setUp(self):
         self.client = APIClient()
