@@ -520,7 +520,6 @@ class CreateLocalDataOfUserTest(TestCase):
             os.remove(os.path.join(BASE_DIR, 'media/', str(bike.image)))
         super().tearDown()
 
-    @skip
     def test_create_local_user_data_that_is_already_created(self):
         initializer_local_data_of_user(self.user, local_user_data)
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.manager_token)
@@ -531,6 +530,12 @@ class CreateLocalDataOfUserTest(TestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.manager_token)
         response = self.client.post(self.create_local_user_data, local_user_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        response_data = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(response_data['first_name'], local_user_data['first_name'])
+        self.assertEqual(response_data['last_name'], local_user_data['last_name'])
+        self.assertEqual(response_data['address'], local_user_data['address'])
+        self.assertEqual(response_data['id_number'], local_user_data['id_number'])
+        self.assertNotEqual(response_data['date_of_verification'], None)
 
     def test_create_local_user_data_of_invalid_booking(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.manager_token)
@@ -557,4 +562,79 @@ class CreateLocalDataOfUserTest(TestCase):
         # try with invalid
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + 'invalidtoken')
         response = self.client.post(self.create_local_user_data, local_user_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+
+class UpdateLocalDataOfUserTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        # register and login User and manager
+        self.user, self.user_token = initialize_user_with_token(self.client, user_data, login_data)
+        self.manager, self.manager_token = initialize_user_with_token(self.client, manager_data_1, manager_login_data_1)
+        # initialize store
+        self.store = initialize_store(store_data1)
+        # initialize bike
+        self.bike = initialize_bike_of_store(self.store, bike1_data)
+        # enroll and verify manager
+        add_verified_flag_to_user(self.manager)
+        add_store_manager_flag_to_user(self.manager, self.store)
+        # verify user
+        add_verified_flag_to_user(self.user)
+        # make booking
+        self.booking = initialize_booking_of_bike_with_flag(self.user, self.bike, 'Booked', booking_data['begin'],
+                                                            booking_data['end'])
+        self.update_local_user_data = f'/api/manager/v1/bookings/{self.booking.pk}/user-info'
+        self.changed_user_data = {
+            "first_name": "Ursula",
+            "last_name": "Steckerleiste",
+            "address": "PSEstr. 1, 67890 PSEhausen",
+            "id_number": "456"
+        }
+
+    def tearDown(self):
+        for bike in Bike.objects.all():
+            os.remove(os.path.join(BASE_DIR, 'media/', str(bike.image)))
+        super().tearDown()
+
+    def test_update_local_user_data_that_does_not_exist(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.manager_token)
+        response = self.client.patch(self.update_local_user_data, self.changed_user_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_update_local_user_data_valid(self):
+        initializer_local_data_of_user(self.user, local_user_data)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.manager_token)
+        response = self.client.patch(self.update_local_user_data, self.changed_user_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(response_data['first_name'], self.changed_user_data['first_name'])
+        self.assertEqual(response_data['last_name'], self.changed_user_data['last_name'])
+        self.assertEqual(response_data['address'], self.changed_user_data['address'])
+        self.assertEqual(response_data['id_number'], self.changed_user_data['id_number'])
+
+    def test_update_local_user_data_of_invalid_booking(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.manager_token)
+        response = self.client.patch('/api/manager/v1/bookings/-1/user-info', self.changed_user_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_update_user_data_of_booking_from_other_store(self):
+        store2 = initialize_store(store_data2)
+        manager2, token_manager_2 = initialize_user_with_token(self.client, manager_data_2, manager_login_data_2)
+        add_store_manager_flag_to_user(manager2, store2)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token_manager_2)
+        response = self.client.patch(self.update_local_user_data, self.changed_user_data)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_update_user_data_of_booking_without_permission(self):
+        # try to update as user
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_token)
+        response = self.client.patch(self.update_local_user_data, self.changed_user_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        # try without token
+        self.client.credentials()
+        response = self.client.patch(self.update_local_user_data, self.changed_user_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        # try with invalid
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + 'invalidtoken')
+        response = self.client.patch(self.update_local_user_data, self.changed_user_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
