@@ -2688,27 +2688,43 @@ class Test_partial_update_of_bike_as_admin(TestCase):
 
     def test_partial_update_of_bike_as_admin_various_request_payloads(self):
         update_bike_data = {
-            'name': 'Up to date',
-            'description': 'at 3 am',
+            'name': 'Udini',
             'image': open(image_path_update, 'rb')
         }
-        for i in range(1, 3):
-            update_bike_random_data = random_exclude_key_value_pairs(update_bike_data, i)
-            self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
-            response = self.client.patch(f'/api/admin/v1/bikes/{self.bike1.pk}/update', update_bike_random_data,
-                                         format='multipart')
-            self.assertEqual(response.status_code, status.HTTP_200_OK)
-            response_data = json.loads(response.content.decode('utf-8'))
-            bike = Bike.objects.get(pk=response_data.get("id"))
-            self.assertEqual(response_data.get("id"), bike.pk)
-            self.assertEqual(response_data.get("store"), bike.store.pk)
-            self.assertEqual(response_data.get("name"), bike.name)
-            self.assertEqual(response_data.get("description"), bike.description)
-            self.assertEqual(response_data.get("image"), bike.image.url)
-            equipment = response_data.get("equipment", [])
-            equipment_strings = [value.get("equipment") for value in equipment]
-            for value in equipment:
-                self.assertIn(value.get("equipment"), equipment_strings)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.patch(f'/api/admin/v1/bikes/{self.bike1.pk}/update', update_bike_data,
+                                     format='multipart')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = json.loads(response.content.decode('utf-8'))
+        bike = Bike.objects.get(pk=response_data.get("id"))
+        self.assertEqual(response_data.get("id"), bike.pk)
+        self.assertEqual(response_data.get("store"), bike.store.pk)
+        self.assertEqual(response_data.get("name"), bike.name)
+        self.assertEqual(response_data.get("description"), bike.description)
+        self.assertEqual(response_data.get("image"), bike.image.url)
+        equipment = response_data.get("equipment", [])
+        equipment_strings = [value.get("equipment") for value in equipment]
+        for value in equipment:
+            self.assertIn(value.get("equipment"), equipment_strings)
+        update_bike_data_partial_no_image = {
+            'name': 'Udini',
+            'description': 'Brain damage',
+        }
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.patch(f'/api/admin/v1/bikes/{self.bike1.pk}/update', update_bike_data_partial_no_image,
+                                     format='multipart')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = json.loads(response.content.decode('utf-8'))
+        bike = Bike.objects.get(pk=response_data.get("id"))
+        self.assertEqual(response_data.get("id"), bike.pk)
+        self.assertEqual(response_data.get("store"), bike.store.pk)
+        self.assertEqual(response_data.get("name"), bike.name)
+        self.assertEqual(response_data.get("description"), bike.description)
+        self.assertEqual(response_data.get("image"), bike.image.url)
+        equipment = response_data.get("equipment", [])
+        equipment_strings = [value.get("equipment") for value in equipment]
+        for value in equipment:
+            self.assertIn(value.get("equipment"), equipment_strings)
         expected_json = [
             "Updating field is not allowed."
         ]
