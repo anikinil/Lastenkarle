@@ -247,6 +247,7 @@ class EquipmentOfBike(APIView):
         bike.equipment.remove(equipment_remove)
         return Response(status=status.HTTP_200_OK)
 
+
 class RegisteredEquipment(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated & IsSuperUser & IsVerfied]
@@ -264,9 +265,9 @@ class AvailabilityOfBike(APIView):
     def get(self, request, bike_id):
         try:
             bike = Bike.objects.get(pk=bike_id)
+            availability = Availability.objects.filter(bike=bike)
         except ObjectDoesNotExist:
             raise Http404
-        availability = Availability.objects.filter(bike=bike)
         serializer = AvailabilitySerializer(availability, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -277,13 +278,12 @@ class AddStore(APIView):
 
     def post(self, request):
         serializer = StoreSerializer(data=request.data)
-        if serializer.is_valid():
-            store = serializer.save()
-            store_flag = User_Status.custom_create_store_flags(store)
-            store.store_flag = store_flag
-            store.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
+        store = serializer.save()
+        store_flag = User_Status.custom_create_store_flags(store)
+        store.store_flag = store_flag
+        store.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class DeleteStore(DestroyAPIView):
@@ -339,7 +339,7 @@ class UpdateSelectedStore(APIView):
             store = Store.objects.get(pk=store_id)
         except ObjectDoesNotExist:
             raise Http404
-        partialUpdateOfStore(request, store)
+        store = partialUpdateOfStore(request, store)
         serializer = StoreSerializer(store, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -351,9 +351,9 @@ class AvailabilityOfBikesFromStore(APIView):
     def get(self, request, store_id):
         try:
             store = Store.objects.get(pk=store_id)
+            availabilities = Availability.objects.filter(store=store)
         except ObjectDoesNotExist:
             raise Http404
-        availabilities = Availability.objects.filter(store=store)
         serializer = AvailabilitySerializer(availabilities, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
