@@ -71,8 +71,7 @@ def merge_availabilities_from_until_algorithm(from_date, until_date, store, bike
             Q(begin=ava.from_date.isoformat()) &
             Q(end=ava.until_date.isoformat()) &
             Q(bike=ava.bike) &
-            (Q(booking_status__booking_status='Booked') | Q(booking_status__booking_status='Internal usage'))
-        )
+            Q(booking_status__booking_status='Booked'))
         booking.booking_status.clear()
         booking.booking_status.set(Booking_Status.objects.filter(booking_status='Cancelled'))
         send_cancellation_through_store_confirmation(booking)

@@ -38,8 +38,11 @@ class HelmholtzAuthView(KnoxLoginView):
     permission_classes = (AllowAny,)
 
     def get(self, request):
-        token = oauth.helmholtz.authorize_access_token(request)
-        userinfo = oauth.helmholtz.userinfo(request=request, token=token)
+        try:
+            token = oauth.helmholtz.authorize_access_token(request)
+            userinfo = oauth.helmholtz.userinfo(request=request, token=token)
+        except ObjectDoesNotExist:
+            raise Http404
         if User.objects.filter(username=userinfo['eduperson_unique_id']).exists() is False:
             user = User.objects.create_helmholtz_user(userinfo)
         else:
@@ -56,11 +59,10 @@ class RegistrateUser(CreateAPIView):
 
     def post(self, request, *args, **kwargs):
         serializer = RegistrationSerializer(data=request.data)
-        if serializer.is_valid():
-            user = serializer.save()
-            send_user_registered_confirmation(user)
-            return Response(status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        send_user_registered_confirmation(user)
+        return Response(status=status.HTTP_201_CREATED)
 
 
 class ConfirmEmail(APIView):
@@ -81,7 +83,6 @@ class ConfirmEmail(APIView):
 
 
 class UpdateUserData(RetrieveUpdateAPIView):
-    queryset = User.objects.all()
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
@@ -109,13 +110,10 @@ class LoginView(KnoxLoginView):
 
     def post(self, request, format=None):
         serializer = self.serializer_class(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            user = serializer.validated_data['user']
-            login(request, user)
-            response = super(LoginView, self).post(request, format=None)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        login(request, user)
+        response = super(LoginView, self).post(request, format=None)
         return Response({'token': response.data.get('token')}, status=status.HTTP_200_OK)
 
 
@@ -191,9 +189,8 @@ class UserDataOfUser(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        user = self.request.user
         fields_to_include = ['contact_data', 'username', 'user_status']
-        serializer = UserSerializer(user, many=False, fields=fields_to_include)
+        serializer = UserSerializer(self.request.user, many=False, fields=fields_to_include)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 

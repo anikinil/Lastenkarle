@@ -251,6 +251,7 @@ def add_equipment_to_bike(bike, equipment):
     bike.save()
 
 
+
 def random_exclude_key_value_pairs(data, num_to_exclude):
     keys_to_exclude = random.sample(list(data.keys()), num_to_exclude)
     excluded_data = {key: data[key] for key in data if key not in keys_to_exclude}

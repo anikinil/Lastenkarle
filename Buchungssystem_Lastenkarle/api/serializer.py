@@ -121,6 +121,8 @@ class RegistrationSerializer(serializers.ModelSerializer):
         year_of_birth = attrs.get('year_of_birth', None)
         if year_of_birth is not None and year_of_birth < datetime.now().year - 122:
             raise serializers.ValidationError('You are definitely not older than Jeanne Calment.')
+        if year_of_birth is not None and year_of_birth > datetime.now().year + 1:
+            raise serializers.ValidationError('You are definitely not born in the future.')
         return attrs
 
     def create(self, validated_data):
@@ -256,11 +258,12 @@ class MakeBookingSerializer(serializers.ModelSerializer):
                                            bike=bike,
                                            availability_status=
                                            Availability_Status.objects.get(availability_status='Available'))
-        if not left.exists():
-            raise serializers.ValidationError('Bike not available in selected time frame.')
-        availability = left.order_by('until_date').first()
-        if not availability.from_date <= begin or not availability.until_date >= end:
-            raise serializers.ValidationError('Bike not available in selected time frame.')
+        if not no_limit:
+            if not left.exists():
+                raise serializers.ValidationError('Bike not available in selected time frame.')
+            availability = left.order_by('until_date').first()
+            if not availability.from_date <= begin or not availability.until_date >= end:
+                raise serializers.ValidationError('Bike not available in selected time frame.')
         if begin > end:
             raise serializers.ValidationError('Time travel is not permitted.')
         day_prefix_begin = weekday_prefix_of_date(begin)
