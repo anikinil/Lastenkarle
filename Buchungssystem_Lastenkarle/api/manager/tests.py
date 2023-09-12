@@ -4,7 +4,7 @@ from knox.models import AuthToken
 from knox.auth import TokenAuthentication
 from rest_framework.test import APIRequestFactory
 from db_model.models import User_Status, User, Equipment, Availability_Status, Booking_Status, Booking, Store, Bike, \
-    Availability, UserManager, generate_random_string
+    Availability, UserManager, generate_random_string, LocalData
 from api.algorithm import split_availabilities_algorithm
 from api.user.v1.views import RegistrateUser
 from rest_framework import status
@@ -21,6 +21,7 @@ from Buchungssystem_Lastenkarle.settings import CANONICAL_HOST, BASE_DIR
 from configs.global_variables import lastenkarle_logo_url
 from configs.global_variables import spenden_link
 from configs.global_variables import lastenkarle_contact_data
+from datetime import date, time, datetime, timedelta
 
 from django.urls import reverse
 from rest_framework.test import APIClient
@@ -153,6 +154,12 @@ booking_data_4 = {
     "end": "2023-10-12",
     "equipment": []
 }
+local_user_data = {
+    "first_name": "Wildegard",
+    "last_name": "Wilde",
+    "address": "Wildestraße 1, 01235 Wildhausen",
+    "id_number": "123"
+}
 
 
 def initialize_store(store_data):
@@ -213,6 +220,12 @@ def add_admin_flag_to_user(user):
     user.save()
 
 
+def initializer_local_data_of_user(user, local_data):
+    data = LocalData.objects.create(user=user, date_of_verification=datetime.now().date() + timedelta(days=180),
+                                    **local_data)
+    return data
+
+
 class ConfirmBikeHandOutTest(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -232,6 +245,11 @@ class ConfirmBikeHandOutTest(TestCase):
         self.booking = initialize_booking_of_bike_with_flag(self.user, self.bike, 'Booked', booking_data['begin'],
                                                             booking_data['end'])
         self.confirm_bike_hand_out_url = f'/api/manager/v1/bookings/{self.booking.pk}/hand-out'
+
+    def tearDown(self):
+        for bike in Bike.objects.all():
+            os.remove(os.path.join(BASE_DIR, 'media/', str(bike.image)))
+        super().tearDown()
 
     def test_confirm_bike_handout_valid(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.manager_token)
@@ -329,6 +347,11 @@ class ConfirmBikeReturnTest(TestCase):
                                                             booking_data['end'])
         self.confirm_bike_return_url = f'/api/manager/v1/bookings/{self.booking.pk}/return'
 
+    def tearDown(self):
+        for bike in Bike.objects.all():
+            os.remove(os.path.join(BASE_DIR, 'media/', str(bike.image)))
+        super().tearDown()
+
     def test_confirm_bike_return_valid(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.manager_token)
         response = self.client.post(self.confirm_bike_return_url)
@@ -406,3 +429,132 @@ class ConfirmBikeReturnTest(TestCase):
         response = self.client.post('/api/manager/v1/bookings/' + str(int(self.booking.pk) + 1) + '/return')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
+
+class GetLocalDataOfUserTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        # register and login User and manager
+        self.user, self.user_token = initialize_user_with_token(self.client, user_data, login_data)
+        self.manager, self.manager_token = initialize_user_with_token(self.client, manager_data_1, manager_login_data_1)
+        # initialize store
+        self.store = initialize_store(store_data1)
+        # initialize bike
+        self.bike = initialize_bike_of_store(self.store, bike1_data)
+        # enroll and verify manager
+        add_verified_flag_to_user(self.manager)
+        add_store_manager_flag_to_user(self.manager, self.store)
+        # verify user
+        add_verified_flag_to_user(self.user)
+        # make booking
+        self.booking = initialize_booking_of_bike_with_flag(self.user, self.bike, 'Booked', booking_data['begin'],
+                                                            booking_data['end'])
+        initializer_local_data_of_user(self.user, local_user_data)
+        self.get_user_data_of_booking1 = f'/api/manager/v1/bookings/{self.booking.pk}/user-info'
+
+    def tearDown(self):
+        for bike in Bike.objects.all():
+            os.remove(os.path.join(BASE_DIR, 'media/', str(bike.image)))
+        super().tearDown()
+
+    def test_get_user_data_of_booking_valid(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.manager_token)
+        response = self.client.get(self.get_user_data_of_booking1)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(response_data['first_name'], local_user_data['first_name'])
+        self.assertEqual(response_data['last_name'], local_user_data['last_name'])
+        self.assertEqual(response_data['address'], local_user_data['address'])
+        self.assertEqual(response_data['id_number'], local_user_data['id_number'])
+        self.assertNotEqual(response_data['date_of_verification'], None)
+
+    def test_get_user_data_without_permission(self):
+        # without token
+        self.client.credentials()
+        response = self.client.get(self.get_user_data_of_booking1)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        # with user token
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_token)
+        response = self.client.get(self.get_user_data_of_booking1)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        # with invalid token
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + 'invalidtoken')
+        response = self.client.get(self.get_user_data_of_booking1)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_get_user_data_of_booking_from_other_store(self):
+        store2 = initialize_store(store_data2)
+        manager2, token_manager_2 = initialize_user_with_token(self.client, manager_data_2, manager_login_data_2)
+        add_store_manager_flag_to_user(manager2, store2)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token_manager_2)
+        response = self.client.get(self.get_user_data_of_booking1)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_get_user_data_with_invalid_booking_id(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.manager_token)
+        response = self.client.get('/api/manager/v1/bookings/-1/user-info')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+class CreateLocalDataOfUserTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        # register and login User and manager
+        self.user, self.user_token = initialize_user_with_token(self.client, user_data, login_data)
+        self.manager, self.manager_token = initialize_user_with_token(self.client, manager_data_1, manager_login_data_1)
+        # initialize store
+        self.store = initialize_store(store_data1)
+        # initialize bike
+        self.bike = initialize_bike_of_store(self.store, bike1_data)
+        # enroll and verify manager
+        add_verified_flag_to_user(self.manager)
+        add_store_manager_flag_to_user(self.manager, self.store)
+        # verify user
+        add_verified_flag_to_user(self.user)
+        # make booking
+        self.booking = initialize_booking_of_bike_with_flag(self.user, self.bike, 'Booked', booking_data['begin'],
+                                                            booking_data['end'])
+        self.create_local_user_data = f'/api/manager/v1/bookings/{self.booking.pk}/user-info'
+
+    def tearDown(self):
+        for bike in Bike.objects.all():
+            os.remove(os.path.join(BASE_DIR, 'media/', str(bike.image)))
+        super().tearDown()
+
+    @skip
+    def test_create_local_user_data_that_is_already_created(self):
+        initializer_local_data_of_user(self.user, local_user_data)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.manager_token)
+        response = self.client.post(self.create_local_user_data, local_user_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_local_user_data_valid(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.manager_token)
+        response = self.client.post(self.create_local_user_data, local_user_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_create_local_user_data_of_invalid_booking(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.manager_token)
+        response = self.client.post('/api/manager/v1/bookings/-1/user-info', local_user_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_create_user_data_of_booking_from_other_store(self):
+        store2 = initialize_store(store_data2)
+        manager2, token_manager_2 = initialize_user_with_token(self.client, manager_data_2, manager_login_data_2)
+        add_store_manager_flag_to_user(manager2, store2)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token_manager_2)
+        response = self.client.post(self.create_local_user_data)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_create_user_data_of_booking_without_permission(self):
+        # try to create as user
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_token)
+        response = self.client.post(self.create_local_user_data, local_user_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        # try without token
+        self.client.credentials()
+        response = self.client.post(self.create_local_user_data, local_user_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        # try with invalid
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + 'invalidtoken')
+        response = self.client.post(self.create_local_user_data, local_user_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)

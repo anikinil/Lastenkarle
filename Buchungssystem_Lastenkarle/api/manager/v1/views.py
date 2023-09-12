@@ -313,7 +313,7 @@ class CheckLocalData(APIView):
         user = booking.user
         serializer = LocalDataSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(user=user, date_of_verification=datetime.now() + timedelta(days=180))
+            serializer.save(user=user, date_of_verification=(datetime.now() + timedelta(days=180)).date())
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
