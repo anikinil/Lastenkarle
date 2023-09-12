@@ -145,7 +145,7 @@ def initialize_booking_of_bike_with_flag(user, bike, booking_status_label, begin
         split_availabilities_algorithm(booking)
     return booking
 
-@skip
+
 class MigrationTest(TestCase):
 
     def test_migrations(self):
@@ -175,7 +175,7 @@ class MigrationTest(TestCase):
         for term in search_terms:
             self.assertIn(term, found_equipment)
 
-@skip
+
 class ImageExistsTest(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -191,7 +191,7 @@ class ImageExistsTest(TestCase):
         # Check if the content type of the image is correct (starts with 'image/')
         self.assertTrue(response.headers['Content-Type'] == 'image/png')
 
-@skip
+
 class RegistrateUserTest(TestCase):
     def setUp(self):
         self.factory = APIRequestFactory()
@@ -287,7 +287,7 @@ class RegistrateUserTest(TestCase):
         # Check that no emails are sent
         self.assertEqual(1, len(mail.outbox))
 
-@skip
+
 class LoginTest(TestCase):
 
     def setUp(self):
@@ -405,7 +405,7 @@ class LoginTest(TestCase):
         self.assertIn('non_field_errors', response.data)
         self.assertEqual(response_data['non_field_errors'], ['Wrong credentials'])
 
-@skip
+
 class LogoutTest(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -438,7 +438,7 @@ class LogoutTest(TestCase):
         response = self.client.get('/api/user/v1/user/data')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-@skip
+
 class LogoutAllTest(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -483,7 +483,7 @@ class LogoutAllTest(TestCase):
         # Check if the status code is 401 Unauthorized
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-@skip
+
 class GetUserDataTest(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -518,7 +518,7 @@ class GetUserDataTest(TestCase):
         # Check the status code, it should be 401 (UNAUTHORIZED)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-@skip
+
 class UpdateUserDataTest(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -678,7 +678,7 @@ class UpdateUserDataTest(TestCase):
         # Check the number of emails, that have been sent
         self.assertEqual(0, len(mail.outbox))
 
-@skip
+
 class DeleteAccountTest(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -819,7 +819,7 @@ class DeleteAccountTest(TestCase):
         self.assertEqual(response_data, expected_json)
         self.assertEqual(self.admin.is_active, True)
 
-@skip
+
 class GetAllBookingsOfUserTest(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -933,7 +933,7 @@ class GetAllBookingsOfUserTest(TestCase):
         response = self.client.get(self.get_all_bookings_of_user_url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-@skip
+
 class BookingDataTest(TestCase):
 
     def setUp(self):
@@ -1008,7 +1008,7 @@ class BookingDataTest(TestCase):
         response = self.client.get('/api/user/v1/user/bookings/' + '-1')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-@skip
+
 class CancelBookingTest(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -1082,7 +1082,7 @@ class CancelBookingTest(TestCase):
         response = self.client.post(self.cancel_booking_url + '-1')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-@skip
+
 class GetBookedBikeTest(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -1145,7 +1145,7 @@ class GetBookedBikeTest(TestCase):
         response = self.client.get(self.get_booked_bike_url + '-1' + '/bike')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-@skip
+
 class GetBookedBikeOfStoreTest(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -1201,7 +1201,7 @@ class GetBookedBikeOfStoreTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(response_data['detail'], 'Not found.')
 
-@skip
+
 class VerificationTest(TestCase):
     def setUp(self):
         self.client = APIClient()
