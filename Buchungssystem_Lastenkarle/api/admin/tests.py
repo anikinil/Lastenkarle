@@ -258,7 +258,7 @@ def random_exclude_key_value_pairs(data, num_to_exclude):
     excluded_data = {key: data[key] for key in data if key not in keys_to_exclude}
     return excluded_data
 
-@skip
+
 class Test_registered_equipment(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -319,7 +319,7 @@ class Test_registered_equipment(TestCase):
             self.assertTrue(isinstance(item.get("id"), int))
             self.assertTrue(isinstance(item.get("equipment"), str))
 
-@skip
+
 class Test_user_flags_interactions(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -465,7 +465,7 @@ class Test_user_flags_interactions(TestCase):
                                     format='json')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-@skip
+
 class Test_user_banning(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -558,7 +558,7 @@ class Test_user_banning(TestCase):
 
     # TODO check mail
 
-@skip
+
 class Test_store_creation(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -773,7 +773,7 @@ class Test_store_creation(TestCase):
         self.assertTrue(isinstance(response_data.get("sun_close"), str))
         self.assertTrue(isinstance(response_data.get("store_flag"), int))
 
-@skip
+
 class Test_create_bike_of_store(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -940,7 +940,7 @@ class Test_create_bike_of_store(TestCase):
         for equip in equipment:
             self.assertTrue(isinstance(equip, str))
 
-@skip
+
 class Test_bike_deletion_via_admin(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -1046,7 +1046,7 @@ class Test_bike_deletion_via_admin(TestCase):
 
     # TODO check mail
 
-@skip
+
 class Test_store_deletion_via_admin(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -1163,7 +1163,7 @@ class Test_store_deletion_via_admin(TestCase):
 
     # TODO check mail
 
-@skip
+
 class Test_all_users(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -1249,7 +1249,7 @@ class Test_all_users(TestCase):
             for status in user_status:
                 self.assertIn(status.get("user_status"), user_status_strings)
 
-@skip
+
 class test_retrieve_one_user_as_admin(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -1333,7 +1333,7 @@ class test_retrieve_one_user_as_admin(TestCase):
         for status in user_status:
             self.assertIn(status.get("user_status"), user_status_strings)
 
-@skip
+
 class Test_all_bookings_of_user_as_admin(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -1439,7 +1439,7 @@ class Test_all_bookings_of_user_as_admin(TestCase):
             for value in equipment:
                 self.assertIn(value.get("equipment"), equipment_strings)
 
-@skip
+
 class Test_all_bookings_as_admin(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -1544,7 +1544,7 @@ class Test_all_bookings_as_admin(TestCase):
             for value in equipment:
                 self.assertIn(value.get("equipment"), equipment_strings)
 
-@skip
+
 class Test_retrieve_booking_as_admin(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -1725,7 +1725,7 @@ class Test_retrieve_booking_as_admin(TestCase):
 
     # TODO email check
 
-@skip
+
 class Test_retrieve_all_bikes_as_admin(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -1814,7 +1814,7 @@ class Test_retrieve_all_bikes_as_admin(TestCase):
             for value in equipment:
                 self.assertIn(value.get("equipment"), equipment_strings)
 
-@skip
+
 class Test_retrieve_bike_as_admin(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -1903,7 +1903,7 @@ class Test_retrieve_bike_as_admin(TestCase):
         response = self.client.get('/api/booking/v1/bikes/ ')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-@skip
+
 class Test_retrieve_availabilities_of_bike_as_admin(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -1991,7 +1991,7 @@ class Test_retrieve_availabilities_of_bike_as_admin(TestCase):
             for value in availability_status:
                 self.assertIn(value.get("availability_status"), availability_strings)
 
-@skip
+
 class Test_all_stores_as_admin(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -2120,7 +2120,7 @@ class Test_all_stores_as_admin(TestCase):
             self.assertEqual(item.get("sun_close"), str(store.sun_close))
             self.assertEqual(item.get("store_flag"), store.store_flag.pk)
 
-@skip
+
 class Test_retrieve_store_as_admin(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -2249,7 +2249,7 @@ class Test_retrieve_store_as_admin(TestCase):
         self.assertEqual(response_data.get("sun_close"), str(store.sun_close))
         self.assertEqual(response_data.get("store_flag"), store.store_flag.pk)
 
-@skip
+
 class Test_retrieve_availabilities_of_store_as_admin(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -2337,7 +2337,7 @@ class Test_retrieve_availabilities_of_store_as_admin(TestCase):
             for value in availability_status:
                 self.assertIn(value.get("availability_status"), availability_strings)
 
-@skip
+
 class Test_partial_update_of_store_as_admin(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -2547,7 +2547,7 @@ class Test_partial_update_of_store_as_admin(TestCase):
         response_data = json.loads(response.content.decode('utf-8'))
         self.assertEqual(response_data, expected_json)
 
-@skip
+
 class Test_partial_update_of_bike_as_admin(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -2740,7 +2740,7 @@ class Test_partial_update_of_bike_as_admin(TestCase):
         response_data = json.loads(response.content.decode('utf-8'))
         self.assertEqual(response_data, expected_json)
 
-@skip
+
 class Test_equipment_to_bike_as_admin(TestCase):
     def setUp(self):
         self.client = APIClient()

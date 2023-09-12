@@ -1419,7 +1419,6 @@ class GetBookingByQRTestCase(BaseTestCase):
         response = self.client.get(f'/api/manager/v1/bookings/by/{booking.string}', format='json')
        # self.assertEqual(response.status_code, status.HTTP_200_OK)
         response_data = json.loads(response.content.decode('utf-8'))
-        print(response_data)
         self.assertEqual(response_data.get('id'), booking.pk)
         self.assertEqual(response_data.get('preferred_username'), booking.user.preferred_username)
         self.assertEqual(response_data.get('assurance_lvl'), booking.user.assurance_lvl)

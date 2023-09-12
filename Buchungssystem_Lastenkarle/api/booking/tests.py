@@ -152,7 +152,7 @@ def initialize_bike_of_store(store, bike_data):
     return bike
 
 
-@skip
+
 class Test_all_regions(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -179,7 +179,7 @@ class Test_all_regions(TestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token_wildegard)
         self.check_region_response_payload_format()
 
-@skip
+
 class Test_all_availabilities(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -221,7 +221,7 @@ class Test_all_availabilities(TestCase):
             for status in availability_status:
                 self.assertTrue(isinstance(status.get("availability_status"), str))
 
-@skip
+
 class Test_all_bikes(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -266,7 +266,7 @@ class Test_all_bikes(TestCase):
             for equip in equipment:
                 self.assertTrue(isinstance(equip, str))
 
-@skip
+
 class Test_all_stores(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -329,7 +329,7 @@ class Test_all_stores(TestCase):
             self.assertTrue(isinstance(item.get("sun_open"), str))
             self.assertTrue(isinstance(item.get("sun_close"), str))
 
-@skip
+
 class Test_selected_bike(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -387,7 +387,7 @@ class Test_selected_bike(TestCase):
         response = self.client.get('/api/booking/v1/bikes/ ')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-@skip
+
 class Test_store_by_bike(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -457,7 +457,7 @@ class Test_store_by_bike(TestCase):
         response = self.client.get('/api/booking/v1/bikes/ /store')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-@skip
+
 class Test_bike_availability(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -506,7 +506,7 @@ class Test_bike_availability(TestCase):
         # Check if {'bike': self.bike1.pk} exists in any dictionary within response_data
         self.assertTrue(any(item.get("bike") == self.bike1.pk for item in response_data))
 
-@skip
+
 class Test_make_booking(TestCase):
     def setUp(self):
         self.client = APIClient()
