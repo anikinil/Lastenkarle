@@ -210,7 +210,7 @@ class DeleteUserAccount(DestroyAPIView):
         bookings = Booking.objects.filter(user=user, booking_status=Booking_Status.objects.get(booking_status='Booked'))
         for booking in bookings:
             booking.booking_status.clear()
-            booking.booking_status.set(Booking_Status.objects.filter(booking_status='Cancelled'))
+            booking.booking_status.add(Booking_Status.objects.get(booking_status='Cancelled'))
             booking.string = None
             booking.save()
             merge_availabilities_algorithm(booking)

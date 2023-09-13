@@ -29,13 +29,13 @@
   
   <p class="text-black">danke für deine Buchung von {{ bike_name }} bei {{ store_name }}!</p>
   
-  <p class="headline-red">Buchungsdetails/Stornierung</p>
+  <p class="headline-red"><b>Buchungsdetails/Stornierung</b></p>
   
-  <p class="text-black">Du kannst deine Buchungsdetails hier einsehen und die Buchung jederzeit stornieren: <a class="red-link" href="{{ booking_link }}">Link zu deiner Buchung</a>.</p>
+  <p class="text-black">Du kannst deine Buchungsdetails in deinem Account unter "Buchungsverwaltung" einsehen und die Buchung jederzeit stornieren.</p>
   {% if booking_equipment %}
     Du hast folgendes Equipment zu deiner Buchung hinzugefügt: {{ booking_equipment }}
   {% endif %}
-  <p class="headline-red">Informationen zur Abholung</p>
+  <p class="headline-red"><b>Informationen zur Abholung</b></p>
   
   <p class="text-black">Hole {{ bike_name }} am {{ start_date }} bei der Station {{ store_name }} ab.<br>
     Bringe es dort spätestens am {{ end_date }} wieder zurück.</p>
@@ -44,17 +44,19 @@
     Es kann passieren, dass du dich beim Abholen ausweisen musst.<br>
     Aus diesem Grund möchten wir dich bitten ein entsprechendes Ausweisdokument mitzubringen.</p>
   
-  <p class="bold-black">Abholadresse:</p>
+  <p class="bold-black"><b>Abholadresse:</b></p>
   <p class="text-black">
     {{ store_address }}
   </p>
   
-  <p class="bold-black">Öffnungszeiten:</p>
+  <p class="bold-black"><b>Öffnungszeiten:</b></p>
 
   <p class="text-black">
-    {{ store_opening_hours }}<br><br>
+      {% for weekday in store_opening_hours %}
+            {{ weekday }}<br>
+      {% endfor %}<br>
     Bitte beachte, dass die Öffnungszeiten der Station eventuell kurzzeitig von unseren Angaben abweichen können. Daher empfehlen wir dir, auf der Webseite des Shops die aktuellen Öffnungszeiten nachzuschauen.</p> <br>
-  <p class="bold-black">Kontaktdaten der Station:</p>
+  <p class="bold-black"><b>Kontaktdaten der Station:</b></p>
   <p class="text-black">
     {{ store_name }}<br>
     {{ store_phone_number }}<br>
