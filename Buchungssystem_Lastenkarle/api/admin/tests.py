@@ -252,7 +252,6 @@ def add_equipment_to_bike(bike, equipment):
     bike.save()
 
 
-
 def random_exclude_key_value_pairs(data, num_to_exclude):
     keys_to_exclude = random.sample(list(data.keys()), num_to_exclude)
     excluded_data = {key: data[key] for key in data if key not in keys_to_exclude}
@@ -2687,12 +2686,11 @@ class Test_partial_update_of_bike_as_admin(TestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_partial_update_of_bike_as_admin_various_request_payloads(self):
-        update_bike_data = {
+        update_bike_data_1 = {
             'name': 'Udini',
-            'image': open(image_path_update, 'rb')
         }
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
-        response = self.client.patch(f'/api/admin/v1/bikes/{self.bike1.pk}/update', update_bike_data,
+        response = self.client.patch(f'/api/admin/v1/bikes/{self.bike1.pk}/update', update_bike_data_1,
                                      format='multipart')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         response_data = json.loads(response.content.decode('utf-8'))
@@ -2706,12 +2704,12 @@ class Test_partial_update_of_bike_as_admin(TestCase):
         equipment_strings = [value.get("equipment") for value in equipment]
         for value in equipment:
             self.assertIn(value.get("equipment"), equipment_strings)
-        update_bike_data_partial_no_image = {
-            'name': 'Udini',
-            'description': 'Brain damage',
+
+        update_bike_data_2 = {
+            'description': 'I am god',
         }
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
-        response = self.client.patch(f'/api/admin/v1/bikes/{self.bike1.pk}/update', update_bike_data_partial_no_image,
+        response = self.client.patch(f'/api/admin/v1/bikes/{self.bike1.pk}/update', update_bike_data_2,
                                      format='multipart')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         response_data = json.loads(response.content.decode('utf-8'))
@@ -2725,6 +2723,107 @@ class Test_partial_update_of_bike_as_admin(TestCase):
         equipment_strings = [value.get("equipment") for value in equipment]
         for value in equipment:
             self.assertIn(value.get("equipment"), equipment_strings)
+
+        update_bike_data_3 = {
+            'image': open(image_path_update, 'rb'),
+        }
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.patch(f'/api/admin/v1/bikes/{self.bike1.pk}/update', update_bike_data_3,
+                                     format='multipart')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = json.loads(response.content.decode('utf-8'))
+        bike = Bike.objects.get(pk=response_data.get("id"))
+        self.assertEqual(response_data.get("id"), bike.pk)
+        self.assertEqual(response_data.get("store"), bike.store.pk)
+        self.assertEqual(response_data.get("name"), bike.name)
+        self.assertEqual(response_data.get("description"), bike.description)
+        self.assertEqual(response_data.get("image"), bike.image.url)
+        equipment = response_data.get("equipment", [])
+        equipment_strings = [value.get("equipment") for value in equipment]
+        for value in equipment:
+            self.assertIn(value.get("equipment"), equipment_strings)
+
+        update_bike_data_4 = {
+            'name': 'Hudini',
+            'description': 'I am goat',
+        }
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.patch(f'/api/admin/v1/bikes/{self.bike1.pk}/update', update_bike_data_4,
+                                     format='multipart')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = json.loads(response.content.decode('utf-8'))
+        bike = Bike.objects.get(pk=response_data.get("id"))
+        self.assertEqual(response_data.get("id"), bike.pk)
+        self.assertEqual(response_data.get("store"), bike.store.pk)
+        self.assertEqual(response_data.get("name"), bike.name)
+        self.assertEqual(response_data.get("description"), bike.description)
+        self.assertEqual(response_data.get("image"), bike.image.url)
+        equipment = response_data.get("equipment", [])
+        equipment_strings = [value.get("equipment") for value in equipment]
+        for value in equipment:
+            self.assertIn(value.get("equipment"), equipment_strings)
+
+        update_bike_data_5 = {
+            'name': 'Schudini',
+            'image': open(image_path_update, 'rb'),
+        }
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.patch(f'/api/admin/v1/bikes/{self.bike1.pk}/update', update_bike_data_5,
+                                     format='multipart')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = json.loads(response.content.decode('utf-8'))
+        bike = Bike.objects.get(pk=response_data.get("id"))
+        self.assertEqual(response_data.get("id"), bike.pk)
+        self.assertEqual(response_data.get("store"), bike.store.pk)
+        self.assertEqual(response_data.get("name"), bike.name)
+        self.assertEqual(response_data.get("description"), bike.description)
+        self.assertEqual(response_data.get("image"), bike.image.url)
+        equipment = response_data.get("equipment", [])
+        equipment_strings = [value.get("equipment") for value in equipment]
+        for value in equipment:
+            self.assertIn(value.get("equipment"), equipment_strings)
+
+        update_bike_data_6 = {
+            'description': 'Get me some cake',
+            'image': open(image_path, 'rb'),
+        }
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.patch(f'/api/admin/v1/bikes/{self.bike1.pk}/update', update_bike_data_6,
+                                     format='multipart')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = json.loads(response.content.decode('utf-8'))
+        bike = Bike.objects.get(pk=response_data.get("id"))
+        self.assertEqual(response_data.get("id"), bike.pk)
+        self.assertEqual(response_data.get("store"), bike.store.pk)
+        self.assertEqual(response_data.get("name"), bike.name)
+        self.assertEqual(response_data.get("description"), bike.description)
+        self.assertEqual(response_data.get("image"), bike.image.url)
+        equipment = response_data.get("equipment", [])
+        equipment_strings = [value.get("equipment") for value in equipment]
+        for value in equipment:
+            self.assertIn(value.get("equipment"), equipment_strings)
+
+        update_bike_data_7 = {
+            'name': 'Gucci',
+            'description': 'Prada',
+            'image': open(image_path_update, 'rb'),
+        }
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.caro_token)
+        response = self.client.patch(f'/api/admin/v1/bikes/{self.bike1.pk}/update', update_bike_data_7,
+                                     format='multipart')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = json.loads(response.content.decode('utf-8'))
+        bike = Bike.objects.get(pk=response_data.get("id"))
+        self.assertEqual(response_data.get("id"), bike.pk)
+        self.assertEqual(response_data.get("store"), bike.store.pk)
+        self.assertEqual(response_data.get("name"), bike.name)
+        self.assertEqual(response_data.get("description"), bike.description)
+        self.assertEqual(response_data.get("image"), bike.image.url)
+        equipment = response_data.get("equipment", [])
+        equipment_strings = [value.get("equipment") for value in equipment]
+        for value in equipment:
+            self.assertIn(value.get("equipment"), equipment_strings)
+
         expected_json = [
             "Updating field is not allowed."
         ]
