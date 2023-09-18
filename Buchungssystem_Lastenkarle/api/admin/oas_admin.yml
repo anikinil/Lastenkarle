@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   title: Admin Rest API
-  description: The Admin API is used for global view on all components of the booking system. Also it allows to add important components like 'Stores' to the application. Furthermore it can alter data on most of the components as will since admins should have complete control over the system.
+  description: The Admin API is used for global view on all components of the booking system. Also it allows to add important components like 'Stores' and 'Bikes' to the system. Furthermore it can alter data on most of the components at will since admins should have complete control over the entire system. For using any of these API calls an user needs to be logged in and their account must have the necessary permissions.
   version: v1
 host: django
 schemes:
@@ -23,7 +23,1010 @@ paths:
   /ban-user:
     post:
       operationId: ban-user_create
-      description: Ban a user by providing contact data.
+      summary: Ban a User
+      description: Ban a user by providing their contact data (email).
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              contact_data:
+                description: User's contact data (email).
+                type: string
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+      security:
+        - TokenAuth: []
+      responses:
+        '200':
+          description: User banned successfully.
+        '400':
+          description: Bad Request - User is already banned or invalid input.
+        '401':
+          description: Unauthorized - User not logged in.
+        '403':
+          description: Forbidden - User does not have the necessary permissions.
+        '404':
+          description: User not found with the provided contact data.
+      tags:
+        - ban-user
+    parameters: []
+  /bikes:
+    get:
+      operationId: bikes_list
+      summary: Get All Bikes
+      description: Retrieve a list of all bikes from all stores.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+      security:
+        - TokenAuth: []
+      responses:
+        '200':
+          description: Bikes retrieved successfully.
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  description: Bike ID.
+                  type: integer
+                name:
+                  description: Bike name.
+                  type: string
+                description:
+                  description: Bike description.
+                  type: string
+                image:
+                  description: URL of bike's image.
+                  type: string
+                equipment:
+                  description: Equipment list.
+                  type: array
+                  items:
+                    type: string
+        '401':
+          description: Unauthorized - User not logged in.
+        '403':
+          description: Forbidden - User does not have the necessary permissions.
+      tags:
+        - bikes
+    parameters: []
+  /bikes/{bike_id}:
+    get:
+      operationId: bikes_read
+      summary: Get Selected Bike
+      description: Retrieve details of a selected bike.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+      security:
+        - TokenAuth: []
+      responses:
+        '200':
+          description: Bike details retrieved successfully.
+          schema:
+            type: object
+            properties:
+              id:
+                description: Bike ID.
+                type: integer
+              name:
+                description: Bike name.
+                type: string
+              description:
+                description: Bike description.
+                type: string
+              image:
+                description: URL of bike's image.
+                type: string
+              equipment:
+                description: Equipment list.
+                type: array
+                items:
+                  type: string
+        '401':
+          description: Unauthorized - User not logged in.
+        '403':
+          description: Forbidden - User does not have the necessary permissions.
+        '404':
+          description: Bike not found.
+      tags:
+        - bikes
+    parameters:
+      - name: bike_id
+        in: path
+        required: true
+        type: string
+  /bikes/{bike_id}/availability:
+    get:
+      operationId: bikes_availability_list
+      summary: Get Availability of a Bike
+      description: Get the availability status of a specific bike.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+      security:
+        - TokenAuth: []
+      responses:
+        '200':
+          description: List of availability status for the bike.
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  description: Availability ID.
+                  type: integer
+                from_date:
+                  description: Start date of availability.
+                  type: string
+                until_date:
+                  description: End date of availability.
+                  type: string
+                availability_status:
+                  description: Availability status as an array of strings.
+                  type: array
+                  items:
+                    type: string
+        '401':
+          description: Unauthorized - User not logged in.
+        '403':
+          description: Forbidden - User does not have the necessary permissions.
+        '404':
+          description: Bike not found with the provided ID.
+      tags:
+        - bikes
+    parameters:
+      - name: bike_id
+        in: path
+        required: true
+        type: string
+  /bikes/{bike_id}/equipment:
+    post:
+      operationId: bikes_equipment_create
+      summary: Add Equipment to Bike
+      description: Add equipment to a bike.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            required:
+              - equipment
+            type: object
+            properties:
+              equipment:
+                description: Equipment to be added.
+                type: string
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+      security:
+        - TokenAuth: []
+      responses:
+        '200':
+          description: Equipment added to the bike successfully.
+        '201':
+          description: Equipment created and added to the bike successfully.
+        '400':
+          description: Bad Request - Invalid input or missing data.
+        '401':
+          description: Unauthorized - User not logged in.
+        '403':
+          description: Forbidden - User does not have the necessary permissions.
+        '404':
+          description: Bike not found.
+      tags:
+        - bikes
+    delete:
+      operationId: bikes_equipment_delete
+      summary: Remove Equipment from Bike
+      description: Remove equipment from a bike.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            required:
+              - equipment
+            type: object
+            properties:
+              equipment:
+                description: Equipment to be removed.
+                type: string
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+      security:
+        - TokenAuth: []
+      responses:
+        '200':
+          description: Equipment removed from the bike successfully.
+        '400':
+          description: Bad Request - Invalid input or missing data.
+        '401':
+          description: Unauthorized - User not logged in.
+        '403':
+          description: Forbidden - User does not have the necessary permissions.
+        '404':
+          description: Bike not found or equipment not found on the bike.
+      tags:
+        - bikes
+    parameters:
+      - name: bike_id
+        in: path
+        required: true
+        type: string
+  /bikes/{bike_id}/update:
+    patch:
+      operationId: bikes_update_partial_update
+      summary: Update Selected Bike
+      description: Update the details of a selected bike.
+      parameters:
+        - name: bike_id
+          in: path
+          description: ID of the bike to be updated.
+          type: integer
+          required: true
+        - name: name
+          in: formData
+          description: Updated bike name.
+          type: string
+        - name: image
+          in: formData
+          description: Updated bike image.
+          type: file
+        - name: description
+          in: formData
+          description: Updated bike description.
+          type: string
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+      security:
+        - TokenAuth: []
+      responses:
+        '200':
+          description: Bike details updated successfully.
+          schema:
+            type: object
+            properties:
+              name:
+                description: Updated bike name.
+                type: string
+              image:
+                description: Updated bike image URL.
+                type: string
+              description:
+                description: Updated bike description.
+                type: string
+        '400':
+          description: Bad Request - Invalid input or missing data.
+        '401':
+          description: Unauthorized - User not logged in.
+        '403':
+          description: Forbidden - User does not have the necessary permissions.
+        '404':
+          description: Bike not found with the provided ID.
+      consumes:
+        - multipart/form-data
+        - application/x-www-form-urlencoded
+      tags:
+        - bikes
+    parameters:
+      - name: bike_id
+        in: path
+        required: true
+        type: string
+  /bookings:
+    get:
+      operationId: bookings_list
+      summary: Get All Bookings
+      description: Retrieve details of all bookings.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+      security:
+        - TokenAuth: []
+      responses:
+        '200':
+          description: List of bookings.
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                preferred_username:
+                  description: User's preferred username.
+                  type: string
+                assurance_lvl:
+                  description: User's assurance level.
+                  type: string
+                bike:
+                  description: Bike details.
+                  type: object
+                  properties:
+                    name:
+                      description: Bike name.
+                      type: string
+                    description:
+                      description: Bike description.
+                      type: string
+                    image:
+                      description: URL of bike image.
+                      type: string
+                    equipment:
+                      type: array
+                      items:
+                        description: Equipment list.
+                        type: string
+                begin:
+                  description: Booking start date.
+                  type: string
+                end:
+                  description: Booking end date.
+                  type: string
+                comment:
+                  description: Booking comment.
+                  type: string
+                booking_status:
+                  description: Booking status.
+                  type: string
+                equipment:
+                  description: Equipment list.
+                  type: array
+                  items:
+                    description: Equipment list.
+                    type: string
+                id:
+                  description: Booking ID.
+                  type: integer
+        '401':
+          description: Unauthorized - User not logged in.
+        '403':
+          description: Forbidden - User does not have the necessary permissions.
+      tags:
+        - bookings
+    parameters: []
+  /bookings/{booking_id}:
+    get:
+      operationId: bookings_read
+      summary: Get Selected Booking
+      description: Retrieve details of a selected booking.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+      security:
+        - TokenAuth: []
+      responses:
+        '200':
+          description: Booking details.
+          schema:
+            type: object
+            properties:
+              preferred_username:
+                description: User's preferred username.
+                type: string
+              assurance_lvl:
+                description: User's assurance level.
+                type: string
+              bike:
+                description: Bike details.
+                type: object
+                properties:
+                  name:
+                    description: Bike name.
+                    type: string
+                  description:
+                    description: Bike description.
+                    type: string
+                  image:
+                    description: URL of bike image.
+                    type: string
+                  equipment:
+                    type: array
+                    items:
+                      description: Equipment list.
+                      type: string
+              begin:
+                description: Booking start date.
+                type: string
+              end:
+                description: Booking end date.
+                type: string
+              comment:
+                description: Booking comment.
+                type: string
+              booking_status:
+                description: Booking status.
+                type: string
+              equipment:
+                description: Equipment list.
+                type: array
+                items:
+                  description: Equipment list.
+                  type: string
+        '401':
+          description: Unauthorized - User not logged in.
+        '403':
+          description: Forbidden - User does not have the necessary permissions.
+      tags:
+        - bookings
+    post:
+      operationId: bookings_create
+      summary: Cancel Selected Booking
+      description: Cancel a selected booking.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+      security:
+        - TokenAuth: []
+      responses:
+        '200':
+          description: Booking cancelled successfully.
+        '400':
+          description: Bad Request - Booking is not in 'Booked' status.
+        '401':
+          description: Unauthorized - User not logged in.
+        '403':
+          description: Forbidden - User does not have the necessary permissions.
+      tags:
+        - bookings
+    parameters:
+      - name: booking_id
+        in: path
+        required: true
+        type: string
+  /create/store:
+    post:
+      operationId: create_store_create
+      summary: Add a New Store
+      description: Add a new store.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            required:
+              - region
+              - address
+              - email
+              - name
+            type: object
+            properties:
+              region:
+                description: Region of the store (e.g., Karlsruhe).
+                type: string
+              address:
+                description: Address of the store.
+                type: string
+              phone_number:
+                description: Phone number of the store.
+                type: string
+              email:
+                description: Email address of the store.
+                type: string
+              name:
+                description: Name of the store (unique).
+                type: string
+              prep_time:
+                description: Preparation time of the store.
+                type: string
+              mon_opened:
+                description: Is the store open on Mondays.
+                type: boolean
+              mon_open:
+                description: Opening time on Mondays (HH:MM format).
+                type: string
+              mon_close:
+                description: Closing time on Mondays (HH:MM format).
+                type: string
+              tue_opened:
+                description: Is the store open on Tuesdays.
+                type: boolean
+              tue_open:
+                description: Opening time on Tuesdays (HH:MM format).
+                type: string
+              tue_close:
+                description: Closing time on Tuesdays (HH:MM format).
+                type: string
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+      security:
+        - TokenAuth: []
+      responses:
+        '201':
+          description: Store added successfully.
+          schema:
+            type: object
+            properties:
+              region:
+                description: Region of the store.
+                type: string
+              address:
+                description: Address of the store.
+                type: string
+              phone_number:
+                description: Phone number of the store.
+                type: string
+              email:
+                description: Email address of the store.
+                type: string
+              name:
+                description: Name of the store.
+                type: string
+              prep_time:
+                description: Preparation time of the store.
+                type: string
+        '400':
+          description: Bad Request - Invalid input or missing data.
+        '401':
+          description: Unauthorized - User not logged in.
+        '403':
+          description: Forbidden - User does not have the necessary permissions.
+      tags:
+        - create
+    parameters: []
+  /create/store/{store_id}/bike:
+    post:
+      operationId: create_store_bike_create
+      summary: Add a New Bike
+      description: Add a new bike to the store.
+      parameters:
+        - name: store_id
+          in: path
+          description: ID of the store where the bike will be added.
+          type: integer
+          required: true
+        - name: name
+          in: formData
+          description: Updated bike name.
+          type: string
+        - name: image
+          in: formData
+          description: Updated bike image.
+          type: file
+        - name: description
+          in: formData
+          description: Updated bike description.
+          type: string
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+      security:
+        - TokenAuth: []
+      responses:
+        '201':
+          description: Bike added successfully.
+          schema:
+            type: object
+            properties:
+              name:
+                description: Name of the added bike.
+                type: string
+              description:
+                description: Description of the added bike.
+                type: string
+              image:
+                description: URL of the added bike's image.
+                type: string
+        '400':
+          description: Bad Request - Invalid input or missing data.
+        '401':
+          description: Unauthorized - User not logged in.
+        '403':
+          description: Forbidden - User does not have the necessary permissions.
+        '404':
+          description: Store not found with the provided ID.
+      consumes:
+        - multipart/form-data
+        - application/x-www-form-urlencoded
+      tags:
+        - create
+    parameters:
+      - name: store_id
+        in: path
+        required: true
+        type: string
+  /delete/bike/{bike_id}:
+    delete:
+      operationId: delete_bike_delete
+      summary: Delete Bike
+      description: Delete a bike from the store if it is not picked up at the given time.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+      security:
+        - TokenAuth: []
+      responses:
+        '200':
+          description: Bike deleted successfully.
+        '400':
+          description: Bad Request - Bike has 'Picked up' bookings.
+        '401':
+          description: Unauthorized - User not logged in.
+        '403':
+          description: Forbidden - User does not have the necessary permissions.
+        '404':
+          description: Bike not found.
+      tags:
+        - delete
+    parameters:
+      - name: bike_id
+        in: path
+        required: true
+        type: string
+  /delete/store/{store_id}:
+    delete:
+      operationId: delete_store_delete
+      summary: Delete a Store
+      description: Delete an existing store. The store must not have any 'Picked up' bikes to be deleted.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+      security:
+        - TokenAuth: []
+      responses:
+        '200':
+          description: Store deleted successfully.
+        '400':
+          description: Bad Request - The store has 'Picked up' bikes and cannot be deleted.
+        '401':
+          description: Unauthorized - User not logged in.
+        '403':
+          description: Forbidden - User does not have the necessary permissions.
+        '404':
+          description: Store not found with the provided ID.
+      tags:
+        - delete
+    parameters:
+      - name: store_id
+        in: path
+        required: true
+        type: string
+  /equipment:
+    get:
+      operationId: equipment_list
+      summary: Get Registered Equipment
+      description: Get a list of all registered equipment.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+      security:
+        - TokenAuth: []
+      responses:
+        '200':
+          description: List of registered equipment.
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  description: Equipment ID.
+                  type: integer
+                equipment:
+                  description: Equipment name.
+                  type: string
+        '401':
+          description: Unauthorized - User not logged in.
+        '403':
+          description: Forbidden - User does not have the necessary permissions.
+      tags:
+        - equipment
+    parameters: []
+  /stores:
+    get:
+      operationId: stores_list
+      summary: Get All Stores
+      description: Retrieve a list of all stores.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+      security:
+        - TokenAuth: []
+      responses:
+        '200':
+          description: List of all stores.
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  description: Store ID.
+                  type: integer
+                region:
+                  description: Store region.
+                  type: string
+                address:
+                  description: Store address.
+                  type: string
+                phone_number:
+                  description: Store phone number.
+                  type: string
+                email:
+                  description: Store email.
+                  type: string
+                name:
+                  description: Store name.
+                  type: string
+                prep_time:
+                  description: Store preparation time.
+                  type: string
+        '401':
+          description: Unauthorized - User not logged in.
+        '403':
+          description: Forbidden - User does not have the necessary permissions.
+      tags:
+        - stores
+    parameters: []
+  /stores/{store_id}:
+    get:
+      operationId: stores_read
+      summary: Get Selected Store
+      description: Retrieve details of a selected store by its ID.
+      parameters:
+        - name: store_id
+          in: path
+          description: ID of the store to retrieve details for.
+          type: integer
+          required: true
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+      security:
+        - TokenAuth: []
+      responses:
+        '200':
+          description: Details of the selected store.
+          schema:
+            type: object
+            properties:
+              id:
+                description: Store ID.
+                type: integer
+              region:
+                description: Store region.
+                type: string
+              address:
+                description: Store address.
+                type: string
+              phone_number:
+                description: Store phone number.
+                type: string
+              email:
+                description: Store email.
+                type: string
+              name:
+                description: Store name.
+                type: string
+              prep_time:
+                description: Store preparation time.
+                type: string
+        '401':
+          description: Unauthorized - User not logged in.
+        '403':
+          description: Forbidden - User does not have the necessary permissions.
+        '404':
+          description: Store not found with the provided ID.
+      tags:
+        - stores
+    parameters:
+      - name: store_id
+        in: path
+        required: true
+        type: string
+  /stores/{store_id}/availability:
+    get:
+      operationId: stores_availability_list
+      summary: Get Availability of Bikes from a Store
+      description: Get the availability details of bikes from a selected store by its ID.
+      parameters:
+        - name: store_id
+          in: path
+          description: ID of the store to retrieve bike availability details for.
+          type: integer
+          required: true
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+      security:
+        - TokenAuth: []
+      responses:
+        '200':
+          description: Availability details of bikes from the selected store.
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                from_date:
+                  description: Availability start date.
+                  type: string
+                until_date:
+                  description: Availability end date.
+                  type: string
+                bike:
+                  type: object
+                  properties:
+                    id:
+                      description: Bike ID.
+                      type: integer
+                    name:
+                      description: Bike name.
+                      type: string
+                    description:
+                      description: Bike description.
+                      type: string
+                    image:
+                      description: URL of the bike's image.
+                      type: string
+                availability_status:
+                  type: array
+                  items:
+                    description: Availability status array for the bike.
+                    type: string
+        '400':
+          description: Bad Request - Invalid input or missing data.
+        '401':
+          description: Unauthorized - User not logged in.
+        '403':
+          description: Forbidden - User does not have the necessary permissions.
+        '404':
+          description: Store not found with the provided ID.
+      tags:
+        - stores
+    parameters:
+      - name: store_id
+        in: path
+        required: true
+        type: string
+  /stores/{store_id}/update:
+    patch:
+      operationId: stores_update_partial_update
+      summary: Update Selected Store
+      description: Update the details of a selected store by its ID. Non updatable fields are region, name, id.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              address:
+                description: New address.
+                type: string
+              phone_number:
+                description: Updated store phone number.
+                type: string
+              email:
+                description: Updated store email.
+                type: string
+              prep_time:
+                description: Updated store preparation time.
+                type: string
+        - name: store_id
+          in: path
+          description: ID of the store to update details for.
+          type: integer
+          required: true
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+      security:
+        - TokenAuth: []
+      responses:
+        '200':
+          description: Updated details of the selected store.
+          schema:
+            type: object
+            properties:
+              id:
+                description: Store ID.
+                type: integer
+              region:
+                description: Store region.
+                type: string
+              address:
+                description: Store address.
+                type: string
+              phone_number:
+                description: Store phone number.
+                type: string
+              email:
+                description: Store email.
+                type: string
+              name:
+                description: Store name.
+                type: string
+              prep_time:
+                description: Store preparation time.
+                type: string
+        '400':
+          description: Bad Request - Invalid input or missing data.
+        '401':
+          description: Unauthorized - User not logged in.
+        '403':
+          description: Forbidden - User does not have the necessary permissions.
+        '404':
+          description: Store not found with the provided ID.
+      tags:
+        - stores
+    parameters:
+      - name: store_id
+        in: path
+        required: true
+        type: string
+  /user-flags:
+    get:
+      operationId: user-flags_list
+      summary: Get All User Flags
+      description: Retrieve a list of all user flags.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+      security:
+        - TokenAuth: []
+      responses:
+        '200':
+          description: List of user flags.
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                user_status:
+                  description: User flag status.
+                  type: string
+        '401':
+          description: Unauthorized - User not logged in.
+        '403':
+          description: Forbidden - User does not have the necessary permissions.
+      tags:
+        - user-flags
+    post:
+      operationId: user-flags_create
+      summary: Add User Flag
+      description: Add a user flag to a user based on their contact data.
       parameters:
         - name: data
           in: body
@@ -31,1255 +1034,464 @@ paths:
           schema:
             required:
               - contact_data
+              - user_status
             type: object
             properties:
               contact_data:
+                description: Contact data of the user.
                 type: string
-      responses:
-        '202':
-          description: User banned successfully
-          examples:
-            application/json:
-              message: User banned successfully
-        '400':
-          description: Invalid request data
-          examples:
-            application/json:
-              error: Invalid request data
-        '404':
-          description: User not found
-          examples:
-            application/json:
-              error: User not found
-      tags:
-        - ban-user
+              user_status:
+                description: User flag status to add to the user.
+                type: string
+        - name: Authorization
+          in: header
+          required: true
+          type: string
       security:
         - TokenAuth: []
-    parameters: []
-
-  /bookings:
-    get:
-      operationId: bookings_list
-      description: Get a list of all bookings.
-      parameters: []
       responses:
         '200':
-          description: List of all bookings
-          examples:
-            application/json:
-              - id: 1
-                user:
-                  id: 123
-                  user_status:
-                    - user_status: active
-                  last_login: "2023-08-01T12:00:00Z"
-                  assurance_lvl: L
-                  year_of_birth: 1990
-                  contact_data: user@example.com
-                  is_staff: false
-                  is_superuser: false
-                  is_active: true
-                  username: user123
-                booking_status:
-                  - booking_status: confirmed
-                equipment:
-                  - id: 1
-                    equipment: Helmet
-                begin: "2023-08-15"
-                end: "2023-08-20"
-                string: ABCDE
-                bike:
-                  id: 101
-                  store: 1
-                  name: Mountain Bike
-                  description: A versatile mountain bike.
-                  image_link: https://example.com/images/mountain_bike.jpg
-                  equipment:
-                    - Helmet
-                    - Lock
-              - ... another booking entry ...
+          description: User flag added successfully.
+        '400':
+          description: Bad Request - Invalid input or missing data.
         '401':
-          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
-          examples:
-            application/json:
-              error: Unauthorized
+          description: Unauthorized - User not logged in.
         '403':
-          description: 'Forbidden: The authenticated user does not have permission to access bookings.'
-          examples:
-            application/json:
-              error: Forbidden
+          description: Forbidden - User does not have the necessary permissions.
       tags:
-        - bookings
+        - user-flags
     parameters: []
-
-  /bookings/bikes:
+  /users:
     get:
-      operationId: bookings_bikes_list
-      description: Get all bikes.
-      parameters: []
+      operationId: users_list
+      summary: Get All Users
+      description: Retrieve a list of all users.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+      security:
+        - TokenAuth: []
       responses:
         '200':
-          description: 'Success: Retrieved list of all bikes.'
+          description: List of users.
           schema:
             type: array
             items:
               type: object
               properties:
                 id:
+                  description: User ID.
                   type: integer
-                store:
+                user_status:
+                  description: User status.
+                  type: string
+                assurance_lvl:
+                  description: Assurance level.
+                  type: string
+                year_of_birth:
+                  description: Year of birth.
                   type: integer
-                name:
+                contact_data:
+                  description: Contact data.
                   type: string
-                description:
+                username:
+                  description: Username.
                   type: string
-                image_link:
+                preferred_username:
+                  description: Preferred username.
                   type: string
-                equipment:
-                  type: array
-                  items:
-                    type: string
-          examples:
-            application/json:
-              - id: 101
-                store: 1
-                name: Mountain Bike
-                description: A versatile mountain bike.
-                image_link: https://example.com/images/mountain_bike.jpg
-                equipment:
-                  - Helmet
-                  - Lock
-              - ... another bike entry ...
         '401':
-          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
-          examples:
-            application/json:
-              error: Unauthorized
+          description: Unauthorized - User not logged in.
         '403':
-          description: 'Forbidden: The authenticated user does not have permission to access the bikes.'
-          examples:
-            application/json:
-              error: Forbidden
+          description: Forbidden - User does not have the necessary permissions.
       tags:
-        - bookings
+        - users
     parameters: []
-  /bookings/bikes/{bike_id}:
+  /users/{user_id}:
     get:
-      operationId: bookings_bikes_read
-      description: Get details of a selected bike.
+      operationId: users_read
+      summary: Get User Details
+      description: Retrieve a single user.
       parameters:
-        - name: bike_id
-          in: path
-          description: ID of the selected bike
+        - name: Authorization
+          in: header
           required: true
+          type: string
+      security:
+        - TokenAuth: []
+      responses:
+        '200':
+          description: Detail of singel user.
+        '401':
+          description: Unauthorized - User not logged in.
+        '403':
+          description: Forbidden - User does not have the necessary permissions.
+      tags:
+        - users
+    parameters:
+      - name: user_id
+        in: path
+        required: true
+        type: string
+  /users/{user_id}/bookings:
+    get:
+      operationId: users_bookings_list
+      summary: Get User Details Of Bookings
+      description: Retrieve list of bookings of a specific user by their ID.
+      parameters:
+        - name: user_id
+          in: path
+          description: ID of the user to retrieve.
           type: integer
-      responses:
-        '200':
-          description: 'Success: Retrieved details of the selected bike.'
-          schema:
-            type: object
-            properties:
-              id:
-                type: integer
-              store:
-                type: integer
-              name:
-                type: string
-              description:
-                type: string
-              image_link:
-                type: string
-              equipment:
-                type: array
-                items:
-                  type: string
-          examples:
-            application/json:
-              id: 101
-              store: 1
-              name: Mountain Bike
-              description: A versatile mountain bike.
-              image_link: https://example.com/images/mountain_bike.jpg
-              equipment:
-                - Helmet
-                - Lock
-        '401':
-          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
-          examples:
-            application/json:
-              error: Unauthorized
-        '403':
-          description: 'Forbidden: The authenticated user does not have permission to access the bike.'
-          examples:
-            application/json:
-              error: Forbidden
-        '404':
-          description: 'Not Found: The selected bike does not exist.'
-          examples:
-            application/json:
-              error: Bike not found
-      tags:
-        - bookings
-    parameters:
-      - name: bike_id
-        in: path
-        required: true
-        type: string
-
-  /bookings/bikes/{bike_id}/add-equipment:
-    post:
-      operationId: bookings_bikes_add-equipment_create
-      description: Add equipment to a bike.
-      parameters:
-        - name: data
-          in: body
           required: true
-          schema:
-            type: object
-            properties:
-              equipment:
-                type: string
-        - name: bike_id
-          in: path
-          description: ID of the bike
-          required: true
-          type: integer
-      responses:
-        '201':
-          description: 'Success: Equipment added to the bike.'
-          examples:
-            application/json:
-              message: Equipment added to the bike
-        '202':
-          description: 'Accepted: Equipment is already added to the bike.'
-          examples:
-            application/json:
-              message: Equipment is already added to the bike
-        '400':
-          description: 'Bad Request: The provided data is invalid.'
-          examples:
-            application/json:
-              error: Bad Request
-        '401':
-          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
-          examples:
-            application/json:
-              error: Unauthorized
-        '403':
-          description: 'Forbidden: The authenticated user does not have permission to add equipment to the bike.'
-          examples:
-            application/json:
-              error: Forbidden
-        '404':
-          description: 'Not Found: The bike or equipment does not exist.'
-          examples:
-            application/json:
-              error: Bike or equipment not found
-      tags:
-        - bookings
-    parameters:
-      - name: bike_id
-        in: path
-        required: true
-        type: string
-
-  /bookings/bikes/{bike_id}/availability:
-    get:
-      operationId: bookings_bikes_availability_list
-      description: Get availability information for a bike.
-      parameters:
-        - name: bike_id
-          in: path
+        - name: Authorization
+          in: header
           required: true
           type: string
+      security:
+        - TokenAuth: []
       responses:
         '200':
-          description: List of availability information for the bike
-          schema:
-            type: array
-            items:
-              type: object
-              properties:
-                id:
-                  type: integer
-                from_date:
-                  type: date
-                until_date:
-                  type: date
-                availability_status:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      availability_status:
-                        type: string
-          examples:
-            application/json:
-              - id: 1
-                from_date: "2023-08-15"
-                until_date: "2023-08-20"
-                availability_status:
-                  - availability_status: available
-              - ... another availability entry ...
-        '401':
-          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
-          examples:
-            application/json:
-              error: Unauthorized
-        '403':
-          description: 'Forbidden: The authenticated user does not have permission to access availability information.'
-          examples:
-            application/json:
-              error: Forbidden
-      tags:
-        - bookings
-    parameters:
-      - name: bike_id
-        in: path
-        required: true
-        type: string
-  /bookings/bikes/{bike_id}/update:
-    patch:
-      operationId: bookings_bikes_update_partial_update
-      description: Update details of a selected bike.
-      parameters:
-        - name: data
-          in: body
-          required: true
+          description: User details.
           schema:
             type: object
             properties:
-              name:
+              user_status:
+                description: User status.
                 type: string
-              description:
+              assurance_lvl:
+                description: Assurance level.
                 type: string
-              image_link:
-                type: string
-              equipment:
-                type: array
-                items:
-                  type: string
-        - name: bike_id
-          in: path
-          description: ID of the selected bike
-          required: true
-          type: integer
-      responses:
-        '200':
-          description: 'Success: Updated details of the selected bike.'
-          schema:
-            $ref: '#/definitions/Bike'
-          examples:
-            application/json:
-              id: 101
-              store: 1
-              name: Mountain Bike
-              description: An updated versatile mountain bike.
-              image_link: https://example.com/images/mountain_bike_updated.jpg
-              equipment:
-                - Helmet
-                - Lock
-        '400':
-          description: 'Bad Request: The provided data is invalid.'
-          examples:
-            application/json:
-              error: Bad Request
-        '401':
-          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
-          examples:
-            application/json:
-              error: Unauthorized
-        '403':
-          description: 'Forbidden: The authenticated user does not have permission to update the bike.'
-          examples:
-            application/json:
-              error: Forbidden
-        '404':
-          description: 'Not Found: The selected bike does not exist.'
-          examples:
-            application/json:
-              error: Bike not found
-      tags:
-        - bookings
-    parameters:
-      - name: bike_id
-        in: path
-        required: true
-        type: string
-
-  /bookings/stores:
-    get:
-      operationId: bookings_stores_list
-      description: Get list of all stores.
-      parameters: []
-      responses:
-        '200':
-          description: List of all stores
-          schema:
-            type: array
-            items:
-              type: object
-              properties:
-                id:
-                  type: integer
-                region:
-                  type: string
-                address:
-                  type: string
-                phone_number:
-                  type: string
-                email:
-                  type: string
-                name:
-                  type: string
-                store_flag:
-                  type: integer
-          examples:
-            application/json:
-              - id: 1
-                region: Central
-                address: 123 Main St, City
-                phone_number: (123) 456-7890
-                email: store@example.com
-                name: Central Bike Store
-                store_flag: 1
-              - ... another store entry ...
-        '401':
-          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
-          examples:
-            application/json:
-              error: Unauthorized
-      tags:
-        - bookings
-    parameters: []
-
-  /bookings/stores/{store_id}:
-    get:
-      operationId: bookings_stores_read
-      description: Get details of the selected store.
-      parameters:
-        - name: store_id
-          in: path
-          required: true
-          type: string
-      responses:
-        '200':
-          description: Details of the selected store
-          schema:
-            type: object
-            properties:
-              id:
+              year_of_birth:
+                description: Year of birth.
                 type: integer
-              region:
+              contact_data:
+                description: Contact data.
                 type: string
-              address:
+              username:
+                description: Username.
                 type: string
-              phone_number:
+              preferred_username:
+                description: Preferred username.
                 type: string
-              email:
-                type: string
-              name:
-                type: string
-              store_flag:
-                type: integer
-          examples:
-            application/json:
-              id: 1
-              region: Central
-              address: 123 Main St, City
-              phone_number: (123) 456-7890
-              email: store@example.com
-              name: Central Bike Store
-              store_flag: 1
-        '404':
-          description: Selected store not found
-          examples:
-            application/json:
-              error: Store not found
-      tags:
-        - bookings
-    parameters:
-      - name: store_id
-        in: path
-        required: true
-        type: string
-
-  /bookings/stores/{store_id}/availability:
-    get:
-      operationId: bookings_stores_availability_list
-      description: Get bike availability for the selected store.
-      parameters:
-        - name: store_id
-          in: path
-          required: true
-          type: string
-      responses:
-        '200':
-          description: List of bike availabilities for the selected store
-          schema:
-            type: array
-            items:
-              type: object
-              properties:
-                id:
-                  type: integer
-                from_date:
-                  type: string
-                until_date:
-                  type: string
-                store:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                    region:
-                      type: string
-                    address:
-                      type: string
-                    phone_number:
-                      type: string
-                    email:
-                      type: string
-                    name:
-                      type: string
-                bike:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                    name:
-                      type: string
-                    description:
-                      type: string
-                    image_link:
-                      type: string
-                    equipment:
-                      type: array
-                      items:
-                        type: string
-                availability_status:
-                  type: array
-                  items:
-                    type: string
-          examples:
-            application/json:
-              - id: 1
-                from_date: "2023-08-15"
-                until_date: "2023-08-20"
-                store:
-                  id: 1
-                  region: Central
-                  address: 123 Main St, City
-                  phone_number: (123) 456-7890
-                  email: store@example.com
-                  name: Central Bike Store
-                bike:
-                  id: 101
-                  name: Mountain Bike
-                  description: A versatile mountain bike.
-                  image_link: https://example.com/images/mountain_bike.jpg
-                  equipment:
-                    - Helmet
-                availability_status:
-                  - availability_status: available
-              - ... another availability entry ...
-        '404':
-          description: Selected store not found
-          examples:
-            application/json:
-              error: Store not found
-      tags:
-        - bookings
-    parameters:
-      - name: store_id
-        in: path
-        required: true
-        type: string
-  /bookings/stores/{store_id}/config:
-    get:
-      operationId: bookings_stores_config_list
-      description: ''
-      parameters: []
-      responses:
-        '200':
-          description: Successfully retrieved store configuration
-          schema:
-            $ref: '#/definitions/StoreInfo'
-        '403':
-          description: Permission denied
-      tags:
-        - bookings
-    patch:
-      operationId: bookings_stores_config_partial_update
-      description: ''
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/StoreInfo'
-      responses:
-        '200':
-          description: Successfully updated and retrieved store configuration
-          schema:
-            $ref: '#/definitions/StoreInfo'  # Reference the StoreInfo definition here
-        '400':
-          description: Invalid request data
-        '403':
-          description: Permission denied
-      tags:
-        - bookings
-    parameters:
-      - name: store_id
-        in: path
-        required: true
-        type: string
-
-  /bookings/stores/{store_id}/update:
-    patch:
-      operationId: bookings_stores_update_partial_update
-      description: Update details of a selected store.
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            type: object
-            properties:
-              region:
-                type: string
-              address:
-                type: string
-              phone_number:
-                type: string
-              email:
-                type: string
-              name:
-                type: string
-              store_flag:
-                type: integer
-        - name: store_id
-          in: path
-          required: true
-          type: string
-      responses:
-        '200':
-          description: Updated store details
-          schema:
-            type: object
-            properties:
-              id:
-                type: integer
-              region:
-                type: string
-              address:
-                type: string
-              phone_number:
-                type: string
-              email:
-                type: string
-              name:
-                type: string
-              store_flag:
-                type: integer
-          examples:
-            application/json:
-              id: 1
-              region: Updated Region
-              address: Updated Address
-              phone_number: Updated Phone Number
-              email: updated@store.com
-              name: Updated Store Name
-              store_flag: 1
-        '400':
-          description: Invalid data
-          examples:
-            application/json:
-              error: Invalid data
-        '404':
-          description: Selected store not found
-          examples:
-            application/json:
-              error: Store not found
-      tags:
-        - bookings
-    parameters:
-      - name: store_id
-        in: path
-        required: true
-        type: string
-
-  /bookings/{booking_id}:
-    get:
-      operationId: bookings_read
-      description: Get details of a selected booking.
-      parameters:
-        - name: booking_id
-          in: path
-          required: true
-          type: string
-      responses:
-        '200':
-          description: Details of the selected booking
-          examples:
-            application/json:
-              booking_id: 123
-              user_id: 456
-              bike_id: 789
-              start_date: "2023-08-15"
-              end_date: "2023-08-20"
         '401':
-          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
-          examples:
-            application/json:
-              error: Unauthorized
+          description: Unauthorized - User not logged in.
         '403':
-          description: 'Forbidden: The authenticated user does not have permission to view the booking.'
-          examples:
-            application/json:
-              error: Forbidden
+          description: Forbidden - User does not have the necessary permissions.
         '404':
-          description: 'Not Found: The booking with the given ID was not found.'
-          examples:
-            application/json:
-              error: Booking not found
+          description: User not found with the provided ID.
       tags:
-        - bookings
-    post:
-      operationId: bookings_create
-      description: Cancel the selected booking.
-      parameters:
-        - name: booking_id
-          in: path
-          required: true
-          type: string
-      responses:
-        '202':
-          description: Booking cancellation successful.
-          examples:
-            application/json:
-              message: Booking canceled successfully
-        '401':
-          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
-          examples:
-            application/json:
-              error: Unauthorized
-        '403':
-          description: 'Forbidden: The authenticated user does not have permission to cancel the booking.'
-          examples:
-            application/json:
-              error: Forbidden
-        '404':
-          description: 'Not Found: The booking with the given ID was not found.'
-          examples:
-            application/json:
-              error: Booking not found
-      tags:
-        - bookings
+        - users
     parameters:
-      - name: booking_id
+      - name: user_id
         in: path
         required: true
         type: string
-
-  /bookings/{booking_id}/comment:
-    get:
-      operationId: bookings_comment_list
-      description: Get comment of a booking.
-      parameters:
-        - name: booking_id
-          in: path
-          required: true
-          type: string
-      responses:
-        '200':
-          description: Comment of the booking
-          examples:
-            application/json:
-              comment: This bike was in great condition.
-        '401':
-          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
-          examples:
-            application/json:
-              error: Unauthorized
-        '403':
-          description: 'Forbidden: The authenticated user does not have permission to view the comment.'
-          examples:
-            application/json:
-              error: Forbidden
-      tags:
-        - bookings
-    parameters:
-      - name: booking_id
-        in: path
-        required: true
-        type: string
-
-  /configurations:
-    get:
-      operationId: configurations_list
-      description: Get a list of all store configurations.
-      parameters: []
-      responses:
-        '200':
-          description: Successfully retrieved store configurations
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/StoreInfo'
-      tags:
-        - configurations
-    parameters: []
-
-
-  /create/store:
-    post:
-      operationId: create_store_create
-      description: Create a new store.
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/Store'
-      responses:
-        '201':
-          description: Store created successfully
-          schema:
-            type: object
-            properties:
-              id:
-                type: integer
-              region:
-                type: string
-              address:
-                type: string
-              phone_number:
-                type: string
-              email:
-                type: string
-              name:
-                type: string
-              store_flag:
-                type: object
-                properties:
-                  user_status:
-                    type: string
-          examples:
-            application/json:
-              id: 1
-              region: Central
-              address: 123 Main St, City
-              phone_number: (123) 456-7890
-              email: store@example.com
-              name: Central Bike Store
-              store_flag:
-                user_status: active
-        '400':
-          description: Invalid data provided
-          schema:
-            type: object
-            properties:
-              field_name:
-                type: array
-                items:
-                  type: string
-          examples:
-            application/json:
-              error: Invalid data provided
-        '401':
-          description: 'Unauthorized: Authentication credentials were not provided or are invalid.'
-          examples:
-            application/json:
-              error: Unauthorized
-      tags:
-        - create
-    parameters: []
-
 definitions:
-  Equipment:
-    required:
-      - equipment
-    type: object
-    properties:
-      id:
-        title: ID
-        type: integer
-        readOnly: true
-      equipment:
-        title: Equipment
-        type: string
-        maxLength: 256
-        minLength: 1
-  Bike:
-    required:
-      - store
-    type: object
-    properties:
-      id:
-        title: ID
-        type: integer
-        readOnly: true
-      equipment:
-        type: array
-        items:
-          $ref: '#/definitions/Equipment'
-        readOnly: true
-      name:
-        title: Name
-        type: string
-        minLength: 1
-      description:
-        title: Description
-        type: string
-        minLength: 1
-      image_link:
-        title: Image link
-        type: string
-        minLength: 1
-      store:
-        title: Store
-        type: integer
-  AvailabilityStatus:
-    required:
-      - availability_status
-    type: object
-    properties:
-      availability_status:
-        title: Availability status
-        type: string
-        maxLength: 32
-        minLength: 1
-  Availability:
-    required:
-      - store
-      - bike
-    type: object
-    properties:
-      id:
-        title: ID
-        type: integer
-        readOnly: true
-      availability_status:
-        type: array
-        items:
-          $ref: '#/definitions/AvailabilityStatus'
-        readOnly: true
-      from_date:
-        title: From date
-        type: string
-        format: date
-      until_date:
-        title: Until date
-        type: string
-        format: date
-      store:
-        title: Store
-        type: integer
-      bike:
-        title: Bike
-        type: integer
-  UserStatus:
-    required:
-      - user_status
-    type: object
-    properties:
-      user_status:
-        title: User status
-        type: string
-        maxLength: 32
-        minLength: 1
-  User:
-    type: object
-    properties:
-      id:
-        title: ID
-        type: integer
-        readOnly: true
-      user_status:
-        type: array
-        items:
-          $ref: '#/definitions/UserStatus'
-        readOnly: true
-      last_login:
-        title: Last login
-        type: string
-        format: date-time
-        x-nullable: true
-      assurance_lvl:
-        title: Assurance lvl
-        type: string
-        enum:
-          - 'N'
-          - L
-          - M
-          - H
-        x-nullable: true
-      year_of_birth:
-        title: Year of birth
-        type: integer
-        maximum: 2147483647
-        minimum: -2147483648
-        x-nullable: true
-      contact_data:
-        title: Contact data
-        type: string
-        minLength: 1
-        x-nullable: true
-      is_staff:
-        title: Is staff
-        type: boolean
-      is_superuser:
-        title: Is superuser
-        type: boolean
-      is_active:
-        title: Is active
-        type: boolean
-      verification_string:
-        title: verification string
-        type: string
-        x-nullable: true
-      username:
-        title: Username
-        type: string
-        maxLength: 1028
-        x-nullable: true
-      password:
-        title: Password
-        type: string
-        x-nullable: true
-  BookingStatus:
-    required:
-      - booking_status
-    type: object
-    properties:
-      booking_status:
-        title: Booking status
-        type: string
-        maxLength: 32
-        minLength: 1
-  MakeBooking:
-    required:
-      - equipment
-      - bike
-    type: object
-    properties:
-      id:
-        title: ID
-        type: integer
-        readOnly: true
-      user:
-        $ref: '#/definitions/User'
-      booking_status:
-        type: array
-        items:
-          $ref: '#/definitions/BookingStatus'
-        readOnly: true
-      equipment:
-        type: array
-        items:
-          type: string
-          maxLength: 256
-          minLength: 1
-      begin:
-        title: Begin
-        type: string
-        format: date
-        x-nullable: true
-      end:
-        title: End
-        type: string
-        format: date
-        x-nullable: true
-      string:
-        title: String
-        type: string
-        maxLength: 5
-        minLength: 1
-        x-nullable: true
-      bike:
-        title: Bike
-        type: integer
-  Booking:
-    required:
-      - bike
-    type: object
-    properties:
-      id:
-        title: ID
-        type: integer
-        readOnly: true
-      user:
-        $ref: '#/definitions/User'
-      booking_status:
-        type: array
-        items:
-          $ref: '#/definitions/BookingStatus'
-        readOnly: true
-      equipment:
-        type: array
-        items:
-          $ref: '#/definitions/Equipment'
-        readOnly: true
-      begin:
-        title: Begin
-        type: string
-        format: date
-        x-nullable: true
-      end:
-        title: End
-        type: string
-        format: date
-        x-nullable: true
-      string:
-        title: String
-        type: string
-        maxLength: 5
-        minLength: 1
-        x-nullable: true
-      bike:
-        title: Bike
-        type: integer
-  LocalData:
-    type: object
-    properties:
-      first_name:
-        title: First name
-        type: string
-        x-nullable: true
-      last_name:
-        title: Last name
-        type: string
-        x-nullable: true
-      address:
-        title: Address
-        type: string
-        x-nullable: true
-      date_of_verification:
-        title: Date of verification
-        type: string
-        format: date
-        x-nullable: true
-      id_number:
-        title: Id number
-        type: string
-        maxLength: 3
-        x-nullable: true
-  Store:
-    required:
-      - region
-      - phone_number
-      - email
-    type: object
-    properties:
-      id:
-        title: ID
-        type: integer
-        readOnly: true
-      region:
-        title: Region
-        type: string
-        enum:
-          - KA
-          - ETT
-          - BAD
-          - BRU
-          - MAL
-      address:
-        title: Address
-        type: string
-        minLength: 1
-      phone_number:
-        title: Phone number
-        type: string
-        maxLength: 256
-        minLength: 1
-      email:
-        title: Email
-        type: string
-        maxLength: 256
-        minLength: 1
-      name:
-        title: Name
-        type: string
-        minLength: 1
-      store_flag:
-        title: Store flag
-        type: integer
-        x-nullable: true
-        definitions:
-  StoreInfo:
-    type: array
-    items:
+    User:
       type: object
       properties:
+        id:
+          type: integer
+        username:
+          type: string
+        assurance_lvl:
+          type: string
+          enum: [N, L, M, H]
+        year_of_birth:
+          type: integer
+        contact_data:
+          type: string
+          format: email
+        is_staff:
+          type: boolean
+        is_superuser:
+          type: boolean
+        is_active:
+          type: boolean
+        verification_string:
+          type: string
+        preferred_username:
+          type: string
+        password:
+          type: string
+      example:
+        id: 1
+        username: johndoe
+        assurance_lvl: L
+        year_of_birth: 1990
+        contact_data: johndoe@example.com
+        is_staff: false
+        is_superuser: false
+        is_active: true
+        verification_string: abcdef123456
+        preferred_username: johndoe
+        password: [hashed_password]
+
+    UserStatus:
+      type: object
+      properties:
+        id:
+          type: integer
+        user_status:
+          type: string
+      example:
+        id: 1
+        user_status: Customer
+
+    Store:
+      type: object
+      properties:
+        id:
+          type: integer
+        region:
+          type: string
+          enum: [KA, ETT, BAD, BRU, MAL]
+        address:
+          type: string
+        phone_number:
+          type: string
+        email:
+          type: string
+          format: email
         name:
           type: string
-        openhours:
-          type: object
-          properties:
-            mon:
-              type: object
-              properties:
-                opened:
-                  type: boolean
-                start:
-                  type: string
-                end:
-                  type: string
-            tue:
-              type: object
-              properties:
-                opened:
-                  type: boolean
-                start:
-                  type: string
-                end:
-                  type: string
-            wed:
-              type: object
-              properties:
-                opened:
-                  type: boolean
-                start:
-                  type: string
-                end:
-                  type: string
-            thu:
-              type: object
-              properties:
-                opened:
-                  type: boolean
-                start:
-                  type: string
-                end:
-                  type: string
-            fri:
-              type: object
-              properties:
-                opened:
-                  type: boolean
-                start:
-                  type: string
-                end:
-                  type: string
-            sat:
-              type: object
-              properties:
-                opened:
-                  type: boolean
-                start:
-                  type: string
-                end:
-                  type: string
-            sun:
-              type: object
-              properties:
-                opened:
-                  type: boolean
-                start:
-                  type: string
-                end:
-                  type: string
-        pretime:
+        prep_time:
           type: string
+        mon_opened:
+          type: boolean
+        mon_open:
+          type: string
+          format: time
+        mon_close:
+          type: string
+          format: time
+        tue_opened:
+          type: boolean
+        tue_open:
+          type: string
+          format: time
+        tue_close:
+          type: string
+          format: time
+        wed_opened:
+          type: boolean
+        wed_open:
+          type: string
+          format: time
+        wed_close:
+          type: string
+          format: time
+        thu_opened:
+          type: boolean
+        thu_open:
+          type: string
+          format: time
+        thu_close:
+          type: string
+          format: time
+        fri_opened:
+          type: boolean
+        fri_open:
+          type: string
+          format: time
+        fri_close:
+          type: string
+          format: time
+        sat_opened:
+          type: boolean
+        sat_open:
+          type: string
+          format: time
+        sat_close:
+          type: string
+          format: time
+        sun_opened:
+          type: boolean
+        sun_open:
+          type: string
+          format: time
+        sun_close:
+          type: string
+          format: time
+      example:
+        id: 1
+        region: KA
+        address: 123 Main St, Karlsruhe
+        phone_number: +1234567890
+        email: store@example.com
+        name: My Store
+        prep_time: "00:00"
+        mon_opened: true
+        mon_open: "08:00"
+        mon_close: "18:00"
+        tue_opened: true
+        tue_open: "08:00"
+        tue_close: "18:00"
+        wed_opened: true
+        wed_open: "08:00"
+        wed_close: "18:00"
+        thu_opened: true
+        thu_open: "08:00"
+        thu_close: "18:00"
+        fri_opened: true
+        fri_open: "08:00"
+        fri_close: "18:00"
+        sat_opened: false
+        sat_open: "08:00"
+        sat_close: "18:00"
+        sun_opened: false
+        sun_open: "08:00"
+        sun_close: "18:00"
+
+    LocalData:
+      type: object
+      properties:
+        id:
+          type: integer
+        first_name:
+          type: string
+        last_name:
+          type: string
+        address:
+          type: string
+        date_of_verification:
+          type: string
+          format: date
+        id_number:
+          type: string
+          maxLength: 3
+      example:
+        id: 1
+        first_name: John
+        last_name: Doe
+        address: 456 Elm St, Springfield
+        date_of_verification: "2023-09-17"
+        id_number: ABC
+
+    Equipment:
+      type: object
+      properties:
+        id:
+          type: integer
+        equipment:
+          type: string
+      example:
+        id: 1
+        equipment: Bike Helmet
+
+    Bike:
+      type: object
+      properties:
+        id:
+          type: integer
+        store:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        image:
+          type: string
+        equipment:
+          type: array
+          items:
+            type: integer
+      example:
+        id: 1
+        store: 1
+        name: Mountain Bike
+        description: High-performance mountain bike
+        image: mountain_bike.jpg
+        equipment: [1, 2]
+
+    AvailabilityStatus:
+      type: object
+      properties:
+        id:
+          type: integer
+        availability_status:
+          type: string
+      example:
+        id: 1
+        availability_status: Available
+
+    Availability:
+      type: object
+      properties:
+        id:
+          type: integer
+        from_date:
+          type: string
+          format: date
+        until_date:
+          type: string
+          format: date
+        store:
+          type: integer
+        bike:
+          type: integer
+        availability_status:
+          type: array
+          items:
+            type: integer
+      example:
+        id: 1
+        from_date: "2023-09-17"
+        until_date: "2023-09-30"
+        store: 1
+        bike: 1
+        availability_status: [1, 2]
+
+    BookingStatus:
+      type: object
+      properties:
+        id:
+          type: integer
+        booking_status:
+          type: string
+      example:
+        id: 1
+        booking_status: Confirmed
+
+    Booking:
+      type: object
+      properties:
+        id:
+          type: integer
+        user:
+          type: integer
+        bike:
+          type: integer
+        begin:
+          type: string
+          format: date
+        end:
+          type: string
+          format: date
+        string:
+          type: string
+          maxLength: 5
+        comment:
+          type: string
+        booking_status:
+          type: array
+          items:
+            type: integer
+        equipment:
+          type: array
+          items:
+            type: integer
+      example:
+        id: 1
+        user: 1
+        bike: 1
+        begin: "2023-09-20"
+        end: "2023-09-25"
+        string: ABCDE
+        comment: Booking comment
+        booking_status: [1, 2]
+        equipment: [1, 2]
+

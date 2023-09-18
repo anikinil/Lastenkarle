@@ -82,11 +82,11 @@ class ConfirmEmail(APIView):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-class UpdateUserData(RetrieveUpdateAPIView):
+class UpdateUserData(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def update(self, request, *args, **kwargs):
+    def patch(self, request, *args, **kwargs):
         fields_to_include = ['contact_data', 'username', 'password']
         partialUpdateInputValidation(request, fields_to_include)
         serializer = UserSerializer(self.request.user, data=request.data, fields=fields_to_include, partial=True)

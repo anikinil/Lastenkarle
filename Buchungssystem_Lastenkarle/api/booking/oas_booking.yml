@@ -1,12 +1,12 @@
 swagger: '2.0'
 info:
   title: Booking Rest API
-  description: This API provides all means to filter bikes and their availabilities to make a booking from a customer perspective. Furthermore, it provides information about the stores to book the bikes from.
+  description: This API provides all means to filter bikes and their availabilities to make a booking from a customer perspective. Furthermore, it provides information about the stores to book the bikes from. The user only needs to be logged-in for making an booking otherwise being logged-in is optional.
   version: v1
 host: django
 schemes:
   - http
-basePath: /api/booking
+basePath: /api/booking/v1
 consumes:
   - application/json
 produces:
@@ -24,16 +24,33 @@ paths:
   /availabilities:
     get:
       operationId: availabilities_list
-      summary: Get All Availabilities
-      description: Get a list of all bike availabilities.
+      summary: Get All Availability of a Bike
+      description: Get the availabilities of all bikes.
       parameters: []
       responses:
         '200':
-          description: List of availabilities.
+          description: List of availability status for the bike.
           schema:
             type: array
             items:
-              $ref: '#/definitions/Availability'
+              type: object
+              properties:
+                id:
+                  description: Availability ID.
+                  type: integer
+                from_date:
+                  description: Start date of availability.
+                  type: string
+                until_date:
+                  description: End date of availability.
+                  type: string
+                availability_status:
+                  description: Availability status as an array of strings.
+                  type: array
+                  items:
+                    type: string
+        '401':
+          description: Unauthorized - No token was provided.
       tags:
         - availabilities
     parameters: []
@@ -49,28 +66,74 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/Bike'
+              type: object
+              properties:
+                id:
+                  description: Bike ID.
+                  type: integer
+                store:
+                  description: ID of the store where the bike is available.
+                  type: integer
+                name:
+                  description: Name of the bike.
+                  type: string
+                description:
+                  description: Description of the bike.
+                  type: string
+                image:
+                  description: URL of the bike's image.
+                  type: string
+                equipment:
+                  description: Equipment array.
+                  type: array
+                  items:
+                    type: string
+        '401':
+          description: Unauthorized - No token was provided.
       tags:
         - bikes
     parameters: []
   /bikes/{bike_id}:
     get:
       operationId: bikes_read
-      summary: Get Selected Bike
+      summary: Get Bike Details
       description: Get details of a specific bike.
-      parameters: []
+      parameters:
+        - name: bike_id
+          in: path
+          description: ID of the bike to retrieve details for.
+          type: integer
+          required: true
       responses:
         '200':
-          description: Bike details.
-          schema:
-            $ref: '#/definitions/Bike'
-        '404':
-          description: Bike not found.
+          description: Details of the bike.
           schema:
             type: object
             properties:
-              error:
+              id:
+                description: Bike ID.
+                type: integer
+              store:
+                description: ID of the store where the bike is available.
+                type: integer
+              name:
+                description: Name of the bike.
                 type: string
+              description:
+                description: Description of the bike.
+                type: string
+              image:
+                description: URL of the bike's image.
+                type: string
+              equipment:
+                description: Equipment array.
+                type: array
+                items:
+                  type: string
+        '401':
+          description: Unauthorized - No token was provided.
+        '404':
+          description: Bike not found with the provided ID.
       tags:
         - bikes
     parameters:
@@ -81,16 +144,41 @@ paths:
   /bikes/{bike_id}/availability:
     get:
       operationId: bikes_availability_list
-      summary: Get Availability of Bike
-      description: Get availabilities of a specific bike.
-      parameters: []
+      summary: Get Availability of a Bike
+      description: Get the availability of a specific bike.
+      parameters:
+        - name: bike_id
+          in: path
+          description: ID of the bike to retrieve availability information.
+          type: integer
+          required: true
       responses:
         '200':
-          description: List of availabilities.
+          description: List of availabilities for the bike.
           schema:
             type: array
             items:
-              $ref: '#/definitions/Availability'
+              type: object
+              properties:
+                id:
+                  description: Availability ID.
+                  type: integer
+                from_date:
+                  description: Start date of availability.
+                  type: string
+                until_date:
+                  description: End date of availability.
+                  type: string
+                availability_status:
+                  description: List of availability statuses.
+                  type: array
+                  items:
+                    description: Availability status as an array of strings.
+                    type: string
+        '401':
+          description: Unauthorized - No token was provided.
+        '404':
+          description: Bike not found with the provided ID.
       tags:
         - bikes
     parameters:
@@ -102,17 +190,33 @@ paths:
     post:
       operationId: bikes_booking_create
       summary: Make a Booking
-      description: Create a new booking for a bike.
+      description: Create a booking for a specific bike.
       parameters:
         - name: data
           in: body
           required: true
           schema:
-            $ref: '#/definitions/MakeBooking'
+            required:
+              - begin
+              - end
+            type: object
+            properties:
+              begin:
+                description: Booking start date (YYYY-MM-DD).
+                type: string
+                format: date
+              end:
+                description: Booking end date (YYYY-MM-DD).
+                type: string
+                format: date
+              comment:
+                description: Additional comments for the booking.
+                type: string
         - name: bike_id
           in: path
+          description: ID of the bike to be booked.
+          type: integer
           required: true
-          type: string
         - name: Authorization
           in: header
           required: true
@@ -122,36 +226,12 @@ paths:
       responses:
         '201':
           description: Booking created successfully.
-          schema:
-            $ref: '#/definitions/Booking'
         '400':
-          description: Invalid data provided.
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-      tags:
-        - bikes
-
-  /bikes/{bike_id}/store:
-    get:
-      operationId: bikes_store_list
-      summary: Get Store by Bike
-      description: Get the store associated with a specific bike.
-      parameters: []
-      responses:
-        '200':
-          description: Store details.
-          schema:
-            $ref: '#/definitions/Store'
+          description: Bad Request - Invalid input data.
+        '401':
+          description: Unauthorized - User not authenticated or not verified.
         '404':
-          description: Store not found.
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
+          description: Bike not found with the provided ID.
       tags:
         - bikes
     parameters:
@@ -159,396 +239,417 @@ paths:
         in: path
         required: true
         type: string
-  /configurations:
+
+  /bikes/{bike_id}/store:
     get:
-      operationId: configurations_list
-      summary: Get All Store Configurations
-      description: Get a list of all store configurations.
-      parameters: []
+      operationId: bikes_store_list
+      summary: Get Store Details by Bike
+      description: Get details of the store where a specific bike belongs to.
+      parameters:
+        - name: bike_id
+          in: path
+          description: ID of the bike to retrieve the associated store details.
+          type: integer
+          required: true
       responses:
         '200':
-          description: List of store configurations.
+          description: Details of the store where the bike is available.
           schema:
-            type: array
-            items:
-              $ref: '#/definitions/StoreInfo'  # Reference the StoreInfo definition here
+            type: object
+            properties:
+              region:
+                description: Region of the store.
+                type: string
+              address:
+                description: Address of the store.
+                type: string
+              phone_number:
+                description: Phone number of the store.
+                type: string
+              email:
+                description: Email of the store.
+                type: string
+              name:
+                description: Name of the store.
+                type: string
+              prep_time:
+                description: Preparation time of the store.
+                type: string
+              week_schedule:
+                description: Weekday schedule of the store.
+                type: string
+        '401':
+          description: Unauthorized - No token was provided.
+        '404':
+          description: Bike not found with the provided ID.
       tags:
-        - configurations
-    parameters: []
+        - bikes
+    parameters:
+      - name: bike_id
+        in: path
+        required: true
+        type: string
   /region:
     get:
       operationId: region_list
       summary: Get All Regions
-      description: Get a list of all regions.
+      description: Retrieve a list of all store regions.
       parameters: []
       responses:
         '200':
-          description: List of regions.
+          description: List of all store regions.
           schema:
             type: array
             items:
+              description: Store region.
               type: string
+        '401':
+          description: Unauthorized - No token was provided.
       tags:
         - region
     parameters: []
+  /stores:
+    get:
+      operationId: stores_list
+      summary: Get All Stores
+      description: Retrieve a list of all stores.
+      parameters: []
+      responses:
+        '200':
+          description: List of all stores.
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  description: Store ID.
+                  type: integer
+                region:
+                  description: Store region.
+                  type: string
+                address:
+                  description: Store address.
+                  type: string
+                phone_number:
+                  description: Store phone number.
+                  type: string
+                email:
+                  description: Store email.
+                  type: string
+                name:
+                  description: Store name.
+                  type: string
+                prep_time:
+                  description: Store prep time.
+                  type: string
+        '401':
+          description: Unauthorized - No token was provided.
+      tags:
+        - stores
+    parameters: []
 definitions:
-  AvailabilityStatus:
-    required:
-      - availability_status
-    type: object
-    properties:
-      availability_status:
-        title: Availability status
-        type: string
-        maxLength: 32
-        minLength: 1
-  Availability:
-    required:
-      - store
-      - bike
-    type: object
-    properties:
-      id:
-        title: ID
-        type: integer
-        readOnly: true
-      availability_status:
-        type: array
-        items:
-          $ref: '#/definitions/AvailabilityStatus'
-        readOnly: true
-      from_date:
-        title: From date
-        type: string
-        format: date
-      until_date:
-        title: Until date
-        type: string
-        format: date
-      store:
-        title: Store
-        type: integer
-      bike:
-        title: Bike
-        type: integer
-  Equipment:
-    required:
-      - equipment
-    type: object
-    properties:
-      id:
-        title: ID
-        type: integer
-        readOnly: true
-      equipment:
-        title: Equipment
-        type: string
-        maxLength: 256
-        minLength: 1
-  Bike:
-    required:
-      - store
-    type: object
-    properties:
-      id:
-        title: ID
-        type: integer
-        readOnly: true
-      equipment:
-        type: array
-        items:
-          $ref: '#/definitions/Equipment'
-        readOnly: true
-      name:
-        title: Name
-        type: string
-        minLength: 1
-      description:
-        title: Description
-        type: string
-        minLength: 1
-      image_link:
-        title: Image link
-        type: string
-        minLength: 1
-      store:
-        title: Store
-        type: integer
-  UserStatus:
-    required:
-      - user_status
-    type: object
-    properties:
-      user_status:
-        title: User status
-        type: string
-        maxLength: 32
-        minLength: 1
-  User:
-    type: object
-    properties:
-      id:
-        title: ID
-        type: integer
-        readOnly: true
-      user_status:
-        type: array
-        items:
-          $ref: '#/definitions/UserStatus'
-        readOnly: true
-      last_login:
-        title: Last login
-        type: string
-        format: date-time
-        x-nullable: true
-      assurance_lvl:
-        title: Assurance lvl
-        type: string
-        enum:
-          - 'N'
-          - L
-          - M
-          - H
-        x-nullable: true
-      year_of_birth:
-        title: Year of birth
-        type: integer
-        maximum: 2147483647
-        minimum: -2147483648
-        x-nullable: true
-      contact_data:
-        title: Contact data
-        type: string
-        minLength: 1
-        x-nullable: true
-      is_staff:
-        title: Is staff
-        type: boolean
-      is_superuser:
-        title: Is superuser
-        type: boolean
-      is_active:
-        title: Is active
-        type: boolean
-      verification_string:
-        title: verification string
-        type: string
-        x-nullable: true
-      username:
-        title: Username
-        type: string
-        maxLength: 1028
-        x-nullable: true
-      password:
-        title: Password
-        type: string
-        x-nullable: true
-  BookingStatus:
-    required:
-      - booking_status
-    type: object
-    properties:
-      booking_status:
-        title: Booking status
-        type: string
-        maxLength: 32
-        minLength: 1
-  MakeBooking:
-    required:
-      - equipment
-      - bike
-    type: object
-    properties:
-      id:
-        title: ID
-        type: integer
-        readOnly: true
-      user:
-        $ref: '#/definitions/User'
-      booking_status:
-        type: array
-        items:
-          $ref: '#/definitions/BookingStatus'
-        readOnly: true
-      equipment:
-        type: array
-        items:
-          type: string
-          maxLength: 256
-          minLength: 1
-      begin:
-        title: Begin
-        type: string
-        format: date
-        x-nullable: true
-      end:
-        title: End
-        type: string
-        format: date
-        x-nullable: true
-      string:
-        title: String
-        type: string
-        maxLength: 5
-        minLength: 1
-        x-nullable: true
-      bike:
-        title: Bike
-        type: integer
-  Booking:
-    required:
-      - bike
-    type: object
-    properties:
-      id:
-        title: ID
-        type: integer
-        readOnly: true
-      user:
-        $ref: '#/definitions/User'
-      booking_status:
-        type: array
-        items:
-          $ref: '#/definitions/BookingStatus'
-        readOnly: true
-      equipment:
-        type: array
-        items:
-          $ref: '#/definitions/Equipment'
-        readOnly: true
-      begin:
-        title: Begin
-        type: string
-        format: date
-        x-nullable: true
-      end:
-        title: End
-        type: string
-        format: date
-        x-nullable: true
-      string:
-        title: String
-        type: string
-        maxLength: 5
-        minLength: 1
-        x-nullable: true
-      bike:
-        title: Bike
-        type: integer
-  Store:
-    required:
-      - region
-      - phone_number
-      - email
-    type: object
-    properties:
-      id:
-        title: ID
-        type: integer
-        readOnly: true
-      region:
-        title: Region
-        type: string
-        enum:
-          - KA
-          - ETT
-          - BAD
-          - BRU
-          - MAL
-      address:
-        title: Address
-        type: string
-        minLength: 1
-      phone_number:
-        title: Phone number
-        type: string
-        maxLength: 256
-        minLength: 1
-      email:
-        title: Email
-        type: string
-        maxLength: 256
-        minLength: 1
-      name:
-        title: Name
-        type: string
-        minLength: 1
-      store_flag:
-        title: Store flag
-        type: integer
-        x-nullable: true
-  StoreInfo:
-    type: array
-    items:
+    User:
       type: object
       properties:
+        id:
+          type: integer
+        username:
+          type: string
+        assurance_lvl:
+          type: string
+          enum: [N, L, M, H]
+        year_of_birth:
+          type: integer
+        contact_data:
+          type: string
+          format: email
+        is_staff:
+          type: boolean
+        is_superuser:
+          type: boolean
+        is_active:
+          type: boolean
+        verification_string:
+          type: string
+        preferred_username:
+          type: string
+        password:
+          type: string
+      example:
+        id: 1
+        username: johndoe
+        assurance_lvl: L
+        year_of_birth: 1990
+        contact_data: johndoe@example.com
+        is_staff: false
+        is_superuser: false
+        is_active: true
+        verification_string: abcdef123456
+        preferred_username: johndoe
+        password: [hashed_password]
+
+    UserStatus:
+      type: object
+      properties:
+        id:
+          type: integer
+        user_status:
+          type: string
+      example:
+        id: 1
+        user_status: Customer
+
+    Store:
+      type: object
+      properties:
+        id:
+          type: integer
+        region:
+          type: string
+          enum: [KA, ETT, BAD, BRU, MAL]
+        address:
+          type: string
+        phone_number:
+          type: string
+        email:
+          type: string
+          format: email
         name:
           type: string
-        openhours:
-          type: object
-          properties:
-            mon:
-              type: object
-              properties:
-                opened:
-                  type: boolean
-                start:
-                  type: string
-                end:
-                  type: string
-            tue:
-              type: object
-              properties:
-                opened:
-                  type: boolean
-                start:
-                  type: string
-                end:
-                  type: string
-            wed:
-              type: object
-              properties:
-                opened:
-                  type: boolean
-                start:
-                  type: string
-                end:
-                  type: string
-            thu:
-              type: object
-              properties:
-                opened:
-                  type: boolean
-                start:
-                  type: string
-                end:
-                  type: string
-            fri:
-              type: object
-              properties:
-                opened:
-                  type: boolean
-                start:
-                  type: string
-                end:
-                  type: string
-            sat:
-              type: object
-              properties:
-                opened:
-                  type: boolean
-                start:
-                  type: string
-                end:
-                  type: string
-            sun:
-              type: object
-              properties:
-                opened:
-                  type: boolean
-                start:
-                  type: string
-                end:
-                  type: string
-        pretime:
+        prep_time:
           type: string
+        mon_opened:
+          type: boolean
+        mon_open:
+          type: string
+          format: time
+        mon_close:
+          type: string
+          format: time
+        tue_opened:
+          type: boolean
+        tue_open:
+          type: string
+          format: time
+        tue_close:
+          type: string
+          format: time
+        wed_opened:
+          type: boolean
+        wed_open:
+          type: string
+          format: time
+        wed_close:
+          type: string
+          format: time
+        thu_opened:
+          type: boolean
+        thu_open:
+          type: string
+          format: time
+        thu_close:
+          type: string
+          format: time
+        fri_opened:
+          type: boolean
+        fri_open:
+          type: string
+          format: time
+        fri_close:
+          type: string
+          format: time
+        sat_opened:
+          type: boolean
+        sat_open:
+          type: string
+          format: time
+        sat_close:
+          type: string
+          format: time
+        sun_opened:
+          type: boolean
+        sun_open:
+          type: string
+          format: time
+        sun_close:
+          type: string
+          format: time
+      example:
+        id: 1
+        region: KA
+        address: 123 Main St, Karlsruhe
+        phone_number: +1234567890
+        email: store@example.com
+        name: My Store
+        prep_time: "00:00"
+        mon_opened: true
+        mon_open: "08:00"
+        mon_close: "18:00"
+        tue_opened: true
+        tue_open: "08:00"
+        tue_close: "18:00"
+        wed_opened: true
+        wed_open: "08:00"
+        wed_close: "18:00"
+        thu_opened: true
+        thu_open: "08:00"
+        thu_close: "18:00"
+        fri_opened: true
+        fri_open: "08:00"
+        fri_close: "18:00"
+        sat_opened: false
+        sat_open: "08:00"
+        sat_close: "18:00"
+        sun_opened: false
+        sun_open: "08:00"
+        sun_close: "18:00"
+
+    LocalData:
+      type: object
+      properties:
+        id:
+          type: integer
+        first_name:
+          type: string
+        last_name:
+          type: string
+        address:
+          type: string
+        date_of_verification:
+          type: string
+          format: date
+        id_number:
+          type: string
+          maxLength: 3
+      example:
+        id: 1
+        first_name: John
+        last_name: Doe
+        address: 456 Elm St, Springfield
+        date_of_verification: "2023-09-17"
+        id_number: ABC
+
+    Equipment:
+      type: object
+      properties:
+        id:
+          type: integer
+        equipment:
+          type: string
+      example:
+        id: 1
+        equipment: Bike Helmet
+
+    Bike:
+      type: object
+      properties:
+        id:
+          type: integer
+        store:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        image:
+          type: string
+        equipment:
+          type: array
+          items:
+            type: integer
+      example:
+        id: 1
+        store: 1
+        name: Mountain Bike
+        description: High-performance mountain bike
+        image: mountain_bike.jpg
+        equipment: [1, 2]
+
+    AvailabilityStatus:
+      type: object
+      properties:
+        id:
+          type: integer
+        availability_status:
+          type: string
+      example:
+        id: 1
+        availability_status: Available
+
+    Availability:
+      type: object
+      properties:
+        id:
+          type: integer
+        from_date:
+          type: string
+          format: date
+        until_date:
+          type: string
+          format: date
+        store:
+          type: integer
+        bike:
+          type: integer
+        availability_status:
+          type: array
+          items:
+            type: integer
+      example:
+        id: 1
+        from_date: "2023-09-17"
+        until_date: "2023-09-30"
+        store: 1
+        bike: 1
+        availability_status: [1, 2]
+
+    BookingStatus:
+      type: object
+      properties:
+        id:
+          type: integer
+        booking_status:
+          type: string
+      example:
+        id: 1
+        booking_status: Confirmed
+
+    Booking:
+      type: object
+      properties:
+        id:
+          type: integer
+        user:
+          type: integer
+        bike:
+          type: integer
+        begin:
+          type: string
+          format: date
+        end:
+          type: string
+          format: date
+        string:
+          type: string
+          maxLength: 5
+        comment:
+          type: string
+        booking_status:
+          type: array
+          items:
+            type: integer
+        equipment:
+          type: array
+          items:
+            type: integer
+      example:
+        id: 1
+        user: 1
+        bike: 1
+        begin: "2023-09-20"
+        end: "2023-09-25"
+        string: ABCDE
+        comment: Booking comment
+        booking_status: [1, 2]
+        equipment: [1, 2]
