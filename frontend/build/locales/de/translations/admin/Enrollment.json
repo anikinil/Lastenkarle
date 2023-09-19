@@ -1,8 +1,8 @@
 {
-  "heading":      "Neuen Administrator oder Manager ernennen",
-  "enter_to_id":  "Fülle eins der folgenden Felder aus, um den Nutzer zu identifizieren",
-  "username":     "Nutzername",
-  "email":        "E-Mail-Adresse",
-  "select_role":  "Rolle auswählen",
-  "enroll":       "Nutzer ernennen"
+  "heading":                "Ernennung",
+  "email":                  "E-Mail",
+  "select_role":            "Rolle auswählen",
+  "enroll":                 "Ernennen",
+  "enrollment_successful":  "Der Nutzer wurde erfolgreich zu seiner Rolle ernannt",
+  "back":                   "Zurück"
 }

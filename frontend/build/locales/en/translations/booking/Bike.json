@@ -1,5 +1,14 @@
 {
-    "heading":          "Rent the bike",
-    "dates_of_renting": "Selected dates of renting",
-    "book":             "Book this bike"
+    "heading":          "Bike Details",
+    "login_to_rent":    "Login to rent this bike:",
+    "login":            "Login",
+    "sign_in":          "Sign Up",
+    "cancel":           "Cancel",
+    "select_equipment": "Select Equipment",
+    "dates_of_renting": "Dates of Renting",
+    "from":             "From",
+    "to":               "To",
+    "book":             "Book",
+    "back":             "Back",
+    "address":          "Address"
 }

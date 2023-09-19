@@ -1,8 +1,8 @@
 {
-    "heading":      "Deine Buchungen",
-    "start_date":   "Abholdatum",
-    "end_date":     "Abgabedatum",
-    "store":        "Standort",
-    "bike":         "Lastenrad",
-    "no_bookings":  "Es gibt keine Buchungen von ihrem Account."
+    "heading":          "Buchungsverwaltung",
+    "start_date":       "Startdatum",
+    "end_date":         "Enddatum",
+    "booking_status":   "Buchungsstatus",
+    "no_bookings":      "Es sind keine Buchungen im System gespeichert.",
+    "back":             "Zurück"
 }

@@ -1,0 +1,10 @@
+{
+  "heading":              "Lastenradregistrierung",
+  "name":                 "Name",
+  "image":                "Bild",
+  "select_a_bike_image":  "Bitte wähle ein Bild vom Lastenrad aus.",
+  "description":          "Beschreibung",
+  "add_bike":             "Lastenrad hinzufügen",
+  "cancel":               "Abbrechen",
+  "back":                 "Zurück"
+}

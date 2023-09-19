@@ -1,10 +1,9 @@
 {
-    "heading":     "Buchungen in deinem Laden",
-    "start_date":  "Anfangsdatum",
-    "end_date":    "Enddatum",
-    "bike":        "Lastenrad",
-    "user":        "Nutzer",
-    "comment":     "Kommentar",
-    "no_bookings": "Es gibt keine Buchungen in ihrem Laden."
-
+    "heading":          "Buchungsverwaltung",
+    "no_bookings":      "Keine Buchungen verfügbar.",
+    "user":             "Benutzer",
+    "start_date":       "Anfangsdatum",
+    "end_date":         "Enddatum",
+    "booking_status":   "Buchungsstatus",
+    "back":             "Zurück"
 }

@@ -1,7 +1,17 @@
 {
-  "heading":            "Menü",
-  "bike_renting":       "Lastenradbuchung",
-  "booking_management": "Buchungsverwaltung",
-  "account_management": "Kontoverwaltung",
-  "logout":             "Ausloggen"
+  "heading":              "Menü",
+  "admin_menu":           "Administratormenü",
+  "manager_menu":         "Managermenü",
+  "user_menu":            "Nutzermenü",
+  "booking_management":   "Buchungsverwaltung",
+  "bike_management":      "Lastenradverwaltung",
+  "store_management":     "Storeverwaltung",
+  "enrollment":           "Admin- und Managerernennung",
+  "user_ban":             "Benutzer sperren",
+  "store_configuration":  "Storekonfiguration",
+  "manager_enrollment":   "Managerernennung",
+  "handout":              "Lastenradausgabe",
+  "bike_renting":         "Lastenradverleih",
+  "account_management":   "Kontoverwaltung",
+  "logout":               "Abmelden"
 }

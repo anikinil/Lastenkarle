@@ -1,3 +1,6 @@
 {
-  "heading": "Email-Verifikation"
+  "heading":                        "E-Mail-Verifizierung",
+  "email_verification_successful":  "E-Mail-Verifizierung erfolgreich.",
+  "something_went_wrong":           "Bei der E-Mail-Verifizierung ist etwas schiefgegangen.",
+  "continue":                       "Fortfahren"
 }

@@ -1,7 +1,10 @@
 {
-    "heading":              "Buchungsübersicht",
-    "booked_dates":         "Gebuchte Tage",
-    "from":                 "Von",
-    "to":                   "Bis",
-    "cancel_this_booking":  "Buchung stornieren"
+    "heading":          "Buchungsdetails",
+    "booked_dates":     "Gebuchte Termine",
+    "from":             "Von",
+    "to":               "Bis",
+    "equipment":        "Ausrüstung",
+    "status":           "Status",
+    "cancel_booking":   "Buchung stornieren",
+    "back":             "Zurück"
 }
