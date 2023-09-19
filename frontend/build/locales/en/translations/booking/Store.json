@@ -1,9 +1,10 @@
 {
+    "contact_data":     "Contact Data",
     "address":          "Address",
-    "contact_data":     "Contact data",
-    "email":            "E-Mail",
+    "region":           "Region",
+    "email":            "Email",
     "phone":            "Phone",
-    "opening_hours":    "Opening hours",
+    "opening_hours":    "Opening Hours",
     "mon":              "Mon",
     "tue":              "Tue",
     "wed":              "Wed",
@@ -11,5 +12,9 @@
     "fri":              "Fri",
     "sat":              "Sat",
     "sun":              "Sun",
-    "bikes":            "Bikes"
+    "closed":           "Closed",
+    "not_configured":   "Not Configured",
+    "prep_time":        "Preparation Time",
+    "bikes":            "Bikes",
+    "back":             "Back"
 }

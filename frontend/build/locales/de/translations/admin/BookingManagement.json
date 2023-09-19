@@ -1,10 +1,10 @@
 {
-  "heading":      "Alle Buchungen im System",
-  "start_date":   "Anfangsdatum",
-  "end_date":     "Enddatum",
-  "store_name":   "Storename",
-  "bike_name":    "Lastenradname",
-  "user":         "Benutzername",
-  "comment":      "Kommentar",
-  "no_bookings":  "Es sind keine Buchungen im System gespeichert."
+  "heading":        "Buchungsverwaltung",
+  "no_bookings":    "Keine Buchungen im System registriert.",
+  "user":           "nutzer",
+  "start_date":     "Startdatum",
+  "end_date":       "Enddatum",
+  "equipment":      "Zubehör",
+  "booking_status": "Buchungsstatus",
+  "back":           "Zurück"
 }

@@ -1,11 +1,14 @@
 {
-    "heading":              "Booking checkout",
-    "wanna_confirm":        "Do you want to confirm your booking?",
+    "heading":              "Booking Confirmation",
+    "wanna_confirm":        "Do you want to confirm this booking?",
     "bike":                 "Bike",
     "store":                "Store",
+    "equipment":            "Equipment",
+    "none":                 "None",
     "from":                 "From",
     "to":                   "To",
-    "confirm_booking":      "Confirm booking",
+    "confirm_booking":      "Confirm Booking",
+    "booking_successful":   "Booking successful",
     "cancel":               "Cancel",
-    "bike_rent_successful": "You successfully rented a bike!"
+    "back":                 "Back"
 }

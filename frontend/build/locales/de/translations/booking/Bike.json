@@ -1,5 +1,14 @@
 {
-    "heading":          "Lastenrad ausleihen",
-    "dates_of_renting": "Tage zum Ausleihen auswählen",
-    "book":             "Lastenrad buchen"
+    "heading":          "Lastenraddetails",
+    "login_to_rent":    "Einloggen, um dieses Lastenrad zu mieten:",
+    "login":            "Einloggen",
+    "sign_in":          "Anmelden",
+    "cancel":           "Abbrechen",
+    "select_equipment": "Ausrüstung auswählen",
+    "dates_of_renting": "Mietdaten",
+    "from":             "Von",
+    "to":               "Bis",
+    "book":             "Buchen",
+    "back":             "Zurück",
+    "address":          "Adresse"
 }

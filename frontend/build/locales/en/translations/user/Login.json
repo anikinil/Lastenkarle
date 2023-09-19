@@ -1,8 +1,8 @@
 {
-    "heading":          "Login",
+    "heading":          "User Login",
     "username":         "Username",
     "password":         "Password",
     "login":            "Login",
     "helmholtz_login":  "Login through your institution",
-    "sign_in":          "Not registered yet? Register new account here."
+    "sign_in":          "Do not have an account yet? Sign in here."
 }

@@ -1,6 +1,7 @@
 {
     "heading":              "Als Nutzer registrieren",
     "username":             "Benutzername",
+    "preferred_username":   "Bevorzugter Benutzername",
     "year_of_birth":        "Geburtsjahr (freiwillig)",
     "email":                "E-Mail",
     "first_name":           "Vorname",
@@ -9,6 +10,6 @@
     "id_number":            "Die letzen drei Ziffer der Passnummer",
     "password":             "Passwort",
     "sign_in":              "Registrieren",
-    "helmholtz_sign_in":    "Melde dich über deine Institution an",
-    "log_in":               "Bereits registriert? Logge dich ein."
+    "helmholtz_sign_in":    "Registriere dich über deine Institution",
+    "log_in":               "Bereits registriert? Hier einloggen."
 }

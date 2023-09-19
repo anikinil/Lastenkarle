@@ -1,6 +1,7 @@
 {
-    "address":          "Adresse",
     "contact_data":     "Kontaktdaten",
+    "address":          "Adresse",
+    "region":           "Region",
     "email":            "E-Mail",
     "phone":            "Telefon",
     "opening_hours":    "Öffnungszeiten",
@@ -11,5 +12,9 @@
     "fri":              "Fr",
     "sat":              "Sa",
     "sun":              "So",
-    "bikes":            "Lastenräder"
+    "closed":           "Geschlossen",
+    "not_configured":   "Nicht konfiguriert",
+    "prep_time":        "Vorlaufszeit",
+    "bikes":            "Lastenräder",
+    "back":             "Zurück"
 }

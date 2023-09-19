@@ -1,0 +1,12 @@
+{
+  "heading":        "Store Registration",
+  "info":           "Store Information",
+  "name":           "Name",
+  "address":        "Address",
+  "email":          "Email",
+  "phone":          "Phone Number",
+  "region":         "Region",
+  "register_store": "Register Store",
+  "cancel":         "Cancel",
+  "back":           "Back"
+}

@@ -1,0 +1,10 @@
+{
+  "heading":              "Bike Registration",
+  "name":                 "Name",
+  "image":                "Image",
+  "select_a_bike_image":  "Please select an image of your bike.",
+  "description":          "Description",
+  "add_bike":             "Add Bike",
+  "cancel":               "Cancel",
+  "back":                 "Back"
+}

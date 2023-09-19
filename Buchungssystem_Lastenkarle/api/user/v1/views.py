@@ -20,6 +20,7 @@ from send_mail.views import send_user_registered_confirmation
 from send_mail.views import send_cancellation_confirmation
 from send_mail.views import send_user_changed_mail
 from send_mail.views import send_user_registered_confirmation
+from django.shortcuts import redirect
 
 oauth = OAuth()
 
@@ -50,7 +51,14 @@ class HelmholtzAuthView(KnoxLoginView):
             user = User.objects.update_helmholtz_user(user, userinfo)
         login(request, user)
         response = super(HelmholtzAuthView, self).post(request, format=None)
-        return Response(response.data, status=status.HTTP_200_OK)
+        print(response)
+        print( {
+            'state': {'token': response.data.get('token')}})
+        token_value = response.data.get('token')
+        redirect_url = f"{CANONICAL_HOST}/menu/?token={token_value}"
+
+        # Redirect to the constructed URL
+        return redirect(redirect_url)
 
 
 class RegistrateUser(CreateAPIView):

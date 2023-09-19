@@ -1,11 +1,14 @@
 {
     "heading":              "Buchungsbestätigung",
-    "wanna_confirm":        "Möchtest du deine Buchung bestätigen?",
+    "wanna_confirm":        "Möchten Sie diese Buchung bestätigen?",
     "bike":                 "Lastenrad",
-    "store":                "Standort",
+    "store":                "Laden",
+    "equipment":            "Ausrüstung",
+    "none":                 "Keine",
     "from":                 "Von",
     "to":                   "Bis",
     "confirm_booking":      "Buchung bestätigen",
+    "booking_successful":   "Buchung erfolgreich",
     "cancel":               "Abbrechen",
-    "bike_rent_successful": "Sie haben erfolgreich ein Lastenrad gebucht!"
+    "back":                 "Zurück"
 }

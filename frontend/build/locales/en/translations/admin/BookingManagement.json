@@ -1,10 +1,10 @@
 {
-  "heading":      "All bookings in the system",
-  "start_date":   "Start date",
-  "end_date":     "End date",
-  "store_name":   "Store name",
-  "bike_name":    "Bike name",
-  "user":         "Username",
-  "comment":      "Comment",
-  "no_bookings":  "There are no bookings in the system."
+  "heading":        "Booking Management",
+  "no_bookings":    "No bookings registered in the system.",
+  "user":           "User",
+  "start_date":     "Start Date",
+  "end_date":       "End Date",
+  "equipment":      "Equipment",
+  "booking_status": "Booking Status",
+  "back":           "Back"
 }

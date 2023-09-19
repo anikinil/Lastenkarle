@@ -1,7 +1,10 @@
 {
-    "heading":              "Booking overview",
-    "booked_dates":         "Booked dates",
-    "from":                 "From",
-    "to":                   "To",
-    "cancel_this_booking":  "Cancel this booking"
+    "heading":          "Booking Details",
+    "booked_dates":     "Booked Dates",
+    "from":             "From",
+    "to":               "To",
+    "equipment":        "Equipment",
+    "status":           "Status",
+    "cancel_booking":   "Cancel Booking",
+    "back":             "Back"
 }
