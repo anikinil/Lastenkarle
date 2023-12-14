@@ -15,14 +15,14 @@ Already a pro? Just edit this README.md and make it your own. Want to make it ea
 
 ```
 cd existing_repo
-git remote add origin https://git.scc.kit.edu/m-team/pse23/buchungssytem-lastenkarle.git
+git remote add origin https://codebase.helmholtz.cloud/m-team/pse23/buchungssytem-lastenkarle.git
 git branch -M main
 git push -uf origin main
 ```
 
 ## Integrate with your tools
 
-- [ ] [Set up project integrations](https://git.scc.kit.edu/m-team/pse23/buchungssytem-lastenkarle/-/settings/integrations)
+- [ ] [Set up project integrations](https://codebase.helmholtz.cloud/m-team/pse23/buchungssytem-lastenkarle/-/settings/integrations)
 
 ## Collaborate with your team
 
