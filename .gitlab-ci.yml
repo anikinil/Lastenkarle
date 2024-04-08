@@ -3,8 +3,8 @@ image: docker:24.0.5
 # All build stages
 stages:
  # - build
-  - test
-  - deploy
+ # - test
+ # - deploy
 # Builds the docker container
 #build-job:
  # stage: build
