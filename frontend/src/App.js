@@ -1,16 +1,23 @@
-import logo from './assets/images/logo.png';
-import './App.css';
+import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-function App() {
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Navbar from './components/Navbar/Navbar';
+import Booking from './features/booking/pages/Booking';
+import StoreList from './features/storeList/pages/StoreList';
+
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Homepage-Placeholder für das Buchungssystem
-        </p>
-      </header>
-    </div>
+    <BrowserRouter>
+        <Navbar/>
+        <Routes>
+            <Route path='/' element={<Home/>}/>
+            <Route path='/login' element={<Login/>}/>
+            <Route path='/booking' element={<Booking/>}/>
+            <Route path='/store-list' element={<StoreList/>}/>
+        </Routes>
+    </BrowserRouter>
   );
 }
 
