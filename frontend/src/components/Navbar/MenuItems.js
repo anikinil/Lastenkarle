@@ -18,7 +18,6 @@ const MenuItems = ({ items }) => {
                         >
                         {items.title}{' '}
                     </button>
-                    {console.log(items.submenu)}
                     <Dropdown submenus={items.submenu} dropdown={dropdown} />
                 </>
             ) : (
