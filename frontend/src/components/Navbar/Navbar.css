@@ -9,15 +9,16 @@
 }
 
 .logo {
+    display: flex;
     height: 100%;
     margin-right: auto;
     padding-left: 1rem;
+    align-items: center;
 }
 
-.logo img {
-    width: auto;
+.logo-img {
     height: 40%;
-    padding-top: 10%;
+    width: auto;
 }
 
 .nav {
