@@ -11,13 +11,13 @@
 .logo {
     height: 100%;
     margin-right: auto;
-    padding-top: 6%;
     padding-left: 1rem;
 }
 
 .logo img {
     width: auto;
     height: 40%;
+    padding-top: 10%;
 }
 
 .nav {

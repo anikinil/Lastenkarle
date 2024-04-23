@@ -7,6 +7,9 @@ import Navbar from './components/Navbar/Navbar';
 import Booking from './features/booking/pages/Booking';
 import StoreList from './features/storeList/pages/StoreList';
 
+
+// Ilja Test
+
 const App = () => {
   return (
     <BrowserRouter>
