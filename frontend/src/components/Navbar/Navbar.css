@@ -1,7 +1,77 @@
+.nav-area {
+    height: 5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+.logo {
+    height: 100%;
+    margin-right: auto;
+    padding-top: 6%;
+    padding-left: 1rem;
+}
+
+.logo img {
+    width: auto;
+    height: 40%;
+}
+
+.nav {
+    height: 100%;
+    margin-right: 10px;
+}
+
+.menus {
+    height: 100%;
+    display: flex;
+    list-style: none;
+    margin-top: 0%;
+}
+
+.menus li {
+    margin-right: 10px;
+    position: relative;
+}
+
+.menus li a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+}
+
+.menu-items {
+    height: 100%;
+    align-items: center;
+    align-content: center;
+    font-size: large;
+    background-color: white;
+    border-width: 0px;
+    cursor: pointer;
+}
+
+.menu-items button {
+    height: 100%;
+    font-size: large;
+    background-color: white;
+    border-width: 0px;
+    cursor: pointer;
+}
+
 .dropdown {
     display: none;
+    position: absolute;
+    top: 100%;
+    padding: 0.5rem;
+    left: 0;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    list-style: none;
 }
 
 .dropdown.show {
     display: block;
-  }
+}

@@ -3,14 +3,14 @@ import React from "react";
 import { menuData } from "../../data/menuData"
 import MenuItems from "./MenuItems";
 import "./Navbar.css";
-
+import logo from "../../assets/images/logo.png";
 
 const Navbar = () => {
     return (
         <header>
             <div className="nav-area">
                 <a href="/" className="logo">
-                    Logo
+                    <img src={logo} alt="Logo"/>
                 </a>
                 <nav className="nav">
                     <ul className="menus">

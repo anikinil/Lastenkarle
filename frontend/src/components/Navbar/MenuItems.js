@@ -8,13 +8,15 @@ const MenuItems = ({ items }) => {
     const [dropdown, setDropdown] = useState(false);
 
     return (
-        <li className="menu-items">
+        <li className="menu-items"
+            onMouseEnter={() => setDropdown(true)}
+            onMouseLeave={() => setDropdown(false)}
+        >
             {items.submenu ? (
                 <>
                     <button type="button" 
                         aria-haspopup="menu"
                         aria-expanded={dropdown ? "true" : "false"}
-                        onClick={() => setDropdown((prev) => !prev)}
                         >
                         {items.title}{' '}
                     </button>
