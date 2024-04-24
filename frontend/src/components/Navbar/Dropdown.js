@@ -3,9 +3,9 @@ import "./Navbar.css";
 
 const Dropdown = ({ submenus, dropdown }) => {
     return (
-        <ul className={`dropdown ${dropdown ? "show" : ""}`}>
+        <ul className={`dropdown ${dropdown ? "show" : "hide"}`}>
             {submenus.map((submenu, index) => (
-                <li key={index} className="menu-items">
+                <li key={index} className="dropdown-items">
                     <a href={submenu.url}>{submenu.title}</a>
                 </li>
             ))}
