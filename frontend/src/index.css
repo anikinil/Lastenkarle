@@ -21,7 +21,7 @@ code {
 }
 
 :root {
-    --primary: #e30613;
+    --primary: #e30613; /* Lastenkarle red */
     --foreground: black;
     --background: #ffffff;
     --shadow: rgba(0, 0, 0, 0.3);
@@ -29,7 +29,7 @@ code {
 }
 
 [data-theme='dark'] {
-    --primary: #e30613;
+    --primary: #e30613; /* Lastenkarle red */
     --foreground: white;
     --background: #2a2d2e;
     --shadow: rgba(0, 0, 0, 0.3);

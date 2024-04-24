@@ -27,8 +27,9 @@ const App = () => {
                 <Routes>
                     <Route path='/' element={<Home/>}/>
                     <Route path='/login' element={<Login/>}/>
-                    <Route path='/booking' element={<Booking/>}/>
+                    <Route path='/rent' element={<Booking/>}/>
                     <Route path='/store-list' element={<StoreList/>}/>
+                    {/* <Route path='/store-management' element={<Store-Man/>} */}
                 </Routes>
                 <button className='dark-theme-button' onClick={switchTheme}>{theme === 'light' ? 'Dark' : 'Light'} mode</button>
             </BrowserRouter>

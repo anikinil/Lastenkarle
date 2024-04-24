@@ -14,16 +14,18 @@ const MenuItems = ({ items }) => {
         >
             {items.submenu ? (
                 <>
-                    <button type="button" 
+                    <div className="link" 
                         aria-haspopup="menu"
                         aria-expanded={dropdown ? "true" : "false"}
                         >
-                        {items.title}{' '}
-                    </button>
+                        <a href={items.url}>{items.title}</a>
+                    </div>
                     <Dropdown submenus={items.submenu} dropdown={dropdown} />
                 </>
             ) : (
-                <a href={items.url}>{items.title}</a>
+                <div className='link'>
+                    <a href={items.url}>{items.title}</a>
+                </div>
             )}
         </li>
     );
