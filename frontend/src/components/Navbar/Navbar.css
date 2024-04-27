@@ -34,52 +34,58 @@
 }
 
 .menus li {
-    margin-right: 2rem;
     position: relative;
 }
 
 .menus li a {
     text-decoration: none;
-    color: var(--foreground);
     font-weight: bold;
 }
 
 .menu-items {
     height: 100%;
     font-size: large;
-    color: var(--foreground);
-    background-color: var(--background);
     border-width: 0;
-    cursor: pointer;
 }
 
-.menu-items .link {
-    margin-top: 2rem;
+.menu-item {
+    display: block;
+    padding: 2rem;
+    color: var(--button-foreground);
+}
+
+.menu-item:hover {
+    color: var(--button-foreground-focus);
 }
 
 .dropdown {
     position: relative;
-    transform: translateY(10px);
     background-color: var(--background);
     box-shadow: 0 2px 4px var(--shadow);
     list-style: none;
     overflow: hidden;
-    transition: height 0.3s ease;
-    transition: border-color 0.3 ease;
-    border-bottom: 5px solid var(--primary);
+    transition: all 0.3s ease;
 }
 
 .dropdown.show {
-    height: 100%;
-    border-color: var(--primary); 
+    border-bottom: 5px solid var(--primary);
+    opacity: 1;
+    transform: translateY(-15px);
 }
 
 .dropdown.hide {
-    height: 0;
-    border-bottom: 0;
-    border-color: var(--background); 
+    opacity: 0;
+    transform: translateY(-30px);
+    border-bottom: 5px solid var(--foreground);
+    pointer-events: none;
 }
 
-.dropdown-items {
-    padding: 0.5rem;
+.dropdown-item {
+    display: block;
+    padding: 1rem;
+    color: var(--button-foreground);
+}
+
+.dropdown-item:hover {
+    color: var(--button-foreground-focus);
 }

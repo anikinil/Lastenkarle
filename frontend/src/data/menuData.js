@@ -1,7 +1,6 @@
 export const menuData = [
     {
         title: 'Rent',
-        url: '/rent',
         submenu: [
             {
                 title: 'Karlsruhe',
@@ -12,9 +11,17 @@ export const menuData = [
                 url: '/ettlingen'
             },
             {
+                title: 'Bruchsaal',
+                url: '/bruchsaal'
+            },
+            {
                 title: 'Malsch',
                 url: '/malsch'
             },
+            {
+                title: 'Availabilities',
+                url: '/availabilities'
+            }
         ]
     },
     {
@@ -33,6 +40,27 @@ export const menuData = [
                 title: 'Bookings in my stores',
                 url: '/bookings-in-my-stores'
             }
+        ]
+    },
+    {
+        title: 'Admin activities',
+        submenu: [
+            {
+                title: 'Bookings',
+                url: '/bookings',
+            },
+            {
+                title: 'Users',
+                url: '/users',
+            },
+            {
+                title: 'Stores',
+                url: '/stores',
+            },
+            {
+                title: 'Bikes',
+                url: '/bikes',
+            },
         ]
     },
     {
