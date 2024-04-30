@@ -1,8 +1,0 @@
-{
-    "header":                   "Manager Enrollment",
-    "enter_to_id":              "Enter the following information to enroll a new manager to your store:",
-    "username":                 "Username",
-    "enroll_manager":           "Enroll as Manager",
-    "back":                     "Back",
-    "enrollment_successful":    "Enrollment successful"
-}

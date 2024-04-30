@@ -12,6 +12,8 @@ import Booking from './features/booking/pages/Booking';
 import StoreList from './features/storeList/pages/StoreList';
 import NoPermission from './pages/NoPermission';
 
+import i18n from './i18n';
+
 const App = () => {
 
     const defaultDark = window.matchMedia('(prefers-color-sceme: dark)').matches
@@ -24,6 +26,8 @@ const App = () => {
 
     // const userRoles = fetchUserRoles(); TODO: implement all the necessary fetching
     const userRoles = ['manager']
+
+    // TODO: create section for darkmode toggle and language menu in navbar
 
     return (
         <div className='App' data-theme={theme}>

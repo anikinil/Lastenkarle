@@ -1,8 +1,0 @@
-{
-    "heading":                  "Booking Process",
-    "select_regions":           "Select Regions",
-    "select_rental_days_range": "Select Rental Days Range",
-    "filter":                   "Filter",
-    "no_bikes":                 "No bikes available based on the selected criteria",
-    "back":                     "Back"
-}
