@@ -3,7 +3,6 @@
     text-align: center;
     color: var(--foreground);
     background-color: var(--background);
-    transition: color 0.3s ease-in-out, background-color 0.3s ease-in-out;  /* transitions for darkmode/lightmode change */
 }
 
 .side-panel {

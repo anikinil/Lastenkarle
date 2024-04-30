@@ -6,7 +6,6 @@
     background-color: var(--background);
     box-shadow: 0 2px 4px var(--shadow);
     position: relative;
-    transition: color 0.3s ease-in-out, background-color 0.3s ease-in-out;    /* transitions for darkmode/lightmode change */
 }
 
 .logo {
