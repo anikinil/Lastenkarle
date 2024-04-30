@@ -1,6 +1,7 @@
 export const menuData = [
     {
         title: 'Rent',
+        roles: ['customer', 'manager', 'admin'],
         submenu: [
             {
                 title: 'Karlsruhe',
@@ -27,6 +28,7 @@ export const menuData = [
     {
         title: 'Store management',
         url: '/store-management',
+        roles: ['manager', 'admin'],
         submenu: [
             {
                 title: 'Store 1',
@@ -44,6 +46,7 @@ export const menuData = [
     },
     {
         title: 'Admin activities',
+        roles: ['admin'],
         submenu: [
             {
                 title: 'Bookings',
@@ -66,5 +69,6 @@ export const menuData = [
     {
         title: 'Login',
         url: '/login',
+        roles: ['customer', 'manager', 'admin'],
     },
 ];

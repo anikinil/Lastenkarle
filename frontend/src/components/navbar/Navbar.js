@@ -6,6 +6,7 @@ import "./Navbar.css";
 import logo from "../../assets/images/logo.png";
 
 const Navbar = () => {
+
     return (
         <header>
             <div className="nav-area">

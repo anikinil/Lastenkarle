@@ -5,6 +5,9 @@ import "./Navbar.css";
 
 const MenuItems = ({ items }) => {
 
+    const userRoles = ['customer'];
+    const hasPermission = (items) => { return userRoles.some(role => items.roles.includes(role)); }
+
     const [dropdown, setDropdown] = useState(false);
 
     return (
@@ -12,21 +15,25 @@ const MenuItems = ({ items }) => {
             onMouseEnter={() => setDropdown(true)}
             onMouseLeave={() => setDropdown(false)}
         >
-            {items.submenu ? (
-                <>
-                    <a className="menu-item" 
-                        aria-haspopup="menu"
-                        aria-expanded={dropdown ? "true" : "false"}
-                        href={items.url}
-                        style={items.url ? {cursor: "pointer"} : {cursor: "default"}}
-                        >
-                        {items.title}
-                    </a>
-                    <Dropdown submenus={items.submenu} dropdown={dropdown} />
-                </>
-            ) : (
-                <a className='menu-item' href={items.url}>{items.title}</a>
-            )}
+            { hasPermission(items) ? (
+
+                items.submenu ? (
+                    <>
+                        <a className="menu-item" 
+                            aria-haspopup="menu"
+                            aria-expanded={dropdown ? "true" : "false"}
+                            href={items.url}
+                            style={items.url ? {cursor: "pointer"} : {cursor: "default"}}
+                            >
+                            {items.title}
+                        </a>
+                        <Dropdown submenus={items.submenu} dropdown={dropdown} />
+                    </>
+                ) : (
+                    <a className='menu-item' href={items.url}>{items.title}</a>
+                )) : 
+                null
+            }
         </li>
     );
 };

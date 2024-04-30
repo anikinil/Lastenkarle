@@ -1,6 +1,6 @@
 import React from 'react';
 import useLocalStorage from 'use-local-storage';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ProtectedRoute } from './utils/ProtectedRoute';
 
 import './App.css'
@@ -33,7 +33,7 @@ const App = () => {
                     <Route exact path='/' element={<Home />} />
                     <Route exact path='/login' element={<Login />} />
                     <Route exact path='/rent' element={<Booking />} />
-                    <Route exact path='/store-management' element={<ProtectedRoute roles={['manager', 'admin']} userRoles={userRoles} />}>
+                    <Route exact path='/store-management' element={<ProtectedRoute routeRoles={['manager', 'admin']} userRoles={userRoles} />}>
                         <Route exact path='/store-management' element={<StoreList />} />
                     </Route>
                     <Route exact path='/no-permission/' element={<NoPermission />} />
