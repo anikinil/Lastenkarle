@@ -3,6 +3,11 @@ import useLocalStorage from 'use-local-storage';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ProtectedRoute } from './utils/ProtectedRoute';
 
+import i18n from './i18n';
+
+import { MdLightMode } from "react-icons/md";
+import { MdDarkMode } from "react-icons/md";
+
 import './App.css'
 
 import Home from './pages/Home';
@@ -12,7 +17,7 @@ import Booking from './features/booking/pages/Booking';
 import StoreList from './features/storeList/pages/StoreList';
 import NoPermission from './pages/NoPermission';
 
-import i18n from './i18n';
+import LanguageToggle from './components/LanguageToggle';
 
 const App = () => {
 
@@ -25,9 +30,8 @@ const App = () => {
     }
 
     // const userRoles = fetchUserRoles(); TODO: implement all the necessary fetching
-    const userRoles = ['manager']
-
-    // TODO: create section for darkmode toggle and language menu in navbar
+    const userRoles = ['admin', 'manager']
+    // const userRoles = ['customer']
 
     return (
         <div className='App' data-theme={theme}>
@@ -42,8 +46,11 @@ const App = () => {
                     </Route>
                     <Route exact path='/no-permission/' element={<NoPermission />} />
                 </Routes>
-                <button className='dark-theme-button' onClick={switchTheme}>{theme === 'light' ? 'Dark' : 'Light'} mode</button>
             </BrowserRouter>
+            <div className='side-panel'>
+                <LanguageToggle />
+                <button className='theme-toggle' onClick={switchTheme}>{theme === 'light' ? <MdLightMode /> : <MdDarkMode />}</button>
+            </div>
         </div>
     );
 }

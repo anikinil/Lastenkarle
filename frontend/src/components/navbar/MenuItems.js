@@ -5,7 +5,7 @@ import "./Navbar.css";
 
 const MenuItems = ({ items }) => {
 
-    const userRoles = ['customer'];
+    const userRoles = ['admin'];
     const hasPermission = (items) => { return userRoles.some(role => items.roles.includes(role)); }
 
     const [dropdown, setDropdown] = useState(false);
