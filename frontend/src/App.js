@@ -1,7 +1,7 @@
 import React from 'react';
 import useLocalStorage from 'use-local-storage';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { ProtectedRoute } from './utils/ProtectedRoute';
+import { ProtectedElement } from './utils/ProtectedElement';
 
 import i18n from './i18n';
 
@@ -18,6 +18,7 @@ import StoreList from './features/storeList/pages/StoreList';
 import NoPermission from './pages/NoPermission';
 
 import LanguageToggle from './components/LanguageToggle';
+import UserList from './features/userList/pages/UserList';
 
 const App = () => {
 
@@ -30,8 +31,8 @@ const App = () => {
     }
 
     // const userRoles = fetchUserRoles(); TODO: implement all the necessary fetching
-    const userRoles = ['manager', 'admin']
-    // const userRoles = ['customer']
+    // const userRoles = ['manager', 'admin']
+    const userRoles = ['manager', 'customer']
 
     return (
         <div className='App' data-theme={theme}>
@@ -41,9 +42,8 @@ const App = () => {
                     <Route exact path='/' element={<Home />} />
                     <Route exact path='/login' element={<Login />} />
                     <Route exact path='/rent' element={<Booking />} />
-                    <Route exact path='/store-management' element={<ProtectedRoute routeRoles={['manager', 'admin']} userRoles={userRoles} />}>
-                        <Route exact path='/store-management' element={<StoreList />} />
-                    </Route>
+                    <Route exact path='/store-management' element={<ProtectedElement element={<StoreList />} elementRoles={['manager', 'admin']} userRoles={userRoles} />} />
+                    <Route exact path='/users' element={<ProtectedElement element={<UserList />} elementRoles={['admin']} userRoles={userRoles} />} />
                     <Route exact path='/no-permission/' element={<NoPermission />} />
                 </Routes>
             </BrowserRouter>
