@@ -1,5 +1,5 @@
 import React from "react";
-
+// Alma war hier
 // Function to get a cookie value by name
 const getCookie = (name) => {
     const cookies = document.cookie
