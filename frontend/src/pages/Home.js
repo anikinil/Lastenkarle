@@ -1,5 +1,5 @@
 import React from "react";
-// Alma war hier
+
 // Function to get a cookie value by name
 const getCookie = (name) => {
     const cookies = document.cookie
@@ -17,7 +17,7 @@ const Home = () => {
     return (
         <>
             <h1>Homepage</h1>
-            <p>You are {username ? username : "unknown" }</p>
+            <p>You are {username ? username : "unknown" }.</p>
         </>
     );
 };
