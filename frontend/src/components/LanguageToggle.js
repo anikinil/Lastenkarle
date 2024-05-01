@@ -1,12 +1,12 @@
 
 import i18n from "i18next";
-import { getLangDataByCode, langData } from "../utils/languageToggle";
+import { getLangDataByCode, langData, defaultLang } from "../utils/languageToggle";
 import React, { useEffect, useState } from "react";
 
 const LanguageToggle = () => {
 
     const langs = langData;
-    const [currLang, setCurrLang] = useState({code: '', label: ''})
+    const [currLang, setCurrLang] = useState(defaultLang)
     
     useEffect(() => {
         setCurrLang(getLangDataByCode(i18n.language));

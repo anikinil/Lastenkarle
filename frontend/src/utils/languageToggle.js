@@ -9,7 +9,7 @@ export const langData = [
     },
 ]
 
-const defaultLang = { code: 'en', label: 'EN' } // in case lang code not recognized, use english as default
+export const defaultLang = { code: 'en', label: 'EN' } // in case lang code not recognized, use english as default
 
 export const getLangDataByCode = (code) => {
 
