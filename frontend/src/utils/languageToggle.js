@@ -9,9 +9,13 @@ export const langData = [
     },
 ]
 
+const defaultLang = { code: 'en', label: 'EN' } // in case lang code not recognized, use english as default
+
 export const getLangDataByCode = (code) => {
 
-    return langData.find(lang => {
+    const lang = langData.find(lang => {
         return lang.code === code
-    })
+    });
+
+    return lang !== 'undefined' ? lang : defaultLang;
 }
