@@ -17,5 +17,5 @@ export const getLangDataByCode = (code) => {
         return lang.code === code
     });
 
-    return lang !== 'undefined' ? lang : defaultLang;
+    return lang !== undefined ? lang : defaultLang;
 }
