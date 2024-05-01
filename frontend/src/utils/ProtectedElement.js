@@ -1,10 +1,7 @@
 import React from 'react';
-import { Route, Routes, Navigate } from 'react-router-dom';
-import StoreList from '../features/storeList/pages/StoreList';
+import { Navigate } from 'react-router-dom';
 
 export const ProtectedElement = ({element, elementRoles, userRoles}) => {
-
-    console.log(element)
 
     const hasPermission = elementRoles.some(role => userRoles.includes(role));
 

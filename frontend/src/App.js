@@ -3,7 +3,7 @@ import useLocalStorage from 'use-local-storage';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ProtectedElement } from './utils/ProtectedElement';
 
-import i18n from './i18n';
+import './i18n';
 
 import { MdLightMode } from "react-icons/md";
 import { MdDarkMode } from "react-icons/md";
@@ -21,6 +21,8 @@ import LanguageToggle from './components/LanguageToggle';
 import UserList from './features/userList/pages/UserList';
 
 const App = () => {
+
+    console.log()
 
     const defaultDark = window.matchMedia('(prefers-color-sceme: dark)').matches
     const [theme, setTheme] = useLocalStorage('theme', defaultDark ? 'dark' : 'light')
