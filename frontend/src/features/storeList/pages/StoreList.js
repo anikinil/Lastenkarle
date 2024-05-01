@@ -1,8 +1,14 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
+
+
 
 const StoreList = () => {
+
+    const { t } = useTranslation();
+
     return (
-        <h1>Store list</h1>
+        <h1>{t('store_list')}</h1>
     );
 };
   

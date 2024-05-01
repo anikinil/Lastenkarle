@@ -16,7 +16,7 @@ const username = getCookie("username");
 
 const Home = () => {
 
-    const { t } = useTranslation('translations/Home');
+    const { t } = useTranslation();
 
     return (
         <>
