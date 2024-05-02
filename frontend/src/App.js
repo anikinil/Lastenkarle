@@ -34,7 +34,7 @@ const App = () => {
 
     // const userRoles = fetchUserRoles(); TODO: implement all the necessary fetching
     // const userRoles = ['manager', 'admin']
-    const userRoles = ['manager', 'customer']
+    const userRoles = ['admin']
 
     return (
         <div className='App' data-theme={theme}>

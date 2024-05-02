@@ -6,6 +6,7 @@
     background-color: var(--background);
     box-shadow: 0 2px 4px var(--shadow);
     position: relative;
+    font-size: large;
 }
 
 .logo {
@@ -55,6 +56,16 @@
 }
 
 .menu-item:hover {
+    color: var(--button-foreground-focus);
+}
+
+.account-menu-item {
+    display: block;
+    padding: 2rem 2rem 1rem 1rem;
+    color: var(--button-foreground);
+}
+
+.account-menu-item:hover {
     color: var(--button-foreground-focus);
 }
 

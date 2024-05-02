@@ -1,11 +1,16 @@
 import React from "react";
-// import "./Navbar.css";
-import { menuData } from "../../data/menuData"
+import { menuItems, getAccountItemByRoles } from "../../data/menuData"
 import MenuItems from "./MenuItems";
+import MenuItem from "./MenuItem";
 import "./Navbar.css";
 import logo from "../../assets/images/logo.png";
 
 const Navbar = () => {
+
+    const userRoles = ['admin']; // TODO: make global, when fetching implemented
+
+    const accountItem = getAccountItemByRoles(userRoles);
+    console.log(accountItem)
 
     return (
         <header>
@@ -15,9 +20,12 @@ const Navbar = () => {
                 </a>
                 <nav className="nav">
                     <ul className="menus">
-                        {menuData.map((menu, index) => {
-                            return <MenuItems items={menu} key={index} />;
+                        {menuItems.map((item, index) => {
+                            return <MenuItems item={item} key={index} />;
                         })}
+                        <li>
+                            <MenuItem className="account-menu-item" item={accountItem} userRoles={userRoles}/>
+                        </li>
                     </ul>
                 </nav>
             </div>
