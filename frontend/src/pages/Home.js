@@ -1,23 +1,27 @@
 import React from "react";
-// Alma war hier
+import { useTranslation } from 'react-i18next';
+
 // Function to get a cookie value by name
 const getCookie = (name) => {
     const cookies = document.cookie
-      .split("; ")
-      .find((row) => row.startsWith(`${name}=`));
-   
+        .split("; ")
+        .find((row) => row.startsWith(`${name}=`));
+
     return cookies ? cookies.split("=")[1] : null;
-   };
-   
+};
+
 // Example: Get the value of the 'username' cookie
 const username = getCookie("username");
 
 
 const Home = () => {
+
+    const { t } = useTranslation();
+
     return (
         <>
-            <h1>Homepage</h1>
-            <p>You are {username ? username : "unknown" }</p>
+            <h1>{t('homepage')}</h1>
+            <p>You are {username ? username : "unknown"}.</p>
         </>
     );
 };

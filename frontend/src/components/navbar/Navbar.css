@@ -6,14 +6,17 @@
     background-color: var(--background);
     box-shadow: 0 2px 4px var(--shadow);
     position: relative;
+    font-size: large;
+    padding-left: 1rem;
+    padding-right: 1rem;
 }
 
 .logo {
     display: flex;
     height: 100%;
     margin-right: auto;
-    padding-left: 1rem;
     align-items: center;
+    padding-left: 3rem;
 }
 
 .logo-img {
@@ -23,7 +26,6 @@
 
 .nav {
     height: 100%;
-    margin-right: 10px;
 }
 
 .menus {
@@ -55,6 +57,16 @@
 }
 
 .menu-item:hover {
+    color: var(--button-foreground-focus);
+}
+
+.account-menu-item {
+    display: block;
+    padding: 2rem 2rem 1rem 1rem;
+    color: var(--button-foreground);
+}
+
+.account-menu-item:hover {
     color: var(--button-foreground-focus);
 }
 

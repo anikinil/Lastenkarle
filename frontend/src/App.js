@@ -1,7 +1,12 @@
 import React from 'react';
 import useLocalStorage from 'use-local-storage';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { ProtectedRoute } from './utils/ProtectedRoute';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { ProtectedElement } from './utils/ProtectedElement';
+
+import './i18n';
+
+import { MdLightMode } from "react-icons/md";
+import { MdDarkMode } from "react-icons/md";
 
 import './App.css'
 
@@ -12,7 +17,12 @@ import Booking from './features/booking/pages/Booking';
 import StoreList from './features/storeList/pages/StoreList';
 import NoPermission from './pages/NoPermission';
 
+import LanguageToggle from './components/LanguageToggle';
+import UserList from './features/userList/pages/UserList';
+
 const App = () => {
+
+    console.log()
 
     const defaultDark = window.matchMedia('(prefers-color-sceme: dark)').matches
     const [theme, setTheme] = useLocalStorage('theme', defaultDark ? 'dark' : 'light')
@@ -23,7 +33,8 @@ const App = () => {
     }
 
     // const userRoles = fetchUserRoles(); TODO: implement all the necessary fetching
-    const userRoles = ['manager']
+    // const userRoles = ['manager', 'admin']
+    const userRoles = ['admin']
 
     return (
         <div className='App' data-theme={theme}>
@@ -33,13 +44,15 @@ const App = () => {
                     <Route exact path='/' element={<Home />} />
                     <Route exact path='/login' element={<Login />} />
                     <Route exact path='/rent' element={<Booking />} />
-                    <Route exact path='/store-management' element={<ProtectedRoute roles={['manager', 'admin']} userRoles={userRoles} />}>
-                        <Route exact path='/store-management' element={<StoreList />} />
-                    </Route>
+                    <Route exact path='/store-management' element={<ProtectedElement element={<StoreList />} elementRoles={['manager', 'admin']} userRoles={userRoles} />} />
+                    <Route exact path='/users' element={<ProtectedElement element={<UserList />} elementRoles={['admin']} userRoles={userRoles} />} />
                     <Route exact path='/no-permission/' element={<NoPermission />} />
                 </Routes>
-                <button className='dark-theme-button' onClick={switchTheme}>{theme === 'light' ? 'Dark' : 'Light'} mode</button>
             </BrowserRouter>
+            <div className='side-panel'>
+                <LanguageToggle />
+                <button className='theme-toggle' onClick={switchTheme}>{theme === 'light' ? <MdLightMode /> : <MdDarkMode />}</button>
+            </div>
         </div>
     );
 }
