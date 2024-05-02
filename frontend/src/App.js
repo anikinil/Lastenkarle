@@ -10,6 +10,8 @@ import { MdDarkMode } from "react-icons/md";
 
 import './App.css'
 
+// TEST
+
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Navbar from './components/navbar/Navbar';
