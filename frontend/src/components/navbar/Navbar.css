@@ -7,14 +7,16 @@
     box-shadow: 0 2px 4px var(--shadow);
     position: relative;
     font-size: large;
+    padding-left: 1rem;
+    padding-right: 1rem;
 }
 
 .logo {
     display: flex;
     height: 100%;
     margin-right: auto;
-    padding-left: 1rem;
     align-items: center;
+    padding-left: 3rem;
 }
 
 .logo-img {
@@ -24,7 +26,6 @@
 
 .nav {
     height: 100%;
-    margin-right: 10px;
 }
 
 .menus {
