@@ -2,6 +2,7 @@ import React from "react";
 import { useTranslation } from 'react-i18next';
 
 // Function to get a cookie value by name
+//Alma war hier TEST
 const getCookie = (name) => {
     const cookies = document.cookie
         .split("; ")
