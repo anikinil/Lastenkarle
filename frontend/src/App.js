@@ -33,7 +33,6 @@ const App = () => {
     }
 
     // const userRoles = fetchUserRoles(); TODO: implement all the necessary fetching
-    // const userRoles = ['manager', 'admin']
     const userRoles = ['admin']
 
     return (
