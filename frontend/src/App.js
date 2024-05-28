@@ -12,6 +12,7 @@ import './App.css'
 
 import Home from './pages/Home';
 import Login from './pages/Login';
+import UserBan from './features/userBan/pages/UserBan';
 import Navbar from './components/navbar/Navbar';
 import Booking from './features/booking/pages/Booking';
 import StoreList from './features/storeList/pages/StoreList';
@@ -42,6 +43,7 @@ const App = () => {
                 <Routes>
                     <Route exact path='/' element={<Home />} />
                     <Route exact path='/login' element={<Login />} />
+                    <Route exact path='/user-ban' element={<UserBan />} />
                     <Route exact path='/rent' element={<Booking />} />
                     <Route exact path='/store-management' element={<ProtectedElement element={<StoreList />} elementRoles={['manager', 'admin']} userRoles={userRoles} />} />
                     <Route exact path='/users' element={<ProtectedElement element={<UserList />} elementRoles={['admin']} userRoles={userRoles} />} />
