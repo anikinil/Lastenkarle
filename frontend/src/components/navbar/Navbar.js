@@ -7,7 +7,7 @@ import logo from "../../assets/images/logo.png";
 
 const Navbar = () => {
 
-    const userRoles = ['admin']; // TODO: make global, when fetching implemented
+    const userRoles = ['manager']; // TODO: make global, when fetching implemented
 
     const accountItem = getAccountItemByRoles(userRoles);
     console.log(accountItem)
