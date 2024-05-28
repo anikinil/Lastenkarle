@@ -20,6 +20,9 @@ import NoPermission from './pages/NoPermission';
 
 import LanguageToggle from './components/LanguageToggle';
 import UserList from './features/userList/pages/UserList';
+import RegionalBooking from './features/booking/pages/RegionalBooking';
+import BikeBooking from './features/booking/pages/BikeBooking';
+import StorePage from './features/storeList/pages/StorePage';
 
 const App = () => {
 
@@ -48,6 +51,9 @@ const App = () => {
                     <Route exact path='/store-management' element={<ProtectedElement element={<StoreList />} elementRoles={['manager', 'admin']} userRoles={userRoles} />} />
                     <Route exact path='/users' element={<ProtectedElement element={<UserList />} elementRoles={['admin']} userRoles={userRoles} />} />
                     <Route exact path='/no-permission/' element={<NoPermission />} />
+                    <Route exact path='/regional-booking' element={<RegionalBooking />} />
+                    <Route exact path='/bike-booking' element={<BikeBooking />} />
+                    <Route exact path='/store-page' element={<StorePage />} />
                 </Routes>
             </BrowserRouter>
             <div className='side-panel'>
