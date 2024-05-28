@@ -5,7 +5,8 @@ import { FaUser } from "react-icons/fa";
 
 export const menuItems = [
     {
-        title: 'Rent',
+        title: 'Booking',
+        url: '/booking',
         roles: ['customer', 'manager', 'admin'],
         submenu: [
             {
