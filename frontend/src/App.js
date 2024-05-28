@@ -44,7 +44,7 @@ const App = () => {
                     <Route exact path='/' element={<Home />} />
                     <Route exact path='/login' element={<Login />} />
                     <Route exact path='/user-ban' element={<UserBan />} />
-                    <Route exact path='/rent' element={<Booking />} />
+                    <Route exact path='/booking' element={<Booking />} />
                     <Route exact path='/store-management' element={<ProtectedElement element={<StoreList />} elementRoles={['manager', 'admin']} userRoles={userRoles} />} />
                     <Route exact path='/users' element={<ProtectedElement element={<UserList />} elementRoles={['admin']} userRoles={userRoles} />} />
                     <Route exact path='/no-permission/' element={<NoPermission />} />
