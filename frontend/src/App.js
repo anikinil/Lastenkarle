@@ -23,6 +23,7 @@ import UserList from './features/userList/pages/UserList';
 import RegionalBooking from './features/booking/pages/RegionalBooking';
 import BikeBooking from './features/booking/pages/BikeBooking';
 import StorePage from './features/storeList/pages/StorePage';
+import BikeList from './features/bikeList/pages/BikeList';
 
 const App = () => {
 
@@ -54,6 +55,7 @@ const App = () => {
                     <Route exact path='/regional-booking' element={<RegionalBooking />} />
                     <Route exact path='/bike-booking' element={<BikeBooking />} />
                     <Route exact path='/store-page' element={<StorePage />} />
+                    <Route exact path='/bikes' element={<BikeList />} />
                 </Routes>
             </BrowserRouter>
             <div className='side-panel'>
