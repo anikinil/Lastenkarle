@@ -1,6 +1,6 @@
 import React from "react";
 
-import './BikeListItem.css'
+import '../pages/BikeList.css'
 
 const BikeListItem = ({bike, index}) => {
 
