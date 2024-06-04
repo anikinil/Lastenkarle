@@ -5,6 +5,10 @@
     background-color: var(--background);
 }
 
+.content-container {
+    padding: 1rem;
+}
+
 .side-panel {
     position: fixed;
     bottom: 0;

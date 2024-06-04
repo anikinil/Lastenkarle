@@ -1,9 +1,13 @@
 import React from "react";
+import { useTranslation } from 'react-i18next';
+
 
 import './BikeList.css'
 import BikeListItem from '../components/BikeListItem'
 
 const BikeList = () => {
+
+    const { t } = useTranslation();
 
     // TODO: implement fetching
     let bikes = [
@@ -13,15 +17,20 @@ const BikeList = () => {
         {
             name: "Lastenrad 2"
         },
+        {
+            name: "Lastenrad 3"
+        },
     ]
 
     return (
         <>
-            <li className="list">
-                {bikes.map((bike, index) => (
-                    <BikeListItem bike={bike} key={index}/>
-                ))}
-            </li>
+            <ul>
+                <li className="list">
+                    {bikes.map((bike, index) => (
+                        <BikeListItem bike={bike} key={index}/>
+                    ))}
+                </li>
+            </ul>
         </>
     );
 };

@@ -38,6 +38,7 @@ button {
     --shadow: rgba(0, 0, 0, 0.3);
     --button-foreground: #707070;
     --button-foreground-focus: black;
+    --button-background: var(--background)
 }
 
 [data-theme='dark'] {
@@ -47,6 +48,7 @@ button {
     --shadow: rgba(0, 0, 0, 0.3);
     --button-foreground: #b0b0b0;
     --button-foreground-focus: white;
+    --button-background: var(--background)
 }
 
 * {

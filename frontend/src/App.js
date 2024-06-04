@@ -42,22 +42,24 @@ const App = () => {
 
     return (
         <div className='App' data-theme={theme}>
-            <BrowserRouter>
-                <Navbar />
-                <Routes>
-                    <Route exact path='/' element={<Home />} />
-                    <Route exact path='/login' element={<Login />} />
-                    <Route exact path='/user-ban' element={<UserBan />} />
-                    <Route exact path='/booking' element={<Booking />} />
-                    <Route exact path='/store-management' element={<ProtectedElement element={<StoreList />} elementRoles={['manager', 'admin']} userRoles={userRoles} />} />
-                    <Route exact path='/users' element={<ProtectedElement element={<UserList />} elementRoles={['admin']} userRoles={userRoles} />} />
-                    <Route exact path='/no-permission/' element={<NoPermission />} />
-                    <Route exact path='/regional-booking' element={<RegionalBooking />} />
-                    <Route exact path='/bike-booking' element={<BikeBooking />} />
-                    <Route exact path='/store-page' element={<StorePage />} />
-                    <Route exact path='/bikes' element={<BikeList />} />
-                </Routes>
-            </BrowserRouter>
+            <Navbar />
+            <div className='content-container'>
+                <BrowserRouter>
+                    <Routes>
+                        <Route exact path='/' element={<Home />} />
+                        <Route exact path='/login' element={<Login />} />
+                        <Route exact path='/user-ban' element={<UserBan />} />
+                        <Route exact path='/booking' element={<Booking />} />
+                        <Route exact path='/store-management' element={<ProtectedElement element={<StoreList />} elementRoles={['manager', 'admin']} userRoles={userRoles} />} />
+                        <Route exact path='/users' element={<ProtectedElement element={<UserList />} elementRoles={['admin']} userRoles={userRoles} />} />
+                        <Route exact path='/no-permission/' element={<NoPermission />} />
+                        <Route exact path='/regional-booking' element={<RegionalBooking />} />
+                        <Route exact path='/bike-booking' element={<BikeBooking />} />
+                        <Route exact path='/store-page' element={<StorePage />} />
+                        <Route exact path='/bikes' element={<BikeList />} />
+                    </Routes>
+                </BrowserRouter>
+            </div>
             <div className='side-panel'>
                 <LanguageToggle />
                 <button className='theme-toggle' onClick={switchTheme}>{theme === 'light' ? <MdLightMode /> : <MdDarkMode />}</button>

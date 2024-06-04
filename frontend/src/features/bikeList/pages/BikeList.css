@@ -1,7 +1,21 @@
 .list {
+    width: 80%;
     list-style-type: none;
 }
 
-.bike-list-item {
-    padding: 1rem;
+.list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+}
+
+.label {
+    font-size: large;
+}
+
+.button {
+    float: right;
+    color: var(--button-foreground);
+    background-color: var(--button-background);
 }
