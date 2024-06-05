@@ -19,6 +19,12 @@ code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
+h1 {
+    text-align: left;
+    padding-top: 2rem;
+    padding-bottom: 1rem;
+}
+
 ul {
     padding: 0;
 }
@@ -33,28 +39,44 @@ button {
 
 [data-theme='light'] {
     --primary: #e30613; /* Lastenkarle red */
+    --primary-light: #fb3744;
     --foreground: black;
     --background: white;
-    --accent-background: #e0e0e0;
+    --content-background: #e0e0e0;
     --shadow: rgba(0, 0, 0, 0.3);
+
     --button-foreground: #707070;
     --button-foreground-focus: black;
-    --button-border-focus: var(--button-foreground-focus);
     --button-background: var(--background);
-    --button-border: var(--foreground)
+    --button-border: var(--button-foreground);
+    --button-border-focus: var(--button-foreground-focus);
+
+    --accent-button-foreground: var(--primary-light);
+    --accent-button-foreground-focus: var(--primary);
+    --accent-button-border: var(--primary-light);
+    --accent-button-border-focus: var(--primary);
+    --accent-button-background: var(--background);
 }
 
 [data-theme='dark'] {
     --primary: #e30613; /* Lastenkarle red */
+    --primary-light: #fb3744;
     --foreground: white;
     --background: #2a2d2e;
-    --accent-background: #3a3d3e;
+    --content-background: #303436;
     --shadow: rgba(0, 0, 0, 0.3);
+
     --button-foreground: #b0b0b0;
     --button-foreground-focus: white;
-    --button-border-focus: var(--button-foreground-focus);
     --button-background: var(--background);
-    --button-border: var(--foreground)
+    --button-border: var(--button-foreground);
+    --button-border-focus: var(--button-foreground-focus);
+
+    --accent-button-foreground: var(--primary);
+    --accent-button-foreground-focus: var(--primary-light);
+    --accent-button-border: var(--primary);
+    --accent-button-border-focus: var(--primary-light);
+    --accent-button-background: var(--background);
 }
 
 * {

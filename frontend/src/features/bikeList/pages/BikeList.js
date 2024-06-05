@@ -35,7 +35,9 @@ const BikeList = () => {
 
     return (
         <>
-            <h1>Heading</h1>
+            <h1>{t('bikes')}</h1>
+
+            {/* TODO add sorting buttons */}
 
             <ul className='list'>
                 {bikes.map((bike) => (

@@ -7,9 +7,10 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 1rem;
-    background-color: var(--accent-background);
+    margin-bottom: 1rem;
+    background-color: var(--content-background);
     border-radius: 0.5rem;
+    box-shadow: 2px 4px 6px var(--shadow);
 }
 
 .label {
@@ -19,29 +20,45 @@
     margin-right: auto;
 }
 
-/* TODO: add accent button colors and use them here */
-
-.list-item .button {
+.button {
     float: right;
-    color: var(--button-foreground);
-    background-color: var(--button-background);
-
-    margin-left: 1rem;
-    margin-right: 1rem;
-
-    width: 30%;
+    
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    
     height: 2.5rem;
-    border: 2px solid var(--button-border);
-    border-radius: 0.5rem;
     cursor: pointer;
+
+    border-radius: 0.5rem;
 }
 
-.list-item .button:hover {
+.regular {
+    width: 5rem;
+
+    color: var(--button-foreground);
+    background-color: var(--content-background);    
+    border: 2px solid var(--button-border);
+}
+
+.delete {
+    width: 2.5rem;
+
+    color: var(--accent-button-foreground);
+    background-color: var(--content-background);
+    border: 2px solid var(--accent-button-border);
+}
+
+.regular:hover {
     color: var(--button-foreground-focus);
     border-color: var(--button-border-focus);
 }
 
-.list-item .img-container {
+.delete:hover {
+    color: var(--accent-button-foreground-focus);
+    border-color: var(--accent-button-border-focus);
+}
+
+.img-container {
     float: right;
     width: 6rem;
     height: 5rem;
@@ -56,7 +73,7 @@
     justify-content: center;
 }
 
-.list-item .img {
+.img {
     max-width: 100%;
     max-height: 100%;
     border-radius: 0.5rem;

@@ -4,7 +4,7 @@
     justify-content: center;
     align-items: center;
     background-color: var(--background);
-    box-shadow: 0 2px 4px var(--shadow);
+    box-shadow: 2px 4px 6px var(--shadow);
     position: relative;
     font-size: large;
     padding-left: 1rem;
@@ -74,11 +74,12 @@
     height: 0;
     position: relative;
     background-color: var(--background);
-    box-shadow: 0 2px 4px var(--shadow);
+    box-shadow: 2px 4px 6px var(--shadow);
     border-bottom: 0px;
     list-style: none;
     overflow: hidden;
     transition: all 0.3s ease;
+    padding: 0.5rem;
 }
 
 .dropdown.show {
