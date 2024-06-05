@@ -1,9 +1,9 @@
 .list {
-    /* width: 80%; */
     list-style-type: none;
 }
 
 .list-item {
+    height: 6rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -14,7 +14,9 @@
 
 .label {
     font-size: large;
-    margin: 1rem;
+
+    margin-left: 2rem;
+    margin-right: auto;
 }
 
 /* TODO: add accent button colors and use them here */
@@ -23,9 +25,12 @@
     float: right;
     color: var(--button-foreground);
     background-color: var(--button-background);
-    margin: 1rem;
+
+    margin-left: 1rem;
+    margin-right: 1rem;
+
     width: 30%;
-    height: 3rem;
+    height: 2.5rem;
     border: 2px solid var(--button-border);
     border-radius: 0.5rem;
     cursor: pointer;
@@ -34,4 +39,25 @@
 .list-item .button:hover {
     color: var(--button-foreground-focus);
     border-color: var(--button-border-focus);
+}
+
+.list-item .img-container {
+    float: right;
+    width: 6rem;
+    height: 5rem;
+
+    margin-left: 1rem;
+    margin-right: 2rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.list-item .img {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 0.5rem;
 }

@@ -9,10 +9,13 @@ const BikeListItem = ({bike}) => {
     
     // THINK: how to display different buttons to different roles
     return (
-        <div className="list-item" key={bike.id}>
+        <li className="list-item">
             <p className="label">{bike.name}</p>
             <button type="button" className="button">{t('book')}</button>
-        </div>
+            <div className="img-container">
+                <img className="img" alt={bike.name} src={bike.image}></img>
+            </div>
+        </li>
     );
 };
   

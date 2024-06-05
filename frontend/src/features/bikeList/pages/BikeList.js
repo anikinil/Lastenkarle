@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 
@@ -12,32 +12,39 @@ const BikeList = () => {
     // TODO: implement fetching
     let bikes = [
         {
-            id: "1",
-            name: "Lastenrad 1"
+            id: 1,
+            name: 'Lastenrad 1',
+            image: require('./bike1.jpg')
         },
         {
-            id: "2",
-            name: "Lastenrad 2"
+            id: 2,
+            name: 'Lastenrad 2',
+            image: require('./bike2.jpg')
         },
         {
-            id: "3",
-            name: "Lastenrad 3"
+            id: 3,
+            name: 'Lastenrad 3',
+            image: require('./bike3.jpg')
         },
+        {
+            id: 4,
+            name: 'Lastenrad 4',
+            image: require('./bike4.jpg')
+        }
     ]
-
-    // FIXME: hover response of all buttons
 
     return (
         <>
             <h1>Heading</h1>
 
-            <ul>
-                <li className="list">
-                    {bikes.map((bike) => (
-                        <BikeListItem bike={bike} key={bike.id}/>
-                    ))}
-                </li>
+            <ul className='list'>
+                {bikes.map((bike) => (
+                    <BikeListItem bike={bike} key={bike.id}/>
+                ))}
             </ul>
+
+            {/* <img className='img' alt='name' src={require('../assets/images/bike1.jpg')}></img> */}
+            
         </>
     );
 };

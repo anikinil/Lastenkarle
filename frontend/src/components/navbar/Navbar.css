@@ -71,21 +71,25 @@
 }
 
 .dropdown {
+    height: 0;
     position: relative;
     background-color: var(--background);
     box-shadow: 0 2px 4px var(--shadow);
+    border-bottom: 0px;
     list-style: none;
     overflow: hidden;
     transition: all 0.3s ease;
 }
 
 .dropdown.show {
+    height: 100%;
     border-bottom: 5px solid var(--primary);
     opacity: 1;
     transform: translateY(-15px);
 }
 
 .dropdown.hide {
+    height: 0;
     opacity: 0;
     transform: translateY(-30px);
     border-bottom: 5px solid var(--foreground);
