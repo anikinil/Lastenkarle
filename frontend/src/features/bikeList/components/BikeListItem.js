@@ -3,17 +3,13 @@ import { useTranslation } from 'react-i18next';
 
 import '../pages/BikeList.css'
 
-const BikeListItem = ({bike, index}) => {
+const BikeListItem = ({bike}) => {
 
     const { t } = useTranslation();
-
+    
+    // THINK: how to display different buttons to different roles
     return (
-
-        // FIXME: perhaps add separate panels for each list item
-
-        // LEARN: think about how to display different buttons to different roles
-
-        <div className="list-item" key={index}>
+        <div className="list-item" key={bike.id}>
             <p className="label">{bike.name}</p>
             <button type="button" className="button">{t('book')}</button>
         </div>

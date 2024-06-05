@@ -5,8 +5,9 @@
     background-color: var(--background);
 }
 
+/* THINK: how to make an adjustable, but not to wide content container */
 .content-container {
-    padding: 1rem;
+    padding: 0 5rem 0 5rem;
 }
 
 .side-panel {
@@ -26,7 +27,7 @@
     align-items: center;
     background-color: var(--background);
     color: var(--button-foreground);
-    border: 2px solid var(--button-foreground);
+    border: 2px solid var(--button-border);
     border-radius: 50%;
     cursor: pointer;
     margin-left: 50%;
@@ -49,7 +50,7 @@
     align-items: center;
     background-color: var(--background);
     color: var(--button-foreground);
-    border: 2px solid var(--button-foreground);
+    border: 2px solid var(--button-border);
     border-radius: 50%;
     cursor: pointer;
     margin-left: 50%;
@@ -61,5 +62,5 @@
 
 .language-toggle:hover {
     color: var(--button-foreground-focus);
-    border-color: var(--button-foreground-focus);
+    border-color: var(--button-border-focus);
 }

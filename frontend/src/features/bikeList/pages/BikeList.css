@@ -1,5 +1,5 @@
 .list {
-    width: 80%;
+    /* width: 80%; */
     list-style-type: none;
 }
 
@@ -7,15 +7,29 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px;
+    margin: 1rem;
+    background-color: var(--accent-background);
+    border-radius: 0.5rem;
 }
 
 .label {
     font-size: large;
+    margin: 1rem;
 }
 
-.button {
+.list-item .button {
     float: right;
     color: var(--button-foreground);
     background-color: var(--button-background);
+    margin: 1rem;
+    width: 30%;
+    height: 3rem;
+    border: 2px solid var(--button-border);
+    border-radius: 0.5rem;
+    cursor: pointer;
+}
+
+.list-item .button:hover {
+    color: var(--button-foreground-focus);
+    border-color: var(--button-border-focus);
 }

@@ -12,22 +12,29 @@ const BikeList = () => {
     // TODO: implement fetching
     let bikes = [
         {
+            id: "1",
             name: "Lastenrad 1"
         },
         {
+            id: "2",
             name: "Lastenrad 2"
         },
         {
+            id: "3",
             name: "Lastenrad 3"
         },
     ]
 
+    // FIXME: hover response of all buttons
+
     return (
         <>
+            <h1>Heading</h1>
+
             <ul>
                 <li className="list">
-                    {bikes.map((bike, index) => (
-                        <BikeListItem bike={bike} key={index}/>
+                    {bikes.map((bike) => (
+                        <BikeListItem bike={bike} key={bike.id}/>
                     ))}
                 </li>
             </ul>
