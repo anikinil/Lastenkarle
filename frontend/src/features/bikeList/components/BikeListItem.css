@@ -8,6 +8,12 @@
     background-color: var(--content-background);
     border-radius: 0.5rem;
     box-shadow: 2px 4px 6px var(--shadow);
+    transition: all 0.15s ease;
+}
+
+.list-item:hover {
+    background-color: var(--content-background-focused);
+    cursor: pointer;
 }
 
 .label {
@@ -27,13 +33,16 @@
     cursor: pointer;
 
     border-radius: 0.5rem;
+
+    transition: all 0.15s ease;
+
 }
 
 .regular {
     width: 5rem;
 
     color: var(--button-foreground);
-    background-color: var(--content-background);    
+    background-color: transparent;
     border: 2px solid var(--button-border);
 }
 
@@ -41,7 +50,7 @@
     width: 2.5rem;
 
     color: var(--accent-button-foreground);
-    background-color: var(--content-background);
+    background-color: transparent;
     border: 2px solid var(--accent-button-border);
 }
 

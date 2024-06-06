@@ -43,6 +43,7 @@ button {
     --foreground: black;
     --background: white;
     --content-background: #f1f3f3;
+    --content-background-focused: #e3e8e8;
     --shadow: rgba(0, 0, 0, 0.3);
 
     --button-foreground: #707070;
@@ -64,6 +65,7 @@ button {
     --foreground: white;
     --background: #2a2d2e;
     --content-background: #303436;
+    --content-background-focused: #3c4144;
     --shadow: rgba(0, 0, 0, 0.3);
 
     --button-foreground: #b0b0b0;
