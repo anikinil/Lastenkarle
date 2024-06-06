@@ -39,7 +39,7 @@
 }
 
 .regular {
-    width: 5rem;
+    width: auto;
 
     color: var(--button-foreground);
     background-color: transparent;

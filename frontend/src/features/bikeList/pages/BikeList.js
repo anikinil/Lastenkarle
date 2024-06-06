@@ -1,15 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
-
 import './BikeList.css'
 import BikeListItem from '../components/BikeListItem'
+
+import { FaSortAlphaDown, FaSortAlphaUp } from "react-icons/fa";
 
 const BikeList = () => {
 
     const { t } = useTranslation();
 
-    // TODO: implement fetching
+    const [sortAZ, setSortAZ] = useState(true);
+
+    const handleSortClick = () => {
+        setSortAZ(!sortAZ)
+        resort()
+    }
+
+    const resort = () => {
+        // TODO implement resorting
+        console.log("resort")
+    }
+
+    // TODO implement fetching
     let bikes = [
         {
             id: 1,
@@ -37,24 +49,20 @@ const BikeList = () => {
         <>
             <h1>{t('bikes')}</h1>
 
-
             <div className='button-container'>
-                
-                {/* TODO add sorting buttons */}
-
+                <button type='button' className='sort-button' onClick={handleSortClick}>
+                    { sortAZ ? <FaSortAlphaDown /> : <FaSortAlphaUp />}
+                </button>
                 <button type='button' className='new-bike-button'>{t('add_new_bike')}</button>
             </div>
 
             <ul className='list'>
                 {bikes.map((bike) => (
-                    <BikeListItem bike={bike} key={bike.id}/>
+                    <BikeListItem bike={bike} key={bike.id} />
                 ))}
             </ul>
-
-            {/* <img className='img' alt='name' src={require('../assets/images/bike1.jpg')}></img> */}
-            
         </>
     );
 };
-  
+
 export default BikeList;
