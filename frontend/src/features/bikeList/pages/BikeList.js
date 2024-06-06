@@ -4,10 +4,13 @@ import './BikeList.css'
 import BikeListItem from '../components/BikeListItem'
 
 import { FaSortAlphaDown, FaSortAlphaUp } from "react-icons/fa";
+import { useNavigate } from 'react-router-dom';
 
 const BikeList = () => {
 
     const { t } = useTranslation();
+
+    const navigate = useNavigate();
 
     const [sortAZ, setSortAZ] = useState(true);
 
@@ -19,6 +22,10 @@ const BikeList = () => {
     const resort = () => {
         // TODO implement resorting
         console.log("resort")
+    }
+
+    const handleNewBikeClick = () => {
+        navigate("/bike-registration");
     }
 
     // TODO implement fetching
@@ -53,7 +60,7 @@ const BikeList = () => {
                 <button type='button' className='sort-button' onClick={handleSortClick}>
                     { sortAZ ? <FaSortAlphaDown /> : <FaSortAlphaUp />}
                 </button>
-                <button type='button' className='new-bike-button'>{t('add_new_bike')}</button>
+                <button type='button' className='new-bike-button' onClick={handleNewBikeClick}>{t('add_new_bike')}</button>
             </div>
 
             <ul className='list'>
