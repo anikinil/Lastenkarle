@@ -9,6 +9,7 @@ import { MdLightMode } from "react-icons/md";
 import { MdDarkMode } from "react-icons/md";
 
 import './App.css'
+import './components/sidePanel/SidePanel.css'
 
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -18,7 +19,7 @@ import Booking from './features/booking/pages/Booking';
 import StoreList from './features/storeList/pages/StoreList';
 import NoPermission from './pages/NoPermission';
 
-import LanguageToggle from './components/LanguageToggle';
+import LanguageToggle from './components/sidePanel/LanguageToggle';
 import UserList from './features/userList/pages/UserList';
 import RegionalBooking from './features/booking/pages/RegionalBooking';
 import BikeBooking from './features/booking/pages/BikeBooking';
@@ -62,7 +63,7 @@ const App = () => {
             </div>
             <div className='side-panel'>
                 <LanguageToggle />
-                <button className='theme-toggle' onClick={switchTheme}>{theme === 'light' ? <MdLightMode /> : <MdDarkMode />}</button>
+                <button className='toggle theme' onClick={switchTheme}>{theme === 'light' ? <MdLightMode /> : <MdDarkMode />}</button>
             </div>
         </div>
     );

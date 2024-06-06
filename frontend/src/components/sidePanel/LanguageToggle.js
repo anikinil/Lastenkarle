@@ -1,7 +1,8 @@
 
 import i18n from "i18next";
-import { getLangDataByCode, langData, defaultLang } from "../utils/languageToggle";
+import { getLangDataByCode, langData, defaultLang } from "../../utils/languageToggle";
 import React, { useEffect, useState } from "react";
+import "./SidePanel.css"
 
 const LanguageToggle = () => {
 
