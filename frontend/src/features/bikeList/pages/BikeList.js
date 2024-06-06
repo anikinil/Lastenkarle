@@ -37,7 +37,13 @@ const BikeList = () => {
         <>
             <h1>{t('bikes')}</h1>
 
-            {/* TODO add sorting buttons */}
+
+            <div className='button-container'>
+                
+                {/* TODO add sorting buttons */}
+
+                <button type='button' className='new-bike-button'>{t('add_new_bike')}</button>
+            </div>
 
             <ul className='list'>
                 {bikes.map((bike) => (

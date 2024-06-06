@@ -1,7 +1,7 @@
 import React from "react";
 import { useTranslation } from 'react-i18next';
 
-import '../pages/BikeList.css'
+import '../components/BikeListItem.css'
 
 import { MdDelete } from "react-icons/md";
 
