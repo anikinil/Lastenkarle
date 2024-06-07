@@ -1,12 +1,17 @@
 html,
 body {
-    height: 100%;
     min-height: 100%;
     margin: 0;
+    padding: 0;
+    background-color: var(--background);
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 div#root {
-    height: 100%;
+    min-height: 100vh;
+    width: 100%;
     background-color: var(--background);
     color: var(--foreground);
 }
@@ -17,7 +22,7 @@ div#root {
 
 h1 {
     text-align: left;
-    padding-top: 2rem;
+    padding-top: 1rem;
     padding-bottom: 1rem;
 }
 
@@ -86,6 +91,12 @@ textarea::-webkit-scrollbar-thumb {
 button {
     border: 2px solid var(--button-border);
     background-color: transparent;
+    border-radius: 0.5rem;
+
+    height: 2.5rem;
+    cursor: pointer;
+
+    transition: all 0.15s ease;
 }
 
 [data-theme='light'] {

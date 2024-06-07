@@ -2,7 +2,7 @@
 .list-item {
     height: 6rem;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     margin-bottom: 1rem;
     background-color: var(--content-background);
@@ -23,19 +23,12 @@
     margin-right: auto;
 }
 
-.button {
+.bike-list-item-button {
     float: right;
     
     margin-left: 0.5rem;
     margin-right: 0.5rem;
-    
-    height: 2.5rem;
-    cursor: pointer;
-
-    border-radius: 0.5rem;
-
-    transition: all 0.15s ease;
-
+    margin-bottom: 0;
 }
 
 .regular {

@@ -13,7 +13,6 @@ const Navbar = () => {
     console.log(accountItem)
 
     return (
-        <header>
             <div className="nav-area">
                 <a href="/" className="logo-container">
                     <img className="logo-img" src={logo} alt="Logo"/>
@@ -29,7 +28,6 @@ const Navbar = () => {
                     </ul>
                 </nav>
             </div>
-        </header>
     );
 }
 

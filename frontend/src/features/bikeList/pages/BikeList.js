@@ -48,7 +48,12 @@ const BikeList = () => {
         {
             id: 4,
             name: 'Lastenrad 4',
-            image: require('./bike4.jpg')
+            image: require('./bike3.jpg')
+        },
+        {
+            id: 5,
+            name: 'Lastenrad 5',
+            image: ""
         }
     ]
 
@@ -56,7 +61,7 @@ const BikeList = () => {
         <>
             <h1>{t('bikes')}</h1>
 
-            <div className='button-container'>
+            <div className='bike-list-button-container'>
                 <button type='button' className='sort-button' onClick={handleSortClick}>
                     { sortAZ ? <FaSortAlphaDown /> : <FaSortAlphaUp />}
                 </button>

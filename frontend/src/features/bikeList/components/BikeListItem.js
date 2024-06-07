@@ -1,10 +1,11 @@
 import React from "react";
 import { useTranslation } from 'react-i18next';
 
-import '../components/BikeListItem.css'
+import './BikeListItem.css'
 
 import { MdDelete } from "react-icons/md";
 
+import defaultBikePicture from "../../../assets/images/default_bike.png"
 
 const BikeListItem = ({bike}) => {
 
@@ -41,12 +42,12 @@ const BikeListItem = ({bike}) => {
 
             <p className="label">{bike.name}</p>
 
-            <button type="button" className="button regular" onClick={handleBookingsClick}>{t('bookings')}</button>
-            <button type="button" className="button regular" onClick={handleStoreClick}>{t('store')}</button>
-            <button type="button" className="button delete" onClick={handleDeleteClick}>{<MdDelete />}</button>
+            <button type="button" className="bike-list-item-button regular" onClick={handleBookingsClick}>{t('bookings')}</button>
+            <button type="button" className="bike-list-item-button regular" onClick={handleStoreClick}>{t('store')}</button>
+            <button type="button" className="bike-list-item-button delete" onClick={handleDeleteClick}>{<MdDelete />}</button>
             
             <div className="img-container">
-                <img className="img" alt={bike.name} src={bike.image}></img>
+                <img className="img" alt={bike.name} src={bike.image ? bike.image : defaultBikePicture}></img>
             </div>
         </li>
     );

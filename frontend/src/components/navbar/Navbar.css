@@ -1,14 +1,17 @@
+/* TODO make adjustable to height of the menu items (when window width small) but not to the rest of elements (like drop-downs or logo) */
+
 .nav-area {
     height: 5rem;
+    width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
     background-color: var(--background);
     box-shadow: 2px 4px 6px var(--shadow);
-    position: relative;
     font-size: large;
-    padding-left: 1rem;
-    padding-right: 1rem;
 }
 
 .logo-container {

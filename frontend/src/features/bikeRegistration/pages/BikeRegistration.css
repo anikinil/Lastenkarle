@@ -8,7 +8,15 @@
     background-color: var(--content-background);
     border-radius: 0.5rem;
 
-    margin-bottom: 3rem;
+    margin-bottom: 1rem;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.new-bike-img-container:hover {
+    cursor: pointer;
 }
 
 .new-bike-img {
@@ -16,19 +24,26 @@
 }
 
 .new-bike-description {
-    float: right;
+    /* float: right; */
 
     width: 48%;
     aspect-ratio: 1;
 
-    margin-bottom: 3rem;
+    margin-bottom: 1rem;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
 .button {
+    margin-bottom: 1rem;
 }
 
 .picture {
-    float: left;
+    /* float: left; */
     color: var(--button-foreground);
 }
 
@@ -38,8 +53,6 @@
 }
 
 .register {
-    float: right;
-
     color: var(--accent-button-foreground);
     border-color: var(--acent-button-border);
 }
