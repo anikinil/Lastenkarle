@@ -17,10 +17,8 @@ const BikeRegistration = () => {
 
             <textarea className="new-bike-description"></textarea>
 
-            <div className="picture_buttons_container">
-                <button type="button" className="button picture">{t('choose_picture')}</button>
-                <button type="button" className="button picture">{t('remove_picture')}</button>
-            </div>
+            <button type="button" className="button picture">{t('choose_picture')}</button>
+            <button type="button" className="button picture">{t('remove_picture')}</button>
 
             <button type="button" className="button register">{t('register_new_bike')}</button>
         </>

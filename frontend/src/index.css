@@ -83,6 +83,11 @@ textarea::-webkit-scrollbar-thumb {
     -moz-osx-font-smoothing: grayscale;
 } */
 
+button {
+    border: 2px solid var(--button-border);
+    background-color: transparent;
+}
+
 [data-theme='light'] {
     --primary: #e30613; /* Lastenkarle red */
     --primary-light: #fb3744;
