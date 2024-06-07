@@ -11,7 +11,7 @@
     padding-right: 1rem;
 }
 
-.logo {
+.logo-container {
     display: flex;
     height: 100%;
     margin-right: auto;

@@ -1,0 +1,21 @@
+
+.new-bike-img-container {
+    float: left;
+
+    width: 48%;
+    aspect-ratio: 1;
+
+    background-color: var(--content-background);
+    border-radius: 0.5rem;
+}
+
+.new-bike-img {
+    
+}
+
+.new-bike-description {
+    float: right;
+
+    width: 48%;
+    aspect-ratio: 1;
+}

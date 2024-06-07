@@ -1,12 +1,8 @@
-html, body {
+html,
+body {
     height: 100%;
     min-height: 100%;
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
 }
 
 div#root {
@@ -15,9 +11,9 @@ div#root {
     color: var(--foreground);
 }
 
-code {
+/* code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
-}
+} */
 
 h1 {
     text-align: left;
@@ -29,13 +25,63 @@ ul {
     padding: 0;
 }
 
-button {
+img {
+    border-radius: 0.5rem;
+}
+
+.logo-img {
+    border-radius: 0;
+}
+
+textarea {
+    padding: 1rem;
+    box-sizing: border-box;
+    color: var(--foreground);
+    background-color: var(--content-background);
+    outline: none;
+    border: none;
+    border-radius: 0.5rem;
+
+    font-size: 105%;
+
+    overflow-x: hidden;
+    overflow-y: scroll;
+
+    resize: none;
+
+    transition: background-color 0.3s ease;
+}
+
+textarea:hover {
+    cursor: pointer;
+}
+
+textarea:focus {
+    background-color: var(--content-background-focused);
+}
+
+textarea::-webkit-scrollbar {
+    width: 0.9rem;
+}
+
+/* textarea::-webkit-scrollbar-track {
+} */
+
+textarea::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb-background);
+    border: 0.3rem solid transparent;
+    background-clip: padding-box;
+    border-radius: 0.5rem;
+}
+
+
+/* button {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-}
+} */
 
 [data-theme='light'] {
     --primary: #e30613; /* Lastenkarle red */
@@ -57,6 +103,8 @@ button {
     --accent-button-border: var(--primary-light);
     --accent-button-border-focus: var(--primary);
     --accent-button-background: var(--background);
+
+    --scrollbar-thumb-background: #c7d1d1;
 }
 
 [data-theme='dark'] {
@@ -79,9 +127,17 @@ button {
     --accent-button-border: var(--primary);
     --accent-button-border-focus: var(--primary-light);
     --accent-button-background: var(--background);
+
+    --scrollbar-thumb-background: #8fa3a3;
 }
 
 * {
-    transition: color 0.3s ease-in-out;            /* transitions for darkmode/lightmode change */
-    transition: background-color 0.3s ease-in-out; /* ...                                       */
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+        sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    transition: color 0.3s ease;            /* transitions for darkmode/lightmode change */
+    transition: background-color 0.3s ease; /*                                           */
 }
