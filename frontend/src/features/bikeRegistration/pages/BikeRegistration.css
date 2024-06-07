@@ -19,3 +19,20 @@
     width: 48%;
     aspect-ratio: 1;
 }
+
+.picture_buttons_container {
+    width: 100%;
+    height: auto;
+}
+
+.button {
+    float: left;
+}
+
+.picture {
+
+}
+
+.register {
+
+}

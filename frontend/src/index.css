@@ -128,7 +128,7 @@ textarea::-webkit-scrollbar-thumb {
     --accent-button-border-focus: var(--primary-light);
     --accent-button-background: var(--background);
 
-    --scrollbar-thumb-background: #8fa3a3;
+    --scrollbar-thumb-background: #5c7070;
 }
 
 * {

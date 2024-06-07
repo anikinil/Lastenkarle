@@ -5,7 +5,7 @@
     background-color: var(--background);
 }
 
-/* THINK: how to make an adjustable, but not to wide content container */
+/* THINK how to make an adjustable, but not to wide content container */
 .content-container {
     padding: 0 5rem 0 5rem;
 }
