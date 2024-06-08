@@ -2,13 +2,13 @@
 .new-bike-img-container {
     float: left;
 
-    width: 48%;
+    width: 44%;
     aspect-ratio: 1;
 
     background-color: var(--content-background);
     border-radius: 0.5rem;
 
-    margin-bottom: 1rem;
+    margin: 1rem;
 
     display: flex;
     justify-content: center;
@@ -26,10 +26,10 @@
 .new-bike-description {
     /* float: right; */
 
-    width: 48%;
+    width: 44%;
     aspect-ratio: 1;
 
-    margin-bottom: 1rem;
+    margin: 1rem;
 }
 
 .button-container {
