@@ -55,6 +55,8 @@ textarea {
     resize: none;
 
     transition: background-color 0.3s ease;
+
+    margin: 1rem;
 }
 
 textarea:hover {
@@ -120,6 +122,8 @@ button {
     --accent-button-border-focus: var(--primary);
     --accent-button-background: var(--background);
 
+    --textarea-placeholder: #757575;
+
     --scrollbar-thumb-background: #c7d1d1;
 }
 
@@ -143,6 +147,8 @@ button {
     --accent-button-border: var(--primary);
     --accent-button-border-focus: var(--primary-light);
     --accent-button-background: var(--background);
+
+    --textarea-placeholder: #757575;
 
     --scrollbar-thumb-background: #5c7070;
 }

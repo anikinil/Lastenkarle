@@ -1,33 +1,22 @@
 import React from "react";
 import { useTranslation } from 'react-i18next';
 
-import '../../../components/lists/List.css'
-
 import { MdDelete } from "react-icons/md";
 
-import defaultBikePicture from "../../../assets/images/default_bike.png"
+import defaultStorePicture from "../../../assets/images/default_bike.png"
 
-const BikeListItem = ({bike}) => {
+const StoreListItem = ({store}) => {
 
     const { t } = useTranslation();
-    
-    // THINK how to display different buttons to different roles
-    // THINK maybe show big preview of bike image on clik on miniature preview
 
     const handlePanelClick = () => {
         // TODO implement
-        console.log(bike.name)
+        console.log(store.name)
     }
 
     const handleBookingsClick = e => {
         // TODO implement
         console.log("bookings")
-        e.stopPropagation()
-    }
-
-    const handleStoreClick = e => {
-        // TODO implement
-        console.log("store")
         e.stopPropagation()
     }
 
@@ -40,17 +29,16 @@ const BikeListItem = ({bike}) => {
     return (
         <li className="list-item" onClick={handlePanelClick}>
 
-            <p className="list-item-label">{bike.name}</p>
+            <p className="list-item-label">{store.name}</p>
 
             <button type="button" className="list-item-button regular" onClick={handleBookingsClick}>{t('bookings')}</button>
-            <button type="button" className="list-item-button regular" onClick={handleStoreClick}>{t('store')}</button>
             <button type="button" className="list-item-button delete" onClick={handleDeleteClick}>{<MdDelete />}</button>
             
             <div className="list-item-img-container">
-                <img className="list-item-img" alt={bike.name} src={bike.image ? bike.image : defaultBikePicture}></img>
+                <img className="list-item-img" alt={store.name} src={store.image ? store.image : defaultStorePicture}></img>
             </div>
         </li>
     );
 };
   
-export default BikeListItem;
+export default StoreListItem;

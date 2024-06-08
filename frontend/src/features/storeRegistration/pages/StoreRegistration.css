@@ -1,0 +1,88 @@
+
+.new-store-img-container {
+    float: left;
+
+    width: 44%;
+    aspect-ratio: 1;
+
+    margin: 1rem;
+
+    background-color: var(--content-background);
+    border-radius: 0.5rem;
+
+    /* margin-bottom: 1rem; */
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.new-store-img-container:hover {
+    cursor: pointer;
+}
+
+.new-store-image-container-label {
+    font-size: 105%;
+    color: var(--textarea-placeholder)
+}
+
+.new-store-img {
+    
+}
+
+.new-store-description {
+    /* float: right; */
+
+    width: 44%;
+    aspect-ratio: 1;
+}
+
+.new-store-description::placeholder {
+    color: var(--textarea-placeholder);
+}
+
+.new-store-address {
+    float: left;
+    justify-self: left;
+    width: 94%;
+    resize: none;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+}
+
+.new-store-address::placeholder {
+    color: var(--textarea-placeholder);
+}
+
+.button-container {
+    float: inline-start;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 1rem;
+}
+
+.button {
+    margin-bottom: 1rem;
+}
+
+.picture {
+    /* float: left; */
+    color: var(--button-foreground);
+}
+
+.picture:hover {
+    color: var(--button-foreground-focus);
+    border-color: var(--button-border-focus);
+}
+
+.register {
+    color: var(--accent-button-foreground);
+    border-color: var(--acent-button-border);
+}
+
+.register:hover {
+    color: var(--accent-button-foreground-focus);
+    border-color: var(--accent-button-border-focus);
+}

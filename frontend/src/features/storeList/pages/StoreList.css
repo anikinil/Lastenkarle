@@ -20,7 +20,7 @@
     border-color: var(--button-border-focus);
 }
 
-.new-bike-button {
+.new-store-button {
     float: right;
     
     margin-left: 0.5rem;
@@ -36,7 +36,7 @@
     border: 2px solid var(--button-border);
 }
 
-.new-bike-button:hover {
+.new-store-button:hover {
     color: var(--button-foreground-focus);
     border-color: var(--button-border-focus);
 }

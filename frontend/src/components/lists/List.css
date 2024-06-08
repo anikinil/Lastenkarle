@@ -1,3 +1,10 @@
+.list {
+    list-style-type: none;
+}
+
+.list-button-container {
+    height: 3rem;
+}
 
 .list-item {
     height: 6rem;
@@ -16,14 +23,14 @@
     cursor: pointer;
 }
 
-.label {
+.list-item-label {
     font-size: large;
 
     margin-left: 2rem;
     margin-right: auto;
 }
 
-.bike-list-item-button {
+.list-item-button {
     float: right;
     
     margin-left: 0.5rem;
@@ -57,7 +64,7 @@
     border-color: var(--accent-button-border-focus);
 }
 
-.img-container {
+.list-item-img-container {
     float: right;
     width: 6rem;
     height: 5rem;
@@ -72,7 +79,7 @@
     justify-content: center;
 }
 
-.img {
+.list-item-img {
     max-width: 100%;
     max-height: 100%;
     border-radius: 0.5rem;

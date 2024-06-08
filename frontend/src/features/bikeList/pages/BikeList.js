@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+
+import '../../../components/lists/List.css';
+import BikeListItem from '../components/BikeListItem';
 import './BikeList.css'
-import BikeListItem from '../components/BikeListItem'
 
 import { FaSortAlphaDown, FaSortAlphaUp } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
@@ -61,7 +63,7 @@ const BikeList = () => {
         <>
             <h1>{t('bikes')}</h1>
 
-            <div className='bike-list-button-container'>
+            <div className='list-button-container'>
                 <button type='button' className='sort-button' onClick={handleSortClick}>
                     { sortAZ ? <FaSortAlphaDown /> : <FaSortAlphaUp />}
                 </button>
