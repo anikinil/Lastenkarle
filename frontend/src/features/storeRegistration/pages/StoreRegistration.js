@@ -36,7 +36,7 @@ const StoreRegistration = () => {
 
                 <div className="new-store-img-container" type="file" onClick={handleImgContainerClick}>
                     {pictureFile ?
-                        <img className="new-store-img" alt={t('bike_image')} src={URL.createObjectURL(pictureFile)}></img>
+                        <img className="new-store-img" alt={t('store_image')} src={URL.createObjectURL(pictureFile)}></img>
                         :
                         <span>{t('select_a_picture')}</span>
                     }
@@ -61,7 +61,7 @@ const StoreRegistration = () => {
 
             <div className="button-container">
                 <button type="button" className="button regular">{t('configure_opening_times')}</button>
-                <button type="button" className="button regular">{t('assign_stores')}</button>
+                <button type="button" className="button regular">{t('assign_bikes')}</button>
             </div>
 
             <div className="button-container">
