@@ -38,13 +38,14 @@ const StoreRegistration = () => {
                     {pictureFile ?
                         <img className="new-store-img" alt={t('store_image')} src={URL.createObjectURL(pictureFile)}></img>
                         :
-                        <span>{t('select_a_picture')}</span>
+                        <span className="new-store-img-container-label">{t('select_a_picture')}</span>
                     }
                 </div>
 
                 <input
                     id="pictureFileInput"
                     type="file"
+                    title={t('image-selection')}
                     accept="image/*"
                     onChange={handlePictureFileChange}
                     style={{ display: 'none' }}

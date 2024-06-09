@@ -29,19 +29,20 @@ const BikeRegistration = () => {
                 {pictureFile ?
                     <img className="new-bike-img" alt={t('bike_image')} src={URL.createObjectURL(pictureFile)}></img>
                     :
-                    <span>{t('select_a_picture')}</span>
+                    <span className="new-bike-img-container-label">{t('select_a_picture')}</span>
                 }
             </div>
 
             <input
                 id="pictureFileInput"
                 type="file"
+                title={t('image-selection')}
                 accept="image/*"
                 onChange={handlePictureFileChange}
                 style={{ display: 'none' }}
             />
 
-            <textarea title={t('bike_description')} className="new-bike-description"></textarea>
+            <textarea title={t('bike_description')} className="new-bike-description" placeholder={t('bike_description')}></textarea>
 
             <div className="button-container">
                 <button type="button" className="button picture" onClick={handleRemovePictureClick}>{t('remove_picture')}</button>

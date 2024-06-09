@@ -13,10 +13,16 @@
     display: flex;
     justify-content: center;
     align-items: center;
+
 }
 
 .new-bike-img-container:hover {
     cursor: pointer;
+}
+
+.new-bike-img-container-label {
+    font-size: 105%;
+    color: var(--textarea-placeholder)
 }
 
 .new-bike-img {
