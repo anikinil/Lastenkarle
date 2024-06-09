@@ -21,13 +21,13 @@
     cursor: pointer;
 }
 
-.new-store-image-container-label {
+.new-store-img-container-label {
     font-size: 105%;
     color: var(--textarea-placeholder)
 }
 
 .new-store-img {
-    
+    width: 95%;
 }
 
 .new-store-description {

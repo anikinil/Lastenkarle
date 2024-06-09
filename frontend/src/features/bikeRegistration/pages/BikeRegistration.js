@@ -7,24 +7,47 @@ const BikeRegistration = () => {
 
     const { t } = useTranslation();
 
-    const [pictureSelected, setPictureSelected] = useState(false);
+    const [pictureFile, setPictureFile] = useState(null)
+
+    function handlePictureFileChange(event) {
+        setPictureFile(event.target.files[0])
+    }
+
+    const handleImgContainerClick = () => {
+        document.getElementById('pictureFileInput').click();
+    };
+
+    const handleRemovePictureClick = () => {
+        setPictureFile(null)
+    }
 
     return (
         <>
             <h1>{t('new_bike')}</h1>
 
-            <div className="new-bike-img-container">
-                {pictureSelected ?
-                    <img className="new-bike-img" alt={t('bike_image')} src="source"></img>
+            <div className="new-bike-img-container" type="file" onClick={handleImgContainerClick}>
+                {pictureFile ?
+                    <img className="new-bike-img" alt={t('bike_image')} src={URL.createObjectURL(pictureFile)}></img>
                     :
-                    <p>{t('select_a_picture')}</p>
+                    <span>{t('select_a_picture')}</span>
                 }
             </div>
+
+            <input
+                id="pictureFileInput"
+                type="file"
+                accept="image/*"
+                onChange={handlePictureFileChange}
+                style={{ display: 'none' }}
+            />
 
             <textarea title={t('bike_description')} className="new-bike-description"></textarea>
 
             <div className="button-container">
-                <button type="button" className="button picture">{t('remove_picture')}</button>
+                <button type="button" className="button picture" onClick={handleRemovePictureClick}>{t('remove_picture')}</button>
+            </div>
+
+            <div className="button-container">
                 <button type="button" className="button register">{t('register_new_bike')}</button>
             </div>
         </>

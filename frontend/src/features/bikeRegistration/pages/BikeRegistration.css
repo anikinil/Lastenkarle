@@ -20,12 +20,14 @@
 }
 
 .new-bike-img {
-    
+    width: 95%;
+}
+
+.picture-input {
+    display: none;
 }
 
 .new-bike-description {
-    /* float: right; */
-
     width: 44%;
     aspect-ratio: 1;
 
