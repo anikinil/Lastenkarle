@@ -27,6 +27,7 @@ import StorePage from './features/storeList/pages/StorePage';
 import BikeList from './features/bikeList/pages/BikeList';
 import BikeRegistration from './features/bikeRegistration/pages/BikeRegistration';
 import StoreRegistration from './features/storeRegistration/pages/StoreRegistration';
+import BookingList from './features/bookingList/pages/BookingList';
 
 const App = () => {
 
@@ -63,6 +64,7 @@ const App = () => {
                         <Route exact path='/bike-registration' element={<BikeRegistration />} />
                         <Route exact path='/stores' element={<StoreList />} />
                         <Route exact path='/store-registration' element={<StoreRegistration />} />
+                        <Route exact path='/bookings' element={<BookingList />} />
                     </Routes>
                 </BrowserRouter>
             </div>
