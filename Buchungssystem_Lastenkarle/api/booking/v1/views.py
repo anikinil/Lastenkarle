@@ -27,7 +27,9 @@ class AllRegions(APIView):
     permission_classes = (AllowAny,)
 
     def get(self, request):
-        return Response(Store.REGION, status=status.HTTP_200_OK)
+        regions = Region.objects.all()
+        serializer = RegionSerializer(regions, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class AllAvailabilities(APIView):
@@ -101,17 +103,18 @@ class MakeBooking(APIView):
         except ObjectDoesNotExist:
             raise Http404
         user = self.request.user
-        additional_data = {
-            'bike': bike.pk,
+        data = {
+            'begin': request.data['begin'],
+            'end': request.data['end'],
+            'bike': bike.pk
         }
-        data = {**request.data, **additional_data}
         serializer = MakeBookingSerializer(data=data, context={'no_limit': False})
         serializer.is_valid(raise_exception=True)
         booking = serializer.save(user=user)
-        booking.booking_status.add(Booking_Status.objects.filter(booking_status='Booked')[0].pk)
+        booking.booking_status.add(Booking_Status.objects.filter(status='Booked')[0].pk)
         booking_string = generate_random_string(5)
         booking.string = booking_string
         booking.save()
         split_availabilities_algorithm(booking)
-        send_booking_confirmation(booking)
+        #send_booking_confirmation(booking)
         return Response(status=status.HTTP_201_CREATED)
