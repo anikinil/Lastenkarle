@@ -5,6 +5,18 @@ from validate_email import validate_email
 from datetime import datetime, date, time, timedelta
 from django.utils import timezone
 
+"""
+    def test_data_integrity(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_customer_taylor_token)
+        response = self.make_request()
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = response.json()
+        for field in self.fields_to_include:
+            self.assertIn(field, response_data)
+        db_data = self.serialize_user_with_relations(self.user_customer_taylor)
+        self.validate_integrity(response_data, db_data)
+"""
+
 
 def weekday_prefix_of_date(date_obj):
     if date_obj:
@@ -30,37 +42,14 @@ def partialUpdateInputValidation(request, fields_to_include):
             raise serializers.ValidationError('Updating field is not allowed.')
 
 
-def partialUpdateOfBike(request, bike):
-    fields_to_include = ['name', 'description', 'image']
-    partialUpdateInputValidation(request, fields_to_include)
-    serializer = BikeSerializer(bike, data=request.data, fields=fields_to_include, partial=True)
-    serializer.is_valid(raise_exception=True)
-    return serializer.save()
-
-
-def partialUpdateOfStore(request, store):
-    fields_to_include = ['address', 'phone_number', 'email', 'prep_time',
-                         'mon_opened', 'mon_open', 'mon_close',
-                         'tue_opened', 'tue_open', 'tue_close',
-                         'wed_opened', 'wed_open', 'wed_close',
-                         'thu_opened', 'thu_open', 'thu_close',
-                         'fri_opened', 'fri_open', 'fri_close',
-                         'sat_opened', 'sat_open', 'sat_close',
-                         'sun_opened', 'sun_open', 'sun_close']
-    partialUpdateInputValidation(request, fields_to_include)
-    serializer = StoreSerializer(store, data=request.data, fields=fields_to_include, partial=True)
-    serializer.is_valid(raise_exception=True)
-    return serializer.save()
-
-
-class UserStatusSerializer(serializers.ModelSerializer):
+class UserFlagSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User_Status
-        fields = ['user_status']
+        model = User_Flag
+        fields = '__all__'
 
 
 class UserSerializer(serializers.ModelSerializer):
-    user_status = UserStatusSerializer(many=True, read_only=True)
+    user_flags = UserFlagSerializer(many=True, read_only=True)
 
     class Meta:
         model = User
@@ -135,7 +124,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
-    password = serializers.CharField(style={'input_type':'password'}, trim_whitespace=False)
+    password = serializers.CharField(style={'input_type': 'password'}, trim_whitespace=False)
 
     def validate(self, attrs):
         username = attrs.get('username')
@@ -148,7 +137,7 @@ class LoginSerializer(serializers.Serializer):
             request=self.context.get('request'),
             username=username,
             password=password
-            )
+        )
         if not user:
             raise serializers.ValidationError('Wrong credentials')
         attrs['user'] = user
@@ -177,14 +166,13 @@ class LocalDataSerializer(serializers.ModelSerializer):
 
 
 class EquipmentSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Equipment
         fields = '__all__'
 
 
 class BikeSerializer(serializers.ModelSerializer):
-    equipment = EquipmentSerializer(many=True, read_only=True)
+    bike_equipment = EquipmentSerializer(many=True, read_only=True)
     image = serializers.ImageField()
 
     class Meta:
@@ -205,14 +193,38 @@ class BikeSerializer(serializers.ModelSerializer):
         return instance
 
 
+class RegionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Region
+        fields = '__all__'
+
+
 class StoreSerializer(serializers.ModelSerializer):
+    region = RegionSerializer(many=False, read_only=True)
+
     class Meta:
         model = Store
         fields = '__all__'
 
-    def validate_email(self, attrs):
-        if not validate_email(attrs):
+    def validate(self, attrs):
+        region = self.initial_data.get('region', None)
+        address = attrs.get('address', None)
+        email = attrs.get('email', None)
+        name = attrs.get('name', None)
+        if region is None:
+            raise serializers.ValidationError('Region must not be empty.')
+        region_name = region.get('name')
+        if None in (region_name, address, email, name):
+            raise serializers.ValidationError('Not all necessary information provided.')
+        if Store.objects.filter(name=name).exists():
+            raise serializers.ValidationError('Store with given name already exists.')
+        if not Region.objects.filter(name=region_name).exists():
+            raise serializers.ValidationError('Region does not exist.')
+        if not validate_email(email):
             raise serializers.ValidationError('Not an valid email.')
+        if Store.objects.filter(email=email).exists():
+            raise serializers.ValidationError('Email already used.')
+        attrs['region'] = Region.objects.get(name=region_name)
         return attrs
 
     def __init__(self, *args, **kwargs):
@@ -228,17 +240,53 @@ class StoreSerializer(serializers.ModelSerializer):
                 self.fields.pop(field_name)
 
 
-class BookingStatusSerializer(serializers.ModelSerializer):
+class UpdateStoreSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Store
+        fields = ['phone_number', 'email', 'prep_time',
+                  'mon_opened', 'mon_open', 'mon_close',
+                  'tue_opened', 'tue_open', 'tue_close',
+                  'wed_opened', 'wed_open', 'wed_close',
+                  'thu_opened', 'thu_open', 'thu_close',
+                  'fri_opened', 'fri_open', 'fri_close',
+                  'sat_opened', 'sat_open', 'sat_close',
+                  'sun_opened', 'sun_open', 'sun_close']
 
+    def update(self, instance, validated_data):
+        for key, value in self.initial_data.items():
+            if key not in set(self.fields.keys()):
+                raise serializers.ValidationError('Updating ' + key + ' is forbidden.')
+        instance = super(UpdateStoreSerializer, self).update(instance, validated_data)
+        return instance
+
+
+class UpdateBikeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Bike
+        fields = ['name', 'description', 'image']
+
+
+
+    def update(self, instance, validated_data):
+        for key, value in self.initial_data.items():
+            if key not in set(self.fields.keys()):
+                raise serializers.ValidationError('Updating ' + key + ' is forbidden.')
+        if validated_data.get('image', None) is not None:
+            instance.image.delete()
+        instance = super(UpdateBikeSerializer, self).update(instance, validated_data)
+        return instance
+
+
+class BookingStatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = Booking_Status
-        fields = ['booking_status']
+        fields = ['status']
 
 
 class MakeBookingSerializer(serializers.ModelSerializer):
     user = UserSerializer(many=False, read_only=True)
     booking_status = BookingStatusSerializer(many=True, read_only=True)
-    equipment = serializers.ListField(child=serializers.CharField(max_length=256))
+    equipment = EquipmentSerializer(many=True, read_only=True)
 
     class Meta:
         model = Booking
@@ -288,20 +336,11 @@ class MakeBookingSerializer(serializers.ModelSerializer):
         booking = Booking.objects.create(**validated_data)
         for equipment_name in equipment_data:
             equipment, _ = Equipment.objects.get_or_create(equipment=equipment_name)
-            booking.equipment.add(equipment)
+            booking.item.add(equipment)
         return booking
-
-    def __init__(self, *args, **kwargs):
-        fields = kwargs.pop('fields', None)
-        super().__init__(*args, **kwargs)
-        if fields is not None:
-            for field_name in set(self.fields.keys()) - set(fields):
-                self.fields.pop(field_name)
 
 
 class BookingSerializer(serializers.ModelSerializer):
-    preferred_username = serializers.ReadOnlyField(source='user.preferred_username')
-    assurance_lvl = serializers.ReadOnlyField(source='user.assurance_lvl')
     user = UserSerializer(many=False, read_only=True)
     booking_status = BookingStatusSerializer(many=True, read_only=True)
     equipment = EquipmentSerializer(many=True, read_only=True)
@@ -337,3 +376,87 @@ class AvailabilitySerializer(serializers.ModelSerializer):
         if fields is not None:
             for field_name in set(self.fields.keys()) - set(fields):
                 self.fields.pop(field_name)
+
+
+class EnrollmentSerializer(serializers.Serializer):
+    contact_data = serializers.EmailField()
+    flag = serializers.CharField(max_length=1024)
+
+    def validate(self, attrs):
+        contact_data = attrs.get('contact_data')
+        flag = attrs.get('flag')
+        if not User_Flag.objects.filter(flag=flag).exists():
+            raise serializers.ValidationError('Flag does not exist.')
+        if not User.objects.filter(contact_data=contact_data).exists():
+            raise serializers.ValidationError('User does not exist.')
+        invalid_flags = ['Verified', 'Deleted', 'Reminded', 'Banned', 'Customer']
+        if flag in invalid_flags:
+            raise serializers.ValidationError('Cannot enroll user as ' + flag + '.')
+        if User.objects.filter(contact_data=contact_data, user_flags__flag=flag).exists():
+            raise serializers.ValidationError('User already enrolled as ' + flag + '.')
+        return attrs
+
+    def update(self, instance, validated_data):
+        instance = User.objects.get(contact_data=validated_data.get('contact_data'))
+        flag = validated_data.get('flag')
+        user_flag = User_Flag.objects.get(flag=flag)
+        instance.user_flags.add(user_flag.pk)
+        if user_flag.flag.startswith('Store:'):
+            instance.is_staff = True
+        if instance.user_flags.all().contains(User_Flag.objects.get(flag='Administrator')):
+            instance.is_superuser = True
+        instance.save()
+        return instance
+
+
+class BanningSerializer(serializers.Serializer):
+    contact_data = serializers.EmailField()
+
+    def validate(self, attrs):
+        contact_data = attrs.get('contact_data')
+        if not User.objects.filter(contact_data=contact_data).exists():
+            raise serializers.ValidationError('User does not exist.')
+        if User.objects.filter(contact_data=contact_data,
+                               user_flags__flag=User_Flag.objects.get(flag='Banned').flag).exists():
+            raise serializers.ValidationError('User already banned.')
+        return attrs
+
+    def update(self, instance, validated_data):
+        instance = User.objects.get(contact_data=validated_data.get('contact_data'))
+        instance.user_flags.add(User_Flag.objects.get(flag='Banned'))
+        instance.is_superuser = False
+        instance.is_staff = False
+        instance.is_active = False
+        instance.save()
+        return instance
+
+
+class BikeCreationSerializer(serializers.ModelSerializer):
+    bike_equipment = EquipmentSerializer(many=True, read_only=True)
+    image = serializers.ImageField()
+
+    class Meta:
+        model = Bike
+        fields = '__all__'
+        extra_kwargs = {
+            'store': {'required': False}
+        }
+
+    def validate(self, attrs):
+        store = self.context.get('store', None)
+        name = attrs.get('name', None)
+        description = attrs.get('description', None)
+        image = attrs.get('image', None)
+        if None in (store, name, description, image):
+            raise serializers.ValidationError('Insufficient data provided.')
+        allowed_content_types = ['image/jpeg', 'image/png']
+        if image.content_type not in allowed_content_types:
+            raise serializers.ValidationError("Invalid image file format. Only JPEG and PNG images are allowed.")
+        attrs['store'] = store
+        return attrs
+
+    def update(self, instance, validated_data):
+        if validated_data.get('image', None) is not None:
+            instance.image.delete()
+        instance = super().update(instance, validated_data)
+        return instance

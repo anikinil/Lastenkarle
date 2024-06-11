@@ -14,7 +14,7 @@ build-job:
   script:
     - docker builder prune --force
     - docker build . -f ./Buchungssystem_Lastenkarle/Dockerfile_Django -t django_gunicorn 
-    - docker login -u email@dan-lauer.de -p $DOCKER_ACESS_TOKEN
+    - docker login -u email@dan-lauer.de -p $DOCKER_ACCESS_TOKEN
     - docker tag django_gunicorn danjackson01/django_gunicorn:pse
     - docker push danjackson01/django_gunicorn:pse
     - cat *.env
@@ -35,7 +35,7 @@ unit-test-job:   # This job runs in the test stage.
     - curl -s https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/download-secure-files/-/raw/main/installer | bash
     - cp ./.secure_files/*.env .
     - chmod +x ./Buchungssystem_Lastenkarle/testing.sh
-    - docker login -u email@dan-lauer.de -p $DOCKER_ACESS_TOKEN
+    - docker login -u email@dan-lauer.de -p $DOCKER_ACCESS_TOKEN
     - docker pull danjackson01/django_gunicorn:pse
     - docker compose -f docker-compose-test.yml up --abort-on-container-exit
 

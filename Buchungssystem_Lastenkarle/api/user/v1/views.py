@@ -61,7 +61,7 @@ class HelmholtzAuthView(KnoxLoginView):
         return redirect(redirect_url)
 
 
-class RegistrateUser(CreateAPIView):
+class RegistrateUser(APIView):
     queryset = User.objects.all()
     permission_classes = (AllowAny,)
 
@@ -79,15 +79,13 @@ class ConfirmEmail(APIView):
 
     def post(self, request, user_id, verification_string):
         try:
-            user = User.objects.get(pk=user_id)
+            user = User.objects.get(pk=user_id, verification_string=verification_string)
         except ObjectDoesNotExist:
             raise Http404
-        if User.objects.filter(pk=user_id, verification_string=verification_string).exists():
-            user.user_status.add(User_Status.objects.get(user_status='Verified'))
-            user.verification_string = None
-            user.save()
-            return Response(status=status.HTTP_200_OK)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        user.user_flags.add(User_Flag.objects.get(flag='Verified'))
+        user.verification_string = None
+        user.save()
+        return Response(status=status.HTTP_200_OK)
 
 
 class UpdateUserData(APIView):
@@ -101,7 +99,7 @@ class UpdateUserData(APIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         if serializer.validated_data.get('contact_data', None) is not None:
-            user.user_status.remove(User_Status.objects.get(user_status='Verified'))
+            user.user_flags.remove(User_Flag.objects.get(flag='Verified'))
             user.verification_string = generate_random_string(30)
             user.save()
             send_user_changed_mail(user)
@@ -119,8 +117,7 @@ class LoginView(KnoxLoginView):
     def post(self, request, format=None):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        login(request, user)
+        login(request, serializer.validated_data['user'])
         response = super(LoginView, self).post(request, format=None)
         return Response({'token': response.data.get('token')}, status=status.HTTP_200_OK)
 
@@ -142,22 +139,27 @@ class BookingFromUser(APIView):
 
     def get(self, request, booking_id):
         try:
-            booking = Booking.objects.get(pk=booking_id, user=request.user)
+            booking = Booking.objects.get(pk=booking_id)
         except ObjectDoesNotExist:
             raise Http404
+        if not (booking.user.pk == request.user.pk):
+            return Response(status=status.HTTP_400_BAD_REQUEST)
         fields_to_include = ['id', 'bike', 'begin', 'end', 'booking_status', 'equipment']
         serializer = BookingSerializer(booking, fields=fields_to_include, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, booking_id):
         try:
-            booking = Booking.objects.get(pk=booking_id, user=request.user)
+            booking = Booking.objects.get(pk=booking_id)
         except ObjectDoesNotExist:
             raise Http404
-        if not booking.booking_status.contains(Booking_Status.objects.get(booking_status='Booked')):
+        if not (booking.user.pk == request.user.pk):
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        if not booking.booking_status.contains(Booking_Status.objects.get(status='Booked')) or \
+                booking.booking_status.contains(Booking_Status.objects.get(status='Picked up')):
             return Response(status=status.HTTP_400_BAD_REQUEST)
         booking.booking_status.clear()
-        booking.booking_status.add(Booking_Status.objects.get(booking_status='Cancelled'))
+        booking.booking_status.add(Booking_Status.objects.get(status='Cancelled'))
         booking.string = None
         booking.save()
         merge_availabilities_algorithm(booking)
@@ -171,9 +173,11 @@ class BookedBike(APIView):
 
     def get(self, request, booking_id):
         try:
-            booking = Booking.objects.get(pk=booking_id, user=request.user)
+            booking = Booking.objects.get(pk=booking_id)
         except ObjectDoesNotExist:
             raise Http404
+        if not (booking.user.pk == request.user.pk):
+            return Response(status=status.HTTP_400_BAD_REQUEST)
         serializer = BikeSerializer(booking.bike, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -184,9 +188,11 @@ class StoreOfBookedBike(APIView):
 
     def get(self, request, booking_id):
         try:
-            booking = Booking.objects.get(pk=booking_id, user=request.user)
+            booking = Booking.objects.get(pk=booking_id)
         except ObjectDoesNotExist:
             raise Http404
+        if not (booking.user.pk == request.user.pk):
+            return Response(status=status.HTTP_400_BAD_REQUEST)
         serializer = StoreSerializer(booking.bike.store, many=False)
         serializer.exclude_fields(['store_flag'])
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -197,7 +203,7 @@ class UserDataOfUser(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        fields_to_include = ['contact_data', 'username', 'user_status']
+        fields_to_include = ['contact_data', 'username', 'user_flags']
         serializer = UserSerializer(self.request.user, many=False, fields=fields_to_include)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -208,20 +214,19 @@ class DeleteUserAccount(DestroyAPIView):
 
     def delete(self, request, *args, **kwargs):
         user = self.request.user
-        if Booking.objects.filter(user=user, booking_status=Booking_Status.objects.get(booking_status='Picked up')).exists():
+        if Booking.objects.filter(user=user, booking_status=Booking_Status.objects.get(status='Picked up')).exists():
             raise serializers.ValidationError('Account deletion not possible whilst having picked up a bike.')
-        if user.user_status.contains(User_Status.objects.get(user_status='Administrator')) and \
-                User.objects.filter(user_status__user_status='Administrator').count() == 1:
+        if user.user_flags.contains(User_Flag.objects.get(flag='Administrator')) and \
+                User.objects.filter(user_flags__flag='Administrator').count() < 2:
             raise serializers.ValidationError('Account deletion not possible as only administrator.')
         if LocalData.objects.filter(user=user).exists():
             LocalData.objects.get(user=user).anonymize().save()
-        bookings = Booking.objects.filter(user=user, booking_status=Booking_Status.objects.get(booking_status='Booked'))
+        bookings = Booking.objects.filter(user=user, booking_status=Booking_Status.objects.get(status='Booked'))
         for booking in bookings:
             booking.booking_status.clear()
-            booking.booking_status.add(Booking_Status.objects.get(booking_status='Cancelled'))
+            booking.booking_status.add(Booking_Status.objects.get(status='Cancelled'))
             booking.string = None
             booking.save()
             merge_availabilities_algorithm(booking)
         user.anonymize().save()
-        user.user_status.clear()
         return Response(status=status.HTTP_200_OK)
