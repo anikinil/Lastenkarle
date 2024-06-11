@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+
 import { useTranslation } from 'react-i18next';
 
 import '../../../components/lists/List.css';
@@ -14,16 +15,35 @@ const BookingList = () => {
 
     const navigate = useNavigate();
 
-    const [sortAZ, setSortAZ] = useState(true);
 
-    const handleSortClick = () => {
-        setSortAZ(!sortAZ)
-        resort()
-    }
+    const stores = [
+        { key: 'Store1', value: 'Store1' },
+        { key: 'Store2', value: 'Store2' },
+        { key: 'Store3', value: 'Store3' },
+        { key: 'Store4', value: 'Store4' },
+        { key: 'Store5', value: 'Store5' }
+    ]
 
-    const resort = () => {
+    const bikes = [
+        { key: 'Bike1', value: 'Bike1' },
+        { key: 'Bike2', value: 'Bike2' },
+        { key: 'Bike3', value: 'Bike3' },
+        { key: 'Bike4', value: 'Bike4' },
+        { key: 'Bike5', value: 'Bike5' }
+    ]
+
+    const users = [
+        { key: 'User1', value: 'User1' },
+        { key: 'User2', value: 'User2' },
+        { key: 'User3', value: 'User3' },
+        { key: 'User4', value: 'User4' },
+        { key: 'User5', value: 'User5' }
+    ]
+
+
+    const handleFilterClick = () => {
         // TODO implement resorting
-        console.log("resort")
+        console.log("filter")
     }
 
     // TODO implement fetching
@@ -115,9 +135,16 @@ const BookingList = () => {
             <h1>{t('bookings')}</h1>
 
             <div className='list-button-container'>
-                <button type='button' className='sort-button' onClick={handleSortClick}>
-                    {sortAZ ? <FaSortAlphaDown /> : <FaSortAlphaUp />}
-                </button>
+                <select title="stores">
+                    {stores.map(e => <option key={e.key} value={e.key}>{e.value}</option>)};
+                </select>
+                <select title="bikes">
+                    {bikes.map(e => <option key={e.key} value={e.key}>{e.value}</option>)};
+                </select>
+                <select title="users">
+                    {users.map(e => <option key={e.key} value={e.key}>{e.value}</option>)};
+                </select>
+                <button type='button' className='button regular' onClick={handleFilterClick}>{t('filter')}</button>
             </div>
 
             <ul className='list'>

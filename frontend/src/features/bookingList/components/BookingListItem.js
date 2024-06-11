@@ -1,9 +1,10 @@
 import React from "react";
+
 import { useTranslation } from 'react-i18next';
 
 import defaultBikePicture from "../../../assets/images/default_bike.png"
 
-const BookingListItem = ({booking}) => {
+const BookingListItem = ({ booking }) => {
 
     const { t } = useTranslation();
 
@@ -33,12 +34,12 @@ const BookingListItem = ({booking}) => {
 
             <button type="button" className="list-item-button regular" onClick={handleStoreClick}>{booking.store.name}</button>
             <button type="button" className="list-item-button regular" onClick={handleUserClick}>{booking.user.name}</button>
-            
+
             <div className="list-item-img-container">
                 <img className="list-item-img" alt={booking.bike.name} src={booking.bike.image ? booking.bike.image : defaultBikePicture}></img>
             </div>
         </li>
     );
 };
-  
+
 export default BookingListItem;

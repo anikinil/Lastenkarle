@@ -3,6 +3,9 @@
 }
 
 .list-button-container {
+    display: flex;
+    justify-items: left;
+    align-items: center;
     height: 3rem;
 }
 
