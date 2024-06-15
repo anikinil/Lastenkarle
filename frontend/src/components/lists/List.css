@@ -9,12 +9,38 @@
     height: 3rem;
 }
 
+.sort-button {
+    float: left;
+    
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    
+    width: 2.5rem;
+    height: 2.5rem;
+    cursor: pointer;
+    
+    border-radius: 0.5rem;
+    
+    color: var(--button-foreground);
+    background-color: var(--button-background);    
+    border: 2px solid var(--button-border);
+}
+
+.sort-button:hover {
+    color: var(--button-foreground-focus);
+    border-color: var(--button-border-focus);
+}
+
 .list-item {
-    height: 6rem;
+    height: 5rem;
     display: flex;
     justify-content: center;
     align-items: center;
     margin-bottom: 1rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
     background-color: var(--content-background);
     border-radius: 0.5rem;
     box-shadow: 2px 4px 6px var(--shadow);
@@ -29,15 +55,15 @@
 .list-item-label {
     font-size: large;
 
-    margin-left: 2rem;
+    /* margin-left: 0.5rem; */
     margin-right: auto;
 }
 
 .list-item-button {
     float: right;
     
-    margin-left: 0.5rem;
-    margin-right: 0.5rem;
+    margin-left: 1rem;
+    /* margin-right: 0.5rem; */
     margin-bottom: 0;
 }
 
@@ -73,9 +99,11 @@
     height: 5rem;
 
     margin-left: 1rem;
+
+    /* margin-left: 1rem;
     margin-right: 2rem;
     margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.5rem; */
 
     display: flex;
     align-items: center;

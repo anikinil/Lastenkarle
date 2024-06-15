@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useTranslation } from 'react-i18next';
 
 import "./StoreRegistration.css"
+import StoreOpeningTimesConfig from "../../storeConfig/components/StoreOpeningTimesConfig";
 
 const StoreRegistration = () => {
 
@@ -61,9 +62,11 @@ const StoreRegistration = () => {
             <textarea title={t('store_address')} className="new-store-address" rows="1" onKeyDown={handleAddressKeyDown} placeholder={t('store_address')}></textarea>
 
             <div className="button-container">
-                <button type="button" className="button regular">{t('configure_opening_times')}</button>
+                {/* <button type="button" className="button regular">{t('configure_opening_times')}</button> */}
                 <button type="button" className="button regular">{t('assign_bikes')}</button>
             </div>
+
+            <StoreOpeningTimesConfig />
 
             <div className="button-container">
                 <button type="button" className="button accent">{t('register_new_store')}</button>

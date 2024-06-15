@@ -1,4 +1,4 @@
-.sort-button {
+/* .sort-button {
     float: left;
     
     margin-left: 0.5rem;
@@ -18,7 +18,7 @@
 .sort-button:hover {
     color: var(--button-foreground-focus);
     border-color: var(--button-border-focus);
-}
+} */
 
 .new-bike-button {
     float: right;
