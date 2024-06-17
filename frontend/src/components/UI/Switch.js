@@ -2,6 +2,7 @@ import React from 'react';
 import "./Switch.css"
 
 const Switch = ({ isOn, handleToggle }) => {
+
     return (
         <>
             <input

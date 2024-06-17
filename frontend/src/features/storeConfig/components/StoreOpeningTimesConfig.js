@@ -8,13 +8,14 @@ const StoreOpeningTimesConfig = () => {
 
     const { t } = useTranslation();
 
-
+    const [mondayOpen, setMondayOpen] = useState(false);
 
     return (
         <>
             <h2>{t('opening_times')}</h2>
 
-            <Switch />
+            <p>Monday</p>
+            <Switch isOn={mondayOpen} handleToggle={() => setMondayOpen(!mondayOpen)}/>
         </>
     );
 };

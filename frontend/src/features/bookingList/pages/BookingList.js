@@ -1,12 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
 import '../../../components/lists/List.css';
 import BookingListItem from '../components/BookingListItem';
-import './BookingList.css'
 
-import { FaSortAlphaDown, FaSortAlphaUp } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 
 const BookingList = () => {
@@ -135,16 +133,16 @@ const BookingList = () => {
             <h1>{t('bookings')}</h1>
 
             <div className='list-button-container'>
-                <select title="stores">
+                <select title="stores" className='select'>
                     {stores.map(e => <option key={e.key} value={e.key}>{e.value}</option>)};
                 </select>
-                <select title="bikes">
+                <select title="bikes" className='select'>
                     {bikes.map(e => <option key={e.key} value={e.key}>{e.value}</option>)};
                 </select>
-                <select title="users">
+                <select title="users" className='select'>
                     {users.map(e => <option key={e.key} value={e.key}>{e.value}</option>)};
                 </select>
-                <button type='button' className='button regular' onClick={handleFilterClick}>{t('filter')}</button>
+                <button type='button' onClick={handleFilterClick}>{t('filter')}</button>
             </div>
 
             <ul className='list'>

@@ -1,25 +1,3 @@
-/* .sort-button {
-    float: left;
-    
-    margin-left: 0.5rem;
-    margin-right: 0.5rem;
-    
-    width: 2.5rem;
-    height: 2.5rem;
-    cursor: pointer;
-    
-    border-radius: 0.5rem;
-    
-    color: var(--button-foreground);
-    background-color: var(--button-background);    
-    border: 2px solid var(--button-border);
-}
-
-.sort-button:hover {
-    color: var(--button-foreground-focus);
-    border-color: var(--button-border-focus);
-} */
-
 .new-store-button {
     float: right;
     

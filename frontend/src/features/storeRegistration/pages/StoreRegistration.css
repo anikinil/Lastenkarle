@@ -1,4 +1,3 @@
-
 .new-store-img-container {
     float: left;
 
@@ -53,13 +52,6 @@
 
 .new-store-address::placeholder {
     color: var(--textarea-placeholder);
-}
-
-.button-container {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    margin-right: 1rem;
 }
 
 .button {

@@ -9,8 +9,9 @@
     align-items: center;
     justify-content: space-between;
     cursor: pointer;
-    height: 2rem;
-    width: 4rem;
+    height: 1.5rem;
+    width: 3rem;
+    margin-left: 1rem;
     background-color: var(--button-background);
     border: solid 2px var(--button-border);
     border-radius: 2rem;

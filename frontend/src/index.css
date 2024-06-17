@@ -38,15 +38,32 @@ img {
     border-radius: 0;
 }
 
+.button-container {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    margin-right: 1rem;
+    margin-top: 1rem;
+}
+
 button {
-    border: 2px solid var(--button-border);
+    color: var(--button-foreground);
     background-color: transparent;
+    border: 2px solid var(--button-border);
     border-radius: 0.5rem;
+
+    margin-left: 1rem;
 
     height: 2.5rem;
     cursor: pointer;
 
     transition: all 0.15s ease;
+}
+
+button:hover {
+    color: var(--button-foreground-focus);
+    border: 2px solid var(--button-border-focus);
+    transition: all .15 ease;
 }
 
 textarea {
@@ -96,7 +113,6 @@ select {
     width: 5rem;
     height: 2.5rem;
     margin-left: 1rem;
-    margin-right: 1rem;
 
     color: var(--button-foreground);
     background-color: var(--button-background);
