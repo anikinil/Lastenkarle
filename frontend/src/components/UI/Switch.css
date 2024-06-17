@@ -1,0 +1,50 @@
+.switch-checkbox {
+    height: 0;
+    width: 0;
+    visibility: hidden;
+}
+
+.switch-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    height: 2rem;
+    width: 4rem;
+    background-color: var(--button-background);
+    border: solid 2px var(--button-border);
+    border-radius: 2rem;
+    position: relative;
+    transition: all 0.15s ease-in-out;
+}
+
+.switch-label .switch-button {
+    content: '';
+    position: absolute;
+    top: 8%;
+    left: 4%;
+    height: calc(84% - 4px);
+    width: calc(42% - 4px);
+    border: solid 2px var(--button-foreground);
+    border-radius: 1rem;
+    transition: all 0.15s ease-in-out;
+    background: var(--button-background);
+}
+
+.switch-label:hover .switch-button, .switch-label:hover {
+    border-color: var(--button-foreground-focus);
+}
+
+.switch-checkbox:checked+ .switch-label .switch-button {
+    left: calc(100% - 4%);
+    transform: translateX(-100%);
+    background-color: var(--button-foreground);
+}
+
+.switch-checkbox:checked+ .switch-label:hover .switch-button {
+    background-color: var(--button-foreground-focus);
+}
+
+.switch-label:active .switch-button {
+    width: 60%; 
+}
