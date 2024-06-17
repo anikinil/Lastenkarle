@@ -63,7 +63,6 @@ button {
 button:hover {
     color: var(--button-foreground-focus);
     border: 2px solid var(--button-border-focus);
-    transition: all .15 ease;
 }
 
 textarea {

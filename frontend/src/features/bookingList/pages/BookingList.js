@@ -142,7 +142,7 @@ const BookingList = () => {
                 <select title="users" className='select'>
                     {users.map(e => <option key={e.key} value={e.key}>{e.value}</option>)};
                 </select>
-                <button type='button' onClick={handleFilterClick}>{t('filter')}</button>
+                <button type='button' title={t('filter')} onClick={handleFilterClick}>{t('filter')}</button>
             </div>
 
             <ul className='list'>

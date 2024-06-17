@@ -44,7 +44,7 @@ const UserList = () => {
             <h1>{t('users')}</h1>
 
             <div className='list-button-container'>
-                <button type='button' className='sort-button' onClick={handleSortClick}>
+                <button type='button' className='sort-button' title={t('sort')} onClick={handleSortClick}>
                     { sortAZ ? <FaSortAlphaDown /> : <FaSortAlphaUp />}
                 </button>
             </div>
