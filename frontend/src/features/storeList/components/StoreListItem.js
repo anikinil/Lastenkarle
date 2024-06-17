@@ -1,17 +1,21 @@
 import React from "react";
 import { useTranslation } from 'react-i18next';
 
+import { useNavigate } from 'react-router-dom';
+
 import { MdDelete } from "react-icons/md";
 
 import defaultStorePicture from "../../../assets/images/default_bike.png"
 
-const StoreListItem = ({store}) => {
+const StoreListItem = ({ store }) => {
 
     const { t } = useTranslation();
 
+    const navigate = useNavigate();
+
     const handlePanelClick = () => {
-        // TODO implement
-        console.log(store.name)
+        // use proper identifier
+        navigate("/" + store.id)
     }
 
     const handleBookingsClick = e => {
@@ -33,12 +37,12 @@ const StoreListItem = ({store}) => {
 
             <button type="button" className="list-item-button regular" onClick={handleBookingsClick}>{t('bookings')}</button>
             <button type="button" className="list-item-button delete" onClick={handleDeleteClick}>{<MdDelete />}</button>
-            
+
             <div className="list-item-img-container">
                 <img className="list-item-img" alt={store.name} src={store.image ? store.image : defaultStorePicture}></img>
             </div>
         </li>
     );
 };
-  
+
 export default StoreListItem;
