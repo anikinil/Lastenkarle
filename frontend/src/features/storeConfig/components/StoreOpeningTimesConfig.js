@@ -23,6 +23,9 @@ const StoreOpeningTimesConfig = () => {
                     <span className="header-label">{t('open')}</span>
                     <span className="header-label">{t('from')}</span>
                     <span className="header-label">{t('to')}</span>
+                    <span className="header-label">{t('closed')}</span>
+                    <span className="header-label">{t('from')}</span>
+                    <span className="header-label">{t('to')}</span>
                 </div>
                 {daysOfWeek.map((day) => (
                     <DayRow key={day} day={day} />
