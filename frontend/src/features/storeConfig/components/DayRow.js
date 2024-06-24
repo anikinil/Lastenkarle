@@ -5,7 +5,6 @@ import 'react-time-picker/dist/TimePicker.css';
 import '../../../components/timePicker/TimePickerCustom.css'
 
 import { useTranslation } from 'react-i18next';
-import { MdOutlineSignalWifiStatusbarConnectedNoInternet4 } from 'react-icons/md';
 
 const DayRow = ({ day }) => {
 
