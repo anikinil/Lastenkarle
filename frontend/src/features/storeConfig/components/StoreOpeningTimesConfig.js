@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useTranslation } from 'react-i18next';
-import Switch from '../../../components/UI/Switch'
+
+import DayRow from "./DayRow";
 
 import "./StoreOpeningTimesConfig.css"
 
@@ -8,14 +9,23 @@ const StoreOpeningTimesConfig = () => {
 
     const { t } = useTranslation();
 
-    const [mondayOpen, setMondayOpen] = useState(false);
+    const daysOfWeek = [t('monday'), t('tuesday'), t('wednesday'), t('thursday'), t('friday'), t('saturday'), t('sunday')];
 
     return (
         <>
             <h2>{t('opening_times')}</h2>
 
-            <p>Monday</p>
-            <Switch isOn={mondayOpen} handleToggle={() => setMondayOpen(!mondayOpen)}/>
+            <div className="week-container">
+                <div className="header">
+                    <span className="header-label"></span> {/* empty */}
+                    <span className="header-label">{t('open')}</span>
+                    <span className="header-label">{t('from')}</span>
+                    <span className="header-label">{t('to')}</span>
+                </div>
+                {daysOfWeek.map((day) => (
+                    <DayRow key={day} day={day} />
+                ))}
+            </div>
         </>
     );
 };

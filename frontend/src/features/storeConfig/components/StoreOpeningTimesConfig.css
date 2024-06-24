@@ -1,0 +1,34 @@
+.week-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    width: 600px;
+    margin: 0 auto;
+}
+
+.header {
+    display: contents;
+    color: var(--label);
+    font-size: small;
+}
+
+.header-label {
+    padding: 10px 0;
+    text-align: center;
+}
+
+.day-row {
+    display: contents;
+    align-items: center;
+}
+
+.day-label {
+    text-align: left;
+    padding: 10px 0;
+    color: var(--label);
+}
+
+.time-picker,
+.toggle {
+    align-items: center;
+}

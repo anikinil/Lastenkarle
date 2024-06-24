@@ -4,7 +4,7 @@ import "./Switch.css"
 const Switch = ({ isOn, handleToggle }) => {
 
     return (
-        <>
+        <div className='switch'>
             <input
                 checked={isOn}
                 onChange={handleToggle}
@@ -18,7 +18,7 @@ const Switch = ({ isOn, handleToggle }) => {
             >
                 <span className={`switch-button`} />
             </label>
-        </>
+        </div>
     );
 };
 
