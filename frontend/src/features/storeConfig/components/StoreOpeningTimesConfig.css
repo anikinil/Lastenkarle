@@ -27,8 +27,3 @@
     padding: 10px 0;
     color: var(--label);
 }
-
-.time-picker,
-.toggle {
-    align-items: center;
-}

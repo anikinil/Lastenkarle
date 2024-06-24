@@ -7,6 +7,7 @@
 .switch-checkbox {
     height: 0;
     width: 0;
+    margin: 0;
     visibility: hidden;
 }
 
@@ -21,7 +22,7 @@
     border: solid 2px var(--button-border);
     border-radius: 2rem;
     position: relative;
-    transition: all 0.15s ease-in-out;
+    transition: all 0.15s;
 }
 
 .switch-label .switch-button {
@@ -33,7 +34,7 @@
     width: calc(42% - 4px);
     border: solid 2px var(--button-foreground);
     border-radius: 1rem;
-    transition: all 0.15s ease-in-out;
+    transition: all 0.15s;
     background: var(--button-background);
 }
 

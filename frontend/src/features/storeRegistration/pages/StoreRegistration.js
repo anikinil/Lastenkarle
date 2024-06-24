@@ -4,6 +4,10 @@ import { useTranslation } from 'react-i18next';
 import "./StoreRegistration.css"
 import StoreOpeningTimesConfig from "../../storeConfig/components/StoreOpeningTimesConfig";
 
+import TimePicker from "react-time-picker";
+import 'react-time-picker/dist/TimePicker.css';
+import 'react-clock/dist/Clock.css';
+
 const StoreRegistration = () => {
 
     const { t } = useTranslation();
@@ -62,7 +66,6 @@ const StoreRegistration = () => {
             <textarea title={t('store_address')} className="new-store-address" rows="1" onKeyDown={handleAddressKeyDown} placeholder={t('store_address')}></textarea>
 
             <div className="button-container">
-                {/* <button type="button" className="button regular">{t('configure_opening_times')}</button> */}
                 <button type="button" className="button regular">{t('assign_bikes')}</button>
             </div>
 
