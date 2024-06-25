@@ -17,13 +17,11 @@ const StoreRegistration = () => {
     return (
         <>
             <h1>{t('new_store')}</h1>
-
             <PictureAndDescriptionEdit />
             <AddressEdit />
             <StoreOpeningTimesConfig />
 
             <h2>{t('add_bikes_to_store')}</h2>
-            
             <BikeList />
 
             <div className="button-container">

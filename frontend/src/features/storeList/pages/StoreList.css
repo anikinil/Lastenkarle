@@ -1,17 +1,13 @@
 .new-store-button {
-    float: right;
-    
-    margin-left: 0.5rem;
-    margin-right: 0.5rem;
-    
     height: 2.5rem;
-    cursor: pointer;
-    
+    margin-right: 0;
     border-radius: 0.5rem;
     
     color: var(--button-foreground);
     background-color: var(--button-background);    
     border: 2px solid var(--button-border);
+    
+    cursor: pointer;
 }
 
 .new-store-button:hover {

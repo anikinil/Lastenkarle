@@ -55,7 +55,7 @@ const StoreList = () => {
 
             <div className='list-button-container'>
                 <button type='button' className='sort-button' onClick={handleSortClick}>
-                    { sortAZ ? <FaSortAlphaDown /> : <FaSortAlphaUp />}
+                    {sortAZ ? <FaSortAlphaDown /> : <FaSortAlphaUp />}
                 </button>
                 <button type='button' className='new-store-button' onClick={handleNewStoreClick}>{t('add_new_store')}</button>
             </div>
