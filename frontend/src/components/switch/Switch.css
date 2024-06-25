@@ -8,50 +8,59 @@
     height: 0;
     width: 0;
     margin: 0;
-    visibility: hidden;
 }
 
 .switch-label {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
     cursor: pointer;
     height: 1.5rem;
     width: 3rem;
     background-color: var(--button-background);
-    border: solid 2px var(--button-border);
+    border: 2px solid var(--button-border);
     border-radius: 2rem;
     position: relative;
     transition: all 0.15s;
 }
 
 .switch-label .switch-button {
-    content: '';
     position: absolute;
     top: 8%;
     left: 4%;
     height: calc(84% - 4px);
     width: calc(42% - 4px);
-    border: solid 2px var(--button-foreground);
+    border: 2px solid var(--button-foreground);
     border-radius: 1rem;
+    background-color: var(--button-background);
     transition: all 0.15s;
-    background: var(--button-background);
 }
 
-.switch-label:hover .switch-button, .switch-label:hover {
+.switch-label:hover, 
+.switch-checkbox:checked + .switch-label {
     border-color: var(--button-foreground-focus);
 }
 
-.switch-checkbox:checked+ .switch-label .switch-button {
-    left: calc(100% - 4%);
-    transform: translateX(-100%);
-    background-color: var(--button-foreground);
+.switch-label:hover .switch-button, 
+.switch-checkbox:checked + .switch-label .switch-button {
+    background-color: var(--button-foreground-focus);
+    border-color: var(--button-foreground-focus);
 }
 
-.switch-checkbox:checked+ .switch-label:hover .switch-button {
-    background-color: var(--button-foreground-focus);
+.switch-checkbox:checked + .switch-label .switch-button {
+    left: 96%;
+    transform: translateX(-100%);
 }
 
 .switch-label:active .switch-button {
-    width: 60%; 
+    width: 60%;
+}
+
+.switch-checkbox:disabled + .switch-label {
+    cursor: not-allowed;
+    pointer-events: none;
+    border-color: var(--foreground);
+    opacity: 0.25;
+}
+
+.switch-checkbox:disabled + .switch-label .switch-button {
+    border-color: var(--foreground);
+    background-color: var(--button-background);
 }

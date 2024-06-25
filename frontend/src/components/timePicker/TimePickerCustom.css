@@ -9,18 +9,13 @@
     width: 5rem;
     border-radius: 0.5rem;
     transition: all .3s;
-}
-
-.react-time-picker--enabled {
     color: var(--foreground);
     background-color: var(--background);
     border: solid 2px var(--foreground);
 }
 
 .react-time-picker--disabled {
-    color: var(--foreground-dim);
-    background-color: var(--background);
-    border: solid 2px var(--foreground-dim);
+    opacity: 0.25;
 }
 
 .react-time-picker__wrapper {
