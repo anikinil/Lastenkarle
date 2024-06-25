@@ -65,7 +65,6 @@
 }
 
 .regular {
-    /* float: left; */
     color: var(--button-foreground);
 }
 

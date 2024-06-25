@@ -79,6 +79,7 @@ const StoreRegistration = () => {
             </div> */}
 
             <div className="button-container">
+                <button type="button" className="button regular">{t('cancel')}</button>
                 <button type="button" className="button accent">{t('register_new_store')}</button>
             </div>
         </>
