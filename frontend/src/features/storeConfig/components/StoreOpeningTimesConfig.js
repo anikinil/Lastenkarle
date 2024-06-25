@@ -5,7 +5,7 @@ import DayRow from "./DayRow";
 
 import "./StoreOpeningTimesConfig.css"
 import 'react-time-picker/dist/TimePicker.css';
-import 'react-clock/dist/Clock.css';
+// import 'react-clock/dist/Clock.css';
 
 const StoreOpeningTimesConfig = () => {
 

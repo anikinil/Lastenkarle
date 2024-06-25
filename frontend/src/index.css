@@ -16,10 +16,6 @@ div#root {
     color: var(--foreground);
 }
 
-/* code {
-    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
-} */
-
 h1, h2 {
     text-align: left;
     padding-top: 2rem;
@@ -189,7 +185,7 @@ select {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 
-    transition: color 0.3s ease;            /* transitions for darkmode/lightmode change */
+    transition: color 0.3s ease;             /* transitions for darkmode/lightmode change */
     transition: background-color 0.3s ease;                                          
 }
 
