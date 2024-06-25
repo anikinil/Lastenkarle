@@ -11,13 +11,12 @@ const DayRow = ({ day }) => {
     const { t } = useTranslation();
 
     const [isOpen, setIsOpen] = useState(false);
-    const [isClosed, setIsClosed] = useState(false)
-    // const [fromTime, setFromTime] = useState(t('default_from_time'));
-    // const [toTime, setToTime] = useState(t('default_to_time'));
-    const [openFromTime, setOpenFromTime] = useState('08:00');
-    const [openToTime, setOpenToTime] = useState('19:00');
-    const [closedFromTime, setClosedFromTime] = useState('12:00');
-    const [closedToTime, setClosedToTime] = useState('13:00');
+    const [isClosed, setIsClosed] = useState(false);
+    
+    const [openFromTime, setOpenFromTime] = useState(t('placeholder_open_from_time'));
+    const [openToTime, setOpenToTime] = useState(t('placeholder_open_to_time'));
+    const [closedFromTime, setClosedFromTime] = useState(t('placeholder_closed_from_time'));
+    const [closedToTime, setClosedToTime] = useState(t('placeholder_closed_to_time'));
 
     const handleOpenToggle = () => {
         if (isOpen) { setIsClosed(false) }

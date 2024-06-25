@@ -1,9 +1,8 @@
 .week-container {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 10px;
-    width: 600px;
-    margin: 0 auto;
+    gap: 1rem;
+    width: 95%;
 }
 
 .header {

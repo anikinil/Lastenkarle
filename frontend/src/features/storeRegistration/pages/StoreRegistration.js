@@ -8,6 +8,8 @@ import TimePicker from "react-time-picker";
 import 'react-time-picker/dist/TimePicker.css';
 import 'react-clock/dist/Clock.css';
 
+import BikeList from '../../bikeList/components/BikeList'
+
 const StoreRegistration = () => {
 
     const { t } = useTranslation();
@@ -37,7 +39,7 @@ const StoreRegistration = () => {
         <>
             <h1>{t('new_store')}</h1>
 
-            <div>
+            <div className="new-store-image-and-desctiption-container">
 
                 <div className="new-store-img-container" type="file" onClick={handleImgContainerClick}>
                     {pictureFile ?
@@ -65,11 +67,16 @@ const StoreRegistration = () => {
 
             <textarea title={t('store_address')} className="new-store-address" rows="1" onKeyDown={handleAddressKeyDown} placeholder={t('store_address')}></textarea>
 
-            <div className="button-container">
-                <button type="button" className="button regular">{t('assign_bikes')}</button>
-            </div>
-
             <StoreOpeningTimesConfig />
+
+            <h2>{t('add_bikes_to_store')}</h2>
+            
+            <BikeList />
+
+
+            {/* <div className="button-container">
+                <button type="button" className="button regular">{t('assign_bikes')}</button>
+            </div> */}
 
             <div className="button-container">
                 <button type="button" className="button accent">{t('register_new_store')}</button>

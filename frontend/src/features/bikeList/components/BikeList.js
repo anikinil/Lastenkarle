@@ -61,13 +61,11 @@ const BikeList = () => {
 
     return (
         <>
-            <h1>{t('bikes')}</h1>
-
             <div className='list-button-container'>
                 <button type='button' className='sort-button' onClick={handleSortClick}>
                     { sortAZ ? <FaSortAlphaDown /> : <FaSortAlphaUp />}
                 </button>
-                <button type='button' className='new-bike-button' onClick={handleNewBikeClick}>{t('add_new_bike')}</button>
+                <button type='button' className='new-bike-button' onClick={handleNewBikeClick}>{t('register_new_bike')}</button>
             </div>
 
             <ul className='list'>

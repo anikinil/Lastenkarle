@@ -3,5 +3,10 @@
 
     "bike_list": "Bike list",
 
-    "store_list": "Store list"
+    "store_list": "Store list",
+
+    "placeholder_open_from_time": "8:00",
+    "placeholder_open_to_time": "19:00",
+    "placeholder_closed_from_time": "12:00",
+    "placeholder_closed_to_time": "13:00"
 }

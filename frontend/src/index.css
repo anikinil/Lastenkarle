@@ -22,7 +22,7 @@ div#root {
 
 h1, h2 {
     text-align: left;
-    padding-top: 1rem;
+    padding-top: 2rem;
     padding-bottom: 1rem;
 }
 
@@ -83,7 +83,7 @@ textarea {
 
     transition: background-color 0.3s ease;
 
-    margin: 1rem;
+    /* margin: 1rem; */
 }
 
 textarea:hover {
