@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useNavigate } from 'react-router-dom';
 
-const StorePage = () => {
+const StorePage = ({ store }) => {
 
     const { t } = useTranslation();
 

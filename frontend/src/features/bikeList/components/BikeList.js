@@ -8,6 +8,35 @@ import './BikeList.css'
 import { FaSortAlphaDown, FaSortAlphaUp } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 
+// TODO implement fetching
+const bikes = [
+    {
+        id: 1,
+        name: 'Lastenrad 1',
+        image: require('./bike1.jpg')
+    },
+    {
+        id: 2,
+        name: 'Lastenrad 2',
+        image: require('./bike2.jpg')
+    },
+    {
+        id: 3,
+        name: 'Lastenrad 3',
+        image: require('./bike3.jpg')
+    },
+    {
+        id: 4,
+        name: 'Lastenrad 4',
+        image: require('./bike3.jpg')
+    },
+    {
+        id: 5,
+        name: 'Lastenrad 5',
+        image: ""
+    }
+]
+
 const BikeList = () => {
 
     const { t } = useTranslation();
@@ -30,40 +59,11 @@ const BikeList = () => {
         navigate("/bike-registration");
     }
 
-    // TODO implement fetching
-    let bikes = [
-        {
-            id: 1,
-            name: 'Lastenrad 1',
-            image: require('./bike1.jpg')
-        },
-        {
-            id: 2,
-            name: 'Lastenrad 2',
-            image: require('./bike2.jpg')
-        },
-        {
-            id: 3,
-            name: 'Lastenrad 3',
-            image: require('./bike3.jpg')
-        },
-        {
-            id: 4,
-            name: 'Lastenrad 4',
-            image: require('./bike3.jpg')
-        },
-        {
-            id: 5,
-            name: 'Lastenrad 5',
-            image: ""
-        }
-    ]
-
     return (
         <>
             <div className='list-button-container'>
                 <button type='button' className='sort-button' onClick={handleSortClick}>
-                    { sortAZ ? <FaSortAlphaDown /> : <FaSortAlphaUp />}
+                    {sortAZ ? <FaSortAlphaDown /> : <FaSortAlphaUp />}
                 </button>
                 <button type='button' className='new-bike-button' onClick={handleNewBikeClick}>{t('register_new_bike')}</button>
             </div>

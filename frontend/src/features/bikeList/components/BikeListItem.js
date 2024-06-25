@@ -7,16 +7,19 @@ import { MdDelete } from "react-icons/md";
 
 import defaultBikePicture from "../../../assets/images/default_bike.png"
 
+import { useNavigate } from 'react-router-dom';
+
 const BikeListItem = ({bike}) => {
 
     const { t } = useTranslation();
+
+    const navigate = useNavigate();
     
     // THINK how to display different buttons to different roles
     // THINK maybe show big preview of bike image on clik on miniature preview
 
     const handlePanelClick = () => {
-        // TODO implement
-        console.log(bike.name)
+        navigate(`/bike/${bike.id}`);
     }
 
     const handleBookingsClick = e => {
