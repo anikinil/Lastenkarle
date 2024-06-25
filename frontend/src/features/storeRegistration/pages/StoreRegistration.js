@@ -4,79 +4,27 @@ import { useTranslation } from 'react-i18next';
 import "./StoreRegistration.css"
 import StoreOpeningTimesConfig from "../../storeConfig/components/StoreOpeningTimesConfig";
 
-import TimePicker from "react-time-picker";
 import 'react-time-picker/dist/TimePicker.css';
-import 'react-clock/dist/Clock.css';
 
 import BikeList from '../../bikeList/components/BikeList'
+import PictureAndDescriptionEdit from "../../../components/dataEditing/PictureAndDescriptionEdit";
+import AddressEdit from "../../../components/dataEditing/AddressEdit";
 
 const StoreRegistration = () => {
 
     const { t } = useTranslation();
 
-    const [pictureFile, setPictureFile] = useState(null)
-
-    function handlePictureFileChange(event) {
-        setPictureFile(event.target.files[0])
-    }
-
-    const handleImgContainerClick = () => {
-        document.getElementById('pictureFileInput').click();
-    };
-
-    const handleRemovePictureClick = () => {
-        setPictureFile(null)
-    }
-
-    // prevents user from switching to new line by hitting [Enter]
-    const handleAddressKeyDown = (event) => {
-        if (event.key === 'Enter') {
-            event.preventDefault();
-        }
-    };
-
     return (
         <>
             <h1>{t('new_store')}</h1>
 
-            <div className="new-store-image-and-desctiption-container">
-
-                <div className="new-store-img-container" type="file" onClick={handleImgContainerClick}>
-                    {pictureFile ?
-                        <img className="new-store-img" alt={t('store_image')} src={URL.createObjectURL(pictureFile)}></img>
-                        :
-                        <span className="new-store-img-container-label">{t('select_a_picture')}</span>
-                    }
-                </div>
-
-                <input
-                    id="pictureFileInput"
-                    type="file"
-                    title={t('image-selection')}
-                    accept="image/*"
-                    onChange={handlePictureFileChange}
-                    style={{ display: 'none' }}
-                />
-
-                <textarea title={t('store_description')} className="new-store-description" placeholder={t('store_description')}></textarea>
-            </div>
-
-            <div className="button-container">
-                <button type="button" className="button regular" onClick={handleRemovePictureClick}>{t('remove_picture')}</button>
-            </div>
-
-            <textarea title={t('store_address')} className="new-store-address" rows="1" onKeyDown={handleAddressKeyDown} placeholder={t('store_address')}></textarea>
-
+            <PictureAndDescriptionEdit />
+            <AddressEdit />
             <StoreOpeningTimesConfig />
 
             <h2>{t('add_bikes_to_store')}</h2>
             
             <BikeList />
-
-
-            {/* <div className="button-container">
-                <button type="button" className="button regular">{t('assign_bikes')}</button>
-            </div> */}
 
             <div className="button-container">
                 <button type="button" className="button regular">{t('cancel')}</button>
