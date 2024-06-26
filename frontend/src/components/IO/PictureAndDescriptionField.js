@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useTranslation } from 'react-i18next';
 
-import "./PictureAndDescriptionEdit.css"
+import "./PictureAndDescriptionField.css"
 
-const PictureDescriptionEdit = () => {
+const PictureAndDescriptionField = ({ editable }) => {
 
     const { t } = useTranslation();
 
@@ -40,16 +40,20 @@ const PictureDescriptionEdit = () => {
                     accept="image/*"
                     onChange={handlePictureFileChange}
                     style={{ display: 'none' }}
+                    disabled={!editable}
                 />
 
-                <textarea title={t('write_description')} className="description" placeholder={t('write_description')}></textarea>
+                <textarea title={t('write_description')} className="description" placeholder={t('write_description')} disabled={!editable}></textarea>
             </div>
 
-            <div className="button-container">
-                <button type="button" className="button regular" onClick={handleRemovePictureClick}>{t('remove_picture')}</button>
-            </div>
+            {editable ?
+                <div className="button-container">
+                    <button type="button" className="button regular" onClick={handleRemovePictureClick}>{t('remove_picture')}</button>
+                </div>
+                : null
+            }
         </>
     );
 };
 
-export default PictureDescriptionEdit;
+export default PictureAndDescriptionField;

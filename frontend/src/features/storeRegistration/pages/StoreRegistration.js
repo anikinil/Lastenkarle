@@ -7,8 +7,8 @@ import StoreOpeningTimesConfig from "../../storeConfig/components/StoreOpeningTi
 import 'react-time-picker/dist/TimePicker.css';
 
 import BikeList from '../../bikeList/components/BikeList'
-import PictureAndDescriptionEdit from "../../../components/dataEditing/PictureAndDescriptionEdit";
-import AddressEdit from "../../../components/dataEditing/AddressEdit";
+import PictureAndDescriptionField from "../../../components/IO/PictureAndDescriptionField";
+import AddressField from "../../../components/IO/AddressField";
 
 const StoreRegistration = () => {
 
@@ -17,8 +17,8 @@ const StoreRegistration = () => {
     return (
         <>
             <h1>{t('new_store')}</h1>
-            <PictureAndDescriptionEdit />
-            <AddressEdit />
+            <PictureAndDescriptionField editable={true}/>
+            <AddressField editable={true}/>
             <StoreOpeningTimesConfig />
 
             <h2>{t('add_bikes_to_store')}</h2>

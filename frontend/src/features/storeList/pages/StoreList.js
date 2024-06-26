@@ -8,6 +8,9 @@ import './StoreList.css'
 import { FaSortAlphaDown, FaSortAlphaUp } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 
+// TODO seperate list comp from page, adjust navigation
+
+
 const StoreList = () => {
 
     const { t } = useTranslation();

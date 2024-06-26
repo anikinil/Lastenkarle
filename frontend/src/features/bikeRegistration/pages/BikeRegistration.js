@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useTranslation } from 'react-i18next';
 
 import "./BikeRegistration.css"
-import PictureAndDescriptionEdit from "../../../components/dataEditing/PictureAndDescriptionEdit";
+import PictureAndDescriptionField from "../../../components/IO/PictureAndDescriptionField";
 
 const BikeRegistration = () => {
 
@@ -12,7 +12,7 @@ const BikeRegistration = () => {
         <>
             <h1>{t('new_bike')}</h1>
 
-            <PictureAndDescriptionEdit />
+            <PictureAndDescriptionField editable={true}/>
 
             <div className="button-container">
                 <button type="button" className="button register">{t('register_new_bike')}</button>

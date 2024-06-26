@@ -60,11 +60,11 @@ const App = () => {
                         <Route exact path='/no-permission/' element={<NoPermission />} />
                         <Route exact path='/regional-booking' element={<RegionalBooking />} />
                         <Route exact path='/bike-booking' element={<BikeBooking />} />
-                        <Route exact path='/store-page' element={<StorePage />} />
                         <Route exact path='/bikes' element={<BikeListPage />} />
                         <Route exact path='/bike/:id' element={<BikePage />} />
                         <Route exact path='/bike-registration' element={<BikeRegistration />} />
                         <Route exact path='/stores' element={<StoreList />} />
+                        <Route exact path='/store/:id' element={<StorePage />} />
                         <Route exact path='/store-registration' element={<StoreRegistration />} />
                         <Route exact path='/bookings' element={<BookingList />} />
                     </Routes>

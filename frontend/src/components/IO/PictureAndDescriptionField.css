@@ -3,7 +3,6 @@
     display: flex;
 }
 
-
 .img-container {
     float: inline-start;
 
@@ -30,7 +29,8 @@
 }
 
 .img {
-    width: 95%;
+    max-width: 95%;
+    max-height: 95%;
 }
 
 .description {

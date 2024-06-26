@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 
 import { useNavigate, useParams } from 'react-router-dom';
+import PictureAndDescriptionField from '../../../components/IO/PictureAndDescriptionField';
 
 // TODO implement fetching
 const bikes = [
@@ -45,7 +46,7 @@ const BikePage = () => {
         <>
             <h1>{bike.name}</h1>
 
-
+            <PictureAndDescriptionField editable={false}/>
         </>
     );
 };
