@@ -1,16 +1,35 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-
-import { useNavigate } from 'react-router-dom';
 import PictureAndDescriptionField from '../../../components/IO/PictureAndDescriptionField';
 import AddressField from '../../../components/IO/AddressField';
+import { useParams } from 'react-router-dom';
 
-const StorePage = ({ store }) => {
+// TODO implement fetching
+let stores = [
+    {
+        id: 1,
+        name: 'Store 1',
+        image: require('./store1.jpg')
+    },
+    {
+        id: 2,
+        name: 'Store 2',
+        image: require('./store2.jpg')
+    },
+    {
+        id: 3,
+        name: 'Store 3',
+        image: null
+    }
+]
+
+const StorePage = () => {
 
     const { t } = useTranslation();
 
-    const navigate = useNavigate();
+    const { id } = useParams();
+    const store = stores.find(s => s.id === parseInt(id));
 
     return (
         <>

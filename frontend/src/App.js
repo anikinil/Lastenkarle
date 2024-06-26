@@ -16,14 +16,14 @@ import Login from './pages/Login';
 import UserBan from './features/userBan/pages/UserBan';
 import Navbar from './components/navbar/Navbar';
 import Booking from './features/booking/pages/Booking';
-import StoreList from './features/storeList/pages/StoreList';
+import StoreListPage from './features/storeList/pages/StoreListPage';
 import NoPermission from './pages/NoPermission';
 
 import LanguageToggle from './components/sidePanel/LanguageToggle';
 import UserList from './features/userList/pages/UserList';
 import RegionalBooking from './features/booking/pages/RegionalBooking';
 import BikeBooking from './features/booking/pages/BikeBooking';
-import StorePage from './features/storeList/pages/StorePage';
+import StorePage from './features/storeOverview/pages/StorePage';
 import BikeListPage from './features/bikeList/pages/BikeListPage';
 import BikeRegistration from './features/bikeRegistration/pages/BikeRegistration';
 import StoreRegistration from './features/storeRegistration/pages/StoreRegistration';
@@ -55,7 +55,7 @@ const App = () => {
                         <Route exact path='/login' element={<Login />} />
                         <Route exact path='/user-ban' element={<UserBan />} />
                         <Route exact path='/booking' element={<Booking />} />
-                        <Route exact path='/store-management' element={<ProtectedElement element={<StoreList />} elementRoles={['manager', 'admin']} userRoles={userRoles} />} />
+                        <Route exact path='/store-management' element={<ProtectedElement element={<StoreListPage />} elementRoles={['manager', 'admin']} userRoles={userRoles} />} />
                         <Route exact path='/users' element={<ProtectedElement element={<UserList />} elementRoles={['admin']} userRoles={userRoles} />} />
                         <Route exact path='/no-permission/' element={<NoPermission />} />
                         <Route exact path='/regional-booking' element={<RegionalBooking />} />
@@ -63,7 +63,7 @@ const App = () => {
                         <Route exact path='/bikes' element={<BikeListPage />} />
                         <Route exact path='/bike/:id' element={<BikePage />} />
                         <Route exact path='/bike-registration' element={<BikeRegistration />} />
-                        <Route exact path='/stores' element={<StoreList />} />
+                        <Route exact path='/stores' element={<StoreListPage />} />
                         <Route exact path='/store/:id' element={<StorePage />} />
                         <Route exact path='/store-registration' element={<StoreRegistration />} />
                         <Route exact path='/bookings' element={<BookingList />} />

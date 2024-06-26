@@ -15,7 +15,7 @@ const StoreListItem = ({ store }) => {
 
     const handlePanelClick = () => {
         // use proper identifier
-        navigate("/" + store.id)
+        navigate(`/store/${store.id}`)
     }
 
     const handleBookingsClick = e => {
