@@ -116,5 +116,5 @@ class MakeBooking(APIView):
         booking.string = booking_string
         booking.save()
         split_availabilities_algorithm(booking)
-        #send_booking_confirmation(booking)
+        send_booking_confirmation(booking)
         return Response(status=status.HTTP_201_CREATED)
