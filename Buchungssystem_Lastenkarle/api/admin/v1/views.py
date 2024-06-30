@@ -113,7 +113,7 @@ class SelectedBooking(APIView):
         booking.string = None
         booking.save()
         merge_availabilities_algorithm(booking)
-       # send_cancellation_through_store_confirmation(booking)
+        send_cancellation_through_store_confirmation(booking)
         return Response(status=status.HTTP_200_OK)
 
 
@@ -148,7 +148,7 @@ class DeleteBike(DestroyAPIView):
         for booking in Booking.objects.filter(bike=bike, booking_status__status='Booked'):
             booking.booking_status.clear()
             booking.booking_status.set(Booking_Status.objects.filter(status='Cancelled'))
-#            send_cancellation_through_store_confirmation(booking)
+            send_cancellation_through_store_confirmation(booking)
             booking.string = None
             booking.save()
         bike.delete()
@@ -283,7 +283,7 @@ class DeleteStore(DestroyAPIView):
         for booking in Booking.objects.filter(bike__store=store, booking_status__status='Booked'):
             booking.booking_status.clear()
             booking.booking_status.set(Booking_Status.objects.filter(status='Cancelled'))
-#            send_cancellation_through_store_confirmation(booking)
+            send_cancellation_through_store_confirmation(booking)
             booking.string = None
             booking.save()
         store.delete()

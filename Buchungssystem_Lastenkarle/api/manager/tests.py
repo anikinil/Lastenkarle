@@ -331,6 +331,76 @@ class Test_manager_patch_bike(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
+class Test_manager_delete_equipment_of_bike(APITestCase):
+    def setUp(self):
+        super().setUp(url='/api/manager/v1/bikes/{}/equipment', http_method='DELETE')
+        self.eq = {'equipment': 'Tarp'}
+
+    def test_manager_delete_equipment_of_bike_functionality(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_manager_store_koeri_token)
+        response = self.make_request(self.assign_values_to_placeholder(self.url_template, self.bike2_of_ikae_with_equipment.pk), {'equipment': 'Tarp'})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.bike2_of_ikae_with_equipment.refresh_from_db()
+        self.assertNotIn(Equipment.objects.get(equipment='Tarp'), self.bike2_of_ikae_with_equipment.bike_equipment.all())
+
+    def test_manager_delete_equipment_of_bike_unauthorized(self):
+        self.invalid_permissions(user_token=self.user_customer_taylor_token,
+                                 path=self.assign_values_to_placeholder(self.url_template, self.bike2_of_ikae_with_equipment.pk),
+                                 data=self.eq)
+        self.invalid_permissions(user_token=self.user_customer_wildegard_token,
+                                 path=self.assign_values_to_placeholder(self.url_template, self.bike2_of_ikae_with_equipment.pk),
+                                 data=self.eq)
+        self.invalid_permissions(user_token=self.user_administrator_caro_token,
+                                 path=self.assign_values_to_placeholder(self.url_template, self.bike2_of_ikae_with_equipment.pk),
+                                 data=self.eq)
+
+    def test_manager_delete_equipment_of_bike_handling_invalid_url(self):
+        self.invalid_url_params(self.user_manager_store_koeri_token, 25, self.regex_non_natural_numbers)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_manager_store_koeri_token)
+        response = self.make_request(url=self.assign_values_to_placeholder(self.url_template, self.random_number_not_in_id_set('Bike')), data=self.eq)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+class Test_manager_delete_bike(APITestCase):
+    def setUp(self):
+        super().setUp(url='/api/manager/v1/bikes/{}/delete', http_method='DELETE')
+        self.booking1 = self.create_booking_of_bike_with_flag(self.user_customer_taylor, self.bike_for_deletion,
+                                                             'Booked', '2123-10-01', '2123-10-02')
+        self.booking2 = self.create_booking_of_bike_with_flag(self.user_customer_taylor, self.bike_for_deletion,
+                                                             'Booked', '2123-10-08', '2123-10-09')
+        self.booking3 = self.create_booking_of_bike_with_flag(self.user_customer_taylor, self.bike_for_deletion,
+                                                             'Booked', '2123-10-15', '2123-10-16')
+
+    def test_manager_delete_bike_functionality(self):
+        bike_count = Bike.objects.all().count()
+        bike = self.bike_for_deletion
+        booking_of_bike = Booking.objects.filter(bike=bike)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_manager_store_koeri_token)
+        response = self.make_request(url=self.assign_values_to_placeholder(self.url_template, self.bike_for_deletion.pk))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertNotIn(bike, Bike.objects.all())
+        self.assertEqual(bike_count - 1, Bike.objects.all().count())
+        for booking in booking_of_bike:
+            self.assertIn(Booking_Status.objects.get(status='Cancelled'), booking.booking_status.all())
+        self.validate_mail("email_templates/CancellationThroughStoreConfirmation.html", 0, self.booking1.user.username, self.booking1.bike.name, self.booking1.bike.store.name, self.booking1.begin, self.booking1.end)
+        self.validate_mail("email_templates/CancellationThroughStoreConfirmation.html", 1, self.booking2.user.username, self.booking2.bike.name, self.booking2.bike.store.name, self.booking2.begin, self.booking2.end)
+        self.validate_mail("email_templates/CancellationThroughStoreConfirmation.html", 2, self.booking3.user.username, self.booking3.bike.name, self.booking3.bike.store.name, self.booking3.begin, self.booking3.end)
+
+    def test_manager_delete_bike_unauthorized(self):
+        self.invalid_permissions(user_token=self.user_customer_taylor_token,
+                                 path=self.assign_values_to_placeholder(self.url_template, self.bike_for_deletion.pk))
+        self.invalid_permissions(user_token=self.user_customer_wildegard_token,
+                                 path=self.assign_values_to_placeholder(self.url_template, self.bike_for_deletion.pk))
+        self.invalid_permissions(user_token=self.user_administrator_caro_token,
+                                 path=self.assign_values_to_placeholder(self.url_template, self.bike_for_deletion.pk))
+
+    def test_manager_delete_bike_handling_invalid_url(self):
+        self.invalid_url_params(self.user_manager_store_koeri_token, 25, self.regex_non_natural_numbers)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_manager_store_koeri_token)
+        response = self.make_request(url=self.assign_values_to_placeholder(self.url_template, self.random_number_not_in_id_set('Bike')))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
 class Test_manager_get_availability_of_bike(APITestCase):
     def setUp(self):
         super().setUp(url='/api/manager/v1/bikes/{}/availability', http_method='GET')
@@ -508,11 +578,11 @@ class Test_manager_post_report_comment(APITestCase):
         super().setUp(url='/api/manager/v1/bookings/{}/comment/report', http_method='POST')
 
     def test_manager_post_report_comment_functionality(self):
-        for booking in Booking.objects.filter(bike__store=self.store_ikae):
-            self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_manager_store_koeri_token)
-            response = self.make_request(
-                url=self.assign_values_to_placeholder(self.url_template, booking.pk))
-            self.assertEqual(response.status_code, status.HTTP_200_OK)
+        booking = self.booking_picked_up
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_manager_store_koeri_token)
+        response = self.make_request(url=self.assign_values_to_placeholder(self.url_template, booking.pk))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.validate_mail("email_templates/AdminUserWarningNotification.html", 0, booking.user.username, booking.bike.store.name, booking.bike.store.address, booking.bike.store.phone_number, booking.bike.store.email, booking.comment)
 
     def test_manager_post_report_comment_unauthorized(self):
         for booking in Booking.objects.filter(bike__store=self.store_ikae):
@@ -524,6 +594,105 @@ class Test_manager_post_report_comment(APITestCase):
                                      path=self.assign_values_to_placeholder(self.url_template, booking.pk))
 
     def test_manager_post_report_comment_handling_invalid_url(self):
+        self.invalid_url_params(self.user_manager_store_koeri_token, 25, self.regex_non_natural_numbers)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_manager_store_koeri_token)
+        response = self.make_request(
+            url=self.assign_values_to_placeholder(self.url_template, self.random_number_not_in_id_set('Booking')))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+class Test_manager_post_cancel_booking(APITestCase):
+    def setUp(self):
+        super().setUp(url='/api/manager/v1/bookings/{}', http_method='POST')
+
+    def test_manager_post_cancel_booking_functionality(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_manager_store_koeri_token)
+        response = self.make_request(url=self.assign_values_to_placeholder(self.url_template, self.booking_of_caro.pk))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.validate_mail("email_templates/CancellationThroughStoreConfirmation.html", 0, self.booking_of_caro.user.username, self.booking_of_caro.bike.name, self.booking_of_caro.bike.store.name, self.booking_of_caro.begin, self.booking_of_caro.end)
+
+    def test_manager_post_cancel_booking_unauthorized(self):
+        self.invalid_permissions(user_token=self.user_customer_taylor_token,
+                                 path=self.assign_values_to_placeholder(self.url_template, self.booking_of_caro.pk))
+        self.invalid_permissions(user_token=self.user_customer_wildegard_token,
+                                 path=self.assign_values_to_placeholder(self.url_template, self.booking_of_caro.pk))
+        self.invalid_permissions(user_token=self.user_administrator_caro_token,
+                                 path=self.assign_values_to_placeholder(self.url_template, self.booking_of_caro.pk))
+
+    def test_manager_post_cancel_booking_integrity(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_manager_store_koeri_token)
+        response = self.make_request(url=self.assign_values_to_placeholder(self.url_template, self.booking_of_caro.pk))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn(Booking_Status.objects.get(status='Cancelled'), self.booking_of_caro.booking_status.all())
+
+    def test_manager_post_cancel_booking_handling_invalid_url(self):
+        self.invalid_url_params(self.user_manager_store_koeri_token, 25, self.regex_non_natural_numbers)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_manager_store_koeri_token)
+        response = self.make_request(
+            url=self.assign_values_to_placeholder(self.url_template, self.random_number_not_in_id_set('Booking')))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_manager_post_cancel_booking_handling_cancel_twice(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_manager_store_koeri_token)
+        response = self.make_request(
+            url=self.assign_values_to_placeholder(self.url_template, self.booking_of_caro.pk))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(mail.outbox), 1)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_manager_store_koeri_token)
+        response = self.make_request(
+            url=self.assign_values_to_placeholder(self.url_template, self.booking_of_caro.pk))
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(len(mail.outbox), 1)
+
+
+class Test_manager_post_confirm_bike_handout(APITestCase):
+    def setUp(self):
+        super().setUp(url='/api/manager/v1/bookings/{}/hand-out', http_method='POST')
+
+    def test_manager_post_confirm_bike_handout_functionality(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_manager_store_koeri_token)
+        response = self.make_request(url=self.assign_values_to_placeholder(self.url_template, self.booking_of_caro.pk))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.booking_of_caro.refresh_from_db()
+        self.assertIn(Booking_Status.objects.get(status='Picked up'), self.booking_of_caro.booking_status.all())
+        self.validate_mail("email_templates/BikePickUpConfirmation.html", 0, self.booking_of_caro.user.username, self.booking_of_caro.bike.name, self.booking_of_caro.bike.store.name, self.booking_of_caro.bike.store.address, self.booking_of_caro.bike.store.phone_number, self.booking_of_caro.bike.store.email)
+
+    def test_manager_post_confirm_bike_handout_unauthorized(self):
+        self.invalid_permissions(user_token=self.user_customer_taylor_token,
+                                 path=self.assign_values_to_placeholder(self.url_template, self.booking_of_caro.pk))
+        self.invalid_permissions(user_token=self.user_customer_wildegard_token,
+                                 path=self.assign_values_to_placeholder(self.url_template, self.booking_of_caro.pk))
+        self.invalid_permissions(user_token=self.user_administrator_caro_token,
+                                 path=self.assign_values_to_placeholder(self.url_template, self.booking_of_caro.pk))
+
+    def test_manager_post_confirm_bike_handout_handling_invalid_url(self):
+        self.invalid_url_params(self.user_manager_store_koeri_token, 25, self.regex_non_natural_numbers)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_manager_store_koeri_token)
+        response = self.make_request(
+            url=self.assign_values_to_placeholder(self.url_template, self.random_number_not_in_id_set('Booking')))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+class Test_manager_post_confirm_bike_return(APITestCase):
+    def setUp(self):
+        super().setUp(url='/api/manager/v1/bookings/{}/return', http_method='POST')
+
+    def test_manager_post_confirm_bike_return_functionality(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_manager_store_koeri_token)
+        response = self.make_request(url=self.assign_values_to_placeholder(self.url_template, self.booking_picked_up.pk))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.booking_of_caro.refresh_from_db()
+        self.assertIn(Booking_Status.objects.get(status='Returned'), self.booking_picked_up.booking_status.all())
+        self.validate_mail("email_templates/BikeDropOffConfirmation.html", 0, self.booking_picked_up.user.username, self.booking_picked_up.bike.name, self.booking_picked_up.bike.store.name, self.booking_picked_up.bike.store.address, self.booking_picked_up.bike.store.phone_number, self.booking_picked_up.bike.store.email)
+
+    def test_manager_post_confirm_bike_return_unauthorized(self):
+        self.invalid_permissions(user_token=self.user_customer_taylor_token,
+                                 path=self.assign_values_to_placeholder(self.url_template, self.booking_of_caro.pk))
+        self.invalid_permissions(user_token=self.user_customer_wildegard_token,
+                                 path=self.assign_values_to_placeholder(self.url_template, self.booking_of_caro.pk))
+        self.invalid_permissions(user_token=self.user_administrator_caro_token,
+                                 path=self.assign_values_to_placeholder(self.url_template, self.booking_of_caro.pk))
+
+    def test_manager_post_confirm_bike_return_handling_invalid_url(self):
         self.invalid_url_params(self.user_manager_store_koeri_token, 25, self.regex_non_natural_numbers)
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_manager_store_koeri_token)
         response = self.make_request(

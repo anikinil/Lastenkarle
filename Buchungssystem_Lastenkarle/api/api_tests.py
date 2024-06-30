@@ -7,6 +7,7 @@ from django.apps import apps
 
 from datetime import datetime
 from django.contrib.auth.hashers import make_password
+from django.core import mail
 from rest_framework import status
 from Buchungssystem_Lastenkarle.settings import CANONICAL_HOST, BASE_DIR
 from django.contrib.auth.models import AnonymousUser
@@ -20,7 +21,7 @@ from api.algorithm import split_availabilities_algorithm
 from db_model.models import *
 from knox.views import LoginView
 from rest_framework import serializers
-
+from django.template.loader import render_to_string
 
 # TODO: sql injections handling
 
@@ -290,10 +291,50 @@ class APITestCase(TestCase):
         "equipment": ["Tarp", "Charger"]
     }
 
-
     regex_non_natural_numbers = r'a+^(?!0*[1-9]+\d*$)\d+$'
 
-    # TODO: some form of mail classification
+    def validate_mail(self, template_location, index, *args):
+        self.assertGreaterEqual(len(mail.outbox), 1)
+        sent_mail = mail.outbox[index]
+        keys = []
+        subject = ''
+        if template_location == "email_templates/BookingMailTemplate.html":
+            subject = f"Deine Buchung von {args[1]} bei {args[2]} von {args[3]} bis {args[4]}"
+            keys = ['username', 'bike_name', 'store_name', 'start_date', 'end_date', 'booking_equipment', 'store_address', 'store_phone_number', 'store_email', 'spenden_link', 'lastenkarle_contact_data']
+        if template_location == "email_templates/AdminUserWarningNotification.html":
+            subject = f"Benutzer {args[0]} wurde ermahnt"
+            keys = ['username', 'store_name', 'store_address', 'store_phone_number', 'store_email', 'comment']
+        if template_location == "email_templates/BikeDropOffConfirmation.html":
+            subject = f"Statuswechsel deiner Buchung: Lastenrad {args[1]} wurde zurückgegeben"
+            keys = ['username', 'bike_name', 'store_name', 'store_address', 'store_phone_number', 'store_email']
+        if template_location == "email_templates/BikePickUpConfirmation.html":
+            subject = f"Statuswechsel deiner Buchung: Lastenrad {args[1]} wurde abgeholt"
+            keys = ['username', 'bike_name', 'store_name', 'store_address', 'store_phone_number', 'store_email']
+        if template_location == "email_templates/CancellationConfirmation.html":
+            subject = f"Stornierung deiner Buchung von {args[3]} bis {args[4]}"
+            keys = ['username', 'bike_name', 'store_name', 'start_date', 'end_date']
+        if template_location == "email_templates/CancellationThroughStoreConfirmation.html":
+            subject = f"Stornierung deiner Buchung von {args[3]} bis {args[4]}"
+            keys = ['username', 'bike_name', 'store_name', 'start_date', 'end_date']
+        if template_location == "email_templates/UserBannedMail.html":
+            subject = "Statuswechsel deines Accounts: Du wurdest gebannt"
+            keys = ['username', 'lastenkarle_contact_data']
+        if template_location == "email_templates/UserRegisteredConfirmation.html":
+            subject = "Dein Account bei Lastenkarle: Bitte bestätige deine E-Mail"
+            keys = ['username', 'registration_link']
+        if template_location == "email_templates/UserVerifiedConfirmation.html":
+            subject = "Statuswechsel deines Accounts: Du bist verifiziert"
+            keys = ['username', 'lastenkarle_contact_data']
+        if template_location == "email_templates/EmailChangedTemplate.html":
+            subject = "Dein Account bei Lastenkarle: Bitte bestätige deine E-Mail"
+            keys = ['username', 'verification_link']
+        if template_location == "email_templates/UserWarning.html":
+            subject = "Statuswechsel deines Accounts: Du wurdest ermahnt"
+            keys = ['username', 'store_name', 'comment', 'store_address', 'store_phone_number', 'store_email']
+        context = {key: value for key, value in zip(keys, args)}
+        self.assertEqual(sent_mail.subject, subject)
+        expected_html_content = render_to_string(template_location, context)
+        self.assertHTMLEqual(sent_mail.body, expected_html_content)
 
     def make_request(self, url=None, data=None, **extra):
         if url is None:

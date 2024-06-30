@@ -1,7 +1,8 @@
 from api.api_tests import *
 from db_model.models import *
 from rest_framework import status
-
+from configs.global_variables import lastenkarle_contact_data
+from django.core import mail
 
 class Test_admin_get_equipment(APITestCase):
     def setUp(self):
@@ -97,6 +98,7 @@ class Test_admin_post_user_banning(APITestCase):
         response = self.make_request(data=self.ban_taylor)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn(User_Flag.objects.get(flag='Banned'), self.user_customer_taylor.user_flags.all())
+        self.validate_mail("email_templates/UserBannedMail.html", 0, self.user_customer_taylor.username, lastenkarle_contact_data)
 
     def test_admin_post_user_banning_unauthorized(self):
         self.invalid_permissions(user_token=self.user_customer_taylor_token, data=self.ban_taylor)
@@ -248,11 +250,11 @@ class Test_admin_post_create_bike_of_store(APITestCase):
 class Test_admin_delete_bike(APITestCase):
     def setUp(self):
         super().setUp(url='/api/admin/v1/delete/bike/{}', http_method='DELETE')
-        self.booking = self.create_booking_of_bike_with_flag(self.user_customer_taylor, self.bike_for_deletion,
+        self.booking1 = self.create_booking_of_bike_with_flag(self.user_customer_taylor, self.bike_for_deletion,
                                                              'Booked', '2123-10-01', '2123-10-02')
-        self.booking = self.create_booking_of_bike_with_flag(self.user_customer_taylor, self.bike_for_deletion,
+        self.booking2 = self.create_booking_of_bike_with_flag(self.user_customer_taylor, self.bike_for_deletion,
                                                              'Booked', '2123-10-08', '2123-10-09')
-        self.booking = self.create_booking_of_bike_with_flag(self.user_customer_taylor, self.bike_for_deletion,
+        self.booking3 = self.create_booking_of_bike_with_flag(self.user_customer_taylor, self.bike_for_deletion,
                                                              'Booked', '2123-10-15', '2123-10-16')
 
     def test_admin_delete_bike_functionality(self):
@@ -266,6 +268,9 @@ class Test_admin_delete_bike(APITestCase):
         self.assertEqual(bike_count - 1, Bike.objects.all().count())
         for booking in booking_of_bike:
             self.assertIn(Booking_Status.objects.get(status='Cancelled'), booking.booking_status.all())
+        self.validate_mail("email_templates/CancellationThroughStoreConfirmation.html", 0, self.booking1.user.username, self.booking1.bike.name, self.booking1.bike.store.name, self.booking1.begin, self.booking1.end)
+        self.validate_mail("email_templates/CancellationThroughStoreConfirmation.html", 1, self.booking2.user.username, self.booking2.bike.name, self.booking2.bike.store.name, self.booking2.begin, self.booking2.end)
+        self.validate_mail("email_templates/CancellationThroughStoreConfirmation.html", 2, self.booking3.user.username, self.booking3.bike.name, self.booking3.bike.store.name, self.booking3.begin, self.booking3.end)
 
     def test_admin_delete_bike_unauthorized(self):
         self.invalid_permissions(user_token=self.user_customer_taylor_token,
@@ -293,6 +298,7 @@ class Test_admin_delete_store(APITestCase):
 
     def test_admin_delete_store_functionality(self):
         store = self.store_graphs
+        args = [self.booking_of_caro.user.username, self.booking_of_caro.bike.name, self.booking_of_caro.bike.store.name, self.booking_of_caro.begin, self.booking_of_caro.end]
         bike_count = Bike.objects.all().count()
         bike_count_store = Bike.objects.filter(store=store).count()
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_administrator_caro_token)
@@ -301,6 +307,7 @@ class Test_admin_delete_store(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertNotIn(store, Store.objects.all())
         self.assertEqual(bike_count - bike_count_store, Bike.objects.all().count())
+        self.validate_mail("email_templates/CancellationThroughStoreConfirmation.html", 0, *args)
 
     def test_admin_delete_store_unauthorized(self):
         self.invalid_permissions(user_token=self.user_customer_taylor_token,
@@ -469,7 +476,7 @@ class Test_admin_get_booking(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
-class Test_adming_post_cancel_booking(APITestCase):
+class Test_admin_post_cancel_booking(APITestCase):
     def setUp(self):
         super().setUp(url='/api/admin/v1/bookings/{}', http_method='POST')
 
@@ -477,6 +484,7 @@ class Test_adming_post_cancel_booking(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_administrator_caro_token)
         response = self.make_request(url=self.assign_values_to_placeholder(self.url_template, self.booking_of_caro.pk))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.validate_mail("email_templates/CancellationThroughStoreConfirmation.html", 0, self.booking_of_caro.user.username, self.booking_of_caro.bike.name, self.booking_of_caro.bike.store.name, self.booking_of_caro.begin, self.booking_of_caro.end)
 
     def test_admin_post_cancel_booking_unauthorized(self):
         self.invalid_permissions(user_token=self.user_customer_taylor_token,

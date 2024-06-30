@@ -1,6 +1,9 @@
 from api.api_tests import *
+from configs.global_variables import spenden_link, lastenkarle_contact_data
 from db_model.models import *
 from rest_framework import status
+
+from send_mail.views import format_opening_hours
 
 
 class Test_booking_get_all_regions(APITestCase):
@@ -153,6 +156,7 @@ class Test_booking_post_make_booking(APITestCase):
                                      data=self.booking_data_test)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(self.booking_count + 1, Booking.objects.all().count())
+        self.validate_mail("email_templates/BookingMailTemplate.html", 0, self.user_customer_wildegard.username, self.bike1_of_ikae.name, self.bike1_of_ikae.store.name, self.booking_data_test['begin'], self.booking_data_test['end'], '', self.bike1_of_ikae.store.address, self.bike1_of_ikae.store.phone_number, self.bike1_of_ikae.store.email, spenden_link, lastenkarle_contact_data)
 
     def test_booking_post_make_booking_handling_booked_twice(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_customer_wildegard_token)
