@@ -173,7 +173,8 @@ const BookingList = () => {
     return (
         <>
             <h1>{t('bookings')}</h1>
-
+            
+            // TODO make filter a seperate component
             <div className='list-button-container'>
                 <select title="stores" className='select' onChange={handleStoreSelect}>
                     {stores.map(e => <option key={e.key} value={e.key}>{e.value}</option>)};
