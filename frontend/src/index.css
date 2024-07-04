@@ -105,9 +105,10 @@ textarea::-webkit-scrollbar-thumb {
 }
 
 select {
-    width: 5rem;
+    /* width: 5rem; */
     height: 2.5rem;
     margin-left: 1rem;
+    padding: 0.5rem;
 
     color: var(--button-foreground);
     background-color: var(--button-background);
