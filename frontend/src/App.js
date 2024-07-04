@@ -58,7 +58,7 @@ const App = () => {
                         <Route exact path='/store-management' element={<ProtectedElement element={<StoreListPage />} elementRoles={['manager', 'admin']} userRoles={userRoles} />} />
                         <Route exact path='/users' element={<ProtectedElement element={<UserList />} elementRoles={['admin']} userRoles={userRoles} />} />
                         <Route exact path='/no-permission/' element={<NoPermission />} />
-                        <Route exact path='/regional-booking' element={<RegionalBooking />} />
+                        <Route exact path='/:id' element={<RegionalBooking />} />
                         <Route exact path='/bike-booking' element={<BikeBooking />} />
                         <Route exact path='/bikes' element={<BikeListPage />} />
                         <Route exact path='/bike/:id' element={<BikePage />} />
