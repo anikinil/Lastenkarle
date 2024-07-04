@@ -3,25 +3,27 @@ import React from "react";
 import { useTranslation } from 'react-i18next';
 
 import defaultBikePicture from "../../../assets/images/default_bike.png"
+import { useNavigate } from "react-router-dom";
 
 const BookingListItem = ({ booking }) => {
 
     const { t } = useTranslation();
 
+    const navigate = useNavigate()
+
+    // THINK make a seperate booking page?
     const handlePanelClick = () => {
-        // TODO implement
         console.log(booking.bike.name)
     }
 
     const handleStoreClick = e => {
-        // TODO implement
-        console.log(booking.store.name)
+        navigate('/store/' + booking.store.id)
         e.stopPropagation()
     }
 
     const handleUserClick = e => {
-        // TODO implement
-        console.log(booking.user.name)
+        // TODO implement user page
+        navigate('/user/' + booking.user.id)
         e.stopPropagation()
     }
 

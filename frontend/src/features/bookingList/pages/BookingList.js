@@ -86,7 +86,7 @@ const bookingList = [
         date: "22.03.2024",
         status: "canceled",
         store: {
-            id: 5,
+            id: 3,
             name: 'Store5'
         },
         bike: {
@@ -95,7 +95,7 @@ const bookingList = [
             image: require('./bike1.jpg')
         },
         user: {
-            id: 2,
+            id: 3,
             name: 'rüdiger'
         }
     }
@@ -173,7 +173,8 @@ const BookingList = () => {
     return (
         <>
             <h1>{t('bookings')}</h1>
-
+            
+            // TODO make filter a seperate component
             <div className='list-button-container'>
                 <select title="stores" className='select' onChange={handleStoreSelect}>
                     {stores.map(e => <option key={e.key} value={e.key}>{e.value}</option>)};
