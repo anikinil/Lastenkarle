@@ -6,6 +6,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import PictureAndDescriptionField from '../../../components/IO/PictureAndDescriptionField';
 
 // TODO implement fetching
+//TODO: Add Store information
+//TODO: Add calandar as availability overview
 const bikes = [
     {
         id: 1,
