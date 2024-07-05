@@ -14,6 +14,7 @@ const BikeRegistration = () => {
 
             <PictureAndDescriptionField editable={true}/>
 
+            {/* TODO add cancel button (to navigate to previous page) */}
             <div className="button-container">
                 <button type="button" className="button register">{t('register_new_bike')}</button>
             </div>

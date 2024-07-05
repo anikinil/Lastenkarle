@@ -10,12 +10,12 @@ let stores = [
     {
         id: 1,
         name: 'Store 1',
-        image: require('./store1.jpg')
+        image: require('../../../assets/images/store1.jpg')
     },
     {
         id: 2,
         name: 'Store 2',
-        image: require('./store2.jpg')
+        image: require('../../../assets/images/store1.jpg')
     },
     {
         id: 3,
@@ -35,7 +35,9 @@ const StorePage = () => {
         <>
             <h1>{store.name}</h1>
 
-            <PictureAndDescriptionField editable={false} />
+            {/* TODO adjust for picture and descr display */}
+            <PictureAndDescriptionField editable={false}/>
+            {/* TODO adjust for address display */}
             <AddressField editable={false} />
         </>
     );

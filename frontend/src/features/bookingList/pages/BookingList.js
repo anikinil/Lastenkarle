@@ -8,6 +8,7 @@ import BookingListItem from '../components/BookingListItem';
 import { useNavigate } from 'react-router-dom';
 
 // TODO implement fetching
+const bike_imgs_path = '../../../assets/images';
 const bookingList = [
     {
         id: 1,
@@ -20,7 +21,7 @@ const bookingList = [
         bike: {
             id: 2,
             name: 'Lastenrad 2',
-            image: require('./bike2.jpg')
+            image: require('../../../assets/images/bike2.jpg')
         },
         user: {
             id: 2,
@@ -56,7 +57,7 @@ const bookingList = [
         bike: {
             id: 1,
             name: 'Lastenrad 1',
-            image: require('./bike1.jpg')
+            image: require('../../../assets/images/bike1.jpg')
         },
         user: {
             id: 3,
@@ -74,7 +75,7 @@ const bookingList = [
         bike: {
             id: 3,
             name: 'Lastenrad 3',
-            image: require('./bike3.jpg')
+            image: require('../../../assets/images/bike3.jpg')
         },
         user: {
             id: 1,
@@ -92,7 +93,7 @@ const bookingList = [
         bike: {
             id: 3,
             name: 'Lastenrad 1',
-            image: require('./bike1.jpg')
+            image: require('../../../assets/images/bike1.jpg')
         },
         user: {
             id: 3,
@@ -174,7 +175,6 @@ const BookingList = () => {
         <>
             <h1>{t('bookings')}</h1>
             
-            // TODO make filter a seperate component
             <div className='list-button-container'>
                 <select title="stores" className='select' onChange={handleStoreSelect}>
                     {stores.map(e => <option key={e.key} value={e.key}>{e.value}</option>)};

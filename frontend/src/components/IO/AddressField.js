@@ -14,6 +14,9 @@ const AddressField = ({ editable }) => {
         }
     };
 
+    
+    // TODO adjust for address display
+    
     return (
         <textarea title={t('enter_address')} className="address" rows="1" onKeyDown={handleAddressFieldKeyDown} placeholder={t('enter_address')} disabled={!editable}></textarea>
     );

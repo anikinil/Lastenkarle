@@ -8,6 +8,7 @@ const PictureAndDescriptionField = ({ editable }) => {
 
     const { t } = useTranslation();
 
+    // TODO if picture and description already set (on normal not registerable page display) show picture and description right away
     const [pictureFile, setPictureFile] = useState(null)
 
     function handlePictureFileChange(event) {

@@ -4,31 +4,32 @@ import { useTranslation } from 'react-i18next';
 import '../../../components/lists/List.css';
 import BikeListItem from '../components/BikeListItem';
 import './BikeList.css'
-
 import { FaSortAlphaDown, FaSortAlphaUp } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
+
+import f from '../../../assets/images/bike1.jpg'
 
 // TODO implement fetching
 const bikes = [
     {
         id: 1,
         name: 'Lastenrad 1',
-        image: require('./bike1.jpg')
+        image: require('../../../assets/images/bike1.jpg')
     },
     {
         id: 2,
         name: 'Lastenrad 2',
-        image: require('./bike2.jpg')
+        image: require('../../../assets/images/bike2.jpg')
     },
     {
         id: 3,
         name: 'Lastenrad 3',
-        image: require('./bike3.jpg')
+        image: require('../../../assets/images/bike3.jpg')
     },
     {
         id: 4,
         name: 'Lastenrad 4',
-        image: require('./bike3.jpg')
+        image: require('../../../assets/images/bike4.jpg')
     },
     {
         id: 5,
