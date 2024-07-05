@@ -4,8 +4,11 @@ import { useTranslation } from 'react-i18next';
 
 import { useNavigate, useParams } from 'react-router-dom';
 import PictureAndDescriptionField from '../../../components/IO/PictureAndDescriptionField';
+import BikeCalendar from '../../booking/components/calendar/BikeCalendar'
 
 // TODO implement fetching
+//TODO: Add Store information
+//TODO: Add calandar as availability overview
 const bikes = [
     {
         id: 1,
@@ -47,6 +50,7 @@ const BikePage = () => {
             <h1>{bike.name}</h1>
 
             <PictureAndDescriptionField editable={false}/>
+            <BikeCalendar />
         </>
     );
 };
