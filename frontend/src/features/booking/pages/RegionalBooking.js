@@ -1,14 +1,13 @@
 import React from "react";
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
-import PictureAndDescriptionField from '../../../components/IO/PictureAndDescriptionField';
-import AddressField from '../../../components/IO/AddressField';
 import { useParams } from 'react-router-dom';
+
+import Map from '../components/Map';
+import FilterForAvailabilities from '../components/FilterForAvailabilities';
+import AvailabilityCalendar from '../components/calendar/AvailabilityCalendar';
+import BikeList from '../../bikeList/components/BikeList';
 //Standard page for a specific region
-//TODO: Add Map of Region with store markers
-//TODO: Add calandar table for bikes in region
-//TODO: Add bike list of region
+//TODO: Add Filter Bar for Availabilities
 let regions = [
     {
         id: 'karlsruhe',
@@ -35,7 +34,15 @@ const RegionalBooking = () => {
     const { id } = useParams();
     const region = regions.find(s => s.id === id);
     return (
-        <h1>{region.name}</h1>
+        <>
+            <h1>{region.name}</h1>
+
+            {/* <Map /> */}
+            {/* <FilterForAvailabilities /> */}
+            {/* <AvailabilityCalendar /> */}
+            <BikeList />
+        </>
+        
     );
 };
   
