@@ -3,9 +3,11 @@ import { useTranslation } from 'react-i18next';
 
 import "./AddressField.css"
 
-const AddressField = ({ editable }) => {
+const AddressField = ({ editable, store }) => {
 
     const { t } = useTranslation();
+
+    const [address, setAddress] = useState(store.address)
 
     // prevents user from switching to new line by hitting [Enter]
     const handleAddressFieldKeyDown = (event) => {
@@ -14,11 +16,20 @@ const AddressField = ({ editable }) => {
         }
     };
 
-    
+
     // TODO adjust for address display
-    
+
     return (
-        <textarea title={t('enter_address')} className="address" rows="1" onKeyDown={handleAddressFieldKeyDown} placeholder={t('enter_address')} disabled={!editable}></textarea>
+        <textarea
+            title={t('enter_address')}
+            className="address"
+            rows="1"
+            value={address}
+            onChange={e => setAddress(e.target.value)}
+            onKeyDown={handleAddressFieldKeyDown}
+            placeholder={t('enter_address')}
+            disabled={!editable}>
+        </textarea>
     );
 }
 

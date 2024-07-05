@@ -5,15 +5,15 @@
 
 .img-container {
     float: inline-start;
-
+    
     width: calc(50% - 1rem);
     aspect-ratio: 1;
-
+    
     margin: 1rem 0.5rem 0.5rem 0;
-
+    
     background-color: var(--content-background);
     border-radius: 0.5rem;
-
+    
     display: flex;
     justify-content: center;
     align-items: center;
@@ -21,6 +21,10 @@
 
 .img-container:hover {
     cursor: pointer;
+}
+
+.img-container.disabled:hover {
+    cursor: default;
 }
 
 .img-container-label {
@@ -33,11 +37,16 @@
     max-height: 95%;
 }
 
+
 .description {
     float: inline-start;
     width: calc(50% - 1rem);
     aspect-ratio: 1;
     margin: 1rem 0 0.5rem 0.5rem;
+}
+
+.description:disabled:hover {
+    cursor: default
 }
 
 .description::placeholder {

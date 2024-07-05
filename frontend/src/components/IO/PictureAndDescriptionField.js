@@ -4,12 +4,15 @@ import { useTranslation } from 'react-i18next';
 import "./PictureAndDescriptionField.css"
 
 // TODO add picture and description fetching, when needed to be displayed right away
-const PictureAndDescriptionField = ({ editable }) => {
+const PictureAndDescriptionField = ({ editable, store }) => {
+
+    console.log("STORE")
+    console.log(store)
 
     const { t } = useTranslation();
 
-    // TODO if picture and description already set (on normal not registerable page display) show picture and description right away
-    const [pictureFile, setPictureFile] = useState(null)
+    const [pictureFile, setPictureFile] = useState(store.image)
+    const [description, setDescription] = useState(store.description)
 
     function handlePictureFileChange(event) {
         setPictureFile(event.target.files[0])
@@ -27,9 +30,10 @@ const PictureAndDescriptionField = ({ editable }) => {
         <>
             <div className="image-and-desctiption-container">
 
-                <div className="img-container" type="file" onClick={handleImgContainerClick}>
+                {/* TODO think about what to do, when showing to customer and no picture selected */}
+                <div className={`img-container ${editable ? '' : 'disabled'}`} type="file" onClick={handleImgContainerClick}>
                     {pictureFile ?
-                        <img className="img" alt={t('image')} src={URL.createObjectURL(pictureFile)}></img>
+                        <img className="img" alt={t('image')} src={pictureFile}></img>
                         :
                         <span className="img-container-label">{t('select_a_picture')}</span>
                     }
@@ -45,7 +49,15 @@ const PictureAndDescriptionField = ({ editable }) => {
                     disabled={!editable}
                 />
 
-                <textarea title={t('write_description')} className="description" placeholder={t('write_description')} disabled={!editable}></textarea>
+                <textarea
+                    title={t('write_description')}
+                    className="description"
+                    value={description}
+                    onChange={e => setDescription(e.target.value)}
+                    placeholder={t('write_description')}
+                    disabled={!editable}>
+                </textarea>
+
             </div>
 
             {editable ?
