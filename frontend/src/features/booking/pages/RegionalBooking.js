@@ -37,9 +37,9 @@ const RegionalBooking = () => {
         <>
             <h1>{region.name}</h1>
 
-            <Map />
-            <FilterForAvailabilities />
-            <AvailabilityCalendar />
+            {/* <Map /> */}
+            {/* <FilterForAvailabilities /> */}
+            {/* <AvailabilityCalendar /> */}
             <BikeList />
         </>
         
