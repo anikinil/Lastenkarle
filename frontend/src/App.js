@@ -23,12 +23,12 @@ import LanguageToggle from './components/sidePanel/LanguageToggle';
 import UserList from './features/userList/pages/UserList';
 import RegionalBooking from './features/booking/pages/RegionalBooking';
 import BikeBooking from './features/booking/pages/BikeBooking';
-import StorePage from './features/storeOverview/pages/StorePage';
+import StorePage from './features/storeDisplay/pages/StorePage';
 import BikeListPage from './features/bikeList/pages/BikeListPage';
 import BikeRegistration from './features/bikeRegistration/pages/BikeRegistration';
 import StoreRegistration from './features/storeRegistration/pages/StoreRegistration';
 import BookingList from './features/bookingList/pages/BookingList';
-import BikePage from './features/bikeOverview/pages/BikePage';
+import BikePage from './features/bikeDisplay/pages/BikePage';
 
 const App = () => {
 
