@@ -7,6 +7,22 @@ import './UserList.css'
 
 import { FaSortAlphaDown, FaSortAlphaUp } from 'react-icons/fa';
 
+// TODO implement fetching
+let users = [
+    {
+        id: 1,
+        name: 'ilja42',
+    },
+    {
+        id: 2,
+        name: 'alma123',
+    },
+    {
+        id: 3,
+        name: 'rüdiger',
+    }
+]
+
 const UserList = () => {
 
     const { t } = useTranslation();
@@ -19,25 +35,8 @@ const UserList = () => {
     }
 
     const resort = () => {
-        // TODO implement resorting
-        console.log('resort')
+        users.sort((a, b) => sortAZ ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name))
     }
-
-    // TODO implement fetching
-    let users = [
-        {
-            id: 1,
-            name: 'ilja42',
-        },
-        {
-            id: 2,
-            name: 'alma123',
-        },
-        {
-            id: 3,
-            name: 'rüdiger',
-        }
-    ]
 
     return (
         <>
@@ -45,7 +44,7 @@ const UserList = () => {
 
             <div className='list-button-container'>
                 <button type='button' className='sort-button' title={t('sort')} onClick={handleSortClick}>
-                    { sortAZ ? <FaSortAlphaDown /> : <FaSortAlphaUp />}
+                    {sortAZ ? <FaSortAlphaDown /> : <FaSortAlphaUp />}
                 </button>
             </div>
 

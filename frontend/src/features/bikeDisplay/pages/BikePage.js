@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import PictureAndDescriptionField from '../../../components/IO/PictureAndDescriptionField';
 import BikeCalendar from '../../booking/components/calendar/BikeCalendar'
-import { Descriptions } from 'antd';
 import AddressField from '../../../components/IO/AddressField';
 
 // TODO implement fetching
