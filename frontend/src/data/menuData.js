@@ -3,6 +3,20 @@ import { FaUser } from 'react-icons/fa';
 
 // TODO: maybe seperate into a data and a utils file
 
+// TODO: implement fetching of stores by specific owner
+const stores = [
+    {
+        id: 1,
+        name: 'Store 1'
+    },
+    {
+        id: 2,
+        name: 'Store 2'
+    }
+]
+
+const storesAsItems = stores.map((s) => ({ title: s.name, url: `/store/${s.id}` }))
+
 export const menuItems = [
     {
         title: 'Booking',
@@ -31,20 +45,15 @@ export const menuItems = [
         title: 'Store management',
         url: '/store-management',
         roles: ['manager', 'admin'],
-        submenu: [
-            {
-                title: 'Store 1',
-                url: '/store1'
-            },
-            {
-                title: 'Store 2',
-                url: '/store2'
-            },
-            {
-                title: 'Bookings in my stores',
-                url: '/bookings-in-my-stores'
-            }
-        ]
+        submenu:
+            storesAsItems.concat(
+                [
+                    {
+                        title: 'Bookings in my stores',
+                        url: '/bookings-in-my-stores'
+                    }
+                ]
+            )
     },
     {
         title: 'Admin activities',
@@ -107,9 +116,12 @@ const accountItemVersions = [
     }
 ]
 
+console.log(menuItems)
+
 export const getAccountItemByRoles = (roles) => {
 
     return accountItemVersions.find(version => {
-        return version.roles.some(role => 
-            roles.includes(role))})
+        return version.roles.some(role =>
+            roles.includes(role))
+    })
 }
