@@ -14,15 +14,15 @@ let stores = [
         image: require('../../../assets/images/store1.jpg')
     },
     {
+        id: 3,
+        name: 'Store 3',
+        image: null
+    },
+    {
         id: 2,
         name: 'Store 2',
         image: require('../../../assets/images/store2.jpg')
     },
-    {
-        id: 3,
-        name: 'Store 3',
-        image: null
-    }
 ]
 
 const StoreList = () => {
@@ -38,8 +38,7 @@ const StoreList = () => {
     }
 
     const resort = () => {
-        // TODO implement resorting
-        console.log("resort")
+        stores.sort((a, b) => sortAZ ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name))
     }
 
     const handleNewStoreClick = () => {
@@ -50,7 +49,7 @@ const StoreList = () => {
         <>
             <div className='list-button-container'>
                 <button type='button' className='sort-button' onClick={handleSortClick}>
-                    {sortAZ ? <FaSortAlphaDown /> : <FaSortAlphaUp />}
+                    {sortAZ ? <FaSortAlphaUp /> : <FaSortAlphaDown />}
                 </button>
                 <button type='button' className='new-store-button' onClick={handleNewStoreClick}>{t('add_new_store')}</button>
             </div>

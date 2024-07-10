@@ -12,14 +12,14 @@ import f from '../../../assets/images/bike1.jpg'
 // TODO implement fetching
 const bikes = [
     {
-        id: 1,
-        name: 'Lastenrad 1',
-        image: require('../../../assets/images/bike1.jpg')
-    },
-    {
         id: 2,
         name: 'Lastenrad 2',
         image: require('../../../assets/images/bike2.jpg')
+    },
+    {
+        id: 1,
+        name: 'Lastenrad 1',
+        image: require('../../../assets/images/bike1.jpg')
     },
     {
         id: 3,
@@ -52,8 +52,7 @@ const BikeList = () => {
     }
 
     const resort = () => {
-        // TODO implement resorting
-        console.log("resort")
+        bikes.sort((a, b) => sortAZ ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name))
     }
 
     const handleNewBikeClick = () => {
@@ -64,7 +63,7 @@ const BikeList = () => {
         <>
             <div className='list-button-container'>
                 <button type='button' className='sort-button' onClick={handleSortClick}>
-                    {sortAZ ? <FaSortAlphaDown /> : <FaSortAlphaUp />}
+                    {sortAZ ? <FaSortAlphaUp /> : <FaSortAlphaDown />}
                 </button>
                 <button type='button' className='new-bike-button' onClick={handleNewBikeClick}>{t('register_new_bike')}</button>
             </div>
