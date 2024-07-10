@@ -11,19 +11,18 @@ const BookingListItem = ({ booking }) => {
 
     const navigate = useNavigate()
 
-    // THINK make a seperate booking page?
     const handlePanelClick = () => {
-        console.log(booking.bike.name)
+        navigate(`/bike/${booking.bike.id}`)
     }
 
     const handleStoreClick = e => {
-        navigate('/store/' + booking.store.id)
+        navigate(`/store/${booking.store.id}`)
         e.stopPropagation()
     }
 
     const handleUserClick = e => {
-        // TODO implement user page
-        navigate('/user/' + booking.user.id)
+        // TODO implement user page?
+        navigate(`/user/${booking.user.id}`)
         e.stopPropagation()
     }
 

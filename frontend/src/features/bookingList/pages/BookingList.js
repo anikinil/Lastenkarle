@@ -8,7 +8,6 @@ import BookingListItem from '../components/BookingListItem';
 import { useNavigate } from 'react-router-dom';
 
 // TODO implement fetching
-const bike_imgs_path = '../../../assets/images';
 const bookingList = [
     {
         id: 1,
