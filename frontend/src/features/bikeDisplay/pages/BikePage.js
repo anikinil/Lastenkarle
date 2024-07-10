@@ -9,7 +9,6 @@ import { Descriptions } from 'antd';
 import AddressField from '../../../components/IO/AddressField';
 
 // TODO implement fetching
-//TODO: Add Store information
 //TODO: Add calandar as availability overview
 const bikes = [
     {
