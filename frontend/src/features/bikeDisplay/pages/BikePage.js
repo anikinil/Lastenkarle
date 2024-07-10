@@ -81,7 +81,7 @@ const BikePage = () => {
     const store = stores.find(s => s.id === parseInt(bike.storeId))
 
     const handleStoreClick = () => {
-        navigate('/store/' + store.Id)
+        navigate('/store/' + store.id)
     }
 
     return (
