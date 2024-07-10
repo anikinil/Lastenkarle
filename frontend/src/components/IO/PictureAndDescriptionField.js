@@ -4,12 +4,12 @@ import { useTranslation } from 'react-i18next';
 import "./PictureAndDescriptionField.css"
 
 // TODO add picture and description fetching, when needed to be displayed right away
-const PictureAndDescriptionField = ({ editable, store }) => {
+const PictureAndDescriptionField = ({ editable, object }) => {
 
     const { t } = useTranslation();
 
-    const [pictureFile, setPictureFile] = useState(store?.image)
-    const [description, setDescription] = useState(store?.description)
+    const [pictureFile, setPictureFile] = useState(object?.image)
+    const [description, setDescription] = useState(object?.description)
 
     function handlePictureFileChange(event) {
         setPictureFile(event.target.files[0])
@@ -27,12 +27,16 @@ const PictureAndDescriptionField = ({ editable, store }) => {
         <>
             <div className="image-and-desctiption-container">
 
-                {/* TODO think about what to do, when showing to customer and no picture selected */}
+                {/* TODO think about what to do, when showing to customer and no picture selected (prolly show a default picture) */}
                 <div className={`img-container ${editable ? '' : 'disabled'}`} type="file" onClick={handleImgContainerClick}>
                     {pictureFile ?
                         <img className="img" alt={t('image')} src={pictureFile}></img>
                         :
-                        <span className="img-container-label">{t('select_a_picture')}</span>
+                        editable ?
+                            <span className="img-container-label">{t('select_a_picture')}</span>
+                            :
+                            <span className="img-container-label">{t('no_picture')}</span>
+
                     }
                 </div>
 

@@ -43,8 +43,8 @@ const StorePage = () => {
         <>
             <h1>{store.name}</h1>
 
-            <PictureAndDescriptionField editable={false} store={store}/>
-            <AddressField editable={false} store={store}/>
+            <PictureAndDescriptionField editable={false} object={store}/>
+            <AddressField editable={false} object={store}/>
         </>
     );
 };

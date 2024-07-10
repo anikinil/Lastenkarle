@@ -3,11 +3,11 @@ import { useTranslation } from 'react-i18next';
 
 import "./AddressField.css"
 
-const AddressField = ({ editable, store }) => {
+const AddressField = ({ editable, object }) => {
 
     const { t } = useTranslation();
 
-    const [address, setAddress] = useState(store?.address)
+    const [address, setAddress] = useState(object?.address)
 
     // prevents user from switching to new line by hitting [Enter]
     const handleAddressFieldKeyDown = (event) => {
