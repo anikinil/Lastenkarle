@@ -9,10 +9,22 @@ import 'react-time-picker/dist/TimePicker.css';
 import BikeList from '../../bikeList/components/BikeList'
 import PictureAndDescriptionField from "../../../components/IO/PictureAndDescriptionField";
 import AddressField from "../../../components/IO/AddressField";
+import { useNavigate } from "react-router-dom";
 
 const StoreRegistration = () => {
 
     const { t } = useTranslation();
+
+    const navigate = useNavigate();
+
+    const handleCancelClick = () => {
+        // TODO maybe add a confirmation dialogue
+        navigate('/stores')
+    }
+
+    const handleRegisterClick = () => {
+        // TODO implement
+    }
 
     return (
         <>
@@ -25,8 +37,8 @@ const StoreRegistration = () => {
             <BikeList />
 
             <div className="button-container">
-                <button type="button" className="button regular">{t('cancel')}</button>
-                <button type="button" className="button accent">{t('register_new_store')}</button>
+                <button type="button" className="button regular" onClick={handleCancelClick}>{t('cancel')}</button>
+                <button type="button" className="button accent" onClick={handleRegisterClick}>{t('register_new_store')}</button>
             </div>
         </>
     );
