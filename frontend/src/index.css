@@ -62,6 +62,7 @@ button:hover {
 }
 
 textarea {
+    width: 100%;
     padding: 1rem;
     box-sizing: border-box;
     color: var(--foreground);
@@ -78,8 +79,6 @@ textarea {
     resize: none;
 
     transition: background-color 0.3s ease;
-
-    /* margin: 1rem; */
 }
 
 textarea:hover {

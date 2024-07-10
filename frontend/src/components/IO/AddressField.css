@@ -1,6 +1,6 @@
 .address {
-    /* float: left; */
-    width: 100%;
+    float: inline-start;
+    width: calc(100% - 1rem);
     resize: none;
     overflow-x: auto;
     overflow-y: hidden;

@@ -6,6 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import PictureAndDescriptionField from '../../../components/IO/PictureAndDescriptionField';
 import BikeCalendar from '../../booking/components/calendar/BikeCalendar'
 import { Descriptions } from 'antd';
+import AddressField from '../../../components/IO/AddressField';
 
 // TODO implement fetching
 //TODO: Add Store information
@@ -47,6 +48,29 @@ const bikes = [
         storeId: 2
     }
 ]
+let stores = [
+    {
+        id: 1,
+        name: 'Store 1',
+        image: require('../../../assets/images/store1.jpg'),
+        description: "This is a description of Store 1",
+        address: "Musterstraße 123, 76137 Karlsruhe"
+    },
+    {
+        id: 2,
+        name: 'Store 2',
+        image: require('../../../assets/images/store1.jpg').default,
+        description: "This is a description of Store 2",
+        address: "Musterstraße 123, 76137 Karlsruhe"
+    },
+    {
+        id: 3,
+        name: 'Store 3',
+        image: null,
+        description: "This is a description of Store 3",
+        address: "Musterstraße 123, 76137 Karlsruhe"
+    }
+]
 
 const BikePage = () => {
 
@@ -55,9 +79,10 @@ const BikePage = () => {
 
     const { id } = useParams();
     const bike = bikes.find(b => b.id === parseInt(id));
+    const store = stores.find(s => s.id === parseInt(bike.storeId))
 
     const handleStoreClick = () => {
-        navigate('/store/' + bike.storeId)
+        navigate('/store/' + store.Id)
     }
 
     return (
@@ -65,6 +90,7 @@ const BikePage = () => {
             <h1>{bike.name}</h1>
 
             <PictureAndDescriptionField editable={false} object={bike} />
+            <AddressField editable={false} object={store} />
 
             <div className="button-container">
                 <button type="button" className="button regular" onClick={handleStoreClick}>{t('store')}</button>
