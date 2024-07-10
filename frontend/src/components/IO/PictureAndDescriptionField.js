@@ -6,13 +6,10 @@ import "./PictureAndDescriptionField.css"
 // TODO add picture and description fetching, when needed to be displayed right away
 const PictureAndDescriptionField = ({ editable, store }) => {
 
-    console.log("STORE")
-    console.log(store)
-
     const { t } = useTranslation();
 
-    const [pictureFile, setPictureFile] = useState(store.image)
-    const [description, setDescription] = useState(store.description)
+    const [pictureFile, setPictureFile] = useState(store?.image)
+    const [description, setDescription] = useState(store?.description)
 
     function handlePictureFileChange(event) {
         setPictureFile(event.target.files[0])

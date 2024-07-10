@@ -5,9 +5,6 @@ import '../../../components/lists/List.css';
 
 import StoreList from '../components/StoreList';
 
-// TODO seperate list comp from page, adjust navigation
-
-
 const StoreListPage = () => {
 
     const { t } = useTranslation();

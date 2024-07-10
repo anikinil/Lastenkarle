@@ -7,7 +7,7 @@ const AddressField = ({ editable, store }) => {
 
     const { t } = useTranslation();
 
-    const [address, setAddress] = useState(store.address)
+    const [address, setAddress] = useState(store?.address)
 
     // prevents user from switching to new line by hitting [Enter]
     const handleAddressFieldKeyDown = (event) => {
@@ -15,7 +15,6 @@ const AddressField = ({ editable, store }) => {
             event.preventDefault();
         }
     };
-
 
     // TODO adjust for address display
 
