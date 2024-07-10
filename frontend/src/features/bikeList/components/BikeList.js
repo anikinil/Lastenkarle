@@ -12,29 +12,39 @@ import f from '../../../assets/images/bike1.jpg'
 // TODO implement fetching
 const bikes = [
     {
-        id: 2,
-        name: 'Lastenrad 2',
-        image: require('../../../assets/images/bike2.jpg')
-    },
-    {
         id: 1,
         name: 'Lastenrad 1',
-        image: require('../../../assets/images/bike1.jpg')
+        image: require('../../../assets/images/bike1.jpg'),
+        description: 'This is a description of Bike 1!',
+        storeId: 2
+    },
+    {
+        id: 2,
+        name: 'Lastenrad 2',
+        image: require('../../../assets/images/bike2.jpg'),
+        description: 'This is a description of Bike 2!',
+        storeId: 3
     },
     {
         id: 3,
         name: 'Lastenrad 3',
-        image: require('../../../assets/images/bike3.jpg')
+        image: require('../../../assets/images/bike3.jpg'),
+        description: 'This is a description of Bike 3!',
+        storeId: 1
     },
     {
         id: 4,
         name: 'Lastenrad 4',
-        image: require('../../../assets/images/bike4.jpg')
+        image: require('../../../assets/images/bike4.jpg'),
+        description: 'This is a description of Bike 4!',
+        storeId: 3
     },
     {
         id: 5,
         name: 'Lastenrad 5',
-        image: ''
+        image: '',
+        description: 'This is a description of Bike 5!',
+        storeId: 2
     }
 ]
 

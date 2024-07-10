@@ -29,8 +29,7 @@ const BikeListItem = ({bike}) => {
     }
 
     const handleStoreClick = e => {
-        // TODO implement
-        console.log('store')
+        navigate(`/store/${bike.storeId}`)
         e.stopPropagation()
     }
 
