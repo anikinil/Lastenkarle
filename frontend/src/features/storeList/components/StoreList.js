@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 
-import { FaSortAlphaDown, FaSortAlphaUp } from "react-icons/fa";
-import StoreListItem from "./StoreListItem";
+import { FaSortAlphaDown, FaSortAlphaUp } from 'react-icons/fa';
+import StoreListItem from './StoreListItem';
 
-import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 // TODO implement fetching
 let stores = [
@@ -42,7 +42,7 @@ const StoreList = () => {
     }
 
     const handleNewStoreClick = () => {
-        navigate("/store-registration");
+        navigate('/store-registration');
     }
 
     return (

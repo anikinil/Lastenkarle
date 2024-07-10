@@ -12,8 +12,8 @@ const bike_imgs_path = '../../../assets/images';
 const bookingList = [
     {
         id: 1,
-        date: "18.06.2024",
-        status: "booked",
+        date: '18.06.2024',
+        status: 'booked',
         store: {
             id: 1,
             name: 'Store1'
@@ -30,8 +30,8 @@ const bookingList = [
     },
     {
         id: 2,
-        date: "10.05.2024",
-        status: "picked up",
+        date: '10.05.2024',
+        status: 'picked up',
         store: {
             id: 2,
             name: 'Store2'
@@ -39,7 +39,7 @@ const bookingList = [
         bike: {
             id: 5,
             name: 'Lastenrad 5',
-            image: ""
+            image: ''
         },
         user: {
             id: 3,
@@ -48,8 +48,8 @@ const bookingList = [
     },
     {
         id: 3,
-        date: "12.05.2024",
-        status: "booked",
+        date: '12.05.2024',
+        status: 'booked',
         store: {
             id: 3,
             name: 'Store3'
@@ -66,8 +66,8 @@ const bookingList = [
     },
     {
         id: 4,
-        date: "06.04.2024",
-        status: "booked",
+        date: '06.04.2024',
+        status: 'booked',
         store: {
             id: 4,
             name: 'Store4'
@@ -84,8 +84,8 @@ const bookingList = [
     },
     {
         id: 5,
-        date: "22.03.2024",
-        status: "canceled",
+        date: '22.03.2024',
+        status: 'canceled',
         store: {
             id: 3,
             name: 'Store5'
@@ -176,13 +176,13 @@ const BookingList = () => {
             <h1>{t('bookings')}</h1>
             
             <div className='list-button-container'>
-                <select title="stores" className='select' onChange={handleStoreSelect}>
+                <select title='stores' className='select' onChange={handleStoreSelect}>
                     {stores.map(e => <option key={e.key} value={e.key}>{e.value}</option>)};
                 </select>
-                <select title="bikes" className='select' onChange={handleBikeSelect}>
+                <select title='bikes' className='select' onChange={handleBikeSelect}>
                     {bikes.map(e => <option key={e.key} value={e.key}>{e.value}</option>)};
                 </select>
-                <select title="users" className='select' onChange={handleUserSelect}>
+                <select title='users' className='select' onChange={handleUserSelect}>
                     {users.map(e => <option key={e.key} value={e.key}>{e.value}</option>)};
                 </select>
                 <button type='button' title={t('filter')} onClick={handleFilterClick}>{t('filter')}</button>

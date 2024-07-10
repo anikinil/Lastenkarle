@@ -1,9 +1,9 @@
-import React from "react";
-import { menuItems, getAccountItemByRoles } from "../../data/menuData"
-import MenuItems from "./MenuItems";
-import MenuItem from "./MenuItem";
-import "./Navbar.css";
-import logo from "../../assets/images/logo.png";
+import React from 'react';
+import { menuItems, getAccountItemByRoles } from '../../data/menuData'
+import MenuItems from './MenuItems';
+import MenuItem from './MenuItem';
+import './Navbar.css';
+import logo from '../../assets/images/logo.png';
 
 const Navbar = () => {
 
@@ -13,17 +13,17 @@ const Navbar = () => {
     console.log(accountItem)
 
     return (
-            <div className="nav-area">
-                <a href="/" className="logo-container">
-                    <img className="logo-img" src={logo} alt="Logo"/>
+            <div className='nav-area'>
+                <a href='/' className='logo-container'>
+                    <img className='logo-img' src={logo} alt='Logo'/>
                 </a>
-                <nav className="nav">
-                    <ul className="menus">
+                <nav className='nav'>
+                    <ul className='menus'>
                         {menuItems.map((item, index) => {
                             return <MenuItems item={item} key={index} />;
                         })}
                         <li>
-                            <MenuItem className="account-menu-item" item={accountItem} userRoles={userRoles}/>
+                            <MenuItem className='account-menu-item' item={accountItem} userRoles={userRoles}/>
                         </li>
                     </ul>
                 </nav>

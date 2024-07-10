@@ -29,7 +29,7 @@ const DayRow = ({ day }) => {
 
     return (
         <div className='day-row'>
-            <span className="day-label">{day}</span>
+            <span className='day-label'>{day}</span>
             <Switch id={`${day}-open`} isOn={isOpen} handleToggle={handleOpenToggle} disabled={false} />
             <div>
                 <TimePicker

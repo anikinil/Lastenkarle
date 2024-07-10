@@ -1,9 +1,9 @@
-import React from "react";
+import React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import defaultBikePicture from "../../../assets/images/default_bike.png"
-import { useNavigate } from "react-router-dom";
+import defaultBikePicture from '../../../assets/images/default_bike.png'
+import { useNavigate } from 'react-router-dom';
 
 const BookingListItem = ({ booking }) => {
 
@@ -28,17 +28,17 @@ const BookingListItem = ({ booking }) => {
     }
 
     return (
-        <li className="list-item" onClick={handlePanelClick}>
+        <li className='list-item' onClick={handlePanelClick}>
 
-            <p className="list-item-label">{booking.date}</p>
-            <p className="list-item-label">{booking.bike.name}</p>
-            <p className="list-item-label">{booking.status}</p>
+            <p className='list-item-label'>{booking.date}</p>
+            <p className='list-item-label'>{booking.bike.name}</p>
+            <p className='list-item-label'>{booking.status}</p>
 
-            <button type="button" className="list-item-button regular" onClick={handleStoreClick}>{booking.store.name}</button>
-            <button type="button" className="list-item-button regular" onClick={handleUserClick}>{booking.user.name}</button>
+            <button type='button' className='list-item-button regular' onClick={handleStoreClick}>{booking.store.name}</button>
+            <button type='button' className='list-item-button regular' onClick={handleUserClick}>{booking.user.name}</button>
 
-            <div className="list-item-img-container">
-                <img className="list-item-img" alt={booking.bike.name} src={booking.bike.image ? booking.bike.image : defaultBikePicture}></img>
+            <div className='list-item-img-container'>
+                <img className='list-item-img' alt={booking.bike.name} src={booking.bike.image ? booking.bike.image : defaultBikePicture}></img>
             </div>
         </li>
     );

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import '../../../components/lists/List.css';
 import BikeListItem from '../components/BikeListItem';
 import './BikeList.css'
-import { FaSortAlphaDown, FaSortAlphaUp } from "react-icons/fa";
+import { FaSortAlphaDown, FaSortAlphaUp } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
 import f from '../../../assets/images/bike1.jpg'
@@ -34,7 +34,7 @@ const bikes = [
     {
         id: 5,
         name: 'Lastenrad 5',
-        image: ""
+        image: ''
     }
 ]
 
@@ -56,7 +56,7 @@ const BikeList = () => {
     }
 
     const handleNewBikeClick = () => {
-        navigate("/bike-registration");
+        navigate('/bike-registration');
     }
 
     return (

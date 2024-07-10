@@ -15,35 +15,35 @@ const bikes = [
         id: 1,
         name: 'Lastenrad 1',
         image: require('../../../assets/images/bike1.jpg'),
-        description: "This is a description of Bike 1!",
+        description: 'This is a description of Bike 1!',
         storeId: 2
     },
     {
         id: 2,
         name: 'Lastenrad 2',
         image: require('../../../assets/images/bike2.jpg'),
-        description: "This is a description of Bike 2!",
+        description: 'This is a description of Bike 2!',
         storeId: 3
     },
     {
         id: 3,
         name: 'Lastenrad 3',
         image: require('../../../assets/images/bike3.jpg'),
-        description: "This is a description of Bike 3!",
+        description: 'This is a description of Bike 3!',
         storeId: 1
     },
     {
         id: 4,
         name: 'Lastenrad 4',
         image: require('../../../assets/images/bike4.jpg'),
-        description: "This is a description of Bike 4!",
+        description: 'This is a description of Bike 4!',
         storeId: 3
     },
     {
         id: 5,
         name: 'Lastenrad 5',
-        image: "",
-        description: "This is a description of Bike 5!",
+        image: '',
+        description: 'This is a description of Bike 5!',
         storeId: 2
     }
 ]
@@ -52,22 +52,22 @@ let stores = [
         id: 1,
         name: 'Store 1',
         image: require('../../../assets/images/store1.jpg'),
-        description: "This is a description of Store 1",
-        address: "Musterstraße 123, 76137 Karlsruhe"
+        description: 'This is a description of Store 1',
+        address: 'Musterstraße 123, 76137 Karlsruhe'
     },
     {
         id: 2,
         name: 'Store 2',
         image: require('../../../assets/images/store1.jpg').default,
-        description: "This is a description of Store 2",
-        address: "Musterstraße 123, 76137 Karlsruhe"
+        description: 'This is a description of Store 2',
+        address: 'Musterstraße 123, 76137 Karlsruhe'
     },
     {
         id: 3,
         name: 'Store 3',
         image: null,
-        description: "This is a description of Store 3",
-        address: "Musterstraße 123, 76137 Karlsruhe"
+        description: 'This is a description of Store 3',
+        address: 'Musterstraße 123, 76137 Karlsruhe'
     }
 ]
 
@@ -91,8 +91,8 @@ const BikePage = () => {
             <PictureAndDescriptionField editable={false} object={bike} />
             <AddressField editable={false} object={store} />
 
-            <div className="button-container">
-                <button type="button" className="button regular" onClick={handleStoreClick}>{t('store')}</button>
+            <div className='button-container'>
+                <button type='button' className='button regular' onClick={handleStoreClick}>{t('store')}</button>
             </div>
 
             <BikeCalendar />

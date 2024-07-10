@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
@@ -32,7 +32,7 @@ const bikes = [
     {
         id: 5,
         name: 'Lastenrad 5',
-        image: ""
+        image: ''
     }
 ]
 

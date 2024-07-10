@@ -5,7 +5,7 @@ import '../../../components/lists/List.css';
 import UserListItem from '../components/UserListItem'
 import './UserList.css'
 
-import { FaSortAlphaDown, FaSortAlphaUp } from "react-icons/fa";
+import { FaSortAlphaDown, FaSortAlphaUp } from 'react-icons/fa';
 
 const UserList = () => {
 
@@ -20,7 +20,7 @@ const UserList = () => {
 
     const resort = () => {
         // TODO implement resorting
-        console.log("resort")
+        console.log('resort')
     }
 
     // TODO implement fetching

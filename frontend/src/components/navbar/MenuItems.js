@@ -1,5 +1,5 @@
 import React from 'react';
-import "./Navbar.css";
+import './Navbar.css';
 
 import MenuItem from './MenuItem';
 
@@ -9,7 +9,7 @@ const MenuItems = ({ item }) => {
 
     return (
         <li>
-            <MenuItem className="menu-item" item={item} userRoles={userRoles} />
+            <MenuItem className='menu-item' item={item} userRoles={userRoles} />
         </li>
     );
 };

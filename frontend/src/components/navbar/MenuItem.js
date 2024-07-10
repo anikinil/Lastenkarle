@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import Dropdown from "./Dropdown";
+import React, { useState } from 'react';
+import Dropdown from './Dropdown';
 
 
 const MenuItem = ({ className, item, userRoles }) => {
@@ -18,10 +18,10 @@ const MenuItem = ({ className, item, userRoles }) => {
                         onMouseLeave={() => setDropdown(false)}
                     >
                         <a className={className}
-                            aria-haspopup="menu"
-                            aria-expanded={dropdown ? "true" : "false"}
+                            aria-haspopup='menu'
+                            aria-expanded={dropdown ? 'true' : 'false'}
                             href={item.url}
-                            style={item.url ? { cursor: "pointer" } : { cursor: "default" }}
+                            style={item.url ? { cursor: 'pointer' } : { cursor: 'default' }}
                             onMouseEnter={() => setDropdown(true)}
                             >
                             {item.title}

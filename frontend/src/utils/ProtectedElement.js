@@ -9,7 +9,7 @@ export const ProtectedElement = ({element, elementRoles, userRoles}) => {
     return (hasPermission ? (
         element
     ) : (
-        <Navigate to="/no-permission" />
+        <Navigate to='/no-permission' />
     ));
 }
 

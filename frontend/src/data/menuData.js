@@ -1,5 +1,5 @@
-import React from "react";
-import { FaUser } from "react-icons/fa";
+import React from 'react';
+import { FaUser } from 'react-icons/fa';
 
 // TODO: maybe seperate into a data and a utils file
 

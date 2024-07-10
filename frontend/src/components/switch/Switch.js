@@ -1,5 +1,5 @@
 import React from 'react';
-import "./Switch.css"
+import './Switch.css'
 
 const Switch = ({ id, isOn, handleToggle, disabled }) => {
 
@@ -10,7 +10,7 @@ const Switch = ({ id, isOn, handleToggle, disabled }) => {
                 onChange={handleToggle}
                 className='switch-checkbox'
                 id={`switch-${id}`}
-                type="checkbox"
+                type='checkbox'
                 disabled={disabled}
                 />
             <label

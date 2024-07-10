@@ -44,8 +44,8 @@ const CalendarComponent = ({ onChange }) => {
                 onChange={handleDateChange}
                 value={date}
                 tileClassName={tileClassName}
-                minDetail="month"
-                maxDetail="month"
+                minDetail='month'
+                maxDetail='month'
                 activeStartDate={new Date()} // Startdatum ist der aktuelle Monat
             />
         </div>

@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import "./AddressField.css"
+import './AddressField.css'
 
 const AddressField = ({ editable, object }) => {
 
@@ -21,8 +21,8 @@ const AddressField = ({ editable, object }) => {
     return (
         <textarea
             title={t('enter_address')}
-            className="address"
-            rows="1"
+            className='address'
+            rows='1'
             value={address}
             onChange={e => setAddress(e.target.value)}
             onKeyDown={handleAddressFieldKeyDown}
