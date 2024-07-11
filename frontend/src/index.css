@@ -1,3 +1,5 @@
+/* TODO make border-radius global (and change everywhere) */
+
 html,
 body {
     min-height: 100%;

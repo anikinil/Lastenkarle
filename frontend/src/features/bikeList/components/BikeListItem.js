@@ -37,7 +37,6 @@ const BikeListItem = ({ bike }) => {
     }
 
     const handleDeleteClick = e => {
-        // TODO implement
         setShowConfirmationPopup(true)
         e.stopPropagation()
     }
@@ -67,7 +66,7 @@ const BikeListItem = ({ bike }) => {
 
             <ConfirmationPopup onConfirm={handlePopupConfirm} onCancel={handlePopupCancel} show={showConfirmationPopup}>
                     {/* TODO make proper string insertion */}
-                    {`t('are_you_sure_you_want_to_delete_this_bike')${bike.name}`}
+                    {`t('are_you_sure_you_want_to_delete_bike')${bike.name}`}
             </ConfirmationPopup>
         </>
     );
