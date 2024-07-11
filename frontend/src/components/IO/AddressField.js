@@ -9,14 +9,12 @@ const AddressField = ({ editable, object }) => {
 
     const [address, setAddress] = useState(object?.address)
 
-    // prevents user from switching to new line by hitting [Enter]
+    // this prevents user from switching to new line by hitting [Enter]
     const handleAddressFieldKeyDown = (event) => {
         if (event.key === 'Enter') {
             event.preventDefault();
         }
     };
-
-    // TODO adjust for address display
 
     return (
         <textarea
