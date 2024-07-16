@@ -8,7 +8,7 @@ import { MdDelete } from 'react-icons/md';
 import defaultBikePicture from '../../../assets/images/default_bike.png'
 
 import { useNavigate } from 'react-router-dom';
-import ConfirmationPopup from '../../../components/confirmationDialogue/ConfirmationPopup';
+import ConfirmationPopup from '../../../components/confirmationDialog/ConfirmationPopup';
 
 const BikeListItem = ({ bike }) => {
 
