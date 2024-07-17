@@ -7,6 +7,8 @@ import BookingListItem from '../components/BookingListItem';
 
 import { useNavigate } from 'react-router-dom';
 
+import { ALL_BOOKINGS } from '../../../constants/URIs/AdminURIs';
+
 // TODO implement fetching
 const bookingList = [
     {
@@ -132,10 +134,28 @@ const BookingList = () => {
     const navigate = useNavigate();
 
     const [bookings, setBookings] = useState(bookingList)
+    // after fetching implemented:
+    // const [bookings, setBookings] = useState([]])
 
     const [store, setStore] = useState(stores[0].key)
     const [bike, setBike] = useState(bikes[0].key)
     const [user, setUser] = useState(users[0].key)
+    
+    // TODO get token from cookies
+    const fetchBookings = async () => {
+        const response = await fetch(ALL_BOOKINGS, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`,
+            }
+        });
+        const data = await response.json();
+        setBookings(data);
+    };
+
+    useEffect(() => {
+        fetchBookings();
+    }, [])
 
     const handleStoreSelect = (e) => {
         setStore(e.target.value)
