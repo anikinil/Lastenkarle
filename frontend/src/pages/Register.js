@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 
-const Login = () => {
+const Register = () => {
 
     const { t } = useTranslation();
 
     const [username, setUsername] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
     const [password, setPassword] = useState('');
 
     const [token, setToken] = useState()
@@ -55,10 +57,9 @@ const Login = () => {
     //     window.location.replace(URL_USER_HELMHOLTZ);
     // }
 
-    const handleRegisterClick = () => {
-        // 
-        // navigate to register page
-    }
+    // const handleSignInClick = () => {
+    //     // navigate to register page
+    // }
 
     const setTokenCookie = () => {
         var days = 1
@@ -76,8 +77,7 @@ const Login = () => {
 
     return (
         <>
-            {/* THINK about style */}
-            <h1>{t('login')}</h1>
+            <h1>{t('register')}</h1>
 
             <textarea
                 title={t('enter_username')}
@@ -90,7 +90,28 @@ const Login = () => {
             >
             </textarea>
 
-            {/* TODO check if there is an extra textarea type for passwords */}
+            <textarea
+                title={t('enter_first_name')}
+                className='first_name'
+                rows='1'
+                value={firstName}
+                onChange={e => setFirstName(e.target.value)}
+                onKeyDown={handleFieldKeyDown}
+                placeholder={t('enter_first_name')}
+            >
+            </textarea>
+
+            <textarea
+                title={t('enter_last_name')}
+                className='last_name'
+                rows='1'
+                value={lastName}
+                onChange={e => setLastName(e.target.value)}
+                onKeyDown={handleFieldKeyDown}
+                placeholder={t('enter_last_name')}
+            >
+            </textarea>
+
             <textarea
                 title={t('enter_password')}
                 className='password'
@@ -102,9 +123,10 @@ const Login = () => {
             >
             </textarea>
 
-            <button onClick={() => handleRegisterClick()}>{t('submit')}</button>
+            <input type='text' value={username} onChange={e => setUsername(e.target.value)}></input>
+            <button onClick={() => setTokenCookie()}>{t('submit')}</button>
         </>
     );
 };
 
-export default Login;
+export default Register;
