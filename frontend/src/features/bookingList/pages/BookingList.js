@@ -142,20 +142,20 @@ const BookingList = () => {
     const [user, setUser] = useState(users[0].key)
     
     // TODO get token from cookies
-    const fetchBookings = async () => {
-        const response = await fetch(ALL_BOOKINGS, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${token}`,
-            }
-        });
-        const data = await response.json();
-        setBookings(data);
-    };
+    // const fetchBookings = async () => {
+    //     const response = await fetch(ALL_BOOKINGS, {
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //             'Authorization': `Token ${token}`,
+    //         }
+    //     });
+    //     const data = await response.json();
+    //     setBookings(data);
+    // };
 
-    useEffect(() => {
-        fetchBookings();
-    }, [])
+    // useEffect(() => {
+    //     fetchBookings();
+    // }, [])
 
     const handleStoreSelect = (e) => {
         setStore(e.target.value)
