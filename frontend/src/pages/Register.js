@@ -40,22 +40,21 @@ const Register = () => {
             },
             body: JSON.stringify(payload)
         })
-            .then(response => {
+            // TODO check if async causing problems
+            .then(async response => {
                 if (response.ok) {
-                    return response.text().then(text => {
-                        if (!text.trim()) {
-                            postLogin();
-                        } else {
-                            return JSON.parse(text);
-                        }
-                    });
+                    const text = await response.text();
+                    if (!text.trim()) {
+                        postLogin();
+                    } else {
+                        return JSON.parse(text);
+                    }
 
                 }
                 else {
                     // If the request was not successful, throw an error
-                    return response.json().then(errorData => {
-                        throw new Error(errorData.message);
-                    });
+                    const errorData = await response.json();
+                    throw new Error(errorData.message);
                 }
             })
             .catch(error => {
@@ -81,14 +80,14 @@ const Register = () => {
             },
             body: JSON.stringify(payload)
         })
-            .then(response => {
+            // TODO check if async causing problems
+            .then(async response => {
                 if (response.ok) {
                     return response.json();
                 } else {
                     // If the request was not successful, throw an error
-                    return response.json().then(errorData => {
-                        throw new Error(errorData.message);
-                    });
+                    const errorData = await response.json();
+                    throw new Error(errorData.message);
                 }
             })
             .then(data => {
@@ -121,7 +120,7 @@ const Register = () => {
     };
 
     const navigateToNextPage = () => {
-        // TODO implement
+        navigate('/')
     }
 
     return (

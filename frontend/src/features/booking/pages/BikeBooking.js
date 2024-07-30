@@ -8,6 +8,9 @@ import { useParams } from 'react-router-dom';
 //TODO: Add Store information
 //TODO: Add calandar as availability overview
 //TODO implement fetching
+
+// TODO add equipment selection (Ilja)
+
 const bikes = [
     {
         id: 1,

@@ -79,6 +79,7 @@ export const menuItems = [
     },
 ];
 
+// TODO implement logout properly
 const accountItemVersions = [
     {
         title: <FaUser />,
