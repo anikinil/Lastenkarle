@@ -1,65 +1,110 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { REGISTER, LOGIN } from '../constants/URIs/UserURIs';
 
 const Register = () => {
 
     const { t } = useTranslation();
 
     const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [password, setPassword] = useState('');
 
     const [token, setToken] = useState()
 
-    // function handleLoginClick() {
-    //     postLogin();
-    // }
+    const handleSubmitClick = () => {
+        postRegister();
+        setTokenCookie();
+    }
 
-    // POST login request
-    // const postLogin = () => {
+    const postRegister = () => {
 
-    //     let payload = {
-    //         username: username,
-    //         password: password
-    //     };
+        let payload = {
+            contact_data: contactData,
+            username: username,
+            password: password,
+        };
 
-    //     // POST login request
-    //     fetch(URI_USER_LOGIN, {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //         },
-    //         body: JSON.stringify(payload)
-    //     })
-    //         .then(response => {
-    //             if (response?.ok) {
-    //                 return response.json();
-    //             } else {
-    //                 // If the request was not successful, throw an error
-    //                 return response.json().then(errorData => {
-    //                     throw new Error(errorData.message);
-    //                 });
-    //             }
-    //         })
-    //         .then(data => {
-    //             const token = data.token;
-    //             navigateToNextPage(token);
-    //         })
-    //         .catch(error => {
-    //             // Handle any network or other errors that occurred during the request
-    //             alert('Error making login request.' + error.message);
-    //         });
-    // }
+        if (yearOfBirth !== '') {
+            payload.year_of_birth = yearOfBirth;
+        }
 
-    // const handeHelmholtzSignInClick = () => {
-    //     window.location.replace(URL_USER_HELMHOLTZ);
-    // }
+        // Send the POST request to the server endpoint
+        fetch(REGISTER, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.text().then(text => {
+                        if (!text.trim()) {
+                            postLogin();
+                        } else {
+                            return JSON.parse(text);
+                        }
+                    });
 
-    // const handleSignInClick = () => {
-    //     // navigate to register page
-    // }
+                }
+                else {
+                    // If the request was not successful, throw an error
+                    return response.json().then(errorData => {
+                        throw new Error(errorData.message);
+                    });
+                }
+            })
+            .catch(error => {
+                // TODO add error message constants
+                // Handle any network or other errors that occurred during the request
+                alert(ERR_MAKING_REGISTER_REQUEST + ' ' + error.message);
+            });
+    }
+
+    // POST login request after successful registration
+    const postLogin = () => {
+
+        let payload = {
+            username: username,
+            password: password
+        };
+
+        // POST login request
+        fetch(LOGIN, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload)
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    // If the request was not successful, throw an error
+                    return response.json().then(errorData => {
+                        throw new Error(errorData.message);
+                    });
+                }
+            })
+            .then(data => {
+                setToken(data.token);
+                navigateToNextPage();
+            })
+            .catch(error => {
+                // TODO remove magic number
+                // Handle any network or other errors that occurred during the request
+                alert('Error making login request: ' + error.message);
+            });
+    }
+
+    const handleHelmholtzRegistrationClick = () => {
+        window.location.replace(URL_USER_HELMHOLTZ);
+    }
 
     const setTokenCookie = () => {
         var days = 1
@@ -75,6 +120,10 @@ const Register = () => {
         }
     };
 
+    const navigateToNextPage = () => {
+        // TODO implement
+    }
+
     return (
         <>
             <h1>{t('register')}</h1>
@@ -87,6 +136,17 @@ const Register = () => {
                 onChange={e => setUsername(e.target.value)}
                 onKeyDown={handleFieldKeyDown}
                 placeholder={t('enter_username')}
+            >
+            </textarea>
+
+            <textarea
+                title={t('enter_email')}
+                className='email'
+                rows='1'
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                onKeyDown={handleFieldKeyDown}
+                placeholder={t('enter_email')}
             >
             </textarea>
 
@@ -124,7 +184,10 @@ const Register = () => {
             </textarea>
 
             <input type='text' value={username} onChange={e => setUsername(e.target.value)}></input>
-            <button onClick={() => setTokenCookie()}>{t('submit')}</button>
+            <button onClick={handleSubmitClick}>{t('submit')}</button>
+
+            {/* TODO should be defined as "Register via Helmholtz AAI" in translation files */}
+            <button onClick={handleHelmholtzRegistrationClick}>{t('helmholtz_registration')}</button>
         </>
     );
 };
