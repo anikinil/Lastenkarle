@@ -74,6 +74,7 @@ const Login = () => {
         document.cookie = `${'token'}=${token}; expires=${expirationDate.toUTCString()}; path=/`;
     };
 
+    // THINK if there is a good way to not have to add this funciton everywhere
     // this prevents user from switching to new line by hitting [Enter]
     const handleFieldKeyDown = (event) => {
         if (event.key === 'Enter') {

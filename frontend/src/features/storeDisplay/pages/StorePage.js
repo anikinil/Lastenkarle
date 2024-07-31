@@ -43,6 +43,8 @@ const StorePage = () => {
 
             <PictureAndDescriptionField editable={false} object={store}/>
             <AddressField editable={false} object={store}/>
+
+            {/* TODO add enrollment component for managers to enroll other managers to this particular store */}
         </>
     );
 };

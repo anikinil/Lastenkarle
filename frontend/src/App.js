@@ -31,6 +31,7 @@ import BookingList from './features/bookingList/pages/BookingList';
 import BikePage from './features/bikeDisplay/pages/BikePage';
 import Logout from './pages/Logout';
 import Register from './pages/Register';
+import Enrollment from './features/enrollment/pages/Enrollment';
 
 const App = () => {
 
@@ -70,6 +71,7 @@ const App = () => {
                         <Route exact path='/stores' element={<StoreListPage />} />
                         <Route exact path='/store/:id' element={<StorePage />} />
                         <Route exact path='/store-registration' element={<StoreRegistration />} />
+                        <Route exact path='/enrollment' element={<Enrollment />} />
                         <Route exact path='/bookings' element={<BookingList />} />
                     </Routes>
                 </BrowserRouter>

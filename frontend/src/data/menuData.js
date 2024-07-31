@@ -75,6 +75,10 @@ export const menuItems = [
                 title: 'Bikes',
                 url: '/bikes',
             },
+            {
+                title: 'Enrollment',
+                url: '/enrollment',
+            }
         ]
     },
 ];

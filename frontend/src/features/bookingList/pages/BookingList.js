@@ -134,7 +134,7 @@ const BookingList = () => {
     const navigate = useNavigate();
 
     const [bookings, setBookings] = useState(bookingList)
-    // after fetching implemented:
+    // NOTE after fetching implemented:
     // const [bookings, setBookings] = useState([]])
 
     const [store, setStore] = useState(stores[0].key)
