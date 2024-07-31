@@ -29,8 +29,7 @@ const Enrollment = () => {
 
     // NOTE when fetching implemented
     // const fetchStores= () => {
-    //     // TODO proper URI variable
-    //     fetch('URI_ADMIN_STORES', {
+    //     fetch(ALL_STORES, {
     //         headers: {
     //             'Content-Type': 'application/json',
     //             'Authorization': `Token ${token}`
@@ -59,9 +58,9 @@ const Enrollment = () => {
             user_status: selectedRole
         };
 
-        // POST enrollment request
-        // TODO proper URI variable
-        fetch('URI_ADMIN_ENROLL', {
+        // post enrollment request
+        // JAN maybe a dedicated URI for enrollment, for better encapsulation
+        fetch(USER_FLAGS, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -101,7 +100,7 @@ const Enrollment = () => {
         postEnrollment()
         // TODO notify on success/failure perhaps via alert (in this line)
         // TODO add proper variable
-        navigate('/home')
+        navigate('/')
     }
 
     return (

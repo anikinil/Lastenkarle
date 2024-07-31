@@ -21,7 +21,7 @@ const Login = () => {
         navigateToNextPage();
     }
 
-    // POST login request
+    // post login request
     const postLogin = () => {
 
         let payload = {
@@ -29,7 +29,7 @@ const Login = () => {
             password: password
         };
 
-        // POST login request
+        // post login request
         fetch(LOGIN, {
             method: 'POST',
             headers: {

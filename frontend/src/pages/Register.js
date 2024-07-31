@@ -69,7 +69,7 @@ const Register = () => {
             });
     }
 
-    // POST login request after successful registration
+    // post login request after successful registration
     const postLogin = () => {
 
         let payload = {
@@ -77,7 +77,7 @@ const Register = () => {
             password: password
         };
 
-        // POST login request
+        // post login request
         fetch(LOGIN, {
             method: 'POST',
             headers: {
@@ -99,14 +99,14 @@ const Register = () => {
                 setToken(data.token);
             })
             .catch(error => {
-                // TODO remove magic number
-                // Handle any network or other errors that occurred during the request
+                // TODO proper variable for error message
+                // handles any network or other errors that occurred during the request
                 alert('Error making login request: ' + error.message);
             });
     }
 
     const handleHelmholtzRegistrationClick = () => {
-        // TODO proper variable
+        // TODO proper variable for URL
         window.location.replace('URL_USER_HELMHOLTZ');
     }
 
@@ -125,7 +125,7 @@ const Register = () => {
     };
 
     const handleLoginClick = () => {
-        // TODO proper variable
+        // TODO proper variable for navigation
         // TODO account for different source and destination pages
         navigate('/login')
     }

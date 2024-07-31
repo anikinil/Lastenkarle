@@ -6,6 +6,7 @@ import UserListItem from '../components/UserListItem'
 import './UserList.css'
 
 import { FaSortAlphaDown, FaSortAlphaUp } from 'react-icons/fa';
+import { ALL_USERS } from '../../../constants/URIs/AdminURIs';
 
 // TODO implement fetching
 let usersLst = [
@@ -37,7 +38,7 @@ const UserList = () => {
 
 
     const fetchUsers = async () => {
-        const response = await fetch('URI_ADMIN_USERS', {
+        const response = await fetch(ALL_USERS, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Token ${token}`,

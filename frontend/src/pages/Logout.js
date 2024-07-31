@@ -20,7 +20,7 @@ const Logout = () => {
     // logout call
     logout();
 
-    // POST logout request
+    // post logout request
     function logout() {
         // Send the POST request to the server endpoint
         fetch(LOGOUT, {
@@ -33,7 +33,7 @@ const Logout = () => {
                 if (response.ok) {
                     // TODO check if startTransition() needed
                     startTransition(() => {
-                        // TODO add proper variable for home navigation
+                        // TODO add proper variable for navigation
                         navigate('/');
                     });
                 } else {
@@ -44,7 +44,7 @@ const Logout = () => {
                 }
             })
             .catch(error => {
-                // TODO replace by proper variable
+                // TODO add proper variable for error message
                 console.log('Error making the logout request.');
                 setError(error)
             });
