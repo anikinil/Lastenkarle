@@ -114,7 +114,7 @@ const Login = () => {
             </textarea>
 
             <div className='button-container'>
-                <button type='button' className='button regular' onClick={handleLoginClick}>{t('submit')}</button>
+                <button type='button' className='button accent' onClick={handleLoginClick}>{t('login')}</button>
                 <button type='button' className='button regular' onClick={handleHelmholtzLoginClick}>{t('helmholtz_login')}</button>
                 <button type='button' className='button regular' onClick={handleRegisterClick}>{t('register_instead')}</button>
             </div>

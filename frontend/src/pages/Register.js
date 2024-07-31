@@ -2,20 +2,24 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { REGISTER, LOGIN } from '../constants/URIs/UserURIs';
+import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
 
     const { t } = useTranslation();
 
+    const navigate = useNavigate();
+
     const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
+    const [contactData, setContactData] = useState('');
+    const [yearOfBirth, setYearOfBirth] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [password, setPassword] = useState('');
 
     const [token, setToken] = useState()
 
-    const handleSubmitClick = () => {
+    const handleRegisterClick = () => {
         postRegister();
         setTokenCookie();
     }
@@ -60,7 +64,7 @@ const Register = () => {
             .catch(error => {
                 // TODO add error message constants
                 // Handle any network or other errors that occurred during the request
-                alert(ERR_MAKING_REGISTER_REQUEST + ' ' + error.message);
+                alert('ERR_MAKING_REGISTER_REQUEST' + ' ' + error.message);
             });
     }
 
@@ -102,7 +106,8 @@ const Register = () => {
     }
 
     const handleHelmholtzRegistrationClick = () => {
-        window.location.replace(URL_USER_HELMHOLTZ);
+        // TODO proper variable
+        window.location.replace('URL_USER_HELMHOLTZ');
     }
 
     const setTokenCookie = () => {
@@ -118,6 +123,12 @@ const Register = () => {
             event.preventDefault();
         }
     };
+
+    const handleLoginClick = () => {
+        // TODO proper variable
+        // TODO account for different source and destination pages
+        navigate('/login')
+    }
 
     const navigateToNextPage = () => {
         navigate('/')
@@ -139,13 +150,24 @@ const Register = () => {
             </textarea>
 
             <textarea
-                title={t('enter_email')}
-                className='email'
+                title={t('enter_contact_data')}
+                className='contact-data'
                 rows='1'
-                value={email}
-                onChange={e => setEmail(e.target.value)}
+                value={contactData}
+                onChange={e => setContactData(e.target.value)}
                 onKeyDown={handleFieldKeyDown}
-                placeholder={t('enter_email')}
+                placeholder={t('enter_contact_data')}
+            >
+            </textarea>
+
+            <textarea
+                title={t('enter_year_of_birth')}
+                className='year-of-birth'
+                rows='1'
+                value={yearOfBirth}
+                onChange={e => setYearOfBirth(e.target.value)}
+                onKeyDown={handleFieldKeyDown}
+                placeholder={t('enter_year_of_birth')}
             >
             </textarea>
 
@@ -182,11 +204,12 @@ const Register = () => {
             >
             </textarea>
 
-            <input type='text' value={username} onChange={e => setUsername(e.target.value)}></input>
-            <button onClick={handleSubmitClick}>{t('submit')}</button>
-
-            {/* TODO should be defined as "Register via Helmholtz AAI" in translation files */}
-            <button onClick={handleHelmholtzRegistrationClick}>{t('helmholtz_registration')}</button>
+            <div className='button-container'>
+                <button type='button' className='button accent' onClick={handleRegisterClick}>{t('register')}</button>
+                {/* TODO should be defined as "Register via Helmholtz AAI" in translation files */}
+                <button type='button' className='button regular' onClick={handleHelmholtzRegistrationClick}>{t('helmholtz_registration')}</button>
+                <button type='button' className='button regular' onClick={handleLoginClick}>{t('login_instead')}</button>
+            </div>
         </>
     );
 };
