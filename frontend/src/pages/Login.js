@@ -2,63 +2,69 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { LOGIN } from '../constants/URIs/UserURIs';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
 
     const { t } = useTranslation();
+
+    const navigate = useNavigate();
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
     const [token, setToken] = useState()
 
-    // function handleLoginClick() {
-    //     postLogin();
-    // }
+    function handleLoginClick() {
+        postLogin();
+        setTokenCookie();
+        navigateToNextPage();
+    }
 
     // POST login request
-    // const postLogin = () => {
+    const postLogin = () => {
 
-    //     let payload = {
-    //         username: username,
-    //         password: password
-    //     };
+        let payload = {
+            username: username,
+            password: password
+        };
 
-    //     // POST login request
-    //     fetch(URI_USER_LOGIN, {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //         },
-    //         body: JSON.stringify(payload)
-    //     })
-    //         .then(response => {
-    //             if (response?.ok) {
-    //                 return response.json();
-    //             } else {
-    //                 // If the request was not successful, throw an error
-    //                 return response.json().then(errorData => {
-    //                     throw new Error(errorData.message);
-    //                 });
-    //             }
-    //         })
-    //         .then(data => {
-    //             const token = data.token;
-    //             navigateToNextPage(token);
-    //         })
-    //         .catch(error => {
-    //             // Handle any network or other errors that occurred during the request
-    //             alert('Error making login request.' + error.message);
-    //         });
-    // }
+        // POST login request
+        fetch(LOGIN, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload)
+        })
+            .then(response => {
+                if (response?.ok) {
+                    return response.json();
+                } else {
+                    // if the request was not successful, throw an error
+                    return response.json().then(errorData => {
+                        throw new Error(errorData.message);
+                    });
+                }
+            })
+            // set the token variable to acquired token
+            .then(data => {
+                setToken(data.token);
+            })
+            .catch(error => {
+                // handle any network or other errors that occurred during the request
+                alert('Error making login request.' + error.message);
+            });
+    }
 
-    // const handeHelmholtzSignInClick = () => {
-    //     window.location.replace(URL_USER_HELMHOLTZ);
-    // }
+    const handleHelmholtzLoginClick = () => {
+        // TODO use proper variable
+        window.location.replace('URL_USER_HELMHOLTZ');
+    }
 
     const handleRegisterClick = () => {
-        // 
-        // navigate to register page
+        // TODO account for different source and destination pages (maybe with cookies)
+        navigate('/register')
     }
 
     const setTokenCookie = () => {
@@ -74,6 +80,10 @@ const Login = () => {
             event.preventDefault();
         }
     };
+
+    const navigateToNextPage = () => {
+        // TODO implement and account for different locations from which user can log in and navigate back to them
+    }
 
     return (
         <>
@@ -103,7 +113,11 @@ const Login = () => {
             >
             </textarea>
 
-            <button onClick={() => handleRegisterClick()}>{t('submit')}</button>
+            <div className='button-container'>
+                <button type='button' className='button regular' onClick={handleLoginClick}>{t('submit')}</button>
+                <button type='button' className='button regular' onClick={handleHelmholtzLoginClick}>{t('helmholtz_login')}</button>
+                <button type='button' className='button regular' onClick={handleRegisterClick}>{t('register_instead')}</button>
+            </div>
         </>
     );
 };

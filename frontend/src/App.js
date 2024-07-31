@@ -30,6 +30,7 @@ import StoreRegistration from './features/storeRegistration/pages/StoreRegistrat
 import BookingList from './features/bookingList/pages/BookingList';
 import BikePage from './features/bikeDisplay/pages/BikePage';
 import Logout from './pages/Logout';
+import Register from './pages/Register';
 
 const App = () => {
 
@@ -55,6 +56,7 @@ const App = () => {
                         <Route exact path='/' element={<Home />} />
                         <Route exact path='/login' element={<Login />} />
                         <Route exact path='/logout' element={<Logout />} />
+                        <Route exact path='/register' element={<Register />} />
                         <Route exact path='/user-ban' element={<UserBan />} />
                         <Route exact path='/booking' element={<Booking />} />
                         <Route exact path='/store-management' element={<ProtectedElement element={<StoreListPage />} elementRoles={['manager', 'admin']} userRoles={userRoles} />} />

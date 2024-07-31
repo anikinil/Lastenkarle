@@ -4,7 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { LOGOUT } from '../constants/URIs/UserURIs';
 import { useNavigate } from 'react-router-dom';
 
-// on successful logout this component does not show any content and only runs the logout script
+// on successful logout this component does not show any content and only runs the logout script 
+// (maybe shows "Logging out..." message)
 // on failure it can display the error message to the user
 const Logout = () => {
 
@@ -57,9 +58,9 @@ const Logout = () => {
     return (
         <>
             {error ?
-                <span>{error?.message}</span>
+                <p>{t('logout_failed') + ': ' + error?.message}</p>
                 :
-                null
+                <p>{t('logging_out')}</p>
             }
         </>
     );
