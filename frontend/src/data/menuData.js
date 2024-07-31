@@ -43,7 +43,7 @@ export const menuItems = [
     },
     {
         title: 'Store management',
-        url: '/store-management',
+        url: '/stores',
         roles: ['manager', 'admin'],
         submenu:
             storesAsItems.concat(

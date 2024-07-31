@@ -60,7 +60,7 @@ const App = () => {
                         <Route exact path='/register' element={<Register />} />
                         <Route exact path='/user-ban' element={<UserBan />} />
                         <Route exact path='/booking' element={<Booking />} />
-                        <Route exact path='/store-management' element={<ProtectedElement element={<StoreListPage />} elementRoles={['manager', 'admin']} userRoles={userRoles} />} />
+                        <Route exact path='/stores' element={<ProtectedElement element={<StoreListPage />} elementRoles={['manager', 'admin']} userRoles={userRoles} />} />
                         <Route exact path='/users' element={<ProtectedElement element={<UserList />} elementRoles={['admin']} userRoles={userRoles} />} />
                         <Route exact path='/no-permission/' element={<NoPermission />} />
                         <Route exact path='/:id' element={<RegionalBooking />} />
@@ -68,7 +68,6 @@ const App = () => {
                         <Route exact path='/bikes' element={<BikeListPage />} />
                         <Route exact path='/bike/:id' element={<BikePage />} />
                         <Route exact path='/bike-registration' element={<BikeRegistration />} />
-                        <Route exact path='/stores' element={<StoreListPage />} />
                         <Route exact path='/store/:id' element={<StorePage />} />
                         <Route exact path='/store-registration' element={<StoreRegistration />} />
                         <Route exact path='/enrollment' element={<Enrollment />} />

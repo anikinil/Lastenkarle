@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { LOGIN } from '../constants/URIs/UserURIs';
+import { LOGIN as LOGIN_URI} from '../constants/URIs/UserURIs';
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
@@ -30,7 +30,7 @@ const Login = () => {
         };
 
         // post login request
-        fetch(LOGIN, {
+        fetch(LOGIN_URI, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
