@@ -22,6 +22,7 @@ const Register = () => {
     const handleRegisterClick = () => {
         postRegister();
         setTokenCookie();
+        navigateToNextPage();
     }
 
     const postRegister = () => {
@@ -96,7 +97,6 @@ const Register = () => {
             })
             .then(data => {
                 setToken(data.token);
-                navigateToNextPage();
             })
             .catch(error => {
                 // TODO remove magic number

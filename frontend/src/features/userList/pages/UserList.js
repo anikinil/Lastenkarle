@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import '../../../components/lists/List.css';
@@ -8,7 +8,7 @@ import './UserList.css'
 import { FaSortAlphaDown, FaSortAlphaUp } from 'react-icons/fa';
 
 // TODO implement fetching
-let users = [
+let usersLst = [
     {
         id: 1,
         name: 'ilja42',
@@ -26,8 +26,30 @@ let users = [
 const UserList = () => {
 
     const { t } = useTranslation();
+    
+    const [token, setToken] = useState();
+
+    // NOTE after fetching implemented:
+    // const [users, setUsers] = useState([]);
+    const [users, setUsers] = useState(usersLst);
 
     const [sortAZ, setSortAZ] = useState(true);
+
+
+    const fetchUsers = async () => {
+        const response = await fetch('URI_ADMIN_USERS', {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`,
+            }
+        });
+        const data = await response.json();
+        setUsers(data);
+    };
+
+    useEffect(() => {
+        fetchUsers();
+    }, [])
 
     const handleSortClick = () => {
         setSortAZ(!sortAZ)
