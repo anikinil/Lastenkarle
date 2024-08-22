@@ -209,9 +209,7 @@ class APITestCase(TestCase):
     }
 
     store_data_test = {
-        "region": {
-            "name": "Karlsruhe",
-        },
+        "region": "Karlsruhe",
         "address": "Klagen-Str. 12",
         "phone_number": "0152553222",
         "email": "janderda@web.de",
@@ -503,6 +501,7 @@ class APITestCase(TestCase):
         self.add_flag_to_user(self.user_manager_store_koeri, self.store_ikae.store_flag.flag)
         self.user_manager_store_gnocchi, self.user_manager_store_gnocchi_token = self.create_user_obtain_token(
             self.user_data_store_manager_gnocchi)
+        self.verify_user(self.user_manager_store_gnocchi)
         self.add_flag_to_user(self.user_manager_store_gnocchi, self.store_graphs.store_flag.flag)
         self.user_administrator_caro, self.user_administrator_caro_token = self.create_user_obtain_token(
             self.user_data_administrator_caro)

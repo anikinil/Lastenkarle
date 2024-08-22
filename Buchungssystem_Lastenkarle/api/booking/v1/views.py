@@ -17,8 +17,7 @@ class AllStores(APIView):
     permission_classes = (AllowAny,)
 
     def get(self, request):
-        stores = Store.objects.all()
-        serializer = StoreSerializer(stores, many=True)
+        serializer = StoreSerializer(Store.objects.all(), many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -27,8 +26,7 @@ class AllRegions(APIView):
     permission_classes = (AllowAny,)
 
     def get(self, request):
-        regions = Region.objects.all()
-        serializer = RegionSerializer(regions, many=True)
+        serializer = RegionSerializer(Region.objects.all(), many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -37,8 +35,7 @@ class AllAvailabilities(APIView):
     permission_classes = (AllowAny,)
 
     def get(self, request):
-        availabilities = Availability.objects.all()
-        serializer = AvailabilitySerializer(availabilities, many=True)
+        serializer = AvailabilitySerializer(Availability.objects.all(), many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -47,8 +44,7 @@ class AllBikes(APIView):
     permission_classes = (AllowAny,)
 
     def get(self, request):
-        bikes = Bike.objects.all()
-        serializer = BikeSerializer(bikes, many=True)
+        serializer = BikeSerializer(Bike.objects.all(), many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -74,8 +70,7 @@ class StoreByBike(APIView):
             bike = Bike.objects.get(pk=bike_id)
         except ObjectDoesNotExist:
             raise Http404
-        serializer = StoreSerializer(bike.store, many=False)
-        serializer.exclude_fields(['store_flag'])
+        serializer = StoreSerializer(bike.store, exclude=['store_flag'], many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -102,7 +97,6 @@ class MakeBooking(APIView):
             bike = Bike.objects.get(pk=bike_id)
         except ObjectDoesNotExist:
             raise Http404
-        user = self.request.user
         data = {
             'begin': request.data['begin'],
             'end': request.data['end'],
@@ -110,11 +104,7 @@ class MakeBooking(APIView):
         }
         serializer = MakeBookingSerializer(data=data, context={'no_limit': False})
         serializer.is_valid(raise_exception=True)
-        booking = serializer.save(user=user)
-        booking.booking_status.add(Booking_Status.objects.filter(status='Booked')[0].pk)
-        booking_string = generate_random_string(5)
-        booking.string = booking_string
-        booking.save()
+        booking = serializer.save(user=request.user)
         split_availabilities_algorithm(booking)
         send_booking_confirmation(booking)
         return Response(status=status.HTTP_201_CREATED)
