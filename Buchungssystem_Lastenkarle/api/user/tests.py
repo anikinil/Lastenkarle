@@ -242,6 +242,7 @@ class Test_user_patch_user_data(APITestCase):
     def setUp(self):
         super().setUp(url='/api/user/v1/user/update', http_method='PATCH')
         self.user_data_changed_taylor = {'username': 'Thailor', 'contact_data': 'janderda@web.de', 'password': 'jto'}
+        self.invalid_change_data = {'username': 'Caro', 'contact_data': 'bitte_toete_mich@gmx.de', 'year_of_birth': '1999', 'is_staff': True, 'is_superuser': True}
 
     def test_user_patch_user_data_functionality_and_integrity(self):
         copy = self.get_copy(self.user_data_changed_taylor)
@@ -263,19 +264,14 @@ class Test_user_patch_user_data(APITestCase):
     def test_user_patch_user_data_handling_empty_data(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_customer_taylor_token)
         response = self.make_request(data={})
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response_data = response.json()
-        self.validate_integrity(response_data, self.serialize_user_with_relations(self.user_customer_taylor))
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_user_patch_user_data_handling_update_user_data_with_invalid_data(self):
-        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_customer_taylor_token)
-        for i in range(len(self.user_data_administrator_caro)):
-            data = self.random_exclude_key_value_pairs(self.get_copy(self.user_data_administrator_caro), i)
-            if 'password' in data:
-                del data['password']
-            if len(data)>0:
-                response = self.make_request(data=data)
-                self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        for i in range(len(self.invalid_change_data) - 1):
+            self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_customer_taylor_token)
+            data = self.random_exclude_key_value_pairs(self.get_copy(self.invalid_change_data), i)
+            response = self.make_request(data=data)
+            self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
 class Test_user_delete_account(APITestCase):
@@ -414,7 +410,7 @@ class Test_user_post_cancel_booking(APITestCase):
     def test_user_post_cancel_booking_handling_foreign_booking(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_customer_taylor_token)
         response = self.make_request(self.assign_values_to_placeholder(self.url_template, self.booking_of_caro.pk))
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_user_post_cancel_booking_handling_cancel_twice(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_customer_taylor_token)
@@ -447,7 +443,7 @@ class Test_user_get_bike_of_booking(APITestCase):
         for booking in Booking.objects.all():
             self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_manager_store_gnocchi_token)
             response = self.make_request(self.assign_values_to_placeholder(self.url_template, booking.pk))
-            self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+            self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
             self.client.credentials(HTTP_AUTHORIZATION='Token ')
             response = self.make_request(self.assign_values_to_placeholder(self.url_template, booking.pk))
             self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
@@ -481,7 +477,7 @@ class Test_user_get_store_of_bike(APITestCase):
         for booking in Booking.objects.all():
             self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_manager_store_gnocchi_token)
             response = self.make_request(self.assign_values_to_placeholder(self.url_template, booking.pk))
-            self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+            self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
             self.client.credentials(HTTP_AUTHORIZATION='Token ')
             response = self.make_request(self.assign_values_to_placeholder(self.url_template, booking.pk))
             self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
