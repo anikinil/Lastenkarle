@@ -3,53 +3,48 @@
 // TODO: Legend for Colours (available, booked, closed, unavailable)
 import React, { useState } from 'react';
 import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css'; // Standard-Styles von react-calendar importieren
+import 'react-calendar/dist/Calendar.css';
+import './BikeCalendar.css'; // Für benutzerdefinierte Styles
 
-const CalendarComponent = ({ onChange }) => {
-    const [date, setDate] = useState(new Date());
+const BookingCalendar = () => {
+  // Definiere den State für Buchungen
+  const [bookings, setBookings] = useState({
+    '2024-09-10': 'buchbar',
+    '2024-09-11': 'gebucht',
+    '2024-09-12': 'standort_geschlossen',
+    '2024-09-13': 'nicht_buchbar',
+    // weitere Tage und ihre Status
+  });
 
-    // Mock-Daten direkt im Code
-    const availabilities = [
-        { date: '2024-07-01', status: 'available' },
-        { date: '2024-07-02', status: 'booked' },
-        { date: '2024-07-03', status: 'closed' },
-        // Weitere Verfügbarkeiten hier...
-    ];
+  // Methode, um das Format der Daten anzupassen
+  const formatDate = (date) => {
+    const year = date.getFullYear();
+    const month = (`0${date.getMonth() + 1}`).slice(-2);
+    const day = (`0${date.getDate()}`).slice(-2);
+    return `${year}-${month}-${day}`;
+  };
 
-    const handleDateChange = (date) => {
-        setDate(date);
-        onChange(date);
-    };
+  // Methode zur Auswahl des Tages und deren Status
+  const getDayTileClass = (date) => {
+    const formattedDate = formatDate(date);
+    return bookings[formattedDate] || ''; // Rückgabe des Status für den jeweiligen Tag
+  };
 
-    const tileClassName = ({ date, view }) => {
-        if (view === 'month') {
-            const dateString = date.toISOString().split('T')[0];
-            const availability = availabilities.find(a => a.date === dateString);
-            if (availability) {
-                if (availability.status === 'available') {
-                    return 'react-calendar__tile--available';
-                } else if (availability.status === 'booked') {
-                    return 'react-calendar__tile--booked';
-                } else if (availability.status === 'closed') {
-                    return 'react-calendar__tile--closed';
-                }
-            }
-        }
-        return '';
-    };
-
-    return (
-        <div>
-            <Calendar
-                onChange={handleDateChange}
-                value={date}
-                tileClassName={tileClassName}
-                minDetail='month'
-                maxDetail='month'
-                activeStartDate={new Date()} // Startdatum ist der aktuelle Monat
-            />
-        </div>
-    );
+  return (
+    <div className="booking-calendar">
+      <h3>Buchungskalender für Lastenrad</h3>
+      <Calendar
+        tileClassName={({ date }) => getDayTileClass(date)}
+        view="month"
+      />
+      <div className="legend">
+        <p><span className="buchbar"></span> Buchbar</p>
+        <p><span className="gebucht"></span> Gebucht/Gesperrt</p>
+        <p><span className="standort_geschlossen"></span> Standort geschlossen</p>
+        <p><span className="nicht_buchbar"></span> Nicht buchbar</p>
+      </div>
+    </div>
+  );
 };
 
-export default CalendarComponent;
+export default BookingCalendar;
