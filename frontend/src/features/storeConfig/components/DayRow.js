@@ -1,3 +1,5 @@
+//Component used to config the open/closed times per week day
+//One row = one weekday + open-toggle + from + to + closed-toggle + from + to
 import React, { useState } from 'react';
 import Switch from '../../../components/switch/Switch';
 import TimePicker from 'react-time-picker';

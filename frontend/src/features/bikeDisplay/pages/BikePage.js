@@ -1,3 +1,6 @@
+//Page of singular Bike
+//Consists of a Name, Picture, Description and Information about the store it belongs to
+//Also has BikeCalendar which is component to make a reservation
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

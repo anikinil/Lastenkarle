@@ -1,3 +1,5 @@
+//Intended to be a component
+//List of bookings
 import React, { useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
@@ -9,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { ALL_BOOKINGS } from '../../../constants/URIs/AdminURIs';
 
-// TODO implement fetching
+// TODO implement fetching -> keep roles in mind
 const bookingList = [
     {
         id: 1,

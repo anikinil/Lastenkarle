@@ -7,7 +7,9 @@ import FilterForAvailabilities from '../components/FilterForAvailabilities';
 import AvailabilityCalendar from '../components/calendar/AvailabilityCalendar';
 import BikeList from '../../bikeList/components/BikeList';
 //Standard page for a specific region
+//TODO: Add Map of region with station markers
 //TODO: Add Filter Bar for Availabilities
+//TODO: Add Calendar overview of reservations sorted by bike
 let regions = [
     {
         id: 'karlsruhe',

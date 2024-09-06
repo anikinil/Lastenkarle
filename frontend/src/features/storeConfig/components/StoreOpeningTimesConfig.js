@@ -1,3 +1,4 @@
+//Component used to config opening times of a store
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

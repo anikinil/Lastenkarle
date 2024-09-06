@@ -1,5 +1,5 @@
 // Calendar for page of a singular bike
-// TODO: Calendar with two months in advance view
+// TODO: Reservation Calendar with two months in advance view
 // TODO: Legend for Colours (available, booked, closed, unavailable)
 import React, { useState } from 'react';
 import Calendar from 'react-calendar';
