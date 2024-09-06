@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 
 import { useNavigate } from 'react-router-dom';
 
+import { USER_FLAGS } from '../../../constants/URIs/AdminURIs'
+
 const storesLst = [
     { id: 1, name: 'Store 1' },
     { id: 2, name: 'Store 2' },
