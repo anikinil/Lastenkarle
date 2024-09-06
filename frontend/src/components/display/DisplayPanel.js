@@ -6,8 +6,6 @@ import React from 'react';
 
 const DisplayPanel = ({ content, handleClick }) => {
 
-
-
     return (
         <li className='list-item' onClick={handleClick}>
             {content}

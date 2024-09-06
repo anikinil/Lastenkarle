@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useNavigate } from 'react-router-dom';
-import StoreListItem from '../../storeList/components/StoreListItem';
-import BikeListItem from '../../bikeList/components/BikeListItem';
 import DisplayPanel from '../../../components/display/DisplayPanel';
 
 // TODO ! make every list a seperate component, so e. g. a bike list can be displayed inside store page 
@@ -43,8 +41,7 @@ const BookingPage = () => {
             <DisplayPanel content={<p>{booking.store.name}</p>} handleClick={() => navigate(`/store/${booking.store.id}`)} />
             <DisplayPanel content={<p>{booking.bike.name}</p>} handleClick={() => navigate(`/bike/${booking.bike.id}`)} />
             <DisplayPanel content={<p>{booking.user.name}</p>} />
-            <DisplayPanel content={booking.equipment?.map(e => <label>{e}</label>)} />
-
+            <DisplayPanel content={<p>{t('equipment')}: {booking.equipment?.map(e => e).join(', ')}</p>} />
             <DisplayPanel content={<p>{booking.comment}</p>} />
         </>
     );
