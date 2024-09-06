@@ -38,15 +38,9 @@ const BookingListItem = ({ booking }) => {
             <p className='list-item-label'>{booking.status}</p>
 
             { booking.comment?
-                <p className='list-item-label'>{booking.comment}</p>
+                <label>{t('[commented]')}</label>
                 :
                 null
-            }
-
-            { booking.equipment?.length !== 0 ?
-                <p>{t('equipment')}: {booking.equipment?.map(e => e.equipment).join(', ')}</p>
-                :
-                <p>{t('equipment')}: {t('none')}</p>
             }
 
             <button type='button' className='list-item-button regular' onClick={handleBikeClick}>{booking.bike.name}</button>

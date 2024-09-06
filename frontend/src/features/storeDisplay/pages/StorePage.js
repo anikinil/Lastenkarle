@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import PictureAndDescriptionField from '../../../components/IO/PictureAndDescriptionField';
-import AddressField from '../../../components/IO/AddressField';
+import PictureAndDescriptionField from '../../../components/display/pictureAndDescriptionField/PictureAndDescriptionField';
+import AddressField from '../../../components/display/addressField/AddressField';
 import { useParams } from 'react-router-dom';
 
 // TODO implement fetching

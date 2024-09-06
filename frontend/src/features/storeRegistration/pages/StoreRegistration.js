@@ -7,8 +7,8 @@ import StoreOpeningTimesConfig from '../../storeConfig/components/StoreOpeningTi
 import 'react-time-picker/dist/TimePicker.css';
 
 import BikeList from '../../bikeList/components/BikeList'
-import PictureAndDescriptionField from '../../../components/IO/PictureAndDescriptionField';
-import AddressField from '../../../components/IO/AddressField';
+import PictureAndDescriptionField from '../../../components/display/pictureAndDescriptionField/PictureAndDescriptionField';
+import AddressField from '../../../components/display/addressField/AddressField';
 import { useNavigate } from 'react-router-dom';
 
 const StoreRegistration = () => {

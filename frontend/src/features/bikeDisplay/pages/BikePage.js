@@ -6,9 +6,9 @@ import { useTranslation } from 'react-i18next';
 
 
 import { useNavigate, useParams } from 'react-router-dom';
-import PictureAndDescriptionField from '../../../components/IO/PictureAndDescriptionField';
+import PictureAndDescriptionField from '../../../components/display/pictureAndDescriptionField/PictureAndDescriptionField';
 import BikeCalendar from '../../booking/components/calendar/BikeCalendar'
-import AddressField from '../../../components/IO/AddressField';
+import AddressField from '../../../components/display/addressField/AddressField';
 
 // TODO implement fetching
 //TODO: Add calandar as availability overview

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import './BikeRegistration.css'
-import PictureAndDescriptionField from '../../../components/IO/PictureAndDescriptionField';
+import PictureAndDescriptionField from '../../../components/display/pictureAndDescriptionField/PictureAndDescriptionField';
 import { useNavigate } from 'react-router-dom';
 
 const BikeRegistration = () => {
