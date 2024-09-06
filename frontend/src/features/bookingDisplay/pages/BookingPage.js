@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useNavigate } from 'react-router-dom';
+import StoreListItem from '../../storeList/components/StoreListItem';
+import BikeListItem from '../../bikeList/components/BikeListItem';
+import DisplayPanel from '../../../components/display/DisplayPanel';
 
 // TODO ! make every list a seperate component, so e. g. a bike list can be displayed inside store page 
 
@@ -35,23 +38,14 @@ const BookingPage = () => {
 
     return (
         <>
-            <h1>{t('booking')} {booking.id}</h1>
+            <h1>{t('booking')} {booking.id} - {booking.date} - {booking.status}</h1>
 
-            <p>{booking.date}</p>
-            <p>{booking.status}</p>
-            <p>{booking.store.name}</p>
-            <p>{booking.bike.name}</p>
-            <li className='list-item'>{booking.user.name}</li>
-            <li className='list-item'>
-                {booking.equipment?.map(e =>
-                    <p>{e}</p>
-                )}
-            </li>
-            <p>{booking.comment}</p>
+            <DisplayPanel content={<p>{booking.store.name}</p>} handleClick={() => navigate(`/store/${booking.store.id}`)} />
+            <DisplayPanel content={<p>{booking.bike.name}</p>} handleClick={() => navigate(`/bike/${booking.bike.id}`)} />
+            <DisplayPanel content={<p>{booking.user.name}</p>} />
+            <DisplayPanel content={booking.equipment?.map(e => <label>{e}</label>)} />
 
-            <div className='button-container'>
-                <button type='button' className='button accent' onClick={null}>{t('register')}</button>
-            </div>
+            <DisplayPanel content={<p>{booking.comment}</p>} />
         </>
     );
 };

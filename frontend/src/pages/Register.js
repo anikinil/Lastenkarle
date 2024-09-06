@@ -54,7 +54,6 @@ const Register = () => {
                     } else {
                         return JSON.parse(text);
                     }
-
                 }
                 else {
                     // If the request was not successful, throw an error
