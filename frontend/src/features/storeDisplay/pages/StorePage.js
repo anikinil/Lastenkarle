@@ -1,3 +1,6 @@
+//Page of a singular store
+//TODO: Add Liste of bikes belonging to store
+//Consists of Name, Picture, Description and Information
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

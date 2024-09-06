@@ -1,3 +1,4 @@
+//Page for registering a new store
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

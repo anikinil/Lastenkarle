@@ -1,3 +1,4 @@
+//List of stores in a certain region
 import React, { useState } from 'react';
 
 import { FaSortAlphaDown, FaSortAlphaUp } from 'react-icons/fa';

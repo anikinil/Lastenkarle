@@ -1,3 +1,5 @@
+//Page of overview of all stores
+//Shown to admin
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 

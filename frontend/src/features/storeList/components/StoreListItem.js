@@ -1,3 +1,4 @@
+//Item or Store in List of stores
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
