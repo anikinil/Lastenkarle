@@ -12,6 +12,10 @@ const BookingListItem = ({ booking }) => {
     const navigate = useNavigate()
 
     const handlePanelClick = () => {
+        navigate(`/booking/${booking.bike.id}`)
+    }
+
+    const handleBikeClick = e => {
         navigate(`/bike/${booking.bike.id}`)
     }
 
@@ -30,9 +34,21 @@ const BookingListItem = ({ booking }) => {
         <li className='list-item' onClick={handlePanelClick}>
 
             <p className='list-item-label'>{booking.date}</p>
-            <p className='list-item-label'>{booking.bike.name}</p>
             <p className='list-item-label'>{booking.status}</p>
 
+            { booking.comment?
+                <p className='list-item-label'>{booking.comment}</p>
+                :
+                null
+            }
+
+            { booking.equipment?.length !== 0 ?
+                <p>{t('equipment')}: {booking.equipment?.map(e => e.equipment).join(', ')}</p>
+                :
+                <p>{t('equipment')}: {t('none')}</p>
+            }
+
+            <button type='button' className='list-item-button regular' onClick={handleBikeClick}>{booking.bike.name}</button>
             <button type='button' className='list-item-button regular' onClick={handleStoreClick}>{booking.store.name}</button>
             <button type='button' className='list-item-button regular' onClick={handleUserClick}>{booking.user.name}</button>
 

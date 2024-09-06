@@ -27,7 +27,9 @@ const bookingList = [
         user: {
             id: 2,
             name: 'alma42'
-        }
+        },
+        equipment: [],
+        comment: null
     },
     {
         id: 2,
@@ -45,7 +47,9 @@ const bookingList = [
         user: {
             id: 3,
             name: 'alma42'
-        }
+        },
+        equipment: [],
+        comment: null
     },
     {
         id: 3,
@@ -63,7 +67,9 @@ const bookingList = [
         user: {
             id: 3,
             name: 'alma42'
-        }
+        },
+        equipment: ["Gürtel", "Helm", "Kind"],
+        comment: "suspicious activities"
     },
     {
         id: 4,
@@ -81,7 +87,9 @@ const bookingList = [
         user: {
             id: 1,
             name: 'ilja'
-        }
+        },
+        equipment: ["Helm", "Gürtel"],
+        comment: null
     },
     {
         id: 5,
@@ -99,7 +107,9 @@ const bookingList = [
         user: {
             id: 3,
             name: 'rüdiger'
-        }
+        },
+        equipment: ["HELM"],
+        comment: "comment!"
     }
 ]
 

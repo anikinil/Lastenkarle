@@ -38,6 +38,7 @@ const DayRow = ({ day }) => {
                     onChange={setOpenFromTime}
                     value={openFromTime}
                     disabled={!isOpen}
+                    locale='de-de'
                 />
             </div>
             <div>
@@ -47,6 +48,7 @@ const DayRow = ({ day }) => {
                     onChange={setOpenToTime}
                     value={openToTime}
                     disabled={!isOpen}
+                    locale='de-de'
                 />
             </div>
             <Switch id={`${day}-closed`} isOn={isClosed} handleToggle={handleClosedToggle} disabled={!isOpen} />
@@ -57,6 +59,7 @@ const DayRow = ({ day }) => {
                     onChange={setClosedFromTime}
                     value={closedFromTime}
                     disabled={!isClosed}
+                    locale='de-de'
                 />
             </div>
             <div>
@@ -66,6 +69,7 @@ const DayRow = ({ day }) => {
                     onChange={setClosedToTime}
                     value={closedToTime}
                     disabled={!isClosed}
+                    locale='de-de'
                 />
             </div>
         </div>
