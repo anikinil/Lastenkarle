@@ -16,6 +16,7 @@ import Login from './pages/Login';
 import UserBan from './features/userBan/pages/UserBan';
 import Navbar from './components/navbar/Navbar';
 import Booking from './features/booking/pages/Booking';
+import BookingPage from './features/bookingDisplay/pages/BookingPage';
 import StoreListPage from './features/storeList/pages/StoreListPage';
 import NoPermission from './pages/NoPermission';
 
@@ -60,6 +61,7 @@ const App = () => {
                         <Route exact path='/register' element={<Register />} />
                         <Route exact path='/user-ban' element={<UserBan />} />
                         <Route exact path='/booking' element={<Booking />} />
+                        <Route exact path='/booking/:id' element={<BookingPage />} />
                         <Route exact path='/stores' element={<ProtectedElement element={<StoreListPage />} elementRoles={['manager', 'admin']} userRoles={userRoles} />} />
                         <Route exact path='/users' element={<ProtectedElement element={<UserList />} elementRoles={['admin']} userRoles={userRoles} />} />
                         <Route exact path='/no-permission/' element={<NoPermission />} />
