@@ -1,50 +1,74 @@
 /* Standard-Styles von react-calendar importieren */
-/* BookingCalendar.css */
-.buchbar {
-    background-color: green;
-  }
-  
-  .gebucht {
-    background-color: red;
-  }
-  
-  .standort_geschlossen {
-    background-color: gray;
-  }
-  
-  .nicht_buchbar {
-    background-color: black;
-  }
-  
-  .legend {
-    margin-top: 20px;
-  }
-  
-  .legend p {
-    display: flex;
-    align-items: center;
-  }
-  
-  .legend span {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    margin-right: 10px;
-    border-radius: 50%;
-  }
-  
-  .buchbar {
-    background-color: green;
-  }
-  
-  .gebucht {
-    background-color: red;
-  }
-  
-  .standort_geschlossen {
-    background-color: gray;
-  }
-  
-  .nicht_buchbar {
-    background-color: black;
-  }  
+/* BikeCalendar.css */
+.booking-calendar {
+  font-family: Arial, sans-serif;
+}
+
+.month-container {
+  margin-bottom: 20px;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+}
+
+.calendar-day {
+  padding: 10px;
+  border: 1px solid #ccc;
+  text-align: center;
+  cursor: pointer;
+}
+
+.calendar-day.available {
+  background-color: #8fbc8f; /* Grün für buchbar */
+}
+
+.calendar-day.reserved {
+  background-color: #f0e68c; /* Gelb für reserviert */
+}
+
+.calendar-day.closed {
+  background-color: #d3d3d3; /* Grau für Standort geschlossen */
+}
+
+.calendar-day.not-bookable {
+  background-color: #ff6347; /* Rot für nicht buchbar */
+  pointer-events: none;
+}
+
+.calendar-day.selected {
+  border: 2px solid #000;
+}
+
+.selection-info {
+  margin-top: 20px;
+}
+
+.legend {
+  margin-top: 20px;
+}
+
+.legend-color {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}
+
+.legend-color.available {
+  background-color: #8fbc8f;
+}
+
+.legend-color.reserved {
+  background-color: #f0e68c;
+}
+
+.legend-color.closed {
+  background-color: #d3d3d3;
+}
+
+.legend-color.not-bookable {
+  background-color: #ff6347;
+}
