@@ -8,6 +8,8 @@ import BikeList from "../../bikeList/components/BikeList";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
+import { useNavigate } from 'react-router-dom';
+
 // TODO implement fetching
 let stores = [
     {
