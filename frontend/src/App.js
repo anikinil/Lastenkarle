@@ -35,7 +35,7 @@ import Logout from './pages/Logout';
 import Register from './pages/Register';
 import Enrollment from './features/enrollment/pages/Enrollment';
 
-import NoPermission from './pages/NoPermission';
+import NavigationError from './pages/NavigationError';
 
 const App = () => {
 
@@ -48,9 +48,24 @@ const App = () => {
         const newTheme = theme === 'light' ? 'dark' : 'light';
         setTheme(newTheme);
     }
-
     // const userRoles = fetchUserRoles(); TODO: implement all the necessary fetching
     const userRoles = ['admin']
+
+    const getComponentByPath = (path) => {
+
+        switch (path) {
+            case '/bike/:id':
+                if (userRoles.includes('admin') || userRoles.includes('manager')) { return <BikeConfigPage /> }
+                else { return <BikePage /> }
+            case '/store/:id':
+                console.log("STORE")
+                if (userRoles.includes('admin') || userRoles.includes('manager')) { return <StoreConfigPage /> }
+                else { return <StorePage /> }
+            default:
+                return <NavigationError />
+        }
+    }
+
 
     return (
         <div className='App' data-theme={theme}>
@@ -67,27 +82,24 @@ const App = () => {
                         <Route exact path='/booking/:id' element={<BookingPage />} />
                         <Route exact path='/stores' element={
                             <ProtectedElement element={<StoreListPage />} elementRoles={['admin', 'manager']} userRoles={userRoles} />
-                            } />
+                        } />
                         <Route exact path='/users' element={
                             <ProtectedElement element={<UserList />} elementRoles={['admin']} userRoles={userRoles} />
-                            } />
+                        } />
                         <Route exact path='/:id' element={<RegionalBooking />} />
                         <Route exact path='/bike-booking' element={<BikeBooking />} />
                         <Route exact path='/bikes' element={<BikeListPage />} />
-                        <Route exact path='/bike/:id' element={<BikePage />} />
-                        <Route exact path='/bike-configuration/:id' element={
-                            <ProtectedElement element={<BikeConfigPage />} elementRoles={['admin', 'manager']} userRoles={userRoles} />
-                        } />
+                        
+                        <Route exact path='/bike/:id' element={getComponentByPath('/bike/:id')} />
+
                         <Route exact path='/bike-registration' element={<BikeRegistration />} />
-                        <Route exact path='/store/:id' element={<StorePage />} />
-                        <Route exact path='/store-configuration/:id' element={
-                            <ProtectedElement element={<StoreConfigPage />} elementRoles={['admin', 'manager']} userRoles={userRoles} />
-                        } />
+
                         <Route exact path='/store-registration' element={<StoreRegistration />} />
                         <Route exact path='/enrollment' element={<Enrollment />} />
                         <Route exact path='/bookings' element={<BookingList />} />
 
-                        <Route exact path='/no-permission/' element={<NoPermission />} />
+                        {/* TODO make a seperate file with all paths */}
+                        <Route exact path='/store/:id' element={getComponentByPath('/store/:id')} />
                     </Routes>
                 </BrowserRouter>
             </div>
