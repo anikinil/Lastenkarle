@@ -5,7 +5,7 @@ const NoPermission = () => {
 
     return (
         <>
-            <p>You have no permission to access this page.</p>
+            <h1>You have no permission to access this page.</h1>
         </>
     );
 };

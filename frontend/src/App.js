@@ -18,21 +18,24 @@ import Navbar from './components/navbar/Navbar';
 import Booking from './features/booking/pages/Booking';
 import BookingPage from './features/bookingDisplay/pages/BookingPage';
 import StoreListPage from './features/storeList/pages/StoreListPage';
-import NoPermission from './pages/NoPermission';
 
 import LanguageToggle from './components/sidePanel/LanguageToggle';
 import UserList from './features/userList/pages/UserList';
 import RegionalBooking from './features/booking/pages/RegionalBooking';
 import BikeBooking from './features/booking/pages/BikeBooking';
 import StorePage from './features/storeDisplay/pages/StorePage';
+import StoreConfigPage from './features/storeConfig/pages/StoreConfigPage';
 import BikeListPage from './features/bikeList/pages/BikeListPage';
 import BikeRegistration from './features/bikeRegistration/pages/BikeRegistration';
 import StoreRegistration from './features/storeRegistration/pages/StoreRegistration';
 import BookingList from './features/bookingList/pages/BookingList';
 import BikePage from './features/bikeDisplay/pages/BikePage';
+import BikeConfigPage from './features/bikeConfig/pages/BikeConfigPage';
 import Logout from './pages/Logout';
 import Register from './pages/Register';
 import Enrollment from './features/enrollment/pages/Enrollment';
+
+import NoPermission from './pages/NoPermission';
 
 const App = () => {
 
@@ -62,18 +65,29 @@ const App = () => {
                         <Route exact path='/user-ban' element={<UserBan />} />
                         <Route exact path='/booking' element={<Booking />} />
                         <Route exact path='/booking/:id' element={<BookingPage />} />
-                        <Route exact path='/stores' element={<ProtectedElement element={<StoreListPage />} elementRoles={['manager', 'admin']} userRoles={userRoles} />} />
-                        <Route exact path='/users' element={<ProtectedElement element={<UserList />} elementRoles={['admin']} userRoles={userRoles} />} />
-                        <Route exact path='/no-permission/' element={<NoPermission />} />
+                        <Route exact path='/stores' element={
+                            <ProtectedElement element={<StoreListPage />} elementRoles={['admin', 'manager']} userRoles={userRoles} />
+                            } />
+                        <Route exact path='/users' element={
+                            <ProtectedElement element={<UserList />} elementRoles={['admin']} userRoles={userRoles} />
+                            } />
                         <Route exact path='/:id' element={<RegionalBooking />} />
                         <Route exact path='/bike-booking' element={<BikeBooking />} />
                         <Route exact path='/bikes' element={<BikeListPage />} />
                         <Route exact path='/bike/:id' element={<BikePage />} />
+                        <Route exact path='/bike-configuration/:id' element={
+                            <ProtectedElement element={<BikeConfigPage />} elementRoles={['admin', 'manager']} userRoles={userRoles} />
+                        } />
                         <Route exact path='/bike-registration' element={<BikeRegistration />} />
                         <Route exact path='/store/:id' element={<StorePage />} />
+                        <Route exact path='/store-configuration/:id' element={
+                            <ProtectedElement element={<StoreConfigPage />} elementRoles={['admin', 'manager']} userRoles={userRoles} />
+                        } />
                         <Route exact path='/store-registration' element={<StoreRegistration />} />
                         <Route exact path='/enrollment' element={<Enrollment />} />
                         <Route exact path='/bookings' element={<BookingList />} />
+
+                        <Route exact path='/no-permission/' element={<NoPermission />} />
                     </Routes>
                 </BrowserRouter>
             </div>
