@@ -42,6 +42,8 @@ const StoreConfigPage = () => {
     const { id } = useParams();
     const store = stores.find(s => s.id === parseInt(id));
 
+    const navigate = useNavigate();
+
     const handleCancelClick = () => {
         // TODO maybe add a confirmation dialogue
         navigate('/stores')
