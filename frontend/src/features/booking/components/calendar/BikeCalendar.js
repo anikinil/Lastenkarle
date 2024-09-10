@@ -1,50 +1,35 @@
 // Calendar for page of a singular bike
 // TODO: Reservation Calendar with two months in advance view
 // TODO: Legend for Colours (available, booked, closed, unavailable)
-import React, { useState } from 'react';
-import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css';
-import './BikeCalendar.css'; // Für benutzerdefinierte Styles
+import React, { useState } from "react";
+import { Calendar } from "@demark-pro/react-booking-calendar";
+
+import "@demark-pro/react-booking-calendar/dist/react-booking-calendar.css";
+
+// CSS Modules, react-booking-calendar-cssmodules.css
+// import '@demark-pro/react-booking-calendar/dist/react-booking-calendar-cssmodules.css';
+
+const oneDay = 86400000;
+const today = new Date().getTime() + oneDay;
+
+const reserved = Array.from({ length: 3 }, (_, i) => {
+  const daysCount = Math.floor(Math.random() * (7 - 4) + 3);
+  const startDate = new Date(today + oneDay * 8 * i);
+
+  return {
+    startDate,
+    endDate: new Date(startDate.getTime() + oneDay * daysCount),
+  };
+});
 
 const BookingCalendar = () => {
-  // Definiere den State für Buchungen
-  const [bookings, setBookings] = useState({
-    '2024-09-10': 'buchbar',
-    '2024-09-11': 'gebucht',
-    '2024-09-12': 'standort_geschlossen',
-    '2024-09-13': 'nicht_buchbar',
-    // weitere Tage und ihre Status
-  });
-
-  // Methode, um das Format der Daten anzupassen
-  const formatDate = (date) => {
-    const year = date.getFullYear();
-    const month = (`0${date.getMonth() + 1}`).slice(-2);
-    const day = (`0${date.getDate()}`).slice(-2);
-    return `${year}-${month}-${day}`;
-  };
-
-  // Methode zur Auswahl des Tages und deren Status
-  const getDayTileClass = (date) => {
-    const formattedDate = formatDate(date);
-    return bookings[formattedDate] || ''; // Rückgabe des Status für den jeweiligen Tag
-  };
+  const [selectedDates, setSelectedDates] = useState([]);
 
   return (
-    <div className="booking-calendar">
-      <h3>Buchungskalender für Lastenrad</h3>
-      <Calendar
-        tileClassName={({ date }) => getDayTileClass(date)}
-        view="month"
-      />
-      <div className="legend">
-        <p><span className="buchbar"></span> Buchbar</p>
-        <p><span className="gebucht"></span> Gebucht/Gesperrt</p>
-        <p><span className="standort_geschlossen"></span> Standort geschlossen</p>
-        <p><span className="nicht_buchbar"></span> Nicht buchbar</p>
-      </div>
-    </div>
+    <Calendar
+      selected={selectedDates}
+      reserved={reserved}
+      onChange={setSelectedDates}
+    />
   );
 };
-
-export default BookingCalendar;
