@@ -46,7 +46,7 @@ const StoreRegistration = () => {
     }
 
     const handleAddressChange = (value) => {
-        setAddress(value)
+        setAddress(value);
     }
 
     const handleNameChange = () => {

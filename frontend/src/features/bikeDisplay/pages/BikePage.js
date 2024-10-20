@@ -1,7 +1,7 @@
 //Page of singular Bike
 //Consists of a Name, Picture, Description and Information about the store it belongs to
 //Also has BikeCalendar which is component to make a reservation
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 
@@ -9,6 +9,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import PictureAndDescriptionField from '../../../components/display/pictureAndDescriptionField/PictureAndDescriptionField';
 import BikeCalendar from '../../booking/components/calendar/BikeCalendar'
 import AddressField from '../../../components/display/addressField/AddressField';
+import { BIKE_BY_ID, ID, STORE_BY_BIKE_ID } from '../../../constants/URIs/BookingURIs';
 
 // TODO implement fetching
 //TODO: Add calandar as availability overview
@@ -79,8 +80,35 @@ const BikePage = () => {
     const navigate = useNavigate();
 
     const { id } = useParams();
-    const bike = bikes.find(b => b.id === parseInt(id));
-    const store = stores.find(s => s.id === parseInt(bike.storeId))
+    const [bike, setBike] = useState();
+    const [store, setStore] = useState();
+
+    const fetchBike = () => {
+        fetch(BIKE_BY_ID.replace(ID, id))
+            .then(response => response.json())
+            .then(data => {
+                setBike(data);
+            })
+            .catch(error => {
+                console.error(ERR_FETCHING_BIKE, error);
+            });
+    }
+
+    const fetchStore = () => {
+        fetch(STORE_BY_BIKE_ID.replace(ID, bike.id))
+            .then(response => response.json())
+            .then(data => {
+                setStore(data);
+            })
+            .catch(error => {
+                console.error(ERR_FETCHING_STORE, error);
+            });
+    }
+
+    useEffect(() => {
+        fetchBike();
+        fetchStore();
+    }, [])
 
     const handleStoreClick = () => {
         navigate(`/store/${store.id}`)

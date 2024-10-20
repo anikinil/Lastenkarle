@@ -3,12 +3,9 @@ import { useTranslation } from 'react-i18next';
 
 import './AddressField.css'
 
-// TODO cahnge 'object' to 'value'
 const AddressField = ({ editable, onChange, object }) => {
 
     const { t } = useTranslation();
-
-    const [address, setAddress] = useState(object?.address)
 
     const handleChange = (event) => {
         onChange(event.target.value);
@@ -26,7 +23,7 @@ const AddressField = ({ editable, onChange, object }) => {
             title={t('enter_address')}
             className='address'
             rows='1'
-            value={address}
+            value={object?.address}
             onChange={handleChange}
             onKeyDown={handleAddressFieldKeyDown}
             placeholder={t('enter_address')}

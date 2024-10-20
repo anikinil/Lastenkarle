@@ -10,6 +10,7 @@ import BookingListItem from '../components/BookingListItem';
 import { useNavigate } from 'react-router-dom';
 
 import { ALL_BOOKINGS } from '../../../constants/URIs/AdminURIs';
+import { getCookie } from '../../../services/Cookies';
 
 // TODO implement fetching -> keep roles in mind
 const bookingList = [
@@ -153,21 +154,23 @@ const BookingList = () => {
     const [bike, setBike] = useState(bikes[0].key)
     const [user, setUser] = useState(users[0].key)
     
-    // TODO get token from cookies
-    // const fetchBookings = async () => {
-    //     const response = await fetch(ALL_BOOKINGS, {
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //             'Authorization': `Token ${token}`,
-    //         }
-    //     });
-    //     const data = await response.json();
-    //     setBookings(data);
-    // };
+    const token = getCookie('token')
 
-    // useEffect(() => {
-    //     fetchBookings();
-    // }, [])
+    // TODO account for different roles (?)
+    const fetchBookings = async () => {
+        const response = await fetch(ALL_BOOKINGS, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`,
+            }
+        });
+        const data = await response.json();
+        setBookings(data);
+    };
+
+    useEffect(() => {
+        fetchBookings();
+    }, [])
 
     const handleStoreSelect = (e) => {
         setStore(e.target.value)
