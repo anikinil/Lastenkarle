@@ -1,4 +1,6 @@
-const BASE = `https://transport.data.kit.edu/api/admin/v1`
+import { HOST } from "./General"
+
+const BASE = `${HOST}/api/admin/v1`
 
 export const ALL_EQUIPMENT                  = `${BASE}/equipment`
 export const USER_FLAGS                     = `${BASE}/user-flags`

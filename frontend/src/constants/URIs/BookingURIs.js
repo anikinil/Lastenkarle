@@ -1,1 +1,3 @@
-const BASE = `https://transport.data.kit.edu/api/booking/v1`
+import { HOST } from "./General";
+
+const BASE = `${HOST}/api/booking/v1`
