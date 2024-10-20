@@ -44,6 +44,10 @@ const StoreConfigPage = () => {
 
     const navigate = useNavigate();
 
+    const handleBookingsClick = () => {
+        navigate(`/store/${id}/bookings`, {state: {id: id}})
+    }
+
     const handleCancelClick = () => {
         // TODO maybe add a confirmation dialogue
         navigate('/stores')
@@ -60,10 +64,15 @@ const StoreConfigPage = () => {
             <AddressField editable={true} object={store} />
             <StoreOpeningTimesConfig />
 
+            <div className='button-container'>
+                <button type='button' className='button regular' onClick={handleBookingsClick}>{t('bookings')}</button>
+            </div>
+
             <h2>{t('add_bikes_to_store')}</h2>
             <BikeList />
 
             <div className='button-container'>
+                <button type='button' className='button regular' onClick={handleBookingsClick}>{t('bookings')}</button>
                 <button type='button' className='button regular' onClick={handleCancelClick}>{t('cancel')}</button>
                 <button type='button' className='button accent' onClick={handleSaveChangesClick}>{t('save_changes')}</button>
             </div>

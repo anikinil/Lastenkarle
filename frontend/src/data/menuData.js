@@ -46,15 +46,7 @@ export const menuItems = [
         title: 'Store management',
         url: '/stores',
         roles: ['manager', 'admin'],
-        submenu:
-            storesAsItems.concat(
-                [
-                    {
-                        title: 'Bookings in my stores',
-                        url: '/bookings-in-my-stores'
-                    }
-                ]
-            )
+        submenu: storesAsItems
     },
     {
         title: 'Admin activities',

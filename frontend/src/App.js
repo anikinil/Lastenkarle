@@ -51,14 +51,13 @@ const App = () => {
     // const userRoles = fetchUserRoles(); TODO: implement all the necessary fetching
     const userRoles = ['admin']
 
+    // gets appropriate version of a page by path based on user role
     const getComponentByPath = (path) => {
-
         switch (path) {
             case '/bike/:id':
                 if (userRoles.includes('admin') || userRoles.includes('manager')) { return <BikeConfigPage /> }
                 else { return <BikePage /> }
             case '/store/:id':
-                console.log("STORE")
                 if (userRoles.includes('admin') || userRoles.includes('manager')) { return <StoreConfigPage /> }
                 else { return <StorePage /> }
             default:
@@ -100,6 +99,10 @@ const App = () => {
 
                         {/* TODO make a seperate file with all paths */}
                         <Route exact path='/store/:id' element={getComponentByPath('/store/:id')} />
+
+                        <Route exact path='/store/:id/bookings' element={
+                            <ProtectedElement element={<StoreBookings />} elementRoles={['admin', 'manager']} userRoles={userRoles} />
+                        } />
                     </Routes>
                 </BrowserRouter>
             </div>
