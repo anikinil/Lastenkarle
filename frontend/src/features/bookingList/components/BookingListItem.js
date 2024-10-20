@@ -13,7 +13,7 @@ const BookingListItem = ({ booking }) => {
     const navigate = useNavigate()
 
     const handlePanelClick = () => {
-        navigate(`/booking/${booking.bike.id}`)
+        navigate(`/booking/${booking.id}`, { state: {booking: booking }})
     }
 
     const handleBikeClick = e => {
@@ -37,7 +37,7 @@ const BookingListItem = ({ booking }) => {
             <p className='list-item-label'>{booking.date}</p>
             <p className='list-item-label'>{booking.status}</p>
 
-            { booking.comment?
+            {booking.comment ?
                 <label>{t('[commented]')}</label>
                 :
                 null

@@ -1,38 +1,19 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import DisplayPanel from '../../../components/display/DisplayPanel';
 
 // TODO ! make every list a seperate component, so e. g. a bike list can be displayed inside store page 
 
+// Displays a single booking without the option of editing.
 const BookingPage = () => {
+
+    const booking = useLocation().state.booking;
 
     const { t } = useTranslation();
 
     const navigate = useNavigate();
-
-    const booking = {
-        id: 3,
-        date: '12.05.2024',
-        status: 'booked',
-        store: {
-            id: 3,
-            name: 'Store3'
-        },
-        bike: {
-            id: 1,
-            name: 'Lastenrad 1',
-            image: require('../../../assets/images/bike1.jpg')
-        },
-        user: {
-            id: 3,
-            name: 'alma42'
-        },
-        equipment: ["Gürtel", "Helm", "Kind"],
-        comment: "suspicious activities"
-    }
-
 
     return (
         <>
@@ -42,7 +23,10 @@ const BookingPage = () => {
             <DisplayPanel content={<p>{booking.bike.name}</p>} handleClick={() => navigate(`/bike/${booking.bike.id}`)} />
             <DisplayPanel content={<p>{booking.user.name}</p>} />
             <DisplayPanel content={<p>{t('equipment')}: {booking.equipment?.map(e => e).join(', ')}</p>} />
+            { booking.comment ? 
             <DisplayPanel content={<p>{booking.comment}</p>} />
+            :
+            null}
         </>
     );
 };
