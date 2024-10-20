@@ -49,7 +49,7 @@ const StoreConfigPage = () => {
     }
 
     const handleCancelClick = () => {
-        // TODO maybe add a confirmation dialogue
+        // TODO maybe add a confirmation dialog
         navigate('/stores')
     }
 
@@ -72,7 +72,6 @@ const StoreConfigPage = () => {
             <BikeList />
 
             <div className='button-container'>
-                <button type='button' className='button regular' onClick={handleBookingsClick}>{t('bookings')}</button>
                 <button type='button' className='button regular' onClick={handleCancelClick}>{t('cancel')}</button>
                 <button type='button' className='button accent' onClick={handleSaveChangesClick}>{t('save_changes')}</button>
             </div>

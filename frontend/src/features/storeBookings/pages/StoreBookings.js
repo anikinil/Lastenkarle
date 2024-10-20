@@ -2,7 +2,6 @@ import React from "react"
 import { useLocation } from "react-router-dom";
 import BookingList from "../../bookingList/pages/BookingList";
 
-
 const StoreBookings = () => {
 
     const storeName = useLocation().state.storeName

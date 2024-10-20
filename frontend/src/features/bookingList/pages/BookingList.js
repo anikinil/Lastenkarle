@@ -220,6 +220,7 @@ const BookingList = () => {
                 <button type='button' title={t('show_all')} onClick={handleShowAllClick}>{t('show_all')}</button>
             </div>
 
+            {/* TODO make a component? */}
             <ul className='list'>
                 {bookings.map((booking) => (
                     <BookingListItem booking={booking} key={booking.id} />
