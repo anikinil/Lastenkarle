@@ -8,7 +8,8 @@ import { FaSortAlphaDown, FaSortAlphaUp } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
 import f from '../../../assets/images/bike1.jpg'
-import { ALL_BIKES, STORE_NAME } from '../../../constants/URIs/ManagerURI';
+import { BIKES_OF_STORE, STORE_NAME } from '../../../constants/URIs/ManagerURI';
+import { getCookie } from '../../../services/Cookies';
 
 // const bikes = [
 //     {
@@ -67,20 +68,11 @@ const BikeList = () => {
 
     const [bikes, setBikes] = useState([]);
 
-    // TODO make reusable
-    const getCookie = (name) => {
-        const cookies = document.cookie
-            .split('; ')
-            .find((row) => row.startsWith(`${name}=`));
-    
-        return cookies ? cookies.split('=')[1] : null;
-    };
-
     const storeName = getCookie('store_name');
     const token = getCookie('token');
 
     const fetchBikes = async () => {
-        const response = await fetch(ALL_BIKES.replace(STORE_NAME, storeName), {
+        const response = await fetch(BIKES_OF_STORE.replace(STORE_NAME, storeName), {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Token ${token}`,
