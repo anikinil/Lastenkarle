@@ -14,7 +14,6 @@ const getCookie = (name) => {
 // Example: Get the value of the 'username' cookie
 const username = getCookie('username');
 
-
 const Home = () => {
 
     const { t } = useTranslation();

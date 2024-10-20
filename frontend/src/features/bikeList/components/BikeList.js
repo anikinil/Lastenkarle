@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import '../../../components/lists/List.css';
@@ -8,45 +8,45 @@ import { FaSortAlphaDown, FaSortAlphaUp } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
 import f from '../../../assets/images/bike1.jpg'
+import { ALL_BIKES, STORE_NAME } from '../../../constants/URIs/ManagerURI';
 
-// TODO implement fetching
-const bikes = [
-    {
-        id: 1,
-        name: 'Lastenrad 1',
-        image: require('../../../assets/images/bike1.jpg'),
-        description: 'This is a description of Bike 1!',
-        storeId: 2
-    },
-    {
-        id: 2,
-        name: 'Lastenrad 2',
-        image: require('../../../assets/images/bike2.jpg'),
-        description: 'This is a description of Bike 2!',
-        storeId: 3
-    },
-    {
-        id: 3,
-        name: 'Lastenrad 3',
-        image: require('../../../assets/images/bike3.jpg'),
-        description: 'This is a description of Bike 3!',
-        storeId: 1
-    },
-    {
-        id: 4,
-        name: 'Lastenrad 4',
-        image: require('../../../assets/images/bike4.jpg'),
-        description: 'This is a description of Bike 4!',
-        storeId: 3
-    },
-    {
-        id: 5,
-        name: 'Lastenrad 5',
-        image: '',
-        description: 'This is a description of Bike 5!',
-        storeId: 2
-    }
-]
+// const bikes = [
+//     {
+//         id: 1,
+//         name: 'Lastenrad 1',
+//         image: require('../../../assets/images/bike1.jpg'),
+//         description: 'This is a description of Bike 1!',
+//         storeId: 2
+//     },
+//     {
+//         id: 2,
+//         name: 'Lastenrad 2',
+//         image: require('../../../assets/images/bike2.jpg'),
+//         description: 'This is a description of Bike 2!',
+//         storeId: 3
+//     },
+//     {
+//         id: 3,
+//         name: 'Lastenrad 3',
+//         image: require('../../../assets/images/bike3.jpg'),
+//         description: 'This is a description of Bike 3!',
+//         storeId: 1
+//     },
+//     {
+//         id: 4,
+//         name: 'Lastenrad 4',
+//         image: require('../../../assets/images/bike4.jpg'),
+//         description: 'This is a description of Bike 4!',
+//         storeId: 3
+//     },
+//     {
+//         id: 5,
+//         name: 'Lastenrad 5',
+//         image: '',
+//         description: 'This is a description of Bike 5!',
+//         storeId: 2
+//     }
+// ]
 
 const BikeList = () => {
 
@@ -64,6 +64,35 @@ const BikeList = () => {
     const resort = () => {
         bikes.sort((a, b) => sortAZ ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name))
     }
+
+    const [bikes, setBikes] = useState([]);
+
+    // TODO make reusable
+    const getCookie = (name) => {
+        const cookies = document.cookie
+            .split('; ')
+            .find((row) => row.startsWith(`${name}=`));
+    
+        return cookies ? cookies.split('=')[1] : null;
+    };
+
+    const storeName = getCookie('store_name');
+    const token = getCookie('token');
+
+    const fetchBikes = async () => {
+        const response = await fetch(ALL_BIKES.replace(STORE_NAME, storeName), {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`,
+            }
+        });
+        const data = await response.json();
+        setBikes(data);
+    };
+
+    useEffect(() => {
+        fetchBikes();
+    }, [])
 
     const handleNewBikeClick = () => {
         navigate('/bike-registration');
