@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { LOGOUT } from '../constants/URIs/UserURIs';
 import { useNavigate } from 'react-router-dom';
+import { getCookie } from '../services/Cookies';
 
 // on successful logout this component does not show any content and only runs the logout script 
 // (maybe shows "Logging out..." message)
@@ -14,8 +15,9 @@ const Logout = () => {
     const navigate = useNavigate();
 
     // TODO acquire token from cookie
-    const [token, setToken] = useState('')
     const [error, setError] = useState()
+
+    const token = getCookie('token')
 
     // logout call
     logout();
@@ -52,7 +54,7 @@ const Logout = () => {
 
     // THINK if necessary
     const deleteTokenCookie = () => {
-        // TODO implement
+
     };
 
     return (

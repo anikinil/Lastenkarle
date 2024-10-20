@@ -1,5 +1,3 @@
-
-
 export const getCookie = (name) => {
     const cookies = document.cookie
         .split('; ')
