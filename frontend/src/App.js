@@ -34,6 +34,7 @@ import BikeConfigPage from './features/bikeConfig/pages/BikeConfigPage';
 import Logout from './pages/Logout';
 import Register from './pages/Register';
 import Enrollment from './features/enrollment/pages/Enrollment';
+import StoreBookings from './features/storeBookings/pages/StoreBookings';
 
 import NavigationError from './pages/NavigationError';
 

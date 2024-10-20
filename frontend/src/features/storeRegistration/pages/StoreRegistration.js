@@ -11,6 +11,8 @@ import BikeList from '../../bikeList/components/BikeList'
 import PictureAndDescriptionField from '../../../components/display/pictureAndDescriptionField/PictureAndDescriptionField';
 import AddressField from '../../../components/display/addressField/AddressField';
 import { useNavigate } from 'react-router-dom';
+import { CREATE_STORE } from '../../../constants/URIs/AdminURIs';
+import { getCookie } from '../../../services/Cookies';
 
 const StoreRegistration = () => {
 
@@ -19,19 +21,67 @@ const StoreRegistration = () => {
     const navigate = useNavigate();
 
     const handleCancelClick = () => {
-        // TODO maybe add a confirmation dialogue
+        // TODO add a confirmation dialogue
         navigate('/stores')
     }
 
-    const handleRegisterClick = () => {
+    const token = getCookie('token')
+
+    const [region, setRegion] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [email, setEmail] = useState('');
+    const [address, setAddress] = useState('');
+    const [name, setName] = useState('');
+
+    const handleRegionChange = () => {
         // TODO implement
+    }
+
+    const handlePhoneNumberChange = () => {
+        // TODO implement
+    }
+
+    const handleEmailChange = () => {
+        // TODO implement   
+    }
+
+    const handleAddressChange = (value) => {
+        setAddress(value)
+    }
+
+    const handleNameChange = () => {
+        // TODO implement
+    }
+
+    const postNewStore = () => {
+
+        let payload = {
+            region: {name: region},
+            phone_number: phoneNumber,
+            email: email,
+            address: address,
+            name: name
+        };
+
+        return fetch(CREATE_STORE, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`
+            },
+            body: JSON.stringify(payload)
+        })
+    }
+
+    const handleRegisterClick = () => {
+        postNewStore();
     }
 
     return (
         <>
             <h1>{t('new_store')}</h1>
             <PictureAndDescriptionField editable={true}/>
-            <AddressField editable={true}/>
+            <AddressField editable={true} onChange={handleAddressChange}/>
             <StoreOpeningTimesConfig />
 
             <h2>{t('add_bikes_to_store')}</h2>

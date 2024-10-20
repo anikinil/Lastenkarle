@@ -14,3 +14,5 @@ export const ADD_BIKE_TO_STORE              = `${BASE}/create/store/{STORE_ID}/b
 export const DELETE_BIKE                    = `${BASE}/delete/bike/{BIKE_ID}`
 export const ALL_BIKES                      = `${BASE}/bikes`
 export const ALL_STORES                     = `${BASE}/stores`
+
+export const CREATE_STORE                     = `${BASE}/create/store`

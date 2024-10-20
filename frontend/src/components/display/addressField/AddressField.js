@@ -3,11 +3,16 @@ import { useTranslation } from 'react-i18next';
 
 import './AddressField.css'
 
-const AddressField = ({ editable, object }) => {
+// TODO cahnge 'object' to 'value'
+const AddressField = ({ editable, onChange, object }) => {
 
     const { t } = useTranslation();
 
     const [address, setAddress] = useState(object?.address)
+
+    const handleChange = (event) => {
+        onChange(event.target.value);
+    };
 
     // this prevents user from switching to new line by hitting [Enter]
     const handleAddressFieldKeyDown = (event) => {
@@ -22,7 +27,7 @@ const AddressField = ({ editable, object }) => {
             className='address'
             rows='1'
             value={address}
-            onChange={e => setAddress(e.target.value)}
+            onChange={handleChange}
             onKeyDown={handleAddressFieldKeyDown}
             placeholder={t('enter_address')}
             disabled={!editable}>
