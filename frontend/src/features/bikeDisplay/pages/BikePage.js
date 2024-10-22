@@ -10,6 +10,7 @@ import PictureAndDescriptionField from '../../../components/display/pictureAndDe
 import BikeCalendar from '../../booking/components/calendar/BikeCalendar'
 import AddressField from '../../../components/display/addressField/AddressField';
 import { BIKE_BY_ID, ID, STORE_BY_BIKE_ID } from '../../../constants/URIs/BookingURIs';
+import { ERR_FETCHING_BIKE, ERR_FETCHING_STORE } from '../../../constants/errorMessages/FetchingErrors';
 
 // TODO implement fetching
 //TODO: Add calandar as availability overview

@@ -228,19 +228,17 @@ const BookingList = () => {
     }
 
     const handleShowAllClick = () => {
-        setBookings(bookingList)
+        setBookings(bookings)
     }
 
     const handleFilterClick = () => {
-
-        const filteredBookings = bookingList.filter((b) => {
+        const filteredBookings = bookings.filter((b) => {
             return (
                 b.store.id == store &&
                 b.bike.id == bike &&
                 b.user.id == user
             )
         })
-
         setBookings(filteredBookings)
     }
 
