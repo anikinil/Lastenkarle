@@ -9,8 +9,7 @@ import 'react-time-picker/dist/TimePicker.css';
 
 import BikeList from '../../bikeList/components/BikeList'
 import PictureAndDescriptionField from '../../../components/display/pictureAndDescriptionField/PictureAndDescriptionField';
-import AddressField from '../../../components/display/addressField/AddressField';
-import PhoneNumberField from '../../../components/display/phoneNumberField/PhoneNumberField';
+import SingleLineTextField from '../../../components/display/SingleLineTextField';
 import { useNavigate } from 'react-router-dom';
 import { CREATE_STORE } from '../../../constants/URIs/AdminURIs';
 import { getCookie } from '../../../services/Cookies';
@@ -82,8 +81,11 @@ const StoreRegistration = () => {
         <>
             <h1>{t('new_store')}</h1>
             <PictureAndDescriptionField editable={true}/>
-            <AddressField editable={true} onChange={handleAddressChange}/>
-            <PhoneNumberField editable={true} onChange={handlePhoneNumberChange}/>
+
+            <SingleLineTextField editable={true} title='address' onChange={handleAddressChange}/>
+            <SingleLineTextField editable={true} title='phone_number' onChange={handlePhoneNumberChange}/>
+            <SingleLineTextField editable={true} title='email' onChange={handleEmailChange}/>
+            <SingleLineTextField editable={true} title='name' onChange={handleNameChange}/>
 
             <StoreOpeningTimesConfig />
 

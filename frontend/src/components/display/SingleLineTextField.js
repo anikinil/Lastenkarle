@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import './PhoneNumberField.css'
+import './SingleLineTextField.css'
 
-const PhoneNumberField = ({ editable, onChange, object }) => {
+// displays a one-line textfield with information,
+// which can either be changed/entered (editable=true) or just viewed (editable=false)
+const SingleLineTextField = ({ editable, value, title, onChange}) => {
 
     const { t } = useTranslation();
 
@@ -20,17 +22,16 @@ const PhoneNumberField = ({ editable, onChange, object }) => {
 
     return (
         <textarea
-            title={t('enter_phone_number')}
-            className='phone_number'
+            title={title}
+            className='text-field'
             rows='1'
-            value={object?.phoneNumber}
+            value={value}
             onChange={handleChange}
             onKeyDown={handleKeyDown}
-            // keyboardType='numeric'
-            placeholder={t('enter_phone_number')}
+            placeholder={title}
             disabled={!editable}>
         </textarea>
     );
 }
 
-export default PhoneNumberField;
+export default SingleLineTextField;

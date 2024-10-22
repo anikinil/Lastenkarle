@@ -5,8 +5,8 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import PictureAndDescriptionField from '../../../components/display/pictureAndDescriptionField/PictureAndDescriptionField';
-import AddressField from '../../../components/display/addressField/AddressField';
 import { useParams } from 'react-router-dom';
+import SingleLineTextField from '../../../components/display/SingleLineTextField';
 
 // TODO implement fetching
 let stores = [
@@ -45,7 +45,7 @@ const StorePage = () => {
             <h1>{store.name}</h1>
 
             <PictureAndDescriptionField editable={false} object={store}/>
-            <AddressField editable={false} object={store}/>
+            <SingleLineTextField editable={false} value={store.address}/>
 
             {/* TODO add enrollment component for managers to enroll other managers to this particular store */}
         </>

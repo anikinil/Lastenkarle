@@ -1,4 +1,4 @@
-.address {
+.text-field {
     float: inline-start;
     width: calc(100% - 1rem);
     resize: none;
@@ -9,10 +9,10 @@
     margin-bottom: 2rem;
 }
 
-.address:disabled {
+.text-field:disabled {
     cursor: default;
 }
 
-.address::placeholder {
+.text-field::placeholder {
     color: var(--textarea-placeholder);
 }

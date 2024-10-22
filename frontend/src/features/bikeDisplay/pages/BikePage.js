@@ -7,8 +7,8 @@ import { useTranslation } from 'react-i18next';
 
 import { useNavigate, useParams } from 'react-router-dom';
 import PictureAndDescriptionField from '../../../components/display/pictureAndDescriptionField/PictureAndDescriptionField';
+import SingleLineTextField from '../../../components/display/SingleLineTextField';
 import BikeCalendar from '../../booking/components/calendar/BikeCalendar'
-import AddressField from '../../../components/display/addressField/AddressField';
 import { BIKE_BY_ID, ID, STORE_BY_BIKE_ID } from '../../../constants/URIs/BookingURIs';
 import { ERR_FETCHING_BIKE, ERR_FETCHING_STORE } from '../../../constants/errorMessages/FetchingErrors';
 
@@ -120,7 +120,7 @@ const BikePage = () => {
             <h1>{bike.name}</h1>
 
             <PictureAndDescriptionField editable={false} object={bike} />
-            <AddressField editable={false} object={store} />
+            <SingleLineTextField editable={false} value={store.address} title='address'/>
 
             <div className='button-container'>
                 <button type='button' className='button regular' onClick={handleStoreClick}>{t('store')}</button>

@@ -1,7 +1,6 @@
 import React from "react";
 
 import PictureAndDescriptionField from "../../../components/display/pictureAndDescriptionField/PictureAndDescriptionField";
-import AddressField from "../../../components/display/addressField/AddressField";
 import StoreOpeningTimesConfig from "../components/StoreOpeningTimesConfig";
 import BikeList from "../../bikeList/components/BikeList";
 
@@ -9,6 +8,7 @@ import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 import { useNavigate } from 'react-router-dom';
+import SingleLineTextField from "../../../components/display/SingleLineTextField";
 
 // TODO implement fetching
 let stores = [
@@ -61,7 +61,7 @@ const StoreConfigPage = () => {
         <>
             <h1>{t('new_store')}</h1>
             <PictureAndDescriptionField editable={true} object={store} />
-            <AddressField editable={true} object={store} />
+            <SingleLineTextField editable={true} value={store.address} />
             <StoreOpeningTimesConfig />
 
             <div className='button-container'>
