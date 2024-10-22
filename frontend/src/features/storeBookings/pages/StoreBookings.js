@@ -1,6 +1,6 @@
 import React from "react"
 import { useLocation } from "react-router-dom";
-import BookingList from "../../bookingList/pages/BookingList";
+import BookingList from "../../bookingListAdmin/pages/BookingList";
 import { useTranslation } from "react-i18next";
 
 const StoreBookings = () => {

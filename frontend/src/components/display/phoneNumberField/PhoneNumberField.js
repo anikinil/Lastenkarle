@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import './AddressField.css'
+import './PhoneNumberField.css'
 
-const AddressField = ({ editable, onChange, object }) => {
+const PhoneNumberField = ({ editable, onChange, object }) => {
 
     const { t } = useTranslation();
 
@@ -20,16 +20,17 @@ const AddressField = ({ editable, onChange, object }) => {
 
     return (
         <textarea
-            title={t('enter_address')}
-            className='address'
+            title={t('enter_phone_number')}
+            className='phone_number'
             rows='1'
-            value={object?.address}
+            value={object?.phoneNumber}
             onChange={handleChange}
             onKeyDown={handleKeyDown}
-            placeholder={t('enter_address')}
+            // keyboardType='numeric'
+            placeholder={t('enter_phone_number')}
             disabled={!editable}>
         </textarea>
     );
 }
 
-export default AddressField;
+export default PhoneNumberField;

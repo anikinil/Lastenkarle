@@ -28,7 +28,7 @@ import StoreConfigPage from './features/storeConfig/pages/StoreConfigPage';
 import BikeListPage from './features/bikeList/pages/BikeListPage';
 import BikeRegistration from './features/bikeRegistration/pages/BikeRegistration';
 import StoreRegistration from './features/storeRegistration/pages/StoreRegistration';
-import BookingList from './features/bookingList/pages/BookingList';
+import BookingList from './features/bookingListAdmin/pages/BookingList';
 import BikePage from './features/bikeDisplay/pages/BikePage';
 import BikeConfigPage from './features/bikeConfig/pages/BikeConfigPage';
 import Logout from './pages/Logout';
