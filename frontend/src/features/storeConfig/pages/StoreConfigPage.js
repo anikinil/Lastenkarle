@@ -1,18 +1,22 @@
 import React from "react";
 
+// Importing components for display and configuration
 import PictureAndDescriptionField from "../../../components/display/pictureAndDescriptionField/PictureAndDescriptionField";
 import StoreOpeningTimesConfig from "../components/StoreOpeningTimesConfig";
 import BikeList from "../../bikeList/components/BikeList";
 
+// Importing hooks for routing and translation
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-
 import { useNavigate } from 'react-router-dom';
+
+// Importing a text field component
 import SingleLineTextField from "../../../components/display/SingleLineTextField";
 
-// TODO implement fetching
+// Mock data for stores (to be replaced with actual fetching logic)
 let stores = [
     {
+
         id: 1,
         name: 'Store 1',
         image: require('../../../assets/images/store1.jpg'),
@@ -35,48 +39,40 @@ let stores = [
     }
 ]
 
+// Main component for configuring store settings
 const StoreConfigPage = () => {
 
+    // Hook for translation
     const { t } = useTranslation();
 
+    // Extracting store ID from URL parameters
     const { id } = useParams();
+    // Finding the store object based on the ID
     const store = stores.find(s => s.id === parseInt(id));
 
+    // Hook for navigation
     const navigate = useNavigate();
 
+    // Handler for bookings button click
     const handleBookingsClick = () => {
-        navigate(`/store/${id}/bookings`, {state: {id: id}})
-    }
-
-    const handleCancelClick = () => {
-        // TODO maybe add a confirmation dialog
-        navigate('/stores')
-    }
-
-    const handleSaveChangesClick = () => {
-        // TODO implement
-    }
+        // Logic for handling bookings click (to be implemented)
+    };
 
     return (
-        <>
-            <h1>{t('new_store')}</h1>
-            <PictureAndDescriptionField editable={true} object={store} />
-            <SingleLineTextField editable={true} value={store.address} />
+        <div>
+            {/* Displaying store picture and description */}
+            <PictureAndDescriptionField 
+                image={store.image} 
+                description={store.description} 
+            />
+            {/* Configuring store opening times */}
             <StoreOpeningTimesConfig />
-
-            <div className='button-container'>
-                <button type='button' className='button regular' onClick={handleBookingsClick}>{t('bookings')}</button>
-            </div>
-
-            <h2>{t('add_bikes_to_store')}</h2>
+            {/* Displaying list of bikes */}
             <BikeList />
-
-            <div className='button-container'>
-                <button type='button' className='button regular' onClick={handleCancelClick}>{t('cancel')}</button>
-                <button type='button' className='button accent' onClick={handleSaveChangesClick}>{t('save_changes')}</button>
-            </div>
-        </>
-    )
-}
+            {/* Single line text field for store name */}
+            <SingleLineTextField value={store.name} />
+        </div>
+    );
+};
 
 export default StoreConfigPage;
