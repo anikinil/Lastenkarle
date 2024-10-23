@@ -76,6 +76,7 @@ const Login = () => {
 
     // THINK if there is a good way to not have to add this funciton everywhere
     // this prevents user from switching to new line by hitting [Enter]
+    // TODO perhaps use SingleLineTextFieldComponent
     const handleFieldKeyDown = (event) => {
         if (event.key === 'Enter') {
             event.preventDefault();
