@@ -12,8 +12,8 @@ import { useNavigate } from 'react-router-dom';
 
 // Importing a text field component
 import SingleLineTextField from "../../../components/display/SingleLineTextField";
-import { ID } from "../../../constants/URIs/General";
 import { STORE_NAME, STORE_PAGE_BY_STORE_NAME } from "../../../constants/URIs/ManagerURI";
+import { ERR_FETCHING_STORE, SUCCESS_UPDATING_STORE, ERR_UPDATING_STORE } from "../../../constants/Messages";
 
 // Mock data for stores (to be replaced with actual fetching logic)
 // let stores = [
@@ -45,8 +45,10 @@ import { STORE_NAME, STORE_PAGE_BY_STORE_NAME } from "../../../constants/URIs/Ma
 
 // page for the configuration of an existing store
 const StoreConfigPage = () => {
-
+    
     const { t } = useTranslation();
+    // Hook for navigation
+    const navigate = useNavigate();
 
     // Extracting store name from URL parameters
     const { storeName } = useParams();
@@ -63,6 +65,24 @@ const StoreConfigPage = () => {
                 console.error(ERR_FETCHING_STORE, error);
             });
     }
+    
+    // Function to post changes to the store
+    const postChanges = () => {
+        fetch(STORE_PAGE_BY_STORE_NAME.replace(STORE_NAME, storeName), {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(store)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(SUCCESS_UPDATING_STORE, data);
+        })
+        .catch(error => {
+            console.error(ERR_UPDATING_STORE, error);
+        });
+    }
 
     useEffect(() => {
         fetchStore();
@@ -72,8 +92,11 @@ const StoreConfigPage = () => {
         setNewAddress(value)
     }
 
-    // Hook for navigation
-    const navigate = useNavigate();
+    const handleSubmitClick = () => {
+        postChanges();
+        navigate()
+    }
+
 
     return (
         <div>
@@ -89,6 +112,10 @@ const StoreConfigPage = () => {
             <BikeList />
             {/* Single line text field for store name */}
             <SingleLineTextField value={store.name} />
+
+            <div className='button-container'>
+                <button type='button' className='button regular' onClick={handleSubmitClick}>{t('submit_changes')}</button>
+            </div>
         </div>
     );
 };

@@ -8,7 +8,7 @@ import PictureAndDescriptionField from '../../../components/display/pictureAndDe
 import SingleLineTextField from '../../../components/display/SingleLineTextField';
 import BikeCalendar from '../../booking/components/calendar/BikeCalendar';
 import { BIKE_BY_ID, ID, STORE_BY_BIKE_ID } from '../../../constants/URIs/BookingURIs';
-import { ERR_FETCHING_BIKE, ERR_FETCHING_STORE } from '../../../constants/errorMessages/FetchingErrors';
+import { ERR_FETCHING_BIKE, ERR_FETCHING_STORE } from '../../../constants/ErrorMessages';
 
 const BikePage = () => {
 
