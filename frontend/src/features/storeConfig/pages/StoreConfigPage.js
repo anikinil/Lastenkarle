@@ -13,10 +13,12 @@ import { useNavigate } from 'react-router-dom';
 
 // Importing a text field component
 import SingleLineTextField from "../../../components/display/SingleLineTextField";
-import { STORE_NAME, STORE_PAGE_BY_STORE_NAME } from "../../../constants/URIs/ManagerURI";
+import { STORE_PAGE_BY_STORE_NAME } from "../../../constants/URIs/ManagerURI";
 import { ERR_FETCHING_STORE, ERR_UPDATING_STORE } from "../../../constants/ErrorMessages";
 import { useState, useEffect } from "react";
 import { SUCCESS_UPDATING_STORE } from "../../../constants/SuccessMessages";
+import { STORE } from "../../../constants/URLs/Navigation";
+import { STORE_NAME } from "../../../constants/URLs/General";
 
 // Mock data for stores (to be replaced with actual fetching logic)
 // let stores = [
@@ -59,6 +61,7 @@ const StoreConfigPage = () => {
     // State to hold store data
     const [store, setStore] = useState();
 
+    // fetches store data
     const fetchStore = () => {
         fetch(STORE_PAGE_BY_STORE_NAME.replace(STORE_NAME, storeName))
             .then(response => response.json())
@@ -95,15 +98,16 @@ const StoreConfigPage = () => {
         fetchStore();
     }, [])
 
+    // Handler for address change
     const handleAddressChange = (value) => {
-        setNewAddress(value)
+        setNewAddress(value);
     }
 
+    // Handler for submit button click
     const handleSubmitClick = () => {
         postChanges();
-        navigate()
+        navigate(STORE.replace(STORE_NAME, storeName));
     }
-
 
     return (
         <div>
