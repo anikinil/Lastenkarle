@@ -1,3 +1,4 @@
+
 import React from "react";
 
 // Importing components for display and configuration
@@ -13,7 +14,9 @@ import { useNavigate } from 'react-router-dom';
 // Importing a text field component
 import SingleLineTextField from "../../../components/display/SingleLineTextField";
 import { STORE_NAME, STORE_PAGE_BY_STORE_NAME } from "../../../constants/URIs/ManagerURI";
-import { ERR_FETCHING_STORE, SUCCESS_UPDATING_STORE, ERR_UPDATING_STORE } from "../../../constants/Messages";
+import { ERR_FETCHING_STORE, ERR_UPDATING_STORE } from "../../../constants/ErrorMessages";
+import { useState, useEffect } from "react";
+import { SUCCESS_UPDATING_STORE } from "../../../constants/SuccessMessages";
 
 // Mock data for stores (to be replaced with actual fetching logic)
 // let stores = [
@@ -45,7 +48,8 @@ import { ERR_FETCHING_STORE, SUCCESS_UPDATING_STORE, ERR_UPDATING_STORE } from "
 
 // page for the configuration of an existing store
 const StoreConfigPage = () => {
-    
+
+    const [newAddress, setNewAddress] = useState('');
     const { t } = useTranslation();
     // Hook for navigation
     const navigate = useNavigate();
@@ -68,12 +72,15 @@ const StoreConfigPage = () => {
     
     // Function to post changes to the store
     const postChanges = () => {
+        let payload = {
+            address: newAddress
+        }
         fetch(STORE_PAGE_BY_STORE_NAME.replace(STORE_NAME, storeName), {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(store)
+            body: JSON.stringify(payload)
         })
         .then(response => response.json())
         .then(data => {

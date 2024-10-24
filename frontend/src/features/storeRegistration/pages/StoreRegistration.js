@@ -41,16 +41,16 @@ const StoreRegistration = () => {
         setPhoneNumber(value)
     }
 
-    const handleEmailChange = () => {
-        // TODO implement   
+    const handleEmailChange = (value) => {
+        setEmail(value)
     }
 
     const handleAddressChange = (value) => {
         setAddress(value);
     }
 
-    const handleNameChange = () => {
-        // TODO implement
+    const handleNameChange = (value) => {
+        setName(value)
     }
 
     const postNewStore = () => {
