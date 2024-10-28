@@ -4,6 +4,9 @@ import { STORE_NAME } from "./General"
 
 export const HOME = `/`
 
+// TODO replace by correct URL
+export const HELMHOLTZ = `/HELMHOLTZ`
+
 export const LOGIN = `/login`
 export const LOGOUT = `/logout`
 export const REGISTER = `/register`

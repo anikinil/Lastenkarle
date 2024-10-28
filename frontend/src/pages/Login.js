@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { LOGIN as LOGIN_URI} from '../constants/URIs/UserURIs';
 import { useNavigate } from 'react-router-dom';
+import { HELMHOLTZ } from '../constants/URLs/Navigation';
 
 const Login = () => {
 
@@ -13,11 +14,13 @@ const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
-    const [token, setToken] = useState()
+    const [token, setToken] = useState('')
+    const [userRole, setUserRole] = useState('')
 
     function handleLoginClick() {
         postLogin();
-        setTokenCookie();
+        setCookie('token', token);
+        setCookie('user_role', userRole);
         navigateToNextPage();
     }
 
@@ -50,6 +53,8 @@ const Login = () => {
             // set the token variable to acquired token
             .then(data => {
                 setToken(data.token);
+                // JAN logging in should return user role
+                setUserRole(data.userRole);
             })
             .catch(error => {
                 // handle any network or other errors that occurred during the request
@@ -58,8 +63,7 @@ const Login = () => {
     }
 
     const handleHelmholtzLoginClick = () => {
-        // TODO use proper variable
-        window.location.replace('URL_USER_HELMHOLTZ');
+        window.location.replace(HELMHOLTZ);
     }
 
     const handleRegisterClick = () => {
@@ -67,11 +71,11 @@ const Login = () => {
         navigate('/register')
     }
 
-    const setTokenCookie = () => {
+    const setCookie = (label, value) => {
         var days = 1
         const expirationDate = new Date();
         expirationDate.setDate(expirationDate.getDate() + days);
-        document.cookie = `${'token'}=${token}; expires=${expirationDate.toUTCString()}; path=/`;
+        document.cookie = `${label}=${value}; expires=${expirationDate.toUTCString()}; path=/`;
     };
 
     // THINK if there is a good way to not have to add this funciton everywhere
