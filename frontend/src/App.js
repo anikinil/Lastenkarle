@@ -37,6 +37,7 @@ import Enrollment from './features/enrollment/pages/Enrollment';
 import StoreBookings from './features/storeBookings/pages/StoreBookings';
 
 import NavigationError from './pages/NavigationError';
+import { BIKE, BIKE_BOOKING, BIKE_REGISTRATION, BIKES, BOOKING, BOOKINGS, ENROLLMENT, HOME, LOGIN, LOGOUT, REGISTER, STORE, STORE_BOOKINGS, STORE_REGISTRATION, STORES, USER_BAN, USERS } from './constants/URLs/Navigation';
 
 const App = () => {
 
@@ -73,35 +74,35 @@ const App = () => {
             <div className='content-container'>
                 <BrowserRouter>
                     <Routes>
-                        <Route exact path='/' element={<Home />} />
-                        <Route exact path='/login' element={<Login />} />
-                        <Route exact path='/logout' element={<Logout />} />
-                        <Route exact path='/register' element={<Register />} />
-                        <Route exact path='/user-ban' element={<UserBan />} />
-                        <Route exact path='/booking' element={<Booking />} />
-                        <Route exact path='/booking/:id' element={<BookingPage />} />
-                        <Route exact path='/stores' element={
+                        <Route exact path={HOME} element={<Home />} />
+                        <Route exact path={LOGIN} element={<Login />} />
+                        <Route exact path={LOGOUT} element={<Logout />} />
+                        <Route exact path={REGISTER} element={<Register />} />
+                        <Route exact path={USER_BAN} element={<UserBan />} />
+                        <Route exact path={BOOKINGS} element={<Booking />} />
+                        <Route exact path={BOOKING} element={<BookingPage />} />
+                        <Route exact path={STORES} element={
                             <ProtectedElement element={<StoreListPage />} elementRoles={['admin', 'manager']} userRoles={userRoles} />
                         } />
-                        <Route exact path='/users' element={
+                        <Route exact path={USERS} element={
                             <ProtectedElement element={<UserList />} elementRoles={['admin']} userRoles={userRoles} />
                         } />
-                        <Route exact path='/:id' element={<RegionalBooking />} />
-                        <Route exact path='/bike-booking' element={<BikeBooking />} />
-                        <Route exact path='/bikes' element={<BikeListPage />} />
+                        <Route exact path={BOOKING} element={<RegionalBooking />} />
+                        <Route exact path={BIKE_BOOKING} element={<BikeBooking />} />
+                        <Route exact path={BIKES} element={<BikeListPage />} />
                         
-                        <Route exact path='/bike/:id' element={getComponentByPath('/bike/:id')} />
+                        <Route exact path={BIKE} element={getComponentByPath(BIKE)} />
 
-                        <Route exact path='/bike-registration' element={<BikeRegistration />} />
+                        <Route exact path={BIKE_REGISTRATION} element={<BikeRegistration />} />
 
-                        <Route exact path='/store-registration' element={<StoreRegistration />} />
-                        <Route exact path='/enrollment' element={<Enrollment />} />
-                        <Route exact path='/bookings' element={<BookingList />} />
+                        <Route exact path={STORE_REGISTRATION} element={<StoreRegistration />} />
+                        <Route exact path={ENROLLMENT} element={<Enrollment />} />
+                        <Route exact path={BOOKINGS} element={<BookingList />} />
 
                         {/* TODO make a seperate file with all paths */}
-                        <Route exact path='/store/:id' element={getComponentByPath('/store/:id')} />
+                        <Route exact path={STORE} element={getComponentByPath(STORE)} />
 
-                        <Route exact path='/store/:id/bookings' element={
+                        <Route exact path={STORE_BOOKINGS} element={
                             <ProtectedElement element={<StoreBookings />} elementRoles={['admin', 'manager']} userRoles={userRoles} />
                         } />
                     </Routes>
