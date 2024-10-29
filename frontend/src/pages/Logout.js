@@ -1,9 +1,11 @@
-import React, { useState, startTransition } from 'react';
+import React, { startTransition } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { LOGOUT } from '../constants/URIs/UserURIs';
 import { useNavigate } from 'react-router-dom';
-import { getCookie } from '../services/Cookies';
+import { deleteCookie, getCookie } from '../services/Cookies';
+import { LOGIN } from '../constants/URLs/Navigation';
+import { ERR_POSTING_LOGOUT } from '../constants/ErrorMessages';
 
 // on successful logout this component does not show any content and only runs the logout script 
 // (maybe shows "Logging out..." message)
@@ -13,9 +15,6 @@ const Logout = () => {
     const { t } = useTranslation();
 
     const navigate = useNavigate();
-
-    // TODO acquire token from cookie
-    const [error, setError] = useState()
 
     const token = getCookie('token')
 
@@ -33,10 +32,10 @@ const Logout = () => {
         })
             .then(response => {
                 if (response.ok) {
+                    deleteCookie('token');
                     // TODO check if startTransition() needed
                     startTransition(() => {
-                        // TODO add proper variable for navigation
-                        navigate('/');
+                        navigate(LOGIN);
                     });
                 } else {
                     // If the request was not successful throw an error
@@ -46,16 +45,10 @@ const Logout = () => {
                 }
             })
             .catch(error => {
-                // TODO add proper variable for error message
-                console.log('Error making the logout request.');
-                setError(error)
+                // catch the error and print it to the console
+                console.log(ERR_POSTING_LOGOUT + ': ' + error);
             });
     }
-
-    // THINK if necessary
-    const deleteTokenCookie = () => {
-
-    };
 
     return (
         <>

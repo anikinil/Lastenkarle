@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react';
+import React, { useEffect } from 'react';
 import useLocalStorage from 'use-local-storage';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ProtectedElement } from './utils/ProtectedElement';

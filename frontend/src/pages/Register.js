@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { REGISTER, LOGIN } from '../constants/URIs/UserURIs';
 import { useNavigate } from 'react-router-dom';
 
+import { ERR_POSTING_REGISTER_REQUEST } from '../constants/ErrorMessages';
+
 const Register = () => {
 
     const { t } = useTranslation();
@@ -62,9 +64,7 @@ const Register = () => {
                 }
             })
             .catch(error => {
-                // TODO add error message constants
-                // Handle any network or other errors that occurred during the request
-                alert('ERR_MAKING_REGISTER_REQUEST' + ' ' + error.message);
+                alert(ERR_POSTING_REGISTER_REQUEST + ' ' + error.message);
             });
     }
 

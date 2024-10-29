@@ -235,9 +235,9 @@ const BookingList = ({ filterStore, filterBike, filterUser }) => {
     const handleFilterClick = () => {
         const filteredBookings = bookings.filter((b) => {
             return (
-                b.store.id == store &&
-                b.bike.id == bike &&
-                b.user.id == user
+                b.store.id === store &&
+                b.bike.id === bike &&
+                b.user.id === user
             )
         })
         setBookings(filteredBookings)

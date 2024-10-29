@@ -9,6 +9,11 @@ import defaultBikePicture from '../../../assets/images/default_bike.png'
 
 import { useNavigate } from 'react-router-dom';
 import ConfirmationPopup from '../../../components/confirmationDialog/ConfirmationPopup';
+import { BIKE, BOOKINGS } from '../../../constants/URLs/Navigation';
+import { ID } from '../../../constants/URIs/General';
+import { STORE_BY_BIKE_ID } from '../../../constants/URIs/BookingURIs';
+import { DELETE_BIKE } from '../../../constants/URIs/AdminURIs';
+import { ERR_DELETING_BIKE } from '../../../constants/ErrorMessages';
 
 const BikeListItem = ({ bike }) => {
 
@@ -22,23 +27,50 @@ const BikeListItem = ({ bike }) => {
     const [showConfirmationPopup, setShowConfirmationPopup] = useState(false);
 
     const handlePanelClick = () => {
-        navigate(`/bike/${bike.id}`);
+        navigate(BIKE.replace(ID, bike.id));
     }
 
     const handleBookingsClick = e => {
-        // TODO implement
-        console.log('bookings')
+        navigate(BOOKINGS, { state: { filterBike: bike } })
         e.stopPropagation()
     }
 
     const handleStoreClick = e => {
-        navigate(`/store/${bike.storeId}`)
+        navigate(STORE_BY_BIKE_ID.replace(ID, bike.id))
         e.stopPropagation()
     }
 
     const handleDeleteClick = e => {
         setShowConfirmationPopup(true)
         e.stopPropagation()
+    }
+
+    // TODO needs also to account for the case when the user is not an admin
+    const postBikeDeletion = () => {
+
+        // posts enrollment request
+        // JAN maybe a dedicated URI for enrollment, for better encapsulation
+        fetch(DELETE_BIKE.replace(ID, bike.id), {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`
+            },
+            body: JSON.stringify(payload)
+        })
+            .then(response => {
+                if (response) {
+                    alert(t('enrollment_successful'));
+                }
+                else {
+                    return response.json().then((errorText) => {
+                        throw new Error(errorText.detail);
+                    });
+                }
+            })
+            .catch(error => {
+                alert(ERR_DELETING_BIKE + ' ' + error.message);
+            })
     }
 
     const handlePopupConfirm = () => {
@@ -66,7 +98,7 @@ const BikeListItem = ({ bike }) => {
 
             <ConfirmationPopup onConfirm={handlePopupConfirm} onCancel={handlePopupCancel} show={showConfirmationPopup}>
                     {/* TODO make proper string insertion */}
-                    {`t('are_you_sure_you_want_to_delete_bike')${bike.name}`}
+                    {t('are_you_sure_you_want_to_delete_bike') + ' ' + bike.name + '?'}
             </ConfirmationPopup>
         </>
     );
