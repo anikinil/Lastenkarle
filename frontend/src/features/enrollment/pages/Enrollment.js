@@ -1,5 +1,5 @@
 //Page shown to Admins and/or managers to enroll users as admins or managers
-import React, { useState, startTransition, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useNavigate } from 'react-router-dom';
@@ -99,7 +99,7 @@ const Enrollment = () => {
     const handleEnrollClick = () => {
         postEnrollment()
         // TODO notify on success/failure perhaps via alert (in this line)
-        // TODO decide where to navigate
+        // TODO decide where to navigate to
         navigate('/')
     }
 
