@@ -38,10 +38,9 @@ import StoreBookings from './features/storeBookings/pages/StoreBookings';
 
 import NavigationError from './pages/NavigationError';
 import { BIKE, BIKE_BOOKING, BIKE_REGISTRATION, BIKES, BOOKING, BOOKINGS, ENROLLMENT, HOME, LOGIN, LOGOUT, REGISTER, STORE, STORE_BOOKINGS, STORE_REGISTRATION, STORES, USER_BAN, USERS } from './constants/URLs/Navigation';
+import { getCookie } from './services/Cookies';
 
 const App = () => {
-
-    console.log()
 
     const defaultDark = window.matchMedia('(prefers-color-sceme: dark)').matches
     const [theme, setTheme] = useLocalStorage('theme', defaultDark ? 'dark' : 'light')
@@ -50,8 +49,8 @@ const App = () => {
         const newTheme = theme === 'light' ? 'dark' : 'light';
         setTheme(newTheme);
     }
-    // const userRoles = fetchUserRoles(); TODO: implement all the necessary fetching
-    const userRoles = ['admin']
+
+    const userRoles = getCookie('user_roles')
 
     // gets appropriate version of a page by path based on user role
     const getComponentByPath = (path) => {
@@ -66,7 +65,6 @@ const App = () => {
                 return <NavigationError />
         }
     }
-
 
     return (
         <div className='App' data-theme={theme}>
