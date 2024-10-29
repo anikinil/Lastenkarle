@@ -7,9 +7,11 @@ import logo from '../../assets/images/logo.png';
 
 const Navbar = () => {
 
-    const userRoles = ['admin']; // TODO: make global, when fetching implemented
+    const userRoles = ['admin']; // TODO fetch
 
     const accountItem = getAccountItemByRoles(userRoles);
+
+    console.log(accountItem)
 
     return (
             <div className='nav-area'>
@@ -19,9 +21,10 @@ const Navbar = () => {
                 <nav className='nav'>
                     <ul className='menus'>
                         {menuItems.map((item, index) => {
-                            return <MenuItems item={item} key={index} />;
+                            return <MenuItems item={item} key={index} userRoles={userRoles}/>;
                         })}
                         <li>
+                            {console.log("userRoles (Navbar)", userRoles)}
                             <MenuItem className='account-menu-item' item={accountItem} userRoles={userRoles}/>
                         </li>
                     </ul>

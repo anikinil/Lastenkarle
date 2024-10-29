@@ -2,11 +2,9 @@ import React from 'react';
 import './Navbar.css';
 
 import MenuItem from './MenuItem';
-import { getCookie } from '../../services/Cookies';
 
-const MenuItems = ({ item }) => {
-
-    const userRoles = getCookie('user_roles');
+// a list of menu items
+const MenuItems = ({ item, userRoles }) => {
 
     return (
         <li>
