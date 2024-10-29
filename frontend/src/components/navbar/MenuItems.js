@@ -6,11 +6,11 @@ import { getCookie } from '../../services/Cookies';
 
 const MenuItems = ({ item }) => {
 
-    const userRole = getCookie('user_role');
+    const userRoles = getCookie('user_roles');
 
     return (
         <li>
-            <MenuItem className='menu-item' item={item} userRole={userRole} />
+            <MenuItem className='menu-item' item={item} userRoles={userRoles} />
         </li>
     );
 };

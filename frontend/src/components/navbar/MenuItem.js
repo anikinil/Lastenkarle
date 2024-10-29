@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import Dropdown from './Dropdown';
 
 
-const MenuItem = ({ className, item, userRole }) => {
+const MenuItem = ({ className, item, userRoles }) => {
 
     const hasPermission = (item) => {
-        return item.roles.includes(userRole);
+        return userRoles.some(role => item.roles.includes(role));
     }
     const [dropdown, setDropdown] = useState(false);
 

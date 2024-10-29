@@ -78,7 +78,9 @@ const App = () => {
                         <Route exact path={LOGIN} element={<Login />} />
                         <Route exact path={LOGOUT} element={<Logout />} />
                         <Route exact path={REGISTER} element={<Register />} />
-                        <Route exact path={USER_BAN} element={<UserBan />} />
+                        <Route exact path={USER_BAN} element={
+                            <ProtectedElement element={<UserBan />} elementRoles={['admin']} userRoles={userRoles}/>
+                        } />
                         <Route exact path={BOOKINGS} element={<Booking />} />
                         <Route exact path={BOOKING} element={<BookingPage />} />
                         <Route exact path={STORES} element={
@@ -90,18 +92,12 @@ const App = () => {
                         <Route exact path={BOOKING} element={<RegionalBooking />} />
                         <Route exact path={BIKE_BOOKING} element={<BikeBooking />} />
                         <Route exact path={BIKES} element={<BikeListPage />} />
-                        
                         <Route exact path={BIKE} element={getComponentByPath(BIKE)} />
-
                         <Route exact path={BIKE_REGISTRATION} element={<BikeRegistration />} />
-
                         <Route exact path={STORE_REGISTRATION} element={<StoreRegistration />} />
                         <Route exact path={ENROLLMENT} element={<Enrollment />} />
                         <Route exact path={BOOKINGS} element={<BookingList />} />
-
-                        {/* TODO make a seperate file with all paths */}
                         <Route exact path={STORE} element={getComponentByPath(STORE)} />
-
                         <Route exact path={STORE_BOOKINGS} element={
                             <ProtectedElement element={<StoreBookings />} elementRoles={['admin', 'manager']} userRoles={userRoles} />
                         } />

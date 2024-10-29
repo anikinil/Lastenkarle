@@ -10,7 +10,6 @@ const Navbar = () => {
     const userRoles = ['admin']; // TODO: make global, when fetching implemented
 
     const accountItem = getAccountItemByRoles(userRoles);
-    console.log(accountItem)
 
     return (
             <div className='nav-area'>
