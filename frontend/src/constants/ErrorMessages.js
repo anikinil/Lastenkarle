@@ -5,6 +5,7 @@ export const ERR_FETCHING_STORE = "Error: store could not be fetched."
 export const ERR_FETCHING_BOOKING = "Error: booking could not be fetched."
 
 // posting
+export const ERR_POSTING_ENROLLMENT = "Error: enrollment could not be posted."
 
 // deleting
 

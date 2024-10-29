@@ -5,13 +5,16 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 import { USER_FLAGS } from '../../../constants/URIs/AdminURIs'
+import { ALL_STORES } from '../../../constants/URIs/BookingURIs';
+import { getCookie } from '../../../services/Cookies';
+import { ERR_POSTING_ENROLLMENT } from '../../../constants/ErrorMessages';
 
-const storesLst = [
-    { id: 1, name: 'Store 1' },
-    { id: 2, name: 'Store 2' },
-    { id: 3, name: 'Store 3' },
-    { id: 4, name: 'Store 4' }
-]
+// const storesLst = [
+//     { id: 1, name: 'Store 1' },
+//     { id: 2, name: 'Store 2' },
+//     { id: 3, name: 'Store 3' },
+//     { id: 4, name: 'Store 4' }
+// ]
 
 const Enrollment = () => {
 
@@ -22,32 +25,28 @@ const Enrollment = () => {
     const [username, setUsername] = useState();
     const [email, setEmail] = useState();
 
-    // NOTE change when fetching implemented to:
-    // const [stores, setStores] = useState([]);
-    const [stores, setStores] = useState(storesLst);
+    const [stores, setStores] = useState([]);
     const [selectedRole, setSelectedRole] = useState({});
 
-    // TODO token acquisition from cookie
-    const [token, setToken] = useState()
+    const token = getCookie('token');
 
-    // NOTE when fetching implemented
-    // const fetchStores= () => {
-    //     fetch(ALL_STORES, {
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //             'Authorization': `Token ${token}`
-    //         },
-    //     })
-    //         .then(response => {
-    //             return response.json()
-    //         })
-    //         .then(data => {
-    //             setStores(data)
-    //         })
-    // }
-    // useEffect(() => {
-    //     fetchStores();
-    // }, [])
+    const fetchStores= () => {
+        fetch(ALL_STORES, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`
+            },
+        })
+            .then(response => {
+                return response.json()
+            })
+            .then(data => {
+                setStores(data)
+            })
+    }
+    useEffect(() => {
+        fetchStores();
+    }, [])
 
     // THINK if variables for labels needed
     const roleOptions = [...stores.map((store) => (
@@ -61,7 +60,7 @@ const Enrollment = () => {
             user_status: selectedRole
         };
 
-        // post enrollment request
+        // posts enrollment request
         // JAN maybe a dedicated URI for enrollment, for better encapsulation
         fetch(USER_FLAGS, {
             method: 'POST',
@@ -82,9 +81,7 @@ const Enrollment = () => {
                 }
             })
             .catch(error => {
-                // TODO proper error handling
-                // TODO proper error variable
-                alert('ERR_POSTING_ENROLLMENT' + ' ' + error.message);
+                alert(ERR_POSTING_ENROLLMENT + ' ' + error.message);
             })
     }
 
@@ -102,7 +99,7 @@ const Enrollment = () => {
     const handleEnrollClick = () => {
         postEnrollment()
         // TODO notify on success/failure perhaps via alert (in this line)
-        // TODO add proper variable
+        // TODO decide where to navigate
         navigate('/')
     }
 

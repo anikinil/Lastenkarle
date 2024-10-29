@@ -26,7 +26,7 @@ const BookingListItem = ({ booking }) => {
     }
 
     const handleUserClick = e => {
-        // TODO implement user page?
+        // TODO ? implement user page
         navigate(`/user/${booking.user.id}`)
         e.stopPropagation()
     }
