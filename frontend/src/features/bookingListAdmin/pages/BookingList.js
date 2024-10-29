@@ -154,9 +154,10 @@ const BookingList = ({ filterStore, filterBike, filterUser }) => {
     const [users, setUsers] = useState([])
 
     // select first of each list as default filter element
-    const [store, setStore] = filterStore ? filterStore : useState(stores[0].key) 
-    const [bike, setBike] = filterBike ? filterBike : useState(bikes[0].key)
-    const [user, setUser] = filterUser? filterUser : useState(users[0].key)
+    // const [store, setStore] = filterStore ? filterStore : useState(stores[0].key)
+    const [store, setStore] = useState(filterStore ? filterStore : stores[0].key)
+    const [bike, setBike] = useState(filterBike ? filterBike : bikes[0].key)
+    const [user, setUser] = useState(filterUser ? filterUser : users[0].key)
 
     const token = getCookie('token')
 

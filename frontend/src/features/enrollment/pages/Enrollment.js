@@ -107,6 +107,7 @@ const Enrollment = () => {
     }
 
     return (
+        // TODO use SingleLineInput component
         <>
             <h1>{t('enrollment')}</h1>
 

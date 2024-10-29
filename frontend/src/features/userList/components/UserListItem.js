@@ -2,12 +2,15 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { BAN_USER } from '../../../constants/URIs/AdminURIs';
 import { useNavigate } from 'react-router-dom';
+import { getCookie } from '../../../services/Cookies';
 
 const UserListItem = ({user}) => {
 
     const { t } = useTranslation();
 
     const navigate = useNavigate();
+
+    const token = getCookie('token');
 
     const handlePanelClick = () => {
         navigate(`/user`, { state: {user: user }});
