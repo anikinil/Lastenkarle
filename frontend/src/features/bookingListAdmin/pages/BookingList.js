@@ -140,13 +140,12 @@ import { getCookie } from '../../../services/Cookies';
 //     { key: 5, value: 'User 5' }
 // ]
 
-const BookingList = () => {
+const BookingList = ({ filterStore, filterBike, filterUser }) => {
 
     const { t } = useTranslation();
 
     const navigate = useNavigate();
 
-    // const [bookings, setBookings] = useState(bookingList)
     const [bookings, setBookings] = useState([])
 
     // all stores, bikes and users
@@ -155,10 +154,10 @@ const BookingList = () => {
     const [users, setUsers] = useState([])
 
     // select first of each list as default filter element
-    const [store, setStore] = useState(stores[0].key)
-    const [bike, setBike] = useState(bikes[0].key)
-    const [user, setUser] = useState(users[0].key)
-    
+    const [store, setStore] = filterStore ? filterStore : useState(stores[0].key) 
+    const [bike, setBike] = filterBike ? filterBike : useState(bikes[0].key)
+    const [user, setUser] = filterUser? filterUser : useState(users[0].key)
+
     const token = getCookie('token')
 
     const fetchBookings = async () => {
@@ -193,7 +192,7 @@ const BookingList = () => {
         const data = await response.json();
         setBikes(data);
     };
-    
+
     const fetchUsers = async () => {
         const response = await fetch(ALL_USERS, {
             headers: {
@@ -210,6 +209,7 @@ const BookingList = () => {
         fetchStores();
         fetchBikes();
         fetchUsers();
+        // THINK if filtering should happen on load, if filter parameters passed
     }, [])
 
     const handleStoreSelect = (e) => {
@@ -242,11 +242,10 @@ const BookingList = () => {
         setBookings(filteredBookings)
     }
 
-
     return (
         <>
             <h1>{t('bookings')}</h1>
-            
+
             <div className='list-button-container'>
                 <select title='stores' className='select' onChange={handleStoreSelect}>
                     {stores.map(e => <option key={e.key} value={e.key}>{e.value}</option>)};
