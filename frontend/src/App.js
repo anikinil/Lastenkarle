@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useReducer } from 'react';
 import useLocalStorage from 'use-local-storage';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ProtectedElement } from './utils/ProtectedElement';
@@ -79,7 +79,7 @@ const App = () => {
                         <Route exact path={LOGOUT} element={<Logout />} />
                         <Route exact path={REGISTER} element={<Register />} />
                         <Route exact path={USER_BAN} element={
-                            <ProtectedElement element={<UserBan />} elementRoles={['admin']} userRoles={userRoles}/>
+                            <ProtectedElement element={<UserBan />} elementRoles={['admin']} userRoles={userRoles} />
                         } />
                         <Route exact path={BOOKINGS} element={<Booking />} />
                         <Route exact path={BOOKING} element={<BookingPage />} />
@@ -93,9 +93,16 @@ const App = () => {
                         <Route exact path={BIKE_BOOKING} element={<BikeBooking />} />
                         <Route exact path={BIKES} element={<BikeListPage />} />
                         <Route exact path={BIKE} element={getComponentByPath(BIKE)} />
-                        <Route exact path={BIKE_REGISTRATION} element={<BikeRegistration />} />
-                        <Route exact path={STORE_REGISTRATION} element={<StoreRegistration />} />
-                        <Route exact path={ENROLLMENT} element={<Enrollment />} />
+                        <Route exact path={BIKE_REGISTRATION} element={
+                            <ProtectedElement element={<BikeRegistration />} elementRoles={['admin']} userRoles={userRoles} />
+                        } />                        
+                        <Route exact path={STORE_REGISTRATION} element={
+                            <ProtectedElement element={<StoreRegistration />} elementRoles={['admin']} userRoles={userRoles} />
+                        } />
+                        
+                        <Route exact path={ENROLLMENT} element={
+                            <ProtectedElement element={<Enrollment />} elementRoles={['admin', 'manager']} userRoles={userRoles} />
+                        } />
                         <Route exact path={BOOKINGS} element={<BookingList />} />
                         <Route exact path={STORE} element={getComponentByPath(STORE)} />
                         <Route exact path={STORE_BOOKINGS} element={
