@@ -1,67 +1,58 @@
-//Page shown to Admins and/or managers to enroll users as admins or managers
+// Page shown to Admins and/or managers to enroll users as admins or managers
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-
 import { useNavigate } from 'react-router-dom';
 
-import { USER_FLAGS } from '../../../constants/URIs/AdminURIs'
+import { USER_FLAGS } from '../../../constants/URIs/AdminURIs';
 import { ALL_STORES } from '../../../constants/URIs/BookingURIs';
 import { getCookie } from '../../../services/Cookies';
 import { ERR_POSTING_ENROLLMENT } from '../../../constants/ErrorMessages';
 
-// const storesLst = [
-//     { id: 1, name: 'Store 1' },
-//     { id: 2, name: 'Store 2' },
-//     { id: 3, name: 'Store 3' },
-//     { id: 4, name: 'Store 4' }
-// ]
-
 const Enrollment = () => {
+    const { t } = useTranslation(); // Translation hook
+    const navigate = useNavigate(); // Navigation hook
 
-    const { t } = useTranslation();
-
-    const navigate = useNavigate();
-
+    // State variables
     const [username, setUsername] = useState();
     const [email, setEmail] = useState();
-
     const [stores, setStores] = useState([]);
     const [selectedRole, setSelectedRole] = useState({});
 
-    const token = getCookie('token');
+    const token = getCookie('token'); // Get authentication token from cookies
 
-    const fetchStores= () => {
+    // Fetch stores from the server
+    const fetchStores = () => {
         fetch(ALL_STORES, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Token ${token}`
             },
         })
-            .then(response => {
-                return response.json()
-            })
-            .then(data => {
-                setStores(data)
-            })
-    }
+            .then(response => response.json())
+            .then(data => setStores(data))
+            .catch(error => console.error('Error fetching stores:', error));
+    };
+
+    // Fetch stores on component mount
     useEffect(() => {
         fetchStores();
-    }, [])
+    }, []);
 
-    // THINK if variables for labels needed
-    const roleOptions = [...stores.map((store) => (
-        { value: store.name, label: t('manager_of') + store.name }
-    )), { value: t('admin'), label: 'admin' }];
+    // Generate role options for the select dropdown
+    const roleOptions = [
+        ...stores.map((store) => (
+            { value: store.name, label: t('manager_of') + store.name }
+        )),
+        { value: t('admin'), label: 'admin' }
+    ];
 
+    // Post enrollment data to the server
     const postEnrollment = () => {
-
-        let payload = {
+        const payload = {
             contact_data: email,
             user_status: selectedRole
         };
 
-        // posts enrollment request
-        // JAN maybe a dedicated URI for enrollment, for better encapsulation
         fetch(USER_FLAGS, {
             method: 'POST',
             headers: {
@@ -71,10 +62,9 @@ const Enrollment = () => {
             body: JSON.stringify(payload)
         })
             .then(response => {
-                if (response) {
+                if (response.ok) {
                     alert(t('enrollment_successful'));
-                }
-                else {
+                } else {
                     return response.json().then((errorText) => {
                         throw new Error(errorText.detail);
                     });
@@ -82,26 +72,27 @@ const Enrollment = () => {
             })
             .catch(error => {
                 alert(ERR_POSTING_ENROLLMENT + ' ' + error.message);
-            })
-    }
+            });
+    };
 
-    const handleRoleChange = (selectedRoleOption) => {
-        setSelectedRole(selectedRoleOption.value)
-    }
+    // Handle role change in the select dropdown
+    const handleRoleChange = (event) => {
+        setSelectedRole(event.target.value);
+    };
 
-    // this prevents user from switching to new line by hitting [Enter]
+    // Prevent user from switching to a new line by hitting [Enter]
     const handleFieldKeyDown = (event) => {
         if (event.key === 'Enter') {
             event.preventDefault();
         }
     };
 
+    // Handle enroll button click
     const handleEnrollClick = () => {
-        postEnrollment()
-    }
+        postEnrollment();
+    };
 
     return (
-        // TODO use SingleLineInput component
         <>
             <h1>{t('enrollment')}</h1>
 
@@ -115,8 +106,7 @@ const Enrollment = () => {
                 onChange={e => setUsername(e.target.value)}
                 onKeyDown={handleFieldKeyDown}
                 placeholder={t('enter_username')}
-            >
-            </textarea>
+            />
 
             <textarea
                 title={t('enter_email')}
@@ -126,14 +116,11 @@ const Enrollment = () => {
                 onChange={e => setEmail(e.target.value)}
                 onKeyDown={handleFieldKeyDown}
                 placeholder={t('enter_email')}
-            >
-            </textarea>
-
-            {/* TODO style */}
+            />
 
             <p>{t('select_role')}</p>
             <select title='roles' className='select' onChange={handleRoleChange}>
-                {roleOptions.map(e => <option key={e.value} value={e.value}>{e.label}</option>)};
+                {roleOptions.map(e => <option key={e.value} value={e.value}>{e.label}</option>)}
             </select>
             
             <div className='button-container'>

@@ -1,6 +1,6 @@
-//Page of a singular store
-//TODO: Add Liste of bikes belonging to store
-//Consists of Name, Picture, Description and Information
+// Page of a singular store
+// TODO: Add List of bikes belonging to store
+// Consists of Name, Picture, Description and Information
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -12,14 +12,14 @@ import { ERR_FETCHING_STORE } from '../../../constants/ErrorMessages';
 import { getCookie } from '../../../services/Cookies';
 
 const StorePage = () => {
+    const { t } = useTranslation(); // Translation hook
 
-    const { t } = useTranslation();
+    const { storeName } = useParams(); // Get store name from URL parameters
+    const [store, setStore] = useState(); // State to hold store data
 
-    const { storeName } = useParams();
-    const [store, setStore] = useState();
+    const token = getCookie('token'); // Get authentication token from cookies
 
-    const token = getCookie('token');
-
+    // Function to fetch store data from the server
     const fetchStore = () => {
         fetch(STORE_PAGE_BY_STORE_NAME.replace(STORE_NAME, storeName), {
             headers: {
@@ -27,25 +27,26 @@ const StorePage = () => {
                 'Authorization': `Token ${token}`,
             }
         })
-            .then(response => response.json())
+            .then(response => response.json()) // Parse JSON response
             .then(data => {
-                setStore(data);
+                setStore(data); // Set store data to state
             })
             .catch(error => {
-                console.error(ERR_FETCHING_STORE, error);
+                console.error(ERR_FETCHING_STORE, error); // Log error if fetching fails
             });
     }
 
+    // Fetch store data when component mounts
     useEffect(() => {
         fetchStore();
-    });
+    }, []); // Empty dependency array ensures this runs only once
 
     return (
         <>
-            <h1>{store.name}</h1>
+            <h1>{store.name}</h1> {/* Display store name */}
 
-            <PictureAndDescriptionField editable={false} object={store} />
-            <SingleLineTextField editable={false} value={store.address} />
+            <PictureAndDescriptionField editable={false} object={store} /> {/* Display picture and description */}
+            <SingleLineTextField editable={false} value={store.address} /> {/* Display store address */}
 
             {/* TODO add enrollment component for managers to enroll other managers to this particular store */}
         </>

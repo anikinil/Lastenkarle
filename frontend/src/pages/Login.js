@@ -1,22 +1,23 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
-import { LOGIN as LOGIN_URI} from '../constants/URIs/UserURIs';
+import { LOGIN as LOGIN_URI } from '../constants/URIs/UserURIs';
 import { useNavigate } from 'react-router-dom';
 import { HELMHOLTZ } from '../constants/URLs/Navigation';
 
 const Login = () => {
-
+    // Translation hook
     const { t } = useTranslation();
 
+    // Navigation hook
     const navigate = useNavigate();
 
+    // State hooks for username, password, token, and user role
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [token, setToken] = useState('');
+    const [userRole, setUserRole] = useState('');
 
-    const [token, setToken] = useState('')
-    const [userRole, setUserRole] = useState('')
-
+    // Handle login button click
     function handleLoginClick() {
         postLogin();
         setCookie('token', token);
@@ -24,15 +25,14 @@ const Login = () => {
         navigateToNextPage();
     }
 
-    // post login request
+    // Post login request
     const postLogin = () => {
-
         let payload = {
             username: username,
             password: password
         };
 
-        // post login request
+        // Post login request
         fetch(LOGIN_URI, {
             method: 'POST',
             headers: {
@@ -44,58 +44,59 @@ const Login = () => {
                 if (response?.ok) {
                     return response.json();
                 } else {
-                    // if the request was not successful, throw an error
+                    // If the request was not successful, throw an error
                     return response.json().then(errorData => {
                         throw new Error(errorData.message);
                     });
                 }
             })
-            // set the token variable to acquired token
+            // Set the token and user role state variables
             .then(data => {
                 setToken(data.token);
-                // JAN logging in should return user role
                 setUserRole(data.userRole);
             })
             .catch(error => {
-                // handle any network or other errors that occurred during the request
+                // Handle any network or other errors that occurred during the request
                 alert('Error making login request.' + error.message);
             });
     }
 
+    // Handle Helmholtz login button click
     const handleHelmholtzLoginClick = () => {
         window.location.replace(HELMHOLTZ);
     }
 
+    // Handle register button click
     const handleRegisterClick = () => {
-        // TODO account for different source and destination pages (maybe with cookies)
-        navigate('/register')
+        navigate('/register');
     }
 
+    // Set a cookie with a specified label and value
     const setCookie = (label, value) => {
-        var days = 1
+        var days = 1;
         const expirationDate = new Date();
         expirationDate.setDate(expirationDate.getDate() + days);
         document.cookie = `${label}=${value}; expires=${expirationDate.toUTCString()}; path=/`;
     };
 
-    // THINK if there is a good way to not have to add this funciton everywhere
-    // this prevents user from switching to new line by hitting [Enter]
-    // TODO perhaps use SingleLineTextFieldComponent
+    // Prevent user from switching to a new line by hitting [Enter]
     const handleFieldKeyDown = (event) => {
         if (event.key === 'Enter') {
             event.preventDefault();
         }
     };
 
+    // Navigate to the next page after login
     const navigateToNextPage = () => {
-        // TODO implement and account for different locations from which user can log in and navigate back to them
+        // TODO: Implement and account for different locations from which user can log in and navigate back to them
     }
 
     return (
         <>
-            {/* THINK about style */}
+            {/* Login header */}
             <h1>{t('login')}</h1>
 
+            {/* Username input field */}
             <textarea
                 title={t('enter_username')}
                 className='username'
@@ -107,7 +108,7 @@ const Login = () => {
             >
             </textarea>
 
-            {/* TODO check if there is an extra textarea type for passwords */}
+            {/* Password input field */}
             <textarea
                 title={t('enter_password')}
                 className='password'
@@ -119,6 +120,7 @@ const Login = () => {
             >
             </textarea>
 
+            {/* Button container */}
             <div className='button-container'>
                 <button type='button' className='button accent' onClick={handleLoginClick}>{t('login')}</button>
                 <button type='button' className='button regular' onClick={handleHelmholtzLoginClick}>{t('helmholtz_login')}</button>

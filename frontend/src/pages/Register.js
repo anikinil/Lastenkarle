@@ -1,36 +1,32 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
 import { REGISTER } from '../constants/URIs/UserURIs';
 import { useNavigate } from 'react-router-dom';
-
 import { HELMHOLTZ, HOME, LOGIN } from '../constants/URLs/Navigation';
-
 import { ERR_POSTING_LOGIN_REQUEST, ERR_POSTING_REGISTER_REQUEST } from '../constants/ErrorMessages';
 
 const Register = () => {
+    const { t } = useTranslation(); // Translation hook
+    const navigate = useNavigate(); // Navigation hook
 
-    const { t } = useTranslation();
-
-    const navigate = useNavigate();
-
+    // State variables for form fields
     const [username, setUsername] = useState('');
     const [contactData, setContactData] = useState('');
     const [yearOfBirth, setYearOfBirth] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [password, setPassword] = useState('');
+    const [token, setToken] = useState();
 
-    const [token, setToken] = useState()
-
+    // Handle register button click
     const handleRegisterClick = () => {
         postRegister();
         setTokenCookie();
         navigateToNextPage();
-    }
+    };
 
+    // Function to post registration data
     const postRegister = () => {
-
         let payload = {
             contact_data: contactData,
             username: username,
@@ -49,7 +45,6 @@ const Register = () => {
             },
             body: JSON.stringify(payload)
         })
-            // TODO check if async causing problems
             .then(async response => {
                 if (response.ok) {
                     const text = await response.text();
@@ -58,8 +53,7 @@ const Register = () => {
                     } else {
                         return JSON.parse(text);
                     }
-                }
-                else {
+                } else {
                     // If the request was not successful, throw an error
                     const errorData = await response.json();
                     throw new Error(errorData.message);
@@ -68,17 +62,16 @@ const Register = () => {
             .catch(error => {
                 alert(ERR_POSTING_REGISTER_REQUEST + ' ' + error.message);
             });
-    }
+    };
 
-    // post login request after successful registration
+    // Function to post login data after successful registration
     const postLogin = () => {
-
         let payload = {
             username: username,
             password: password
         };
 
-        // post login request
+        // Send the POST request to the login endpoint
         fetch(LOGIN, {
             method: 'POST',
             headers: {
@@ -86,7 +79,6 @@ const Register = () => {
             },
             body: JSON.stringify(payload)
         })
-            // TODO check if async causing problems
             .then(async response => {
                 if (response.ok) {
                     return response.json();
@@ -100,37 +92,39 @@ const Register = () => {
                 setToken(data.token);
             })
             .catch(error => {
-                // handles any network or other errors that occurred during the request
                 alert(ERR_POSTING_LOGIN_REQUEST + ' ' + error.message);
             });
-    }
+    };
 
+    // Handle Helmholtz registration button click
     const handleHelmholtzRegistrationClick = () => {
         window.location.replace(HELMHOLTZ);
-    }
+    };
 
+    // Function to set token cookie
     const setTokenCookie = () => {
-        var days = 1
+        var days = 1;
         const expirationDate = new Date();
         expirationDate.setDate(expirationDate.getDate() + days);
         document.cookie = `${'token'}=${token}; expires=${expirationDate.toUTCString()}; path=/`;
     };
 
-    // this prevents user from switching to new line by hitting [Enter]
+    // Prevent user from switching to new line by hitting [Enter]
     const handleFieldKeyDown = (event) => {
         if (event.key === 'Enter') {
             event.preventDefault();
         }
     };
 
+    // Handle login button click
     const handleLoginClick = () => {
-        // TODO account for different source and destination pages
-        navigate(LOGIN)
-    }
+        navigate(LOGIN);
+    };
 
+    // Navigate to the next page after registration
     const navigateToNextPage = () => {
-        navigate(HOME)
-    }
+        navigate(HOME);
+    };
 
     return (
         <>
@@ -204,7 +198,6 @@ const Register = () => {
 
             <div className='button-container'>
                 <button type='button' className='button accent' onClick={handleRegisterClick}>{t('register')}</button>
-                {/* TODO should be defined as "Register via Helmholtz AAI" in translation files */}
                 <button type='button' className='button regular' onClick={handleHelmholtzRegistrationClick}>{t('helmholtz_registration')}</button>
                 <button type='button' className='button regular' onClick={handleLoginClick}>{t('login_instead')}</button>
             </div>

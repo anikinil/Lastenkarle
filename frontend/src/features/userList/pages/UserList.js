@@ -9,31 +9,21 @@ import { FaSortAlphaDown, FaSortAlphaUp } from 'react-icons/fa';
 import { ALL_USERS } from '../../../constants/URIs/AdminURIs';
 import { getCookie } from '../../../services/Cookies';
 
-// let usersLst = [
-//     {
-//         id: 1,
-//         name: 'ilja42',
-//     },
-//     {
-//         id: 2,
-//         name: 'alma123',
-//     },
-//     {
-//         id: 3,
-//         name: 'rüdiger',
-//     }
-// ]
-
+// Component to display the list of users
 const UserList = () => {
 
     const { t } = useTranslation();
     
+    // Get the authentication token from cookies
     const token = getCookie('token');
 
+    // State to store the list of users
     const [users, setUsers] = useState([]);
 
+    // State to manage sorting order
     const [sortAZ, setSortAZ] = useState(true);
 
+    // Function to fetch users from the API
     const fetchUsers = async () => {
         const response = await fetch(ALL_USERS, {
             headers: {
@@ -45,15 +35,18 @@ const UserList = () => {
         setUsers(data);
     };
 
+    // Fetch users when the component mounts
     useEffect(() => {
         fetchUsers();
     }, [])
 
+    // Handle the sort button click
     const handleSortClick = () => {
         setSortAZ(!sortAZ)
         resort()
     }
 
+    // Function to sort the users list
     const resort = () => {
         users.sort((a, b) => sortAZ ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name))
     }

@@ -42,17 +42,20 @@ import { getCookie } from './services/Cookies';
 
 const App = () => {
 
+    // Determine if the user prefers a dark theme
     const defaultDark = window.matchMedia('(prefers-color-sceme: dark)').matches
     const [theme, setTheme] = useLocalStorage('theme', defaultDark ? 'dark' : 'light')
 
+    // Function to switch between light and dark themes
     const switchTheme = () => {
         const newTheme = theme === 'light' ? 'dark' : 'light';
         setTheme(newTheme);
     }
 
+    // Get user roles from cookies
     const userRoles = getCookie('user_roles')
 
-    // gets appropriate version of a page by path based on user role
+    // Get the appropriate version of a page by path based on user role
     const getComponentByPath = (path) => {
         switch (path) {
             case '/bike/:id':

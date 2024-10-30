@@ -1,4 +1,4 @@
-//Page for registering a new store
+// Page for registering a new store
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -16,17 +16,18 @@ import { getCookie } from '../../../services/Cookies';
 
 const StoreRegistration = () => {
 
-    const { t } = useTranslation();
+    const { t } = useTranslation(); // Translation hook
 
-    const navigate = useNavigate();
+    const navigate = useNavigate(); // Navigation hook
 
     const handleCancelClick = () => {
         // TODO add a confirmation dialog
-        navigate('/stores')
+        navigate('/stores') // Navigate to stores page on cancel
     }
 
-    const token = getCookie('token')
+    const token = getCookie('token') // Get authentication token
 
+    // State variables for form fields
     const [region, setRegion] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [email, setEmail] = useState('');
@@ -34,9 +35,10 @@ const StoreRegistration = () => {
     const [name, setName] = useState('');
 
     const handleRegionChange = () => {
-        // TODO implement
+        // TODO implement region change handler
     }
 
+    // Handlers for form field changes
     const handlePhoneNumberChange = (value) => {
         setPhoneNumber(value)
     }
@@ -53,6 +55,7 @@ const StoreRegistration = () => {
         setName(value)
     }
 
+    // Function to post new store data to the server
     const postNewStore = () => {
 
         let payload = {
@@ -73,6 +76,7 @@ const StoreRegistration = () => {
         })
     }
 
+    // Handler for register button click
     const handleRegisterClick = () => {
         postNewStore();
     }
