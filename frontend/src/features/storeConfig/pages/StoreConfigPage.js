@@ -19,6 +19,7 @@ import { useState, useEffect } from "react";
 import { SUCCESS_UPDATING_STORE } from "../../../constants/SuccessMessages";
 import { STORE } from "../../../constants/URLs/Navigation";
 import { STORE_NAME } from "../../../constants/URLs/General";
+import { getCookie } from "../../../services/Cookies";
 
 // Mock data for stores (to be replaced with actual fetching logic)
 // let stores = [
@@ -61,14 +62,16 @@ const StoreConfigPage = () => {
     // State to hold store data
     const [store, setStore] = useState();
 
+    const token = getCookie('token');
+
     // fetches store data
     const fetchStore = () => {
-        fetch(STORE_PAGE_BY_STORE_NAME.replace(STORE_NAME, storeName)), {
+        fetch(STORE_PAGE_BY_STORE_NAME.replace(STORE_NAME, storeName), {
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Token ${token}`,
+                'Authorization': `Token ${token}`
             }
-        }
+        })
             .then(response => response.json())
             .then(data => {
                 setStore(data);
@@ -86,7 +89,8 @@ const StoreConfigPage = () => {
         fetch(STORE_PAGE_BY_STORE_NAME.replace(STORE_NAME, storeName), {
             method: 'PATCH',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`
             },
             body: JSON.stringify(payload)
         })

@@ -9,14 +9,16 @@ import { useParams } from 'react-router-dom';
 import SingleLineTextField from '../../../components/display/SingleLineTextField';
 import { STORE_NAME, STORE_PAGE_BY_STORE_NAME } from '../../../constants/URIs/ManagerURI';
 import { ERR_FETCHING_STORE } from '../../../constants/ErrorMessages';
+import { getCookie } from '../../../services/Cookies';
 
 const StorePage = () => {
 
     const { t } = useTranslation();
 
     const { storeName } = useParams();
-
     const [store, setStore] = useState();
+
+    const token = getCookie('token');
 
     const fetchStore = () => {
         fetch(STORE_PAGE_BY_STORE_NAME.replace(STORE_NAME, storeName), {
@@ -32,12 +34,12 @@ const StorePage = () => {
             .catch(error => {
                 console.error(ERR_FETCHING_STORE, error);
             });
-
-        useEffect(() => {
-            fetchStore();
-        });
     }
-    
+
+    useEffect(() => {
+        fetchStore();
+    });
+
     return (
         <>
             <h1>{store.name}</h1>

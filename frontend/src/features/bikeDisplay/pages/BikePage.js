@@ -10,6 +10,7 @@ import BikeCalendar from '../../booking/components/calendar/BikeCalendar';
 import { ID } from '../../../constants/URIs/General';
 import { BIKE_BY_ID, STORE_BY_BIKE_ID } from '../../../constants/URIs/BookingURIs';
 import { ERR_FETCHING_BIKE, ERR_FETCHING_STORE } from '../../../constants/ErrorMessages';
+import { getCookie } from '../../../services/Cookies';
 
 const BikePage = () => {
 
@@ -19,6 +20,8 @@ const BikePage = () => {
     const { id } = useParams();
     const [bike, setBike] = useState();
     const [store, setStore] = useState();
+
+    const token = getCookie('token');
 
     const fetchBike = () => {
         fetch(BIKE_BY_ID.replace(ID, id), {
@@ -50,10 +53,6 @@ const BikePage = () => {
             .catch(error => {
                 console.error(ERR_FETCHING_STORE, error);
             });
-
-        useEffect(() => {
-            fetchStore();
-        });
     }
 
     useEffect(() => {
