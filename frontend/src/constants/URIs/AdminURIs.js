@@ -12,6 +12,7 @@ export const ALL_BOOKINGS                   = `${BASE}/bookings`
 export const SELECTED_BOOKING               = `${BASE}/bookings/{BOOKING_ID}`
 export const ADD_BIKE_TO_STORE              = `${BASE}/create/store/{STORE_ID}/bike`
 export const DELETE_BIKE                    = `${BASE}/delete/bike/{BIKE_ID}`
+export const DELETE_STORE                   = `${BASE}/delete/store/{STORE_NAME}`
 export const ALL_BIKES                      = `${BASE}/bikes`
 export const ALL_STORES                     = `${BASE}/stores`
 

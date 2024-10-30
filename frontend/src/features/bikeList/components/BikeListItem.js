@@ -48,8 +48,6 @@ const BikeListItem = ({ bike }) => {
     // TODO needs also to account for the case when the user is not an admin
     const postBikeDeletion = () => {
 
-        // posts enrollment request
-        // JAN maybe a dedicated URI for enrollment, for better encapsulation
         fetch(DELETE_BIKE.replace(ID, bike.id), {
             method: 'DELETE',
             headers: {
@@ -74,7 +72,7 @@ const BikeListItem = ({ bike }) => {
     }
 
     const handlePopupConfirm = () => {
-        // TODO implement deletion
+        postBikeDeletion();
     }
 
     const handlePopupCancel = () => {
@@ -97,8 +95,7 @@ const BikeListItem = ({ bike }) => {
             </li>
 
             <ConfirmationPopup onConfirm={handlePopupConfirm} onCancel={handlePopupCancel} show={showConfirmationPopup}>
-                    {/* TODO make proper string insertion */}
-                    {t('are_you_sure_you_want_to_delete_bike') + ' ' + bike.name + '?'}
+                {t('are_you_sure_you_want_to_delete_bike') + ' ' + bike.name + '?'}
             </ConfirmationPopup>
         </>
     );

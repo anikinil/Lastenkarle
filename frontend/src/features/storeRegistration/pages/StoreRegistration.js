@@ -21,7 +21,7 @@ const StoreRegistration = () => {
     const navigate = useNavigate();
 
     const handleCancelClick = () => {
-        // TODO add a confirmation dialogue
+        // TODO add a confirmation dialog
         navigate('/stores')
     }
 

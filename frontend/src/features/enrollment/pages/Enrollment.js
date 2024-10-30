@@ -98,9 +98,6 @@ const Enrollment = () => {
 
     const handleEnrollClick = () => {
         postEnrollment()
-        // TODO notify on success/failure perhaps via alert (in this line)
-        // TODO decide where to navigate to
-        navigate('/')
     }
 
     return (
