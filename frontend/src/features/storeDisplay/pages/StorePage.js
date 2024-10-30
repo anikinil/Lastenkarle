@@ -19,7 +19,12 @@ const StorePage = () => {
     const [store, setStore] = useState();
 
     const fetchStore = () => {
-        fetch(STORE_PAGE_BY_STORE_NAME.replace(STORE_NAME, storeName))
+        fetch(STORE_PAGE_BY_STORE_NAME.replace(STORE_NAME, storeName), {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`,
+            }
+        })
             .then(response => response.json())
             .then(data => {
                 setStore(data);
@@ -27,18 +32,18 @@ const StorePage = () => {
             .catch(error => {
                 console.error(ERR_FETCHING_STORE, error);
             });
+
+        useEffect(() => {
+            fetchStore();
+        });
     }
-
-    useEffect(() => {
-        fetchStore();
-    });
-
+    
     return (
         <>
             <h1>{store.name}</h1>
 
-            <PictureAndDescriptionField editable={false} object={store}/>
-            <SingleLineTextField editable={false} value={store.address}/>
+            <PictureAndDescriptionField editable={false} object={store} />
+            <SingleLineTextField editable={false} value={store.address} />
 
             {/* TODO add enrollment component for managers to enroll other managers to this particular store */}
         </>

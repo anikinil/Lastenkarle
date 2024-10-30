@@ -6,6 +6,9 @@ import StoreListItem from './StoreListItem';
 
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { ALL_STORES } from '../../../constants/URIs/BookingURIs';
+import { getCookie } from '../../../services/Cookies';
+import { STORE_REGISTRATION } from '../../../constants/URLs/Navigation';
 
 // TODO implement fetching
 let stores = [
@@ -31,7 +34,26 @@ const StoreList = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();
 
+    const token = getCookie('token');
+
+    const [stores, setStores] = useState([]);
+
     const [sortAZ, setSortAZ] = useState(true);
+
+    const fetchStores = async () => {
+        const response = await fetch(ALL_STORES, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`,
+            }
+        });
+        const data = await response.json();
+        setStores(data);
+    };
+
+    useEffect(() => {
+        fetchStores();
+    }, [])
 
     const handleSortClick = () => {
         setSortAZ(!sortAZ)
@@ -43,7 +65,7 @@ const StoreList = () => {
     }
 
     const handleNewStoreClick = () => {
-        navigate('/store-registration');
+        navigate(STORE_REGISTRATION);
     }
 
     return (
