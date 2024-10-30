@@ -1,11 +1,11 @@
-import React, { startTransition } from 'react';
+import React, { useState, startTransition } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { LOGOUT } from '../constants/URIs/UserURIs';
 import { useNavigate } from 'react-router-dom';
 import { deleteCookie, getCookie } from '../services/Cookies';
 import { LOGIN } from '../constants/URLs/Navigation';
-import { ERR_POSTING_LOGOUT } from '../constants/ErrorMessages';
+import { ERR_POSTING_LOGOUT_REQUEST } from '../constants/ErrorMessages';
 
 // on successful logout this component does not show any content and only runs the logout script 
 // (maybe shows "Logging out..." message)
@@ -13,6 +13,8 @@ import { ERR_POSTING_LOGOUT } from '../constants/ErrorMessages';
 const Logout = () => {
 
     const { t } = useTranslation();
+
+    const [error, setError] = useState(null);
 
     const navigate = useNavigate();
 
@@ -46,7 +48,8 @@ const Logout = () => {
             })
             .catch(error => {
                 // catch the error and print it to the console
-                console.log(ERR_POSTING_LOGOUT + ': ' + error);
+                setError(error);
+                console.log(ERR_POSTING_LOGOUT_REQUEST + ': ' + error);
             });
     }
 

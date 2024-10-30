@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { REGISTER, LOGIN } from '../constants/URIs/UserURIs';
+import { REGISTER } from '../constants/URIs/UserURIs';
 import { useNavigate } from 'react-router-dom';
 
-import { ERR_POSTING_REGISTER_REQUEST } from '../constants/ErrorMessages';
+import { HELMHOLTZ, HOME, LOGIN } from '../constants/URLs/Navigation';
+
+import { ERR_POSTING_LOGIN_REQUEST, ERR_POSTING_REGISTER_REQUEST } from '../constants/ErrorMessages';
 
 const Register = () => {
 
@@ -98,15 +100,13 @@ const Register = () => {
                 setToken(data.token);
             })
             .catch(error => {
-                // TODO proper variable for error message
                 // handles any network or other errors that occurred during the request
-                alert('Error making login request: ' + error.message);
+                alert(ERR_POSTING_LOGIN_REQUEST + ' ' + error.message);
             });
     }
 
     const handleHelmholtzRegistrationClick = () => {
-        // TODO proper variable for URL
-        window.location.replace('URL_USER_HELMHOLTZ');
+        window.location.replace(HELMHOLTZ);
     }
 
     const setTokenCookie = () => {
@@ -124,13 +124,12 @@ const Register = () => {
     };
 
     const handleLoginClick = () => {
-        // TODO proper variable for navigation
         // TODO account for different source and destination pages
-        navigate('/login')
+        navigate(LOGIN)
     }
 
     const navigateToNextPage = () => {
-        navigate('/')
+        navigate(HOME)
     }
 
     return (

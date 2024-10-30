@@ -10,6 +10,10 @@ import defaultStorePicture from '../../../assets/images/default_bike.png'
 import { STORE_BY_BIKE_ID } from '../../../constants/URIs/BookingURIs';
 import { STORE_NAME } from '../../../constants/URIs/ManagerURI';
 import { DELETE_STORE } from '../../../constants/URIs/AdminURIs';
+import { getCookie } from '../../../services/Cookies';
+import { ERR_DELETING_STORE } from '../../../constants/ErrorMessages';
+import { ID } from '../../../constants/URIs/General';
+import { BOOKINGS } from '../../../constants/URLs/Navigation';
 
 const StoreListItem = ({ store }) => {
 
@@ -17,8 +21,12 @@ const StoreListItem = ({ store }) => {
 
     const navigate = useNavigate();
 
+    const token = getCookie('token');
+
     // TODO needs also to account for the case when the user is not an admin
     const postStoreDeletion = () => {
+
+        const payload = {}
 
         fetch(DELETE_STORE.replace(STORE_NAME, store.name), {
             method: 'DELETE',
@@ -39,7 +47,7 @@ const StoreListItem = ({ store }) => {
                 }
             })
             .catch(error => {
-                alert(ERRs + ' ' + error.message);
+                alert(ERR_DELETING_STORE + ' ' + error.message);
             })
     }
 

@@ -14,6 +14,7 @@ import { ID } from '../../../constants/URIs/General';
 import { STORE_BY_BIKE_ID } from '../../../constants/URIs/BookingURIs';
 import { DELETE_BIKE } from '../../../constants/URIs/AdminURIs';
 import { ERR_DELETING_BIKE } from '../../../constants/ErrorMessages';
+import { getCookie } from '../../../services/Cookies';
 
 const BikeListItem = ({ bike }) => {
 
@@ -23,6 +24,8 @@ const BikeListItem = ({ bike }) => {
 
     // THINK how to display different buttons to different roles
     // THINK maybe show big preview of bike image on clik on miniature preview
+
+    const token = getCookie('token');
 
     const [showConfirmationPopup, setShowConfirmationPopup] = useState(false);
 
@@ -47,6 +50,8 @@ const BikeListItem = ({ bike }) => {
 
     // TODO needs also to account for the case when the user is not an admin
     const postBikeDeletion = () => {
+
+        const payload = {}
 
         fetch(DELETE_BIKE.replace(ID, bike.id), {
             method: 'DELETE',
