@@ -7,35 +7,32 @@ import './UserList.css'
 
 import { FaSortAlphaDown, FaSortAlphaUp } from 'react-icons/fa';
 import { ALL_USERS } from '../../../constants/URIs/AdminURIs';
+import { getCookie } from '../../../services/Cookies';
 
-// TODO implement fetching
-let usersLst = [
-    {
-        id: 1,
-        name: 'ilja42',
-    },
-    {
-        id: 2,
-        name: 'alma123',
-    },
-    {
-        id: 3,
-        name: 'rüdiger',
-    }
-]
+// let usersLst = [
+//     {
+//         id: 1,
+//         name: 'ilja42',
+//     },
+//     {
+//         id: 2,
+//         name: 'alma123',
+//     },
+//     {
+//         id: 3,
+//         name: 'rüdiger',
+//     }
+// ]
 
 const UserList = () => {
 
     const { t } = useTranslation();
     
-    const [token, setToken] = useState();
+    const token = getCookie('token');
 
-    // NOTE after fetching implemented:
-    // const [users, setUsers] = useState([]);
-    const [users, setUsers] = useState(usersLst);
+    const [users, setUsers] = useState([]);
 
     const [sortAZ, setSortAZ] = useState(true);
-
 
     const fetchUsers = async () => {
         const response = await fetch(ALL_USERS, {

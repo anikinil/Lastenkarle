@@ -10,25 +10,6 @@ import { ALL_STORES } from '../../../constants/URIs/BookingURIs';
 import { getCookie } from '../../../services/Cookies';
 import { STORE_REGISTRATION } from '../../../constants/URLs/Navigation';
 
-// TODO implement fetching
-let stores = [
-    {
-        id: 1,
-        name: 'Store 1',
-        image: require('../../../assets/images/store1.jpg')
-    },
-    {
-        id: 3,
-        name: 'Store 3',
-        image: null
-    },
-    {
-        id: 2,
-        name: 'Store 2',
-        image: require('../../../assets/images/store2.jpg')
-    },
-]
-
 const StoreList = () => {
 
     const { t } = useTranslation();
