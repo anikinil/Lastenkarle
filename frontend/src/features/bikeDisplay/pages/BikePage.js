@@ -21,7 +21,12 @@ const BikePage = () => {
     const [store, setStore] = useState();
 
     const fetchBike = () => {
-        fetch(BIKE_BY_ID.replace(ID, id))
+        fetch(BIKE_BY_ID.replace(ID, id), {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`,
+            }
+        })
             .then(response => response.json())
             .then(data => {
                 setBike(data);
@@ -32,7 +37,12 @@ const BikePage = () => {
     }
 
     const fetchStore = () => {
-        fetch(STORE_BY_BIKE_ID.replace(ID, bike.id))
+        fetch(STORE_BY_BIKE_ID.replace(ID, id), {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`,
+            }
+        })
             .then(response => response.json())
             .then(data => {
                 setStore(data);
@@ -40,6 +50,10 @@ const BikePage = () => {
             .catch(error => {
                 console.error(ERR_FETCHING_STORE, error);
             });
+
+        useEffect(() => {
+            fetchStore();
+        });
     }
 
     useEffect(() => {
@@ -56,7 +70,7 @@ const BikePage = () => {
             <h1>{bike.name}</h1>
 
             <PictureAndDescriptionField editable={false} object={bike} />
-            <SingleLineTextField editable={false} value={store.address} title='address'/>
+            <SingleLineTextField editable={false} value={store.address} title='address' />
 
             <div className='button-container'>
                 <button type='button' className='button regular' onClick={handleStoreClick}>{t('store')}</button>

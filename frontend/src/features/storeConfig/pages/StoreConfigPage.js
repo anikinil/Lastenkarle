@@ -63,7 +63,12 @@ const StoreConfigPage = () => {
 
     // fetches store data
     const fetchStore = () => {
-        fetch(STORE_PAGE_BY_STORE_NAME.replace(STORE_NAME, storeName))
+        fetch(STORE_PAGE_BY_STORE_NAME.replace(STORE_NAME, storeName)), {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`,
+            }
+        }
             .then(response => response.json())
             .then(data => {
                 setStore(data);
@@ -72,7 +77,7 @@ const StoreConfigPage = () => {
                 console.error(ERR_FETCHING_STORE, error);
             });
     }
-    
+
     // Function to post changes to the store
     const postChanges = () => {
         let payload = {
@@ -85,13 +90,13 @@ const StoreConfigPage = () => {
             },
             body: JSON.stringify(payload)
         })
-        .then(response => response.json())
-        .then(data => {
-            console.log(SUCCESS_UPDATING_STORE, data);
-        })
-        .catch(error => {
-            console.error(ERR_UPDATING_STORE, error);
-        });
+            .then(response => response.json())
+            .then(data => {
+                console.log(SUCCESS_UPDATING_STORE, data);
+            })
+            .catch(error => {
+                console.error(ERR_UPDATING_STORE, error);
+            });
     }
 
     useEffect(() => {
@@ -112,11 +117,11 @@ const StoreConfigPage = () => {
     return (
         <div>
             {/* Displaying store picture and description */}
-            <PictureAndDescriptionField 
-                image={store.image} 
-                description={store.description} 
+            <PictureAndDescriptionField
+                image={store.image}
+                description={store.description}
             />
-            <SingleLineTextField editable={true} value={store.address} title={'address'} onChange={handleAddressChange}/>
+            <SingleLineTextField editable={true} value={store.address} title={'address'} onChange={handleAddressChange} />
             {/* Configuring store opening times */}
             <StoreOpeningTimesConfig />
             {/* Displaying list of bikes of the store */}
