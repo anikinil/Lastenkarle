@@ -210,7 +210,7 @@ const BookingList = ({ filterStore, filterBike, filterUser }) => {
         fetchStores();
         fetchBikes();
         fetchUsers();
-        // THINK if filtering should happen on load, if filter parameters passed
+        // THINK if filtering should happen on load (in case filter parameters passed)
     }, [])
 
     const handleStoreSelect = (e) => {
