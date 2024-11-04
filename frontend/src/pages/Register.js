@@ -22,7 +22,6 @@ const Register = () => {
     const handleRegisterClick = () => {
         postRegister();
         setTokenCookie();
-        navigateToNextPage();
     };
 
     // Function to post registration data
@@ -45,6 +44,8 @@ const Register = () => {
             },
             body: JSON.stringify(payload)
         })
+        // TODO fix post request
+        // TODO add navigation and account for different locations where user needs to be navigated to
             .then(async response => {
                 if (response.ok) {
                     const text = await response.text();
@@ -119,11 +120,6 @@ const Register = () => {
     // Handle login button click
     const handleLoginClick = () => {
         navigate(LOGIN);
-    };
-
-    // Navigate to the next page after registration
-    const navigateToNextPage = () => {
-        navigate(HOME);
     };
 
     return (

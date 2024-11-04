@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { LOGIN as LOGIN_URI } from '../constants/URIs/UserURIs';
+import { LOGIN as LOGIN_URI, REGISTER } from '../constants/URIs/UserURIs';
 import { useNavigate } from 'react-router-dom';
-import { HELMHOLTZ } from '../constants/URLs/Navigation';
+import { HELMHOLTZ, HOME } from '../constants/URLs/Navigation';
 
 const Login = () => {
     // Translation hook
@@ -22,7 +22,6 @@ const Login = () => {
         postLogin();
         setCookie('token', token);
         setCookie('user_role', userRole);
-        navigateToNextPage();
     }
 
     // Post login request
@@ -54,6 +53,9 @@ const Login = () => {
             .then(data => {
                 setToken(data.token);
                 setUserRole(data.userRole);
+                // TODO account for different locations from which user can log in and navigate back to them
+                navigate(HOME);
+                console.log("TOKEN", data.token);
             })
             .catch(error => {
                 // Handle any network or other errors that occurred during the request
@@ -68,7 +70,7 @@ const Login = () => {
 
     // Handle register button click
     const handleRegisterClick = () => {
-        navigate('/register');
+        navigate(REGISTER);
     }
 
     // Set a cookie with a specified label and value
@@ -85,11 +87,6 @@ const Login = () => {
             event.preventDefault();
         }
     };
-
-    // Navigate to the next page after login
-    const navigateToNextPage = () => {
-        // TODO: Implement and account for different locations from which user can log in and navigate back to them
-    }
 
     return (
         <>
