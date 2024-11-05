@@ -2,9 +2,9 @@
 import React from 'react';
 import { FaUser } from 'react-icons/fa';
 
-// TODO: maybe seperate into a data and a utils file
+// TODO maybe seperate into a data and a utils file
 
-// TODO: implement fetching of stores by specific owner
+// TODO implement fetching of stores by specific owner
 const stores = [
     {
         id: 1,
