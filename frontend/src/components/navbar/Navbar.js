@@ -7,7 +7,8 @@ import logo from '../../assets/images/logo.png';
 
 const Navbar = () => {
 
-    const userRoles = ['admin']; // TODO fetch
+    // const userRoles = ['admin']; // TODO fetch
+    const userRoles = ['visitor']
 
     const accountItem = getAccountItemByRoles(userRoles);
 

@@ -114,8 +114,6 @@ const accountItemVersions = [
     }
 ]
 
-console.log(menuItems)
-
 export const getAccountItemByRoles = (roles) => {
 
     return accountItemVersions.find(version => {
