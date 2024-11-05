@@ -40,6 +40,8 @@ import NavigationError from './pages/NavigationError';
 import { BIKE, BIKE_BOOKING, BIKE_REGISTRATION, BIKES, BOOKING, BOOKINGS, ENROLLMENT, HOME, LOGIN, LOGOUT, REGISTER, STORE, STORE_BOOKINGS, STORE_REGISTRATION, STORES, USER_BAN, USERS } from './constants/URLs/Navigation';
 import { getCookie } from './services/Cookies';
 
+// TEST
+
 const App = () => {
 
     // Determine if the user prefers a dark theme
