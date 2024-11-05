@@ -16,13 +16,20 @@ const stores = [
     }
 ]
 
+export const Roles = Object.freeze({
+    CUSTOMER: 'Customer',
+    MANAGER: 'Manager',
+    ADMIN: 'Admin',
+    VISITOR: 'Visitor'
+});
+
 const storesAsItems = stores.map((s) => ({ title: s.name, url: `/store/${s.id}` }))
 
 export const menuItems = [
     {
         title: 'Booking',
         url: '/booking',
-        roles: ['customer', 'manager', 'admin'],
+        roles: [Roles.CUSTOMER, Roles.MANAGER, Roles.ADMIN],
         submenu: [
             {
                 title: 'Karlsruhe',
@@ -45,12 +52,12 @@ export const menuItems = [
     {
         title: 'Store management',
         url: '/stores',
-        roles: ['manager', 'admin'],
+        roles: [Roles.MANAGER, Roles.ADMIN],
         submenu: storesAsItems
     },
     {
         title: 'Admin activities',
-        roles: ['admin'],
+        roles: [Roles.ADMIN],
         submenu: [
             {
                 title: 'Bookings',
@@ -81,7 +88,7 @@ const accountItemVersions = [
     {
         title: <FaUser />,
         url: '/login',
-        roles: ['customer', 'manager', 'admin'],
+        roles: [Roles.CUSTOMER, Roles.MANAGER, Roles.ADMIN],
         submenu: [
             {
                 title: 'My bookings',
@@ -96,7 +103,7 @@ const accountItemVersions = [
     {
         title: <FaUser />,
         url: '/login',
-        roles: ['visitor'],
+        roles: [Roles.VISITOR],
         submenu: [
             {
                 title: 'My bookings',
@@ -115,9 +122,16 @@ const accountItemVersions = [
 ]
 
 export const getAccountItemByRoles = (roles) => {
+    if (!roles || roles.length === 0) return null; // Return null or a default item if no roles are provided
 
-    return accountItemVersions.find(version => {
-        return version.roles.some(role =>
-            roles.includes(role))
-    })
-}
+    // Use a Set for faster lookups
+    const rolesSet = new Set(roles);
+
+    // Find the first matching account item configuration
+    const matchingAccountItem = accountItemVersions.find(version =>
+        version.roles.some(role => rolesSet.has(role))
+    );
+
+    // Return the matched item, or provide a default/fallback item for visitors if no match
+    return matchingAccountItem || accountItemVersions.find(version => version.roles.includes(Roles.VISITOR));
+};

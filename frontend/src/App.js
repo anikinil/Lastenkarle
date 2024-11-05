@@ -71,9 +71,9 @@ const App = () => {
 
     return (
         <div className='App' data-theme={theme}>
-            <Navbar />
             <div className='content-container'>
                 <BrowserRouter>
+            <Navbar /> 
                     <Routes>
                         <Route exact path={HOME} element={<Home />} />
                         <Route exact path={LOGIN} element={<Login />} />
@@ -96,11 +96,11 @@ const App = () => {
                         <Route exact path={BIKE} element={getComponentByPath(BIKE)} />
                         <Route exact path={BIKE_REGISTRATION} element={
                             <ProtectedElement element={<BikeRegistration />} elementRoles={['admin']} userRoles={userRoles} />
-                        } />                        
+                        } />
                         <Route exact path={STORE_REGISTRATION} element={
                             <ProtectedElement element={<StoreRegistration />} elementRoles={['admin']} userRoles={userRoles} />
                         } />
-                        
+
                         <Route exact path={ENROLLMENT} element={
                             <ProtectedElement element={<Enrollment />} elementRoles={['admin', 'manager']} userRoles={userRoles} />
                         } />
@@ -116,7 +116,7 @@ const App = () => {
                 <LanguageToggle />
                 <button className='toggle theme' onClick={switchTheme}>{theme === 'light' ? <MdLightMode /> : <MdDarkMode />}</button>
             </div>
-        </div>
+        </div >
     );
 }
 

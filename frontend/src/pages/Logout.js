@@ -31,6 +31,7 @@ const Logout = () => {
         fetch(LOGOUT, {
             method: 'POST',
             headers: {
+                'Content-Type': 'application/json',
                 'Authorization': `Token ${token}`
             }
         })

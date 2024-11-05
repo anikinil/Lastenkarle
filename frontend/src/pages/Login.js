@@ -11,17 +11,13 @@ const Login = () => {
     // Navigation hook
     const navigate = useNavigate();
 
-    // State hooks for username, password, token, and user role
+    // State hooks for username and password
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [token, setToken] = useState('');
-    const [userRole, setUserRole] = useState('');
 
     // Handle login button click
     function handleLoginClick() {
         postLogin();
-        setCookie('token', token);
-        setCookie('user_role', userRole);
     }
 
     // Post login request
@@ -51,8 +47,10 @@ const Login = () => {
             })
             // Set the token and user role state variables
             .then(data => {
-                setToken(data.token);
-                setUserRole(data.userRole);
+                // setToken(data.token);
+                // setUserRole(data.userRole);
+                setCookie('token', data.token);
+                // setCookie('user_role', userRole);
                 // TODO account for different locations from which user can log in and navigate back to them
                 navigate(HOME);
                 console.log("TOKEN", data.token);
