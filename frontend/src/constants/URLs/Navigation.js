@@ -27,3 +27,4 @@ export const BOOKINGS               = `/bookings`
 export const STORE_BOOKINGS         = `${STORE}/store-bookings`
 
 export const BOOKING                = `/booking`
+export const REGIONAL_BOOKING       = `/${REGION_NAME}`

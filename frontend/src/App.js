@@ -37,7 +37,7 @@ import Enrollment from './features/enrollment/pages/Enrollment';
 import StoreBookings from './features/storeBookings/pages/StoreBookings';
 
 import NavigationError from './pages/NavigationError';
-import { BIKE, BIKE_BOOKING, BIKE_REGISTRATION, BIKES, BOOKING, BOOKINGS, ENROLLMENT, HOME, LOGIN, LOGOUT, REGISTER, STORE, STORE_BOOKINGS, STORE_REGISTRATION, STORES, USER_BAN, USERS } from './constants/URLs/Navigation';
+import { BIKE, BIKE_BOOKING, BIKE_REGISTRATION, BIKES, BOOKING, BOOKINGS, ENROLLMENT, HOME, LOGIN, LOGOUT, REGIONAL_BOOKING, REGISTER, STORE, STORE_BOOKINGS, STORE_REGISTRATION, STORES, USER_BAN, USERS } from './constants/URLs/Navigation';
 import { getCookie } from './services/Cookies';
 
 const App = () => {
@@ -90,7 +90,7 @@ const App = () => {
                         <Route exact path={USERS} element={
                             <ProtectedElement element={<UserList />} elementRoles={['admin']} userRoles={userRoles} />
                         } />
-                        <Route exact path={BOOKING} element={<RegionalBooking />} />
+                        <Route exact path={REGIONAL_BOOKING} element={<RegionalBooking />} />
                         <Route exact path={BIKE_BOOKING} element={<BikeBooking />} />
                         <Route exact path={BIKES} element={<BikeListPage />} />
                         <Route exact path={BIKE} element={getComponentByPath(BIKE)} />
