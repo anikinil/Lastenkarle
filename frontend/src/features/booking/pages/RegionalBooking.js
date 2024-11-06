@@ -49,7 +49,7 @@ const RegionalBooking = () => {
             {/* <Map /> */}
             {/* <FilterForAvailabilities /> */}
             {/* <AvailabilityCalendar /> */}
-            {/* <BikeList /> */}
+            <BikeList />
         </>
         
     );
