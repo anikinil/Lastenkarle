@@ -13,7 +13,7 @@ export const LOGOUT                 = `/logout`
 export const REGISTER               = `/register`
 export const ENROLLMENT             = `/enrollment`
 export const USER_BAN               = `/user-ban`
-export const BOOKING                = `/booking/${ID}`
+export const BOOKING_PAGE           = `/booking/${ID}`
 export const USERS                  = `/users`
 export const NO_PERMISSION          = `/no-permission`
 export const BIKE_BOOKING           = `/bike-booking`
@@ -25,3 +25,5 @@ export const STORE                  = `/store/${STORE_NAME}`
 export const STORE_REGISTRATION     = `/store-registration`
 export const BOOKINGS               = `/bookings`
 export const STORE_BOOKINGS         = `${STORE}/store-bookings`
+
+export const BOOKING                = `/booking`

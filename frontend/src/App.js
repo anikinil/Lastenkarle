@@ -82,8 +82,8 @@ const App = () => {
                         <Route exact path={USER_BAN} element={
                             <ProtectedElement element={<UserBan />} elementRoles={['admin']} userRoles={userRoles} />
                         } />
-                        <Route exact path={BOOKINGS} element={<Booking />} />
-                        <Route exact path={BOOKING} element={<BookingPage />} />
+                        <Route exact path={BOOKING} element={<Booking />} />
+                        {/* <Route exact path={BOOKING} element={<BookingPage />} /> */}
                         <Route exact path={STORES} element={
                             <ProtectedElement element={<StoreListPage />} elementRoles={['admin', 'manager']} userRoles={userRoles} />
                         } />

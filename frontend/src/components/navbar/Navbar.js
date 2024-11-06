@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { menuItems, getAccountItemByRoles } from '../../data/menuData'
+import { menuItems, getAccountItemByRoles, Roles } from '../../data/menuData'
 import MenuItems from './MenuItems';
 import MenuItem from './MenuItem';
 import './Navbar.css';
@@ -17,7 +17,7 @@ const Navbar = () => {
     const token = getCookie('token');
 
     // default role is visitor (not logged in)
-    const [userRoles, setUserRoles] = useState(['visitor']);
+    const [userRoles, setUserRoles] = useState([Roles.VISITOR]);
     const [filteredMenuItems, setFilteredMenuItems] = useState([]);
 
     const fetchUserRoles = () => {

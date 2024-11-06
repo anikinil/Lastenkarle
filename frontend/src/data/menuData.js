@@ -29,7 +29,7 @@ export const menuItems = [
     {
         title: 'Booking',
         url: '/booking',
-        roles: [Roles.CUSTOMER, Roles.MANAGER, Roles.ADMIN],
+        roles: [Roles.CUSTOMER, Roles.MANAGER, Roles.ADMIN, Roles.VISITOR],
         submenu: [
             {
                 title: 'Karlsruhe',
