@@ -1,7 +1,7 @@
 // TODO replace everywhere by these variables
 
 import { ID } from "./General"
-import { STORE_NAME } from "./General"
+import { STORE_NAME, REGION_NAME } from "./General"
 
 export const HOME                   = `/`
 
