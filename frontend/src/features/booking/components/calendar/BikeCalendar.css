@@ -35,7 +35,7 @@
 
 .calendar-day.not-bookable {
   background-color: #ff6347; /* Rot für nicht buchbar */
-  pointer-events: none;
+  /* pointer-events: none; */
 }
 
 .calendar-day.selected {
