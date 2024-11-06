@@ -75,7 +75,7 @@ const App = () => {
         <div className='App' data-theme={theme}>
             <div className='content-container'>
                 <BrowserRouter>
-            <Navbar /> 
+                    <Navbar />
                     <Routes>
                         <Route exact path={HOME} element={<Home />} />
                         <Route exact path={LOGIN} element={<Login />} />
@@ -96,7 +96,8 @@ const App = () => {
                         <Route path={REGIONAL_BOOKING_KARLSRUHE} element={<RegionalBooking />} />
                         <Route exact path={BIKE_BOOKING} element={<BikeBooking />} />
                         <Route exact path={BIKES} element={<BikeListPage />} />
-                        <Route exact path={BIKE} element={getComponentByPath(BIKE)} />
+                        {/* <Route exact path={BIKE} element={getComponentByPath(BIKE)} /> */}
+                        <Route exact path={'/bike/1'} element={<BikePage />} />
                         <Route exact path={BIKE_REGISTRATION} element={
                             <ProtectedElement element={<BikeRegistration />} elementRoles={['admin']} userRoles={userRoles} />
                         } />
