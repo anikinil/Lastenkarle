@@ -47,10 +47,7 @@ const Login = () => {
             })
             // Set the token and user role state variables
             .then(data => {
-                // setToken(data.token);
-                // setUserRole(data.userRole);
                 setCookie('token', data.token);
-                // setCookie('user_role', userRole);
                 // TODO account for different locations from which user can log in and navigate back to them
                 navigate(HOME);
                 console.log("TOKEN", data.token);

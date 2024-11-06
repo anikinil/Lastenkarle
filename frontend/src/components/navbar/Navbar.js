@@ -29,8 +29,6 @@ const Navbar = () => {
         })
             .then(response => response.json())
             .then(data => {
-                console.log("Fetched user roles:", data.user_flags.map(element => element.flag));
-                
                 setUserRoles(data.user_flags.map(element => element.flag));
             })
             .catch(error => {
@@ -38,12 +36,12 @@ const Navbar = () => {
             });
     }
 
+    // fetch user roles on first render, if token is present (user is logged in)
     useEffect(() => {
-        fetchUserRoles();
+        if (token) fetchUserRoles();
     }, [location]);
 
     useEffect(() => {
-        console.log("User roles updated:", userRoles);
         const filteredItems = menuItems.filter(item =>
             userRoles.some(role => item.roles.includes(role))
         );
@@ -57,7 +55,6 @@ const Navbar = () => {
             </a>
             <nav className='nav'>
                 <ul className='menus'>
-                    {console.log("filteredMenuItems", filteredMenuItems)}
                     {filteredMenuItems.length > 0 ? filteredMenuItems.map((item, index) => (
                         <MenuItems key={index} item={item}/>
                     )) : null}
