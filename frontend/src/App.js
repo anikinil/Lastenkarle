@@ -90,7 +90,7 @@ const App = () => {
                         <Route exact path={USERS} element={
                             <ProtectedElement element={<UserList />} elementRoles={['admin']} userRoles={userRoles} />
                         } />
-                        <Route exact path={REGIONAL_BOOKING} element={<RegionalBooking />} />
+                        <Route exact path={'/karlsruhe'} element={<RegionalBooking />} />
                         <Route exact path={BIKE_BOOKING} element={<BikeBooking />} />
                         <Route exact path={BIKES} element={<BikeListPage />} />
                         <Route exact path={BIKE} element={getComponentByPath(BIKE)} />
