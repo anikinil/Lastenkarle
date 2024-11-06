@@ -1,6 +1,8 @@
 //Structure for nav bar (drop down, structure, ...)
 import React from 'react';
 import { FaUser } from 'react-icons/fa';
+import { REGIONAL_BOOKING } from '../constants/URLs/Navigation';
+import { REGION_NAME } from '../constants/URLs/General';
 
 // TODO maybe seperate into a data and a utils file
 
@@ -33,7 +35,7 @@ export const menuItems = [
         submenu: [
             {
                 title: 'Karlsruhe',
-                url: '/karlsruhe'
+                url: REGIONAL_BOOKING.replace(REGION_NAME, 'karlsruhe')
             },
             {
                 title: 'Ettlingen',

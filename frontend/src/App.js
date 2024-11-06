@@ -37,7 +37,7 @@ import Enrollment from './features/enrollment/pages/Enrollment';
 import StoreBookings from './features/storeBookings/pages/StoreBookings';
 
 import NavigationError from './pages/NavigationError';
-import { BIKE, BIKE_BOOKING, BIKE_REGISTRATION, BIKES, BOOKING, BOOKINGS, ENROLLMENT, HOME, LOGIN, LOGOUT, REGIONAL_BOOKING, REGISTER, STORE, STORE_BOOKINGS, STORE_REGISTRATION, STORES, USER_BAN, USERS } from './constants/URLs/Navigation';
+import { BIKE, BIKE_BOOKING, BIKE_REGISTRATION, BIKES, BOOKING, BOOKINGS, ENROLLMENT, HOME, LOGIN, LOGOUT, REGIONAL_BOOKING, REGIONAL_BOOKING_KARLSRUHE, REGISTER, STORE, STORE_BOOKINGS, STORE_REGISTRATION, STORES, USER_BAN, USERS } from './constants/URLs/Navigation';
 import { getCookie } from './services/Cookies';
 
 const App = () => {
@@ -64,6 +64,8 @@ const App = () => {
             case '/store/:id':
                 if (userRoles.includes('admin') || userRoles.includes('manager')) { return <StoreConfigPage /> }
                 else { return <StorePage /> }
+            case 'regional-booking/:regionName':
+                return <RegionalBooking />
             default:
                 return <NavigationError />
         }
@@ -90,7 +92,8 @@ const App = () => {
                         <Route exact path={USERS} element={
                             <ProtectedElement element={<UserList />} elementRoles={['admin']} userRoles={userRoles} />
                         } />
-                        <Route exact path={'/karlsruhe'} element={<RegionalBooking />} />
+                        {/* TODO make not pfusch anymore */}
+                        <Route path={REGIONAL_BOOKING_KARLSRUHE} element={<RegionalBooking />} />
                         <Route exact path={BIKE_BOOKING} element={<BikeBooking />} />
                         <Route exact path={BIKES} element={<BikeListPage />} />
                         <Route exact path={BIKE} element={getComponentByPath(BIKE)} />
