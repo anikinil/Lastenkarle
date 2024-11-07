@@ -9,8 +9,8 @@ import { getCookie } from '../../services/Cookies';
 import { ERR_FETCHING_USER_DATA } from '../../constants/ErrorMessages';
 import { useLocation } from 'react-router-dom';
 
-const Navbar = () => { 
-    
+const Navbar = () => {
+
     // gets the current location (Router) to update the navbar after cahnge of user roles
     const location = useLocation();
 
@@ -19,14 +19,15 @@ const Navbar = () => {
     // default role is visitor (not logged in)
     const [userRoles, setUserRoles] = useState([Roles.VISITOR]);
     const [filteredMenuItems, setFilteredMenuItems] = useState([]);
-
+    
     const fetchUserRoles = () => {
-        fetch(USER_DATA, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${token}`,
-            }
-        })
+        if (token) {
+            fetch(USER_DATA, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${token}`,
+                }
+            })
             .then(response => response.json())
             .then(data => {
                 setUserRoles(data.user_flags.map(element => element.flag));
@@ -34,14 +35,20 @@ const Navbar = () => {
             .catch(error => {
                 console.error(ERR_FETCHING_USER_DATA, error);
             });
+        } else {
+            setUserRoles([Roles.VISITOR]);
+        }
     }
 
     // fetch user roles on first render, if token is present (user is logged in)
     useEffect(() => {
-        if (token) fetchUserRoles();
+        fetchUserRoles();
+        console.log("LOCATION CHANGED", location);
     }, [location]);
 
     useEffect(() => {
+        console.log("USER ROLES HANGED", userRoles);
+
         const filteredItems = menuItems.filter(item =>
             userRoles.some(role => item.roles.includes(role))
         );
@@ -56,10 +63,10 @@ const Navbar = () => {
             <nav className='nav'>
                 <ul className='menus'>
                     {filteredMenuItems.length > 0 ? filteredMenuItems.map((item, index) => (
-                        <MenuItems key={index} item={item}/>
+                        <MenuItems key={index} item={item} />
                     )) : null}
                     <li>
-                        <MenuItem className='account-menu-item' item={getAccountItemByRoles(userRoles)}/>
+                        <MenuItem className='account-menu-item' item={getAccountItemByRoles(userRoles)} />
                     </li>
                 </ul>
             </nav>

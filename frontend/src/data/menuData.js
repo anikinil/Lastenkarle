@@ -89,13 +89,9 @@ export const menuItems = [
 const accountItemVersions = [
     {
         title: <FaUser />,
-        url: '/login',
+        url: '/my-bookings',
         roles: [Roles.CUSTOMER, Roles.MANAGER, Roles.ADMIN],
         submenu: [
-            {
-                title: 'My bookings',
-                url: '/my-bookings',
-            },
             {
                 title: 'Logout',
                 url: '/logout',
@@ -104,13 +100,9 @@ const accountItemVersions = [
     },
     {
         title: <FaUser />,
-        url: '/login',
+        url: '/my-bookings',
         roles: [Roles.VISITOR],
         submenu: [
-            {
-                title: 'My bookings',
-                url: '/my-bookings',
-            },
             {
                 title: 'Register',
                 url: '/register',
