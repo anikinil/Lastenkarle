@@ -13,9 +13,6 @@ const Logout = () => {
     // Hook for translation
     const { t } = useTranslation();
 
-    // State to store any error that occurs during logout
-    const [error, setError] = useState(null);
-
     // Hook to navigate to different routes
     const navigate = useNavigate();
 
@@ -50,8 +47,8 @@ const Logout = () => {
                 }
             })
             .catch(error => {
-                // Catch the error and set it in the state
-                setError(error);
+                // Handle any network or other errors that occurred during the request
+                alert(ERR_POSTING_LOGOUT_REQUEST + ': ' + error);
                 console.log(ERR_POSTING_LOGOUT_REQUEST + ': ' + error);
             });
     }
@@ -61,6 +58,7 @@ const Logout = () => {
     }
 
     const handleCancelClick = () => {
+        // Navigate back to the previous page
         navigate(-1);
     }   
 
@@ -71,7 +69,6 @@ const Logout = () => {
                 <button type='button' className='button accent' onClick={handleLogoutClick}>{t('logout')}</button>
                 <button type='button' className='button regular' onClick={handleCancelClick}>{t('cancel')}</button>
             </div>
-
         </>
     );
 };
