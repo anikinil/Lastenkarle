@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { LOGIN, REGISTER } from '../constants/URIs/UserURIs';
+import { LOGIN as LOGIN_URI, REGISTER } from '../constants/URIs/UserURIs';
 import { useNavigate } from 'react-router-dom';
-import { HELMHOLTZ, HOME } from '../constants/URLs/Navigation';
+import { HELMHOLTZ, HOME, LOGIN as LOGIN_URL } from '../constants/URLs/Navigation';
 import { ERR_POSTING_LOGIN_REQUEST, ERR_POSTING_REGISTER_REQUEST } from '../constants/ErrorMessages';
 
 const Register = () => {
@@ -16,14 +16,11 @@ const Register = () => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [password, setPassword] = useState('');
-    const [token, setToken] = useState();
 
     // Handle register button click
     const handleRegisterClick = () => {
         postRegister();
-        setTokenCookie();
         postLogin();
-        navigate(HOME);
     };
 
     // Function to post registration data
@@ -49,7 +46,7 @@ const Register = () => {
             // TODO fix post request
             // TODO add navigation and account for different locations where user needs to be navigated to
             .then(async response => {
-                if (!response?.ok) {                
+                if (!response?.ok) {
                     // If the request was not successful, throw an error
                     const errorData = await response.json();
                     throw new Error(errorData.message);
@@ -60,6 +57,7 @@ const Register = () => {
             });
     };
 
+    // TODO think about how to avoid duplicate code (Login.js)
     // Function to post login data after successful registration
     const postLogin = () => {
         let payload = {
@@ -68,24 +66,25 @@ const Register = () => {
         };
 
         // Send the POST request to the login endpoint
-        fetch(LOGIN, {
+        fetch(LOGIN_URI, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(payload)
         })
-            .then(async response => {
-                if (response.ok) {
+            .then(response => {
+                if (response?.ok) {
                     return response.json();
                 } else {
                     // If the request was not successful, throw an error
-                    const errorData = await response.json();
-                    throw new Error(errorData.message);
+                    return response.json().then(errorData => {
+                        throw new Error(errorData.message);
+                    });
                 }
-            })
-            .then(data => {
-                setToken(data.token);
+            }).then(data => {
+                setTokenCookie(data.token);
+                navigate(HOME);
             })
             .catch(error => {
                 alert(ERR_POSTING_LOGIN_REQUEST + ' ' + error.message);
@@ -98,7 +97,7 @@ const Register = () => {
     };
 
     // Function to set token cookie
-    const setTokenCookie = () => {
+    const setTokenCookie = (token) => {
         var days = 1;
         const expirationDate = new Date();
         expirationDate.setDate(expirationDate.getDate() + days);
@@ -114,7 +113,7 @@ const Register = () => {
 
     // Handle login button click
     const handleLoginClick = () => {
-        navigate(LOGIN);
+        navigate(LOGIN_URL);
     };
 
     // TODO use SingleLineInput component everywhere

@@ -110,12 +110,12 @@ const accountItemVersions = [
         roles: [Roles.VISITOR],
         submenu: [
             {
-                title: 'Register',
-                url: REGISTER,
-            },
-            {
                 title: 'Login',
                 url: LOGIN,
+            },
+            {
+                title: 'Register',
+                url: REGISTER,
             }
         ]
     }
