@@ -36,6 +36,8 @@ const Register = () => {
             payload.year_of_birth = yearOfBirth;
         }
 
+        console.log(payload)
+
         // Send the POST request to the server endpoint
         fetch(REGISTER, {
             method: 'POST',
@@ -44,20 +46,16 @@ const Register = () => {
             },
             body: JSON.stringify(payload)
         })
-        // TODO fix post request
-        // TODO add navigation and account for different locations where user needs to be navigated to
-            .then(async response => {
-                if (response.ok) {
-                    const text = await response.text();
-                    if (!text.trim()) {
-                        postLogin();
-                    } else {
-                        return JSON.parse(text);
-                    }
+            // TODO fix post request
+            // TODO add navigation and account for different locations where user needs to be navigated to
+            .then(response => {
+                if (response?.ok) {
+                    return response.json();
                 } else {
                     // If the request was not successful, throw an error
-                    const errorData = await response.json();
-                    throw new Error(errorData.message);
+                    return response.json().then(errorData => {
+                        throw new Error(errorData.message);
+                    });
                 }
             })
             .catch(error => {

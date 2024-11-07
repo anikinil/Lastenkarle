@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { LOGIN as LOGIN_URI, REGISTER } from '../constants/URIs/UserURIs';
+import { LOGIN as LOGIN_URI } from '../constants/URIs/UserURIs';
 import { useNavigate } from 'react-router-dom';
-import { HELMHOLTZ, HOME } from '../constants/URLs/Navigation';
+import { HELMHOLTZ, HOME, REGISTER } from '../constants/URLs/Navigation';
 
 const Login = () => {
     // Translation hook
