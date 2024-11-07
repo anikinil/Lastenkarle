@@ -21,7 +21,8 @@ const Navbar = () => {
     const [filteredMenuItems, setFilteredMenuItems] = useState([]);
     
     const fetchUserRoles = () => {
-        if (token) {
+        console.log(token === 'undefined');
+        if (token !== 'undefined') {
             fetch(USER_DATA, {
                 headers: {
                     'Content-Type': 'application/json',
