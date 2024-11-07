@@ -1,7 +1,7 @@
 //Structure for nav bar (drop down, structure, ...)
 import React from 'react';
 import { FaUser } from 'react-icons/fa';
-import { REGIONAL_BOOKING } from '../../constants/URLs/Navigation';
+import { ACCOUNT_DELETION, LOGIN, LOGOUT, REGIONAL_BOOKING, REGISTER } from '../../constants/URLs/Navigation';
 import { REGION_NAME } from '../../constants/URLs/General';
 
 // TODO maybe seperate into a data and a utils file
@@ -27,6 +27,8 @@ export const Roles = Object.freeze({
 
 const storesAsItems = stores.map((s) => ({ title: s.name, url: `/store/${s.id}` }))
 
+// TODO make each title a translatoin constant
+// TODO use URL constants for each url
 export const menuItems = [
     {
         title: 'Booking',
@@ -94,7 +96,11 @@ const accountItemVersions = [
         submenu: [
             {
                 title: 'Logout',
-                url: '/logout',
+                url: LOGOUT,
+            },
+            {
+                title: 'Delete account',
+                url: ACCOUNT_DELETION,
             }
         ]
     },
@@ -105,11 +111,11 @@ const accountItemVersions = [
         submenu: [
             {
                 title: 'Register',
-                url: '/register',
+                url: REGISTER,
             },
             {
                 title: 'Login',
-                url: '/login',
+                url: LOGIN,
             }
         ]
     }

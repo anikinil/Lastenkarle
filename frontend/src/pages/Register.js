@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { REGISTER } from '../constants/URIs/UserURIs';
+import { LOGIN, REGISTER } from '../constants/URIs/UserURIs';
 import { useNavigate } from 'react-router-dom';
-import { HELMHOLTZ, HOME, LOGIN } from '../constants/URLs/Navigation';
+import { HELMHOLTZ, HOME } from '../constants/URLs/Navigation';
 import { ERR_POSTING_LOGIN_REQUEST, ERR_POSTING_REGISTER_REQUEST } from '../constants/ErrorMessages';
 
 const Register = () => {
@@ -22,6 +22,8 @@ const Register = () => {
     const handleRegisterClick = () => {
         postRegister();
         setTokenCookie();
+        postLogin();
+        navigate(HOME);
     };
 
     // Function to post registration data
@@ -46,14 +48,11 @@ const Register = () => {
         })
             // TODO fix post request
             // TODO add navigation and account for different locations where user needs to be navigated to
-            .then(response => {
-                if (response?.ok) {
-                    return response.json();
-                } else {
+            .then(async response => {
+                if (!response?.ok) {                
                     // If the request was not successful, throw an error
-                    return response.json().then(errorData => {
-                        throw new Error(errorData.message);
-                    });
+                    const errorData = await response.json();
+                    throw new Error(errorData.message);
                 }
             })
             .catch(error => {
@@ -118,6 +117,7 @@ const Register = () => {
         navigate(LOGIN);
     };
 
+    // TODO use SingleLineInput component everywhere
     return (
         <>
             <h1>{t('register')}</h1>

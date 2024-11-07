@@ -15,6 +15,7 @@ export const ERR_POSTING_EMAIL_VERIFICATION     = "Error: email verification cou
 // deleting
 export const ERR_DELETING_BIKE                  = "Error: bike could not be deleted."
 export const ERR_DELETING_STORE                 = "Error: store could not be deleted."
+export const ERR_DELETING_ACCOUNT               = "Error: account could not be deleted."
 
 // updating
 export const ERR_UPDATING_STORE                 = "Error: store could not be updated."

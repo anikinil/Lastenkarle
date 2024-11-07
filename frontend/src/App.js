@@ -13,6 +13,8 @@ import './components/sidePanel/SidePanel.css'
 
 import Home from './pages/Home';
 import Login from './pages/Login';
+import Logout from './pages/Logout';
+import AccountDeletion from './pages/AccountDeletion';
 import UserBan from './features/userBan/pages/UserBan';
 import Navbar from './components/navbar/Navbar';
 import Booking from './features/booking/pages/Booking';
@@ -31,13 +33,12 @@ import StoreRegistration from './features/storeRegistration/pages/StoreRegistrat
 import BookingList from './features/bookingListAdmin/pages/BookingList';
 import BikePage from './features/bikeDisplay/pages/BikePage';
 import BikeConfigPage from './features/bikeConfig/pages/BikeConfigPage';
-import Logout from './pages/Logout';
 import Register from './pages/Register';
 import Enrollment from './features/enrollment/pages/Enrollment';
 import StoreBookings from './features/storeBookings/pages/StoreBookings';
 
 import NavigationError from './pages/NavigationError';
-import { BIKE, BIKE_BOOKING, BIKE_REGISTRATION, BIKES, BOOKING, BOOKINGS, EMAIL_VERIFICATION, ENROLLMENT, HOME, LOGIN, LOGOUT, REGIONAL_BOOKING, REGIONAL_BOOKING_KARLSRUHE, REGISTER, STORE, STORE_BOOKINGS, STORE_REGISTRATION, STORES, USER_BAN, USERS } from './constants/URLs/Navigation';
+import { BIKE, BIKE_BOOKING, BIKE_REGISTRATION, BIKES, BOOKING, BOOKINGS, ACCOUNT_DELETION, EMAIL_VERIFICATION, ENROLLMENT, HOME, LOGIN, LOGOUT, REGIONAL_BOOKING, REGISTER, STORE, STORE_BOOKINGS, STORE_REGISTRATION, STORES, USER_BAN, USERS } from './constants/URLs/Navigation';
 import { getCookie } from './services/Cookies';
 import { ID, KEY, REGION_NAME } from './constants/URLs/General';
 import EmailVerification from './pages/EmailVerification';
@@ -80,6 +81,7 @@ const App = () => {
                         <Route exact path={HOME} element={<Home />} />
                         <Route exact path={LOGIN} element={<Login />} />
                         <Route exact path={LOGOUT} element={<Logout />} />
+                        <Route exact path={ACCOUNT_DELETION} element={<AccountDeletion />} />
                         <Route exact path={REGISTER} element={<Register />} />
                         <Route exact path={EMAIL_VERIFICATION.replace(ID, ':id').replace(KEY, ':key')} element={<EmailVerification />} />
                         <Route exact path={USER_BAN} element={

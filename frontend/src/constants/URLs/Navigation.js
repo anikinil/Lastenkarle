@@ -10,6 +10,7 @@ export const HELMHOLTZ              = `/HELMHOLTZ`
 
 export const LOGIN                  = `/login`
 export const LOGOUT                 = `/logout`
+export const ACCOUNT_DELETION       = `/account-deletion`
 export const REGISTER               = `/register`
 export const ENROLLMENT             = `/enrollment`
 export const USER_BAN               = `/user-ban`
