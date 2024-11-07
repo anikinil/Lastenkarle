@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { menuItems, getAccountItemByRoles, Roles } from '../../data/menuData'
+import { menuItems, getAccountItemByRoles, Roles } from '../../components/navbar/menuData'
 import MenuItems from './MenuItems';
 import MenuItem from './MenuItem';
 import './Navbar.css';
