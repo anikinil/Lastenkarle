@@ -43,7 +43,6 @@ const Register = () => {
             },
             body: JSON.stringify(payload)
         })
-            // TODO fix post request
             // TODO add navigation and account for different locations where user needs to be navigated to
             .then(async response => {
                 if (!response?.ok) {
