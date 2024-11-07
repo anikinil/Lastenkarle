@@ -23,14 +23,11 @@ const AccountDeletion = () => {
                 'Authorization': `Token ${token}`
             }
         })
-            .then(response => {
-                if (response?.ok) {
-                    return response.json();
-                } else {
+            .then(async response => {
+                if (!response?.ok) {
                     // If the request was not successful, throw an error
-                    return response.json().then(errorData => {
-                        throw new Error(errorData.message);
-                    });
+                    const errorData = await response.json();
+                    throw new Error(errorData.message);
                 }
             })
             .then(data => {

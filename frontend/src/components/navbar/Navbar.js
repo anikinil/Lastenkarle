@@ -42,6 +42,7 @@ const Navbar = () => {
 
     // fetch user roles on first render, if token is present (user is logged in)
     useEffect(() => {
+        console.log('fetching user roles!!!');
         fetchUserRoles();
     }, [location]);
 

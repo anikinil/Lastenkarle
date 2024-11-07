@@ -20,7 +20,6 @@ const Register = () => {
     // Handle register button click
     const handleRegisterClick = () => {
         postRegister();
-        postLogin();
     };
 
     // Function to post registration data
@@ -45,7 +44,9 @@ const Register = () => {
         })
             // TODO add navigation and account for different locations where user needs to be navigated to
             .then(async response => {
-                if (!response?.ok) {
+                if (response?.ok) {
+                    postLogin();
+                } else {
                     // If the request was not successful, throw an error
                     const errorData = await response.json();
                     throw new Error(errorData.message);
@@ -59,6 +60,8 @@ const Register = () => {
     // TODO think about how to avoid duplicate code (Login.js)
     // Function to post login data after successful registration
     const postLogin = () => {
+        console.log('username: ' + username);
+        console.log('password: ' + password);
         let payload = {
             username: username,
             password: password
