@@ -4,11 +4,6 @@ import Dropdown from './Dropdown';
 // a single menu item
 const MenuItem = ({ className, item }) => {
 
-    // // ceck if the user has permission to see the menu item based on users role
-    // const hasPermission = (item) => {
-    //     return userRoles.some(role => item.roles.includes(role));
-    // }
-
     const [dropdown, setDropdown] = useState(false);
 
     return (

@@ -26,11 +26,11 @@ const Register = () => {
 
     // Function to post registration data
     const postRegister = () => {
-        
+
         let payload = {
             contact_data: contactData,
             username: username,
-            password: password,
+            password: password
         };
 
         if (yearOfBirth !== '') {

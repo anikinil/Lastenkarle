@@ -37,9 +37,10 @@ import Enrollment from './features/enrollment/pages/Enrollment';
 import StoreBookings from './features/storeBookings/pages/StoreBookings';
 
 import NavigationError from './pages/NavigationError';
-import { BIKE, BIKE_BOOKING, BIKE_REGISTRATION, BIKES, BOOKING, BOOKINGS, ENROLLMENT, HOME, LOGIN, LOGOUT, REGIONAL_BOOKING, REGIONAL_BOOKING_KARLSRUHE, REGISTER, STORE, STORE_BOOKINGS, STORE_REGISTRATION, STORES, USER_BAN, USERS } from './constants/URLs/Navigation';
+import { BIKE, BIKE_BOOKING, BIKE_REGISTRATION, BIKES, BOOKING, BOOKINGS, EMAIL_VERIFICATION, ENROLLMENT, HOME, LOGIN, LOGOUT, REGIONAL_BOOKING, REGIONAL_BOOKING_KARLSRUHE, REGISTER, STORE, STORE_BOOKINGS, STORE_REGISTRATION, STORES, USER_BAN, USERS } from './constants/URLs/Navigation';
 import { getCookie } from './services/Cookies';
-import { REGION_NAME } from './constants/URLs/General';
+import { ID, KEY, REGION_NAME } from './constants/URLs/General';
+import EmailVerification from './pages/EmailVerification';
 
 const App = () => {
 
@@ -80,6 +81,7 @@ const App = () => {
                         <Route exact path={LOGIN} element={<Login />} />
                         <Route exact path={LOGOUT} element={<Logout />} />
                         <Route exact path={REGISTER} element={<Register />} />
+                        <Route exact path={EMAIL_VERIFICATION.replace(ID, ':id').replace(KEY, ':key')} element={<EmailVerification />} />
                         <Route exact path={USER_BAN} element={
                             <ProtectedElement element={<UserBan />} elementRoles={['admin']} userRoles={userRoles} />
                         } />

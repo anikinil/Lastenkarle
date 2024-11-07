@@ -1,6 +1,6 @@
 // TODO replace everywhere by these variables
 
-import { ID } from "./General"
+import { ID, KEY } from "./General"
 import { STORE_NAME, REGION_NAME } from "./General"
 
 export const HOME                   = `/`
@@ -29,3 +29,4 @@ export const STORE_BOOKINGS         = `${STORE}/store-bookings`
 export const BOOKING                = `/booking`
 export const REGIONAL_BOOKING       = `/regional-booking/${REGION_NAME}`
 
+export const EMAIL_VERIFICATION     = `/email-verification/${ID}/${KEY}`;

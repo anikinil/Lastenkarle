@@ -31,9 +31,10 @@ import BikeList from '../../bikeList/components/BikeList';
 // ]
 
 const RegionalBooking = () => {
+
     const { t } = useTranslation();
 
-    const { region: regionName } = useParams();
+    const regionName = useParams().region;
 
     return (
         <>
