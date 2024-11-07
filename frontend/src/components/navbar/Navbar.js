@@ -43,12 +43,9 @@ const Navbar = () => {
     // fetch user roles on first render, if token is present (user is logged in)
     useEffect(() => {
         fetchUserRoles();
-        console.log("LOCATION CHANGED", location);
     }, [location]);
 
     useEffect(() => {
-        console.log("USER ROLES HANGED", userRoles);
-
         const filteredItems = menuItems.filter(item =>
             userRoles.some(role => item.roles.includes(role))
         );

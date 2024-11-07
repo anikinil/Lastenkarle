@@ -215,17 +215,14 @@ const BookingList = ({ filterStore, filterBike, filterUser }) => {
 
     const handleStoreSelect = (e) => {
         setStore(e.target.value)
-        console.log(store)
     }
 
     const handleBikeSelect = (e) => {
         setBike(e.target.value)
-        console.log(bike)
     }
 
     const handleUserSelect = (e) => {
         setUser(e.target.value)
-        console.log(user)
     }
 
     const handleShowAllClick = () => {

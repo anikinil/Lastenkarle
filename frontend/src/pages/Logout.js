@@ -21,7 +21,6 @@ const Logout = () => {
 
     // Function to handle the logout process
     function logout() {
-        console.log("TOKEN LOGOUT", token);
         // Send the POST request to the server endpoint
         fetch(LOGOUT, {
             method: 'POST',
@@ -31,7 +30,6 @@ const Logout = () => {
             }
         })
             .then(response => {
-                console.log(token);
                 if (response.ok) {
                     // If the response is successful, delete the token cookie
                     deleteCookie('token');

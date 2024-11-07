@@ -50,7 +50,6 @@ const Login = () => {
                 setCookie('token', data.token);
                 // TODO account for different locations from which user can log in and navigate back to them
                 navigate(HOME);
-                console.log("TOKEN", data.token);
             })
             .catch(error => {
                 // Handle any network or other errors that occurred during the request

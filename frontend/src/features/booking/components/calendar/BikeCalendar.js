@@ -34,7 +34,6 @@ const BikeCalendar = () => {
     });
 
     const handleDayClick = (date) => {
-        console.log("CLICK!", date);
         const dateString = date.toISOString().split('T')[0];
 
         if (availability[dateString] !== 0) {

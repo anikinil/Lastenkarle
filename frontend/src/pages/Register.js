@@ -26,6 +26,7 @@ const Register = () => {
 
     // Function to post registration data
     const postRegister = () => {
+        
         let payload = {
             contact_data: contactData,
             username: username,
@@ -35,9 +36,6 @@ const Register = () => {
         if (yearOfBirth !== '') {
             payload.year_of_birth = yearOfBirth;
         }
-
-        console.log(payload)
-
         // Send the POST request to the server endpoint
         fetch(REGISTER, {
             method: 'POST',
