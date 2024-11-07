@@ -33,7 +33,12 @@ const MenuItem = ({ className, item }) => {
                     />
                 </div>
             ) : (
-                <a className={className} href={item.url}>{item.title}</a>
+                <a
+                    className={className}
+                    href={item.url}
+                >
+                    {item.title}
+                </a>
             )}
         </>
     )

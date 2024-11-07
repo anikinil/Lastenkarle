@@ -39,15 +39,15 @@ export const menuItems = [
             },
             {
                 title: 'Ettlingen',
-                url: '/ettlingen'
+                url: REGIONAL_BOOKING.replace(REGION_NAME, 'ettlingen')
             },
             {
                 title: 'Bruchsaal',
-                url: '/bruchsaal'
+                url: REGIONAL_BOOKING.replace(REGION_NAME, 'bruchsaal')
             },
             {
                 title: 'Malsch',
-                url: '/malsch'
+                url: REGIONAL_BOOKING.replace(REGION_NAME, 'malsch')
             }
         ]
     },

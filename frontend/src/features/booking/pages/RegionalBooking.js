@@ -33,18 +33,11 @@ import BikeList from '../../bikeList/components/BikeList';
 const RegionalBooking = () => {
     const { t } = useTranslation();
 
-    // const { regionName } = useParams();
-
-    // console.log(regionName);
-    // const region = regions.find(s => s.id === regionName);
-
-    const region = {id: 'karlsruhe', name: 'Karlsruhe'}
+    const { region: regionName } = useParams();
 
     return (
         <>
-        
-            <h1>REGIONAL BOOKING</h1>
-            <h1>{region.name}</h1>
+            <h1>{t('rent_in') + ': ' + regionName}</h1>
 
             {/* <Map /> */}
             {/* <FilterForAvailabilities /> */}
