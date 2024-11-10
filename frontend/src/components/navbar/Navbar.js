@@ -5,7 +5,7 @@ import './Navbar.css';
 import logo from '../../assets/images/logo.png';
 import { USER_DATA } from '../../constants/URIs/UserURIs';
 import { getCookie } from '../../services/Cookies';
-import { ERR_FETCHING_USER_DATA } from '../../constants/ErrorMessages';
+import { ERR_FETCHING_USER_FLAGS } from '../../constants/ErrorMessages';
 import { useLocation } from 'react-router-dom';
 
 const Navbar = () => {
@@ -33,7 +33,7 @@ const Navbar = () => {
                 setUserRoles(data.user_flags.map(element => element.flag));
             })
             .catch(error => {
-                console.error(ERR_FETCHING_USER_DATA, error);
+                console.error(ERR_FETCHING_USER_FLAGS, error);
             });
         } else {
             setUserRoles([Roles.VISITOR]);

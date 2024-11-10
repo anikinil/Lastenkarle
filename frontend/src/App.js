@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import useLocalStorage from 'use-local-storage';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ProtectedElement } from './utils/ProtectedElement';
@@ -42,6 +42,9 @@ import { BIKE, BIKE_BOOKING, BIKE_REGISTRATION, BIKES, BOOKING, BOOKINGS, ACCOUN
 import { getCookie } from './services/Cookies';
 import { ID, KEY, REGION_NAME } from './constants/URLs/General';
 import EmailVerification from './pages/EmailVerification';
+import { Roles } from './components/navbar/menuData';
+import { ERR_FETCHING_USER_DATA, ERR_FETCHING_USER_FLAGS } from './constants/ErrorMessages';
+import { USER_DATA } from './constants/URIs/UserURIs';
 
 const App = () => {
 
@@ -54,9 +57,6 @@ const App = () => {
         const newTheme = theme === 'light' ? 'dark' : 'light';
         setTheme(newTheme);
     }
-
-    // Get user roles from cookies
-    const userRoles = getCookie('user_roles')
 
     // Get the appropriate version of a page by path based on user role
     const getComponentByPath = (path) => {
@@ -71,6 +71,35 @@ const App = () => {
                 return <NavigationError />
         }
     }
+
+    const [userRoles, setUserRoles] = useState([]);
+
+    const fetchUserRoles = () => {
+        const token = getCookie('token');
+        if (token !== 'undefined' && token !== null) {
+            console.log("TOKEN FOUND")
+            fetch(USER_DATA, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${token}`,
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    setUserRoles(data.user_flags.map(element => element.flag));
+                })
+                .catch(error => {
+                    console.error(ERR_FETCHING_USER_FLAGS, error);
+                });
+        } else {
+            setUserRoles([Roles.VISITOR]);
+        }
+    }
+
+    useEffect(() => {
+        fetchUserRoles();
+        console.log('userRoles:', userRoles)
+    }, [])
 
     return (
         <div className='App' data-theme={theme}>
@@ -108,7 +137,7 @@ const App = () => {
                         } />
 
                         <Route exact path={ENROLLMENT} element={
-                            <ProtectedElement element={<Enrollment />} elementRoles={['admin', 'manager']} userRoles={userRoles} />
+                            <ProtectedElement element={<Enrollment />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} userRoles={userRoles} />
                         } />
                         <Route exact path={BOOKINGS} element={<BookingList />} />
                         <Route exact path={STORE} element={getComponentByPath(STORE)} />

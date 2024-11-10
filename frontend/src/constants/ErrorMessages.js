@@ -4,6 +4,7 @@ export const ERR_FETCHING_BIKE                  = "Error: bike could not be fetc
 export const ERR_FETCHING_STORE                 = "Error: store could not be fetched."
 export const ERR_FETCHING_BOOKING               = "Error: booking could not be fetched."
 export const ERR_FETCHING_USER_DATA             = "Error: user data could not be fetched."
+export const ERR_FETCHING_USER_FLAGS            = "Error: user flags could not be fetched."
 
 // posting
 export const ERR_POSTING_ENROLLMENT             = "Error: enrollment could not be posted."
