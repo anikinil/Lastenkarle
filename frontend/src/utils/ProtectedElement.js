@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
 import { getCookie } from '../services/Cookies';
 import { USER_DATA } from '../constants/URIs/UserURIs';
 import { ERR_FETCHING_USER_FLAGS } from '../constants/ErrorMessages';
-import { Roles } from '../components/navbar/menuData';
 import { useTranslation } from 'react-i18next';
 
 // ProtectedElement component to restrict access based on user roles
@@ -12,7 +10,6 @@ export const ProtectedElement = ({element, elementRoles}) => {
     // Translation hook
     const { t } = useTranslation();
 
-    const [userRoles, setUserRoles] = useState([]);
     const [hasPermission, setHasPermissoin] = useState(false)
 
     const fetchUserRoles = () => {
