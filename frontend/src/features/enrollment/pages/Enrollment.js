@@ -51,7 +51,8 @@ const Enrollment = () => {
     const postEnrollment = () => {
         const payload = {
             contact_data: email,
-            user_status: selectedRole
+            // user_status: selectedRole
+            user_status: 'Administarator'
         };
 
         fetch(USER_FLAGS, {
@@ -79,6 +80,7 @@ const Enrollment = () => {
     // Handle role change in the select dropdown
     const handleRoleChange = (event) => {
         setSelectedRole(event.target.value);
+        console.log(event.target.value)
     };
 
     // Prevent user from switching to a new line by hitting [Enter]
@@ -98,7 +100,7 @@ const Enrollment = () => {
             <h1>{t('enrollment')}</h1>
 
             <p>{t('enter_one_of_the_following_to_identify_user')}</p>
-
+{/* 
             <textarea
                 title={t('enter_username')}
                 className='username'
@@ -107,7 +109,7 @@ const Enrollment = () => {
                 onChange={e => setUsername(e.target.value)}
                 onKeyDown={handleFieldKeyDown}
                 placeholder={t('enter_username')}
-            />
+            /> */}
 
             <textarea
                 title={t('enter_email')}
