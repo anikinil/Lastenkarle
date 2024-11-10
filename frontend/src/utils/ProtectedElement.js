@@ -1,16 +1,53 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
+import { getCookie } from '../services/Cookies';
+import { USER_DATA } from '../constants/URIs/UserURIs';
+import { ERR_FETCHING_USER_FLAGS } from '../constants/ErrorMessages';
+import { Roles } from '../components/navbar/menuData';
+import { useTranslation } from 'react-i18next';
 
 // ProtectedElement component to restrict access based on user roles
-export const ProtectedElement = ({element, elementRoles, userRoles}) => {
+export const ProtectedElement = ({element, elementRoles}) => {
 
-    // Check if the user has at least one of the required roles
-    const hasPermission = elementRoles.some(role => userRoles.includes(role));
+    // Translation hook
+    const { t } = useTranslation();
+
+    const [userRoles, setUserRoles] = useState([]);
+    const [hasPermission, setHasPermissoin] = useState(false)
+
+    const fetchUserRoles = () => {
+        const token = getCookie('token');
+        console.log('TOKEN', token)
+        if (token !== 'undefined' && token !== null) {
+            console.log("TOKEN FOUND")
+            fetch(USER_DATA, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${token}`,
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const userRoles = data.user_flags.map(element => element.flag)
+                    setHasPermissoin(elementRoles.some(role => userRoles.includes(role)))
+                })
+                .catch(error => {
+                    console.error(ERR_FETCHING_USER_FLAGS, error);
+                });
+        } else {
+            // setUserRoles([Roles.VISITOR]);
+            setHasPermissoin(false)
+        }
+    }
+
+    useEffect(() => {
+        fetchUserRoles();
+    }, [])
 
     // If the user has permission, render the provided element, otherwise redirect to the no-permission page
     return (hasPermission ? (
         element
     ) : (
-        <Navigate to='/no-permission' />
+        <h2>{t('you_have_no_permission_to_visit_page')}</h2>
     ));
 }

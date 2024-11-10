@@ -60,46 +60,17 @@ const App = () => {
 
     // Get the appropriate version of a page by path based on user role
     const getComponentByPath = (path) => {
-        switch (path) {
-            case '/bike/:id':
-                if (userRoles.includes('admin') || userRoles.includes('manager')) { return <BikeConfigPage /> }
-                else { return <BikePage /> }
-            case '/store/:id':
-                if (userRoles.includes('admin') || userRoles.includes('manager')) { return <StoreConfigPage /> }
-                else { return <StorePage /> }
-            default:
-                return <NavigationError />
-        }
+        // switch (path) {
+        //     case '/bike/:id':
+        //         if (userRoles.includes('admin') || userRoles.includes('manager')) { return <BikeConfigPage /> }
+        //         else { return <BikePage /> }
+        //     case '/store/:id':
+        //         if (userRoles.includes('admin') || userRoles.includes('manager')) { return <StoreConfigPage /> }
+        //         else { return <StorePage /> }
+        //     default:
+        //         return <NavigationError />
+        // }
     }
-
-    const [userRoles, setUserRoles] = useState([]);
-
-    const fetchUserRoles = () => {
-        const token = getCookie('token');
-        if (token !== 'undefined' && token !== null) {
-            console.log("TOKEN FOUND")
-            fetch(USER_DATA, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Token ${token}`,
-                }
-            })
-                .then(response => response.json())
-                .then(data => {
-                    setUserRoles(data.user_flags.map(element => element.flag));
-                })
-                .catch(error => {
-                    console.error(ERR_FETCHING_USER_FLAGS, error);
-                });
-        } else {
-            setUserRoles([Roles.VISITOR]);
-        }
-    }
-
-    useEffect(() => {
-        fetchUserRoles();
-        console.log('userRoles:', userRoles)
-    }, [])
 
     return (
         <div className='App' data-theme={theme}>
@@ -114,15 +85,15 @@ const App = () => {
                         <Route exact path={REGISTER} element={<Register />} />
                         <Route exact path={EMAIL_VERIFICATION.replace(ID, ':id').replace(KEY, ':key')} element={<EmailVerification />} />
                         <Route exact path={USER_BAN} element={
-                            <ProtectedElement element={<UserBan />} elementRoles={['admin']} userRoles={userRoles} />
+                            <ProtectedElement element={<UserBan />} elementRoles={[Roles.MANAGER]} />
                         } />
                         <Route exact path={BOOKING} element={<Booking />} />
                         {/* <Route exact path={BOOKING} element={<BookingPage />} /> */}
                         <Route exact path={STORES} element={
-                            <ProtectedElement element={<StoreListPage />} elementRoles={['admin', 'manager']} userRoles={userRoles} />
+                            <ProtectedElement element={<StoreListPage />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
                         } />
                         <Route exact path={USERS} element={
-                            <ProtectedElement element={<UserList />} elementRoles={['admin']} userRoles={userRoles} />
+                            <ProtectedElement element={<UserList />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
                         } />
                         <Route path={REGIONAL_BOOKING.replace(REGION_NAME, ':region')} element={<RegionalBooking />} />
                         <Route exact path={BIKE_BOOKING} element={<BikeBooking />} />
@@ -130,19 +101,19 @@ const App = () => {
                         {/* <Route exact path={BIKE} element={getComponentByPath(BIKE)} /> */}
                         <Route exact path={'/bike/1'} element={<BikePage />} />
                         <Route exact path={BIKE_REGISTRATION} element={
-                            <ProtectedElement element={<BikeRegistration />} elementRoles={['admin']} userRoles={userRoles} />
+                            <ProtectedElement element={<BikeRegistration />} elementRoles={[Roles.ADMINISTRATOR]} />
                         } />
                         <Route exact path={STORE_REGISTRATION} element={
-                            <ProtectedElement element={<StoreRegistration />} elementRoles={['admin']} userRoles={userRoles} />
+                            <ProtectedElement element={<StoreRegistration />} elementRoles={[Roles.ADMINISTRATOR]} />
                         } />
 
                         <Route exact path={ENROLLMENT} element={
-                            <ProtectedElement element={<Enrollment />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} userRoles={userRoles} />
+                            <ProtectedElement element={<Enrollment />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
                         } />
                         <Route exact path={BOOKINGS} element={<BookingList />} />
                         <Route exact path={STORE} element={getComponentByPath(STORE)} />
                         <Route exact path={STORE_BOOKINGS} element={
-                            <ProtectedElement element={<StoreBookings />} elementRoles={['admin', 'manager']} userRoles={userRoles} />
+                            <ProtectedElement element={<StoreBookings />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
                         } />
                     </Routes>
                 </BrowserRouter>
