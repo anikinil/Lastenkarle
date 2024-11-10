@@ -32,7 +32,6 @@ const Logout = () => {
             .then(response => {
                 if (response.ok) {
                     // If the response is successful, delete the token cookie
-                    console.log('response', response);  
                     deleteCookie('token');
                     // Navigate to the login page
                     startTransition(() => {

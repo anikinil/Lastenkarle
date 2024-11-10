@@ -21,7 +21,6 @@ const Navbar = () => {
     
     const fetchUserRoles = () => {
         if (token !== 'undefined' && token !== null) {
-            console.log('fetching user data, token:', token);
             fetch(USER_DATA, {
                 headers: {
                     'Content-Type': 'application/json',
@@ -46,7 +45,6 @@ const Navbar = () => {
     }, [location]);
 
     useEffect(() => {
-        console.log('userRoles:', userRoles);
         let filteredItems = menuItems.filter(item =>
             userRoles.some(role => item.roles.includes(role))
         );

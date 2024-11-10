@@ -60,8 +60,6 @@ const Register = () => {
     // TODO think about how to avoid duplicate code (Login.js)
     // Function to post login data after successful registration
     const postLogin = () => {
-        console.log('username: ' + username);
-        console.log('password: ' + password);
         let payload = {
             username: username,
             password: password
