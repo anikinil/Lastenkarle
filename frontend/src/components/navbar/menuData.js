@@ -21,7 +21,7 @@ const stores = [
 export const Roles = Object.freeze({
     CUSTOMER: 'Customer',
     MANAGER: 'Manager',
-    ADMIN: 'Admin',
+    ADMINISTRATOR: 'Administrator',
     VISITOR: 'Visitor'
 });
 
