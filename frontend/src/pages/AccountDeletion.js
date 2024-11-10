@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { ACCOUNT_DELETION } from "../constants/URIs/UserURIs";
 import { ERR_DELETING_ACCOUNT } from "../constants/ErrorMessages";
 import { HOME } from "../constants/URLs/Navigation";
-import { getCookie } from "../services/Cookies";
+import { deleteCookie, getCookie } from "../services/Cookies";
 
 
 const AccountDeletion = () => {
@@ -28,6 +28,8 @@ const AccountDeletion = () => {
                     // If the request was not successful, throw an error
                     const errorData = await response.json();
                     throw new Error(errorData.message);
+                } else {
+                    deleteCookie('token');
                 }
             })
             .then(data => {
