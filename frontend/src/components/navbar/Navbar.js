@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { menuItems, getAccountItemByRoles, Roles } from '../../components/navbar/menuData'
+import { menuItems, Roles } from '../../components/navbar/menuData'
 import MenuItems from './MenuItems';
-import MenuItem from './MenuItem';
 import './Navbar.css';
 import logo from '../../assets/images/logo.png';
 import { USER_DATA } from '../../constants/URIs/UserURIs';
@@ -42,12 +41,12 @@ const Navbar = () => {
 
     // fetch user roles on first render, if token is present (user is logged in)
     useEffect(() => {
-        console.log('fetching user roles!!!');
         fetchUserRoles();
     }, [location]);
 
     useEffect(() => {
-        const filteredItems = menuItems.filter(item =>
+        console.log('userRoles:', userRoles);
+        let filteredItems = menuItems.filter(item =>
             userRoles.some(role => item.roles.includes(role))
         );
         setFilteredMenuItems(filteredItems);
@@ -63,9 +62,6 @@ const Navbar = () => {
                     {filteredMenuItems.length > 0 ? filteredMenuItems.map((item, index) => (
                         <MenuItems key={index} item={item} />
                     )) : null}
-                    <li>
-                        <MenuItem className='account-menu-item' item={getAccountItemByRoles(userRoles)} />
-                    </li>
                 </ul>
             </nav>
         </div>

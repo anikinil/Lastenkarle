@@ -4,11 +4,15 @@ import Dropdown from './Dropdown';
 // a single menu item
 const MenuItem = ({ className, item }) => {
 
+    console.log('item', item);
+    console.log('className', className);
+
     const [dropdown, setDropdown] = useState(false);
 
     return (
         <>
             {item.submenu ? (
+                console.log('submenu', item.submenu),
                 <div
                     onMouseLeave={() => setDropdown(false)}
                 >

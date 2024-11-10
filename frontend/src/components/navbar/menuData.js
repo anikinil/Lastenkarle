@@ -85,10 +85,6 @@ export const menuItems = [
             }
         ]
     },
-];
-
-// TODO implement logout properly
-const accountItemVersions = [
     {
         title: <FaUser />,
         url: '/my-bookings',
@@ -106,7 +102,7 @@ const accountItemVersions = [
     },
     {
         title: <FaUser />,
-        url: '/my-bookings',
+        url: null,
         roles: [Roles.VISITOR],
         submenu: [
             {
@@ -119,19 +115,4 @@ const accountItemVersions = [
             }
         ]
     }
-]
-
-export const getAccountItemByRoles = (roles) => {
-    if (!roles || roles.length === 0) return null; // Return null or a default item if no roles are provided
-
-    // Use a Set for faster lookups
-    const rolesSet = new Set(roles);
-
-    // Find the first matching account item configuration
-    const matchingAccountItem = accountItemVersions.find(version =>
-        version.roles.some(role => rolesSet.has(role))
-    );
-
-    // Return the matched item, or provide a default/fallback item for visitors if no match
-    return matchingAccountItem || accountItemVersions.find(version => version.roles.includes(Roles.VISITOR));
-};
+];
