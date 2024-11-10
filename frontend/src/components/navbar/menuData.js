@@ -33,7 +33,7 @@ export const menuItems = [
     {
         title: 'Booking',
         url: '/booking',
-        roles: [Roles.CUSTOMER, Roles.MANAGER, Roles.ADMIN, Roles.VISITOR],
+        roles: [Roles.CUSTOMER, Roles.MANAGER, Roles.ADMINISTRATOR, Roles.VISITOR],
         submenu: [
             {
                 title: 'Karlsruhe',
@@ -56,12 +56,12 @@ export const menuItems = [
     {
         title: 'Store management',
         url: '/stores',
-        roles: [Roles.MANAGER, Roles.ADMIN],
+        roles: [Roles.MANAGER, Roles.ADMINISTRATOR],
         submenu: storesAsItems
     },
     {
         title: 'Admin activities',
-        roles: [Roles.ADMIN],
+        roles: [Roles.ADMINISTRATOR],
         submenu: [
             {
                 title: 'Bookings',
@@ -88,7 +88,7 @@ export const menuItems = [
     {
         title: <FaUser />,
         url: '/my-bookings',
-        roles: [Roles.CUSTOMER, Roles.MANAGER, Roles.ADMIN],
+        roles: [Roles.CUSTOMER, Roles.MANAGER, Roles.ADMINISTRATOR],
         submenu: [
             {
                 title: 'Logout',
