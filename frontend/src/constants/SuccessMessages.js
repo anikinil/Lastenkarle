@@ -5,6 +5,7 @@ export const SUCCESS_FETCHING_BOOKING = "Success: booking fetched successfully."
 export const SUCCESS_UPDATING_STORE = "Success: store updated successfully.";
 
 // posting
+export const EMAIL_VERIFICATOIN_SUCCESSFUL = "Email verification successful.";
 
 // deleting
 
