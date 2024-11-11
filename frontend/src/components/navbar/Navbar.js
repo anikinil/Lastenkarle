@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { menuItems, Roles } from '../../components/navbar/menuData'
 import MenuItems from './MenuItems';
 import './Navbar.css';
 import logo from '../../assets/images/logo.png';
@@ -7,8 +6,15 @@ import { USER_DATA } from '../../constants/URIs/UserURIs';
 import { getCookie } from '../../services/Cookies';
 import { ERR_FETCHING_USER_FLAGS } from '../../constants/ErrorMessages';
 import { useLocation } from 'react-router-dom';
+import { FaUser } from 'react-icons/fa';
+import { ACCOUNT_DELETION, LOGIN, LOGOUT, REGIONAL_BOOKING, REGISTER } from '../../constants/URLs/Navigation';
+import { REGION_NAME } from '../../constants/URLs/General';
+import { Roles } from '../../constants/Roles';
+
 
 const Navbar = () => {
+
+    // TODO only update when necessairy
 
     // gets the current location (Router) to update the navbar after cahnge of user roles
     const location = useLocation();
@@ -17,8 +23,104 @@ const Navbar = () => {
 
     // default role is visitor (not logged in)
     const [userRoles, setUserRoles] = useState([Roles.VISITOR]);
+    const [userStores, setUserStores] = useState([]);
     const [filteredMenuItems, setFilteredMenuItems] = useState([]);
-    
+
+    // TODO make each title a translatoin constant
+    // TODO use URL constants for each url
+    const getMenuItems = (stores) => {
+        const storeItems = stores.map((store) => ({ title: store, url: '/store/' + store }))
+        const allItems = [
+            {
+                title: 'Booking',
+                url: '/booking',
+                roles: [Roles.CUSTOMER, Roles.MANAGER, Roles.ADMINISTRATOR, Roles.VISITOR],
+                submenu: [
+                    {
+                        title: 'Karlsruhe',
+                        url: REGIONAL_BOOKING.replace(REGION_NAME, 'karlsruhe')
+                    },
+                    {
+                        title: 'Ettlingen',
+                        url: REGIONAL_BOOKING.replace(REGION_NAME, 'ettlingen')
+                    },
+                    {
+                        title: 'Bruchsaal',
+                        url: REGIONAL_BOOKING.replace(REGION_NAME, 'bruchsaal')
+                    },
+                    {
+                        title: 'Malsch',
+                        url: REGIONAL_BOOKING.replace(REGION_NAME, 'malsch')
+                    }
+                ]
+            },
+            {
+                title: 'Store management',
+                url: '/stores',
+                roles: [Roles.MANAGER, Roles.ADMINISTRATOR],
+                submenu: storeItems
+            },
+            {
+                title: 'Admin activities',
+                roles: [Roles.ADMINISTRATOR],
+                submenu: [
+                    {
+                        title: 'Bookings',
+                        url: '/bookings',
+                    },
+                    {
+                        title: 'Users',
+                        url: '/users',
+                    },
+                    {
+                        title: 'Stores',
+                        url: '/stores',
+                    },
+                    {
+                        title: 'Bikes',
+                        url: '/bikes',
+                    },
+                    {
+                        title: 'Enrollment',
+                        url: '/enrollment',
+                    }
+                ]
+            },
+            {
+                title: <FaUser />,
+                url: '/my-bookings',
+                roles: [Roles.CUSTOMER, Roles.MANAGER, Roles.ADMINISTRATOR],
+                submenu: [
+                    {
+                        title: 'Logout',
+                        url: LOGOUT,
+                    },
+                    {
+                        title: 'Delete account',
+                        url: ACCOUNT_DELETION,
+                    }
+                ]
+            },
+            {
+                title: <FaUser />,
+                url: null,
+                roles: [Roles.VISITOR],
+                submenu: [
+                    {
+                        title: 'Login',
+                        url: LOGIN,
+                    },
+                    {
+                        title: 'Register',
+                        url: REGISTER,
+                    }
+                ]
+            }
+        ]
+
+        return allItems.filter(item => userRoles.some(role => item.roles.includes(role)));
+    };
+
     const fetchUserRoles = () => {
         if (token !== 'undefined' && token !== null) {
             fetch(USER_DATA, {
@@ -27,13 +129,21 @@ const Navbar = () => {
                     'Authorization': `Token ${token}`,
                 }
             })
-            .then(response => response.json())
-            .then(data => {
-                setUserRoles(data.user_flags.map(element => element.flag));
-            })
-            .catch(error => {
-                console.error(ERR_FETCHING_USER_FLAGS, error);
-            });
+                .then(response => response.json())
+                .then(data => {
+                    // get the user flags from the response
+                    const flags = data.user_flags.map(element => element.flag);
+                    // get the store names from the flags
+                    const stores = flags.filter(role => role.includes('Store: ')).map(role => role.replace('Store: ', ''));
+                    // get the roles from the flags
+                    const roles = (flags.filter(role => !role.includes('Store: ')));
+                    // if the user is manager of at least one store, add the manager role
+                    if (stores.length > 0) { roles.push(Roles.MANAGER); setUserStores(stores); }
+                    setUserRoles(roles);
+                })
+                .catch(error => {
+                    console.error(ERR_FETCHING_USER_FLAGS, error);
+                });
         } else {
             setUserRoles([Roles.VISITOR]);
         }
@@ -45,10 +155,7 @@ const Navbar = () => {
     }, [location]);
 
     useEffect(() => {
-        let filteredItems = menuItems.filter(item =>
-            userRoles.some(role => item.roles.includes(role))
-        );
-        setFilteredMenuItems(filteredItems);
+        setFilteredMenuItems(getMenuItems(userStores));
     }, [userRoles]);
 
     return (

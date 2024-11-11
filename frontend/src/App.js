@@ -42,7 +42,7 @@ import { BIKE, BIKE_BOOKING, BIKE_REGISTRATION, BIKES, BOOKING, BOOKINGS, ACCOUN
 import { getCookie } from './services/Cookies';
 import { ID, KEY, REGION_NAME } from './constants/URLs/General';
 import EmailVerification from './pages/EmailVerification';
-import { Roles } from './components/navbar/menuData';
+import { Roles } from './constants/Roles';
 import { ERR_FETCHING_USER_DATA, ERR_FETCHING_USER_FLAGS } from './constants/ErrorMessages';
 import { USER_DATA } from './constants/URIs/UserURIs';
 

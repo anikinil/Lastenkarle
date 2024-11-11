@@ -7,7 +7,7 @@ import { USER_FLAGS } from '../../../constants/URIs/AdminURIs';
 import { ALL_STORES } from '../../../constants/URIs/BookingURIs';
 import { getCookie } from '../../../services/Cookies';
 import { ERR_POSTING_ENROLLMENT } from '../../../constants/ErrorMessages';
-import { Roles } from '../../../components/navbar/menuData';
+import { Roles } from '../../../constants/Roles';
 
 const Enrollment = () => {
     const { t } = useTranslation(); // Translation hook
@@ -46,7 +46,7 @@ const Enrollment = () => {
         { value: '', label: t('not_selected') },
         { value: Roles.ADMINISTRATOR, label: t('admin') },
         ...stores.map((store) => (
-            { value: store.name, label: t('manager_of') + store.name }
+            { value: `Store: ${store.name}`, label: t('manager_of') + store.name }
         )),
     ];
 
@@ -54,8 +54,7 @@ const Enrollment = () => {
     const postEnrollment = () => {
         const payload = {
             contact_data: email,
-            // user_status: selectedRole
-            flag: 'Administrator'
+            flag: selectedRole
         };
 
         fetch(USER_FLAGS, {
