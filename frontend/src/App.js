@@ -40,7 +40,7 @@ import StoreBookings from './features/storeBookings/pages/StoreBookings';
 import NavigationError from './pages/NavigationError';
 import { BIKE, BIKE_BOOKING, BIKE_REGISTRATION, BIKES, BOOKING, BOOKINGS, ACCOUNT_DELETION, EMAIL_VERIFICATION, ENROLLMENT, HOME, LOGIN, LOGOUT, REGIONAL_BOOKING, REGISTER, STORE, STORE_BOOKINGS, STORE_REGISTRATION, STORES, USER_BAN, USERS } from './constants/URLs/Navigation';
 import { getCookie } from './services/Cookies';
-import { ID, KEY, REGION_NAME } from './constants/URLs/General';
+import { ID, KEY, REGION_NAME, STORE_NAME } from './constants/URLs/General';
 import EmailVerification from './pages/EmailVerification';
 import { Roles } from './constants/Roles';
 import { ERR_FETCHING_USER_DATA, ERR_FETCHING_USER_FLAGS } from './constants/ErrorMessages';
@@ -111,7 +111,7 @@ const App = () => {
                             <ProtectedElement element={<Enrollment />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
                         } />
                         <Route exact path={BOOKINGS} element={<BookingList />} />
-                        <Route exact path={STORE} element={getComponentByPath(STORE)} />
+                        <Route exact path={STORE.replace(STORE_NAME, ':store')} element={<StoreConfigPage />} />
                         <Route exact path={STORE_BOOKINGS} element={
                             <ProtectedElement element={<StoreBookings />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
                         } />
