@@ -21,32 +21,6 @@ import { STORE } from "../../../constants/URLs/Navigation";
 import { STORE_NAME } from "../../../constants/URLs/General";
 import { getCookie } from "../../../services/Cookies";
 
-// Mock data for stores (to be replaced with actual fetching logic)
-// let stores = [
-//     {
-
-//         id: 1,
-//         name: 'Store 1',
-//         image: require('../../../assets/images/store1.jpg'),
-//         description: 'This is a description of Store 1',
-//         address: 'Musterstraße 123, 76137 Karlsruhe'
-//     },
-//     {
-//         id: 2,
-//         name: 'Store 2',
-//         image: require('../../../assets/images/store1.jpg').default,
-//         description: 'This is a description of Store 2',
-//         address: 'Musterstraße 123, 76137 Karlsruhe'
-//     },
-//     {
-//         id: 3,
-//         name: 'Store 3',
-//         image: null,
-//         description: 'This is a description of Store 3',
-//         address: 'Musterstraße 123, 76137 Karlsruhe'
-//     }
-// ]
-
 // TODO make sure, storeName is passed to this component as parameter
 
 // page for the configuration of an existing store
@@ -62,9 +36,9 @@ const StoreConfigPage = () => {
 
     // State to hold store data
     const [store, setStore] = useState();
-    
+
     const token = getCookie('token');
-    
+
     // fetches store data
     const fetchStore = () => {
         console.log("STORE IN FETCH", storeName)
@@ -84,27 +58,27 @@ const StoreConfigPage = () => {
             });
     }
 
-    // // Function to post changes to the store
-    // const postChanges = () => {
-    //     let payload = {
-    //         address: newAddress
-    //     }
-    //     fetch(STORE_PAGE_BY_STORE_NAME.replace(STORE_NAME, storeName), {
-    //         method: 'PATCH',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //             'Authorization': `Token ${token}`
-    //         },
-    //         body: JSON.stringify(payload)
-    //     })
-    //         .then(response => response.json())
-    //         .then(data => {
-    //             console.log(SUCCESS_UPDATING_STORE, data);
-    //         })
-    //         .catch(error => {
-    //             console.error(ERR_UPDATING_STORE, error);
-    //         });
-    // }
+    // Function to post changes to the store
+    const postChanges = () => {
+        let payload = {
+            address: newAddress
+        }
+        fetch(STORE_PAGE_BY_STORE_NAME.replace(STORE_NAME, storeName), {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`
+            },
+            body: JSON.stringify(payload)
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(SUCCESS_UPDATING_STORE, data);
+            })
+            .catch(error => {
+                console.error(ERR_UPDATING_STORE, error);
+            });
+    }
 
     useEffect(() => {
         console.log('fetching store')
@@ -118,29 +92,35 @@ const StoreConfigPage = () => {
 
     // Handler for submit button click
     const handleSubmitClick = () => {
-        // postChanges();
+        postChanges();
         navigate(STORE.replace(STORE_NAME, storeName));
     }
 
     return (
-        <>
-            {/* Displaying store picture and description */}
-            <PictureAndDescriptionField
-                image={store.image}
-                description={store.description}
-            />
-            <SingleLineTextField editable={true} value={store.address} title={'address'} onChange={handleAddressChange} />
-            <p>{store.address}</p>
-            {/* Configuring store opening times */}
-            <StoreOpeningTimesConfig />
-            {/* Displaying list of bikes of the store */}
-            <BikeList />
-            {/* Single line text field for store name  */}
-            <SingleLineTextField value={store.name} />
+        // not sure why this is not working withouth the condition
+        <> {store ?
+            <>
+                <h1>{store.name}</h1>
 
-            <div className='button-container'>
-                <button type='button' className='button regular' onClick={handleSubmitClick}>{t('submit_changes')}</button>
-            </div>
+                {/* Displaying store picture and description */}
+                <PictureAndDescriptionField
+                    image={store.image}
+                    description={store.description}
+                />
+                {/* Single line text field for store address */}
+                <SingleLineTextField editable={true} value={store.address} title={'address'} onChange={handleAddressChange} />
+
+                {/* Configuring store opening times */}
+                <StoreOpeningTimesConfig />
+
+                {/* Displaying list of bikes of the store */}
+                {/* <BikeList /> */}
+
+                <div className='button-container'>
+                    <button type='button' className='button regular' onClick={handleSubmitClick}>{t('submit_changes')}</button>
+                </div>
+            </>
+            : null}
         </>
     );
 };

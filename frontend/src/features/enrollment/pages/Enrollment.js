@@ -38,7 +38,7 @@ const Enrollment = () => {
     useEffect(() => {
         fetchStores();
         console.log('stores', stores)
-    }, []);
+    });
 
     // Generate role options for the select dropdown
     const roleOptions = [

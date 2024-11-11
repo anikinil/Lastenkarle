@@ -211,7 +211,7 @@ const BookingList = ({ filterStore, filterBike, filterUser }) => {
         fetchBikes();
         fetchUsers();
         // THINK if filtering should happen on load (in case filter parameters passed)
-    }, [])
+    })
 
     const handleStoreSelect = (e) => {
         setStore(e.target.value)

@@ -39,7 +39,7 @@ const StorePage = () => {
     // Fetch store data when component mounts
     useEffect(() => {
         fetchStore();
-    }, []); // Empty dependency array ensures this runs only once
+    }); // Empty dependency array ensures this runs only once
 
     return (
         <>
