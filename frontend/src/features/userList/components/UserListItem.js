@@ -50,7 +50,7 @@ const UserListItem = ({ user }) => {
 
     return (
         <li className='list-item' onClick={handlePanelClick}>
-            <p className='list-item-label'>{user.name}</p>
+            <p className='list-item-label'>{user.username? user.username : "(no username)"}</p>
             <button type='button' className='list-item-button regular' onClick={handleBookingsClick}>{t('bookings')}</button>
             <button type='button' className='list-item-button delete' onClick={handleBanClick}>{t('ban')}</button>
         </li>
