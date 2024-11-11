@@ -3,11 +3,9 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import './StoreRegistration.css'
-import StoreOpeningTimesConfig from '../../storeConfig/components/StoreOpeningTimesConfig';
 
 import 'react-time-picker/dist/TimePicker.css';
 
-import BikeList from '../../bikeList/components/BikeList'
 import PictureAndDescriptionField from '../../../components/display/pictureAndDescriptionField/PictureAndDescriptionField';
 import SingleLineTextField from '../../../components/display/SingleLineTextField';
 import { useNavigate } from 'react-router-dom';
@@ -128,11 +126,6 @@ const StoreRegistration = () => {
             <SingleLineTextField editable={true} title='address' onChange={handleAddressChange} />
             <SingleLineTextField editable={true} title='phone_number' onChange={handlePhoneNumberChange} />
             <SingleLineTextField editable={true} title='email' onChange={handleEmailChange} />
-
-            <StoreOpeningTimesConfig />
-
-            <h2>{t('add_bikes_to_store')}</h2>
-            <BikeList />
 
             <div className='button-container'>
                 <button type='button' className='button regular' onClick={handleCancelClick}>{t('cancel')}</button>
