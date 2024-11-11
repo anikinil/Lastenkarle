@@ -1,6 +1,7 @@
 import { HOST } from "./General"
 
 const BASE = `${HOST}/api/admin/v1`
+const STORE_ID = '{STORE_ID}'
 
 export const ALL_EQUIPMENT                  = `${BASE}/equipment`
 export const USER_FLAGS                     = `${BASE}/user-flags`
@@ -17,3 +18,4 @@ export const ALL_BIKES                      = `${BASE}/bikes`
 export const ALL_STORES                     = `${BASE}/stores`
 
 export const CREATE_STORE                   = `${BASE}/create/store`
+export const CREATE_BIKE                    = `${BASE}/create/store/${STORE_ID}/bike`

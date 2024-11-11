@@ -11,7 +11,6 @@ import SingleLineTextField from '../../../components/display/SingleLineTextField
 import { useNavigate } from 'react-router-dom';
 import { CREATE_STORE } from '../../../constants/URIs/AdminURIs';
 import { getCookie } from '../../../services/Cookies';
-import { STORES } from '../../../constants/URLs/Navigation';
 import { ERR_FETCHING_REGIONS, ERR_POSTING_NEW_STORE } from '../../../constants/ErrorMessages';
 import { REGIONS } from '../../../constants/URIs/BookingURIs';
 
@@ -23,7 +22,7 @@ const StoreRegistration = () => {
     
     const handleCancelClick = () => {
         // TODO add a confirmation dialog
-        navigate(STORES) // Navigate to stores page on cancel
+        navigate(-1)
     }
     
     const token = getCookie('token') // Get authentication token
@@ -75,7 +74,6 @@ const StoreRegistration = () => {
 
     // Function to post new store data to the server
     const postNewStore = () => {
-
         let payload = {
             region: region,
             phone_number: phoneNumber,
@@ -83,7 +81,6 @@ const StoreRegistration = () => {
             address: address,
             name: name
         };
-
         return fetch(CREATE_STORE, {
             method: 'POST',
             headers: {
@@ -95,7 +92,7 @@ const StoreRegistration = () => {
             .then(response => {
                 if (response.ok) {
                     alert(t('store_registration_successful'));
-                    navigate(STORES);
+                    navigate(-1);
                 } else {
                     return response.json().then((errorText) => {
                         throw new Error(errorText.detail);
