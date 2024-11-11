@@ -31,7 +31,7 @@ const BikeRegistration = () => {
         return fetch('', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'multipart/form-data',
                 'Authorization': `Token ${token}`
             },
             body: JSON.stringify(payload)
