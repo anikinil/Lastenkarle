@@ -7,16 +7,17 @@ import { USER_FLAGS } from '../../../constants/URIs/AdminURIs';
 import { ALL_STORES } from '../../../constants/URIs/BookingURIs';
 import { getCookie } from '../../../services/Cookies';
 import { ERR_POSTING_ENROLLMENT } from '../../../constants/ErrorMessages';
+import { Roles } from '../../../components/navbar/menuData';
 
 const Enrollment = () => {
     const { t } = useTranslation(); // Translation hook
     const navigate = useNavigate(); // Navigation hook
 
     // State variables
-    const [username, setUsername] = useState();
     const [email, setEmail] = useState();
     const [stores, setStores] = useState([]);
-    const [selectedRole, setSelectedRole] = useState({});
+    // when role not selected, the value is ''
+    const [selectedRole, setSelectedRole] = useState('');
 
     const token = getCookie('token'); // Get authentication token from cookies
 
@@ -41,10 +42,12 @@ const Enrollment = () => {
 
     // Generate role options for the select dropdown
     const roleOptions = [
+        // TODO make proper store manager role parsing for API
+        { value: '', label: t('not_selected') },
+        { value: Roles.ADMINISTRATOR, label: t('admin') },
         ...stores.map((store) => (
             { value: store.name, label: t('manager_of') + store.name }
         )),
-        { value: t('admin'), label: 'admin' }
     ];
 
     // Post enrollment data to the server
@@ -52,7 +55,7 @@ const Enrollment = () => {
         const payload = {
             contact_data: email,
             // user_status: selectedRole
-            user_status: 'Administarator'
+            flag: 'Administrator'
         };
 
         fetch(USER_FLAGS, {
@@ -80,7 +83,6 @@ const Enrollment = () => {
     // Handle role change in the select dropdown
     const handleRoleChange = (event) => {
         setSelectedRole(event.target.value);
-        console.log(event.target.value)
     };
 
     // Prevent user from switching to a new line by hitting [Enter]
@@ -92,14 +94,18 @@ const Enrollment = () => {
 
     // Handle enroll button click
     const handleEnrollClick = () => {
-        postEnrollment();
+        if (selectedRole !== '') {
+            postEnrollment();
+        } else {
+            alert(t('role_not_selected'));
+        }
     };
 
     return (
         <>
             <h1>{t('enrollment')}</h1>
 
-            <p>{t('enter_one_of_the_following_to_identify_user')}</p>
+            {/* <p>{t('enter_one_of_the_following_to_identify_user')}</p> */}
 {/* 
             <textarea
                 title={t('enter_username')}
@@ -125,7 +131,7 @@ const Enrollment = () => {
             <select title='roles' className='select' onChange={handleRoleChange}>
                 {roleOptions.map(e => <option key={e.value} value={e.value}>{e.label}</option>)}
             </select>
-            
+
             <div className='button-container'>
                 <button type='button' className='button accent' onClick={handleEnrollClick}>{t('enroll')}</button>
             </div>

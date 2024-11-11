@@ -18,6 +18,7 @@ const stores = [
     }
 ]
 
+// TODO find appropriate place for this
 export const Roles = Object.freeze({
     CUSTOMER: 'Customer',
     MANAGER: 'Manager',
