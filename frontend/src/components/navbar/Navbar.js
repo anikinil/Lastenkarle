@@ -7,7 +7,7 @@ import { getCookie } from '../../services/Cookies';
 import { ERR_FETCHING_USER_FLAGS } from '../../constants/ErrorMessages';
 import { useLocation } from 'react-router-dom';
 import { FaUser } from 'react-icons/fa';
-import { ACCOUNT_DELETION, LOGIN, LOGOUT, REGIONAL_BOOKING, REGISTER } from '../../constants/URLs/Navigation';
+import { ACCOUNT_DELETION, ALL_BIKES, LOGIN, LOGOUT, REGIONAL_BOOKING, REGISTER } from '../../constants/URLs/Navigation';
 import { REGION_NAME } from '../../constants/URLs/General';
 import { Roles } from '../../constants/Roles';
 
@@ -78,7 +78,7 @@ const Navbar = () => {
                     },
                     {
                         title: 'Bikes',
-                        url: '/bikes',
+                        url: ALL_BIKES,
                     },
                     {
                         title: 'Enrollment',

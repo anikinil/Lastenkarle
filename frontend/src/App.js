@@ -27,7 +27,7 @@ import RegionalBooking from './features/booking/pages/RegionalBooking';
 import BikeBooking from './features/booking/pages/BikeBooking';
 import StorePage from './features/storeDisplay/pages/StorePage';
 import StoreConfigPage from './features/storeConfig/pages/StoreConfigPage';
-import BikeListPage from './features/bikeList/pages/BikeListPage';
+import BikeListPage from './features/allBikesList/pages/AllBikesPage';
 import BikeRegistration from './features/bikeRegistration/pages/BikeRegistration';
 import StoreRegistration from './features/storeRegistration/pages/StoreRegistration';
 import BookingList from './features/bookingListAdmin/pages/BookingList';
@@ -38,13 +38,14 @@ import Enrollment from './features/enrollment/pages/Enrollment';
 import StoreBookings from './features/storeBookings/pages/StoreBookings';
 
 import NavigationError from './pages/NavigationError';
-import { BIKE, BIKE_BOOKING, BIKE_REGISTRATION, BIKES, BOOKING, BOOKINGS, ACCOUNT_DELETION, EMAIL_VERIFICATION, ENROLLMENT, HOME, LOGIN, LOGOUT, REGIONAL_BOOKING, REGISTER, STORE, STORE_BOOKINGS, STORE_REGISTRATION, STORES, USER_BAN, USERS } from './constants/URLs/Navigation';
+import { BIKE, BIKE_BOOKING, BIKE_REGISTRATION, ALL_BIKES, BOOKING, BOOKINGS, ACCOUNT_DELETION, EMAIL_VERIFICATION, ENROLLMENT, HOME, LOGIN, LOGOUT, REGIONAL_BOOKING, REGISTER, STORE, STORE_BOOKINGS, STORE_REGISTRATION, STORES, USER_BAN, USERS } from './constants/URLs/Navigation';
 import { getCookie } from './services/Cookies';
 import { ID, KEY, REGION_NAME, STORE_NAME } from './constants/URLs/General';
 import EmailVerification from './pages/EmailVerification';
 import { Roles } from './constants/Roles';
 import { ERR_FETCHING_USER_DATA, ERR_FETCHING_USER_FLAGS } from './constants/ErrorMessages';
 import { USER_DATA } from './constants/URIs/UserURIs';
+import AllBikesPage from './features/allBikesList/pages/AllBikesPage';
 
 const App = () => {
 
@@ -97,7 +98,9 @@ const App = () => {
                         } />
                         <Route path={REGIONAL_BOOKING.replace(REGION_NAME, ':region')} element={<RegionalBooking />} />
                         <Route exact path={BIKE_BOOKING} element={<BikeBooking />} />
-                        <Route exact path={BIKES} element={<BikeListPage />} />
+                        <Route exact path={ALL_BIKES} element={
+                            <ProtectedElement element={<AllBikesPage />} elementRoles={[Roles.ADMINISTRATOR]} />
+                        } />
                         {/* <Route exact path={BIKE} element={getComponentByPath(BIKE)} /> */}
                         <Route exact path={'/bike/1'} element={<BikePage />} />
                         {/* TODO make inaccessible by just entering the store name in search bar by manager of different store */}

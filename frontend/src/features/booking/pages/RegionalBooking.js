@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import Map from '../components/Map';
 import FilterForAvailabilities from '../components/FilterForAvailabilities';
 import AvailabilityCalendar from '../components/calendar/AvailabilityCalendar';
-import BikeList from '../../bikeList/components/BikeList';
+import BikeList from '../../allBikesList/components/BikeList';
 //Standard page for a specific region
 //TODO: Add Map of region with station markers
 //TODO: Add Filter Bar for Availabilities
