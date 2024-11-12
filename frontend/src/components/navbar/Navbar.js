@@ -10,11 +10,14 @@ import { FaUser } from 'react-icons/fa';
 import { ACCOUNT_DELETION, ALL_BIKES, LOGIN, LOGOUT, REGIONAL_BOOKING, REGISTER } from '../../constants/URLs/Navigation';
 import { REGION_NAME } from '../../constants/URLs/General';
 import { Roles } from '../../constants/Roles';
+import { useTranslation } from 'react-i18next';
 
 
 const Navbar = () => {
 
     // TODO only update when necessairy
+
+    const { t } = useTranslation();
 
     // gets the current location (Router) to update the navbar after cahnge of user roles
     const location = useLocation();
@@ -55,33 +58,33 @@ const Navbar = () => {
                 ]
             },
             {
-                title: 'Store management',
+                title: t('store_management'),
                 url: '/stores',
                 roles: [Roles.MANAGER, Roles.ADMINISTRATOR],
                 submenu: storeItems
             },
             {
-                title: 'Admin activities',
+                title: t('admin_activities'),
                 roles: [Roles.ADMINISTRATOR],
                 submenu: [
                     {
-                        title: 'Bookings',
+                        title: t('bookings'),
                         url: '/bookings',
                     },
                     {
-                        title: 'Users',
+                        title: t('users'),
                         url: '/users',
                     },
                     {
-                        title: 'Stores',
+                        title: t('stores'),
                         url: '/stores',
                     },
                     {
-                        title: 'Bikes',
+                        title: t('all_bikes'),
                         url: ALL_BIKES,
                     },
                     {
-                        title: 'Enrollment',
+                        title: t('enrollment'),
                         url: '/enrollment',
                     }
                 ]
@@ -92,11 +95,11 @@ const Navbar = () => {
                 roles: [Roles.CUSTOMER, Roles.MANAGER, Roles.ADMINISTRATOR],
                 submenu: [
                     {
-                        title: 'Logout',
+                        title: t('logout'),
                         url: LOGOUT,
                     },
                     {
-                        title: 'Delete account',
+                        title: t('delete account'),
                         url: ACCOUNT_DELETION,
                     }
                 ]
@@ -107,11 +110,11 @@ const Navbar = () => {
                 roles: [Roles.VISITOR],
                 submenu: [
                     {
-                        title: 'Login',
+                        title: t('login'),
                         url: LOGIN,
                     },
                     {
-                        title: 'Register',
+                        title: t('register'),
                         url: REGISTER,
                     }
                 ]
@@ -152,7 +155,7 @@ const Navbar = () => {
     // fetch user roles on first render, if token is present (user is logged in)
     useEffect(() => {
         fetchUserRoles();
-    }, [location]);
+    }, [location, t]);
 
     useEffect(() => {
         setFilteredMenuItems(getMenuItems(userStores));
