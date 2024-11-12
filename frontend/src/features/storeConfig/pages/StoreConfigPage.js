@@ -4,7 +4,6 @@ import React, { useEffect } from "react";
 // Importing components for display and configuration
 import PictureAndDescriptionField from "../../../components/display/pictureAndDescriptionField/PictureAndDescriptionField";
 import StoreOpeningTimesConfig from "../components/StoreOpeningTimesConfig";
-import BikeList from "../../allBikesList/components/BikeList";
 
 // Importing hooks for routing and translation
 import { useParams } from "react-router-dom";

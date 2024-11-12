@@ -15,6 +15,23 @@ const StoreOpeningTimesConfig = () => {
     // Array of days of the week translated
     const daysOfWeek = [t('monday'), t('tuesday'), t('wednesday'), t('thursday'), t('friday'), t('saturday'), t('sunday')];
 
+    const [openingTimes, setOpeningTimes] = useState({
+        monday: { open: false, from: '00:00', to: '00:00', closed: false, from: '00:00', to: '00:00' },
+        tuesday: { open: false, from: '00:00', to: '00:00', closed: false, from: '00:00', to: '00:00' },
+        wednesday: { open: false, from: '00:00', to: '00:00', closed: false, from: '00:00', to: '00:00' },
+        thursday: { open: false, from: '00:00', to: '00:00', closed: false, from: '00:00', to: '00:00' },
+        friday: { open: false, from: '00:00', to: '00:00', closed: false, from: '00:00', to: '00:00' },
+        saturday: { open: false, from: '00:00', to: '00:00', closed: false, from: '00:00', to: '00:00' },
+        sunday: { open: false, from: '00:00', to: '00:00', closed: false, from: '00:00', to: '00:00' }
+    });
+
+    const handleDayChange = (day, open, from, to, closed, fromClosed, toClosed) => {
+        setOpeningTimes({
+            ...openingTimes,
+            [day]: { open, from, to, closed, fromClosed, toClosed }
+        });
+    }
+
     return (
         <>
             {/* Heading for the opening times section */}
@@ -33,7 +50,7 @@ const StoreOpeningTimesConfig = () => {
                 </div>
                 {/* Render a DayRow component for each day of the week */}
                 {daysOfWeek.map((day) => (
-                    <DayRow key={day} day={day} />
+                    <DayRow key={day} day={day} onChange={handleDayChange}/>
                 ))}
             </div>
         </>

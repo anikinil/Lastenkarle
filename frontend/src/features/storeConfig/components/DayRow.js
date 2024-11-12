@@ -8,7 +8,7 @@ import '../../../components/timePicker/TimePickerCustom.css'
 
 import { useTranslation } from 'react-i18next';
 
-const DayRow = ({ day }) => {
+const DayRow = ({ day, onChange }) => {
 
     const { t } = useTranslation();
 
@@ -65,6 +65,7 @@ const DayRow = ({ day }) => {
                     locale='de-de'
                 />
             </div>
+
             {/* Closed toggle switch */}
             <Switch id={`${day}-closed`} isOn={isClosed} handleToggle={handleClosedToggle} disabled={!isOpen} />
             <div>
