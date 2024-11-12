@@ -86,6 +86,10 @@ const StoreConfigPage = () => {
         setNewAddress(value);
     }
 
+    const handleCancelClick = () => {
+        navigate(-1);
+    }
+
     const handleAddBikeClick = () => {
         navigate(BIKE_REGISTRATION.replace(STORE_NAME, storeName));
     }
@@ -117,6 +121,7 @@ const StoreConfigPage = () => {
                 {/* <BikeList /> */}
 
                 <div className='button-container'>
+                    <button type='button' className='button regulal' onClick={handleCancelClick}>{t('cancel')}</button>
                     <button type='button' className='button regular' onClick={handleAddBikeClick}>{t('add_bike_to_store')}</button>
                     <button type='button' className='button accent' onClick={handleSubmitClick}>{t('submit_changes')}</button>
                 </div>
