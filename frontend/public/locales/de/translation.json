@@ -29,5 +29,6 @@
     "stores":                       "Stationen",
     "all_bikes":                    "Alle Lastenräder",
     "enrollment":                   "Einschreibung",
-    "logout":                       "Abmelden"
+    "logout":                       "Abmelden",
+    "delete_account":               "Account löschen"
 }

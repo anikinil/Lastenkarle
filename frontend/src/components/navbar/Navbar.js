@@ -99,7 +99,7 @@ const Navbar = () => {
                         url: LOGOUT,
                     },
                     {
-                        title: t('delete account'),
+                        title: t('delete_account'),
                         url: ACCOUNT_DELETION,
                     }
                 ]

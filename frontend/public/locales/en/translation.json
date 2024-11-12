@@ -29,5 +29,6 @@
     "stores":                       "Stores",
     "all_bikes":                    "All Bikes",
     "enrollment":                   "Enrollment",
-    "logout":                       "Logout"
+    "logout":                       "Logout",
+    "delete_account":               "Delete Account"
 }
