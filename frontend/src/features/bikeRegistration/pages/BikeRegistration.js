@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import './BikeRegistration.css'
 import PictureAndDescriptionField from '../../../components/display/pictureAndDescriptionField/PictureAndDescriptionField';
-import { useNavigate } from 'react-router-dom';
-import { BIKES } from '../../../constants/URLs/Navigation';
+import { useNavigate, useParams } from 'react-router-dom';
 import { ERR_POSTING_NEW_BIKE } from '../../../constants/ErrorMessages';
 import { getCookie } from '../../../services/Cookies';
+import { BIKES_OF_STORE, STORE_NAME } from '../../../constants/URIs/ManagerURI';
+import SingleLineTextField from '../../../components/display/SingleLineTextField';
 
 const BikeRegistration = () => {
     // Hook for translation
@@ -15,26 +16,31 @@ const BikeRegistration = () => {
     // Hook for navigation
     const navigate = useNavigate()
 
+    const storeName = useParams().store;
+
     const token = getCookie('token') // Get authentication token
+
+    const [name, setName] = useState('');
+    const [pictureFile, setPictureFile] = useState(null);
+    const [description, setDescription] = useState('');
 
     // Handler for cancel button click
     const handleCancelClick = () => {
-        // TODO maybe add a confirmation dialogue
+        // TODO maybe add a confirmation dialog
         navigate(-1)
     }
 
     const postNewBike = () => {
-        let payload = {
-            
-        };
-        // TODO add URI
-        return fetch('', {
+        const formData = new FormData();
+        formData.append("name", name);
+        formData.append("description", description);
+        formData.append("image", pictureFile);
+        return fetch(BIKES_OF_STORE.replace(STORE_NAME, storeName), {
             method: 'POST',
             headers: {
-                'Content-Type': 'multipart/form-data',
                 'Authorization': `Token ${token}`
             },
-            body: JSON.stringify(payload)
+            body: formData
         })
             .then(response => {
                 if (response.ok) {
@@ -51,6 +57,18 @@ const BikeRegistration = () => {
             });
     }
 
+    const handleNameChange = (value) => {
+        setName(value)
+    }
+
+    const handlePictureChange = (value) => {
+        setPictureFile(value)
+    }
+
+    const handleDescriptionChange = (value) => {
+        setDescription(value)
+    }
+
     // Handler for register button click
     const handleRegisterClick = () => {
         postNewBike();
@@ -59,10 +77,12 @@ const BikeRegistration = () => {
     return (
         <>
             {/* Page title */}
-            <h1>{t('new_bike')}</h1>
+            <h1>{t('new_bike_to')} {storeName}</h1>
+
+            <SingleLineTextField title={t('name')} editable={true} onChange={handleNameChange} />
 
             {/* Picture and description field component */}
-            <PictureAndDescriptionField editable={true}/>
+            <PictureAndDescriptionField editable={true} onPictureChange={handlePictureChange} onDescriptionChange={handleDescriptionChange}/>
 
             {/* Button container */}
             <div className='button-container'>

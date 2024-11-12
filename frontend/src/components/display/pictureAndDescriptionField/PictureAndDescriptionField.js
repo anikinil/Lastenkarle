@@ -3,15 +3,18 @@ import { useTranslation } from 'react-i18next';
 
 import './PictureAndDescriptionField.css';
 
-const PictureAndDescriptionField = ({ editable, object }) => {
+const PictureAndDescriptionField = ({ editable, object, onPictureChange, onDescriptionChange }) => {
     const { t } = useTranslation();
 
     const [pictureFile, setPictureFile] = useState(object?.image);
     const [description, setDescription] = useState(object?.description);
 
+    
     function handlePictureFileChange(event) {
         const file = event.target.files[0];
+        // THINK if duplication is the best way to handle this
         setPictureFile(file);
+        onPictureChange(file);
     }
 
     const handleImgContainerClick = () => {
@@ -20,7 +23,13 @@ const PictureAndDescriptionField = ({ editable, object }) => {
 
     const handleRemovePictureClick = () => {
         setPictureFile(null);
+        onPictureChange(null);
     };
+
+    const handleDescriptionChange = (event) => {
+        setDescription(event.target.value);
+        onDescriptionChange(event.target.value);
+    }
 
     return (
         <>
@@ -52,7 +61,7 @@ const PictureAndDescriptionField = ({ editable, object }) => {
                     title={t('write_description')}
                     className="description"
                     value={description}
-                    onChange={(e) => setDescription(e.target.value)}
+                    onChange={handleDescriptionChange}
                     placeholder={t('write_description')}
                     disabled={!editable}
                 ></textarea>

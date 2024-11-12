@@ -17,7 +17,7 @@ import { STORE_PAGE_BY_STORE_NAME } from "../../../constants/URIs/ManagerURI";
 import { ERR_FETCHING_STORE, ERR_UPDATING_STORE } from "../../../constants/ErrorMessages";
 import { useState } from "react";
 import { SUCCESS_UPDATING_STORE } from "../../../constants/SuccessMessages";
-import { STORE } from "../../../constants/URLs/Navigation";
+import { BIKE_REGISTRATION, STORE } from "../../../constants/URLs/Navigation";
 import { STORE_NAME } from "../../../constants/URLs/General";
 import { getCookie } from "../../../services/Cookies";
 
@@ -41,7 +41,6 @@ const StoreConfigPage = () => {
 
     // fetches store data
     const fetchStore = () => {
-        console.log("STORE IN FETCH", storeName)
         fetch(STORE_PAGE_BY_STORE_NAME.replace(STORE_NAME, storeName), {
             headers: {
                 'Content-Type': 'application/json',
@@ -51,7 +50,6 @@ const StoreConfigPage = () => {
             .then(response => response.json())
             .then(data => {
                 setStore(data);
-                console.log("STORE", data);
             })
             .catch(error => {
                 console.error(ERR_FETCHING_STORE, error);
@@ -81,13 +79,16 @@ const StoreConfigPage = () => {
     }
 
     useEffect(() => {
-        console.log('fetching store')
         fetchStore();
     }, []);
 
     // Handler for address change
     const handleAddressChange = (value) => {
         setNewAddress(value);
+    }
+
+    const handleAddBikeClick = () => {
+        navigate(BIKE_REGISTRATION.replace(STORE_NAME, storeName));
     }
 
     // Handler for submit button click
@@ -117,7 +118,8 @@ const StoreConfigPage = () => {
                 {/* <BikeList /> */}
 
                 <div className='button-container'>
-                    <button type='button' className='button regular' onClick={handleSubmitClick}>{t('submit_changes')}</button>
+                    <button type='button' className='button regular' onClick={handleAddBikeClick}>{t('add_bike_to_store')}</button>
+                    <button type='button' className='button accent' onClick={handleSubmitClick}>{t('submit_changes')}</button>
                 </div>
             </>
             : null}

@@ -100,8 +100,9 @@ const App = () => {
                         <Route exact path={BIKES} element={<BikeListPage />} />
                         {/* <Route exact path={BIKE} element={getComponentByPath(BIKE)} /> */}
                         <Route exact path={'/bike/1'} element={<BikePage />} />
-                        <Route exact path={BIKE_REGISTRATION} element={
-                            <ProtectedElement element={<BikeRegistration />} elementRoles={[Roles.ADMINISTRATOR]} />
+                        {/* TODO make inaccessible by just entering the store name in search bar by manager of different store */}
+                        <Route exact path={BIKE_REGISTRATION.replace(STORE_NAME, ':store')} element={
+                            <ProtectedElement element={<BikeRegistration />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
                         } />
                         <Route exact path={STORE_REGISTRATION} element={
                             <ProtectedElement element={<StoreRegistration />} elementRoles={[Roles.ADMINISTRATOR]} />
