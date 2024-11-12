@@ -32,7 +32,7 @@ const UserList = () => {
             }
         });
         const data = await response.json();
-        setUsers(data);
+        setUsers(data.map(user => (user.username === null) ? { ...user, username: '' } : user));
     };
 
     // Fetch users when the component mounts
@@ -48,7 +48,8 @@ const UserList = () => {
 
     // Function to sort the users list
     const resort = () => {
-        users.sort((a, b) => sortAZ ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name))
+        console.log(users)
+        users.sort((a, b) => sortAZ ? a.username.localeCompare(b.username) : b.username.localeCompare(a.username))
     }
 
     return (
