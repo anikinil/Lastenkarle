@@ -17,6 +17,19 @@ from send_mail.views import send_bike_pick_up_confirmation
 from send_mail.views import send_user_warning_to_admins
 
 
+class StoresOfManager(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated & IsVerfied]
+
+    def get(self, request):
+        stores = set()
+        for store in Store.objects.all():
+            if store.store_flag in request.user.user_flags.all():
+                stores.add(store)
+        serializer = StoreSerializer(stores, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 class StorePage(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsStaff & IsAuthenticated & IsVerfied]

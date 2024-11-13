@@ -3,6 +3,24 @@ from db_model.models import *
 from rest_framework import status
 
 
+class Test_manager_get_stores_of_manager(APITestCase):
+    def setUp(self):
+        super().setUp(url='/api/manager/v1/stores', http_method='GET')
+        self.add_flag_to_user(self.user_manager_store_koeri, self.store_graphs.store_flag.flag)
+
+    def test_manager_get_stores_of_manager_functionality(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_manager_store_koeri_token)
+        response = self.make_request(url=self.url_template)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_manager_get_stores_of_manager_integrity(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_manager_store_koeri_token)
+        self.validate_integrity_list(StoreSerializer(Store.objects.all(), many=True).data, self.url_template)
+
+    def test_manager_get_stores_of_manager_unauthorized(self):
+        self.invalid_permissions(user_token=self.user_customer_taylor_token, path=self.url_template)
+
+
 class Test_manager_get_all_equipment(APITestCase):
     def setUp(self):
         super().setUp(url='/api/manager/v1/{}/equipment', http_method='GET')
