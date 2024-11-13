@@ -4,11 +4,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import PictureAndDescriptionField from '../../../components/display/pictureAndDescriptionField/PictureAndDescriptionField';
-import { useParams } from 'react-router-dom';
-import SingleLineTextField from '../../../components/display/SingleLineTextField';
-import { STORE_NAME, STORE_PAGE_BY_STORE_NAME } from '../../../constants/URIs/ManagerURIs';
-import { ERR_FETCHING_STORE } from '../../../constants/ErrorMessages';
 import { getCookie } from '../../../services/Cookies';
 import StoreList from '../../storeList/components/StoreList';
 import { ALL_STORES } from '../../../constants/URIs/AdminURIs';

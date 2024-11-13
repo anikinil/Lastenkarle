@@ -1,19 +1,19 @@
 
 import React, { useEffect, useState } from 'react';
-import { MY_STORES } from '../../../constants/URLs/Navigation';
 import StoreList from '../../storeList/components/StoreList';
 import { useTranslation } from 'react-i18next';
 import { getCookie } from '../../../services/Cookies';
-
+import { MY_STORES } from '../../../constants/URIs/ManagerURIs';
 
 const MyStoresPage = () => {
     const { t } = useTranslation(); // Hook for translation
 
-    const [stores, setStores] = useState    ([]);
+    const [stores, setStores] = useState([]);
 
     const token = getCookie('token')
 
     const fetchMyStores = async () => {
+        // TODO wait till Jan adds the call
         const response = await fetch(MY_STORES,{
                 headers: {
                     'Content-Type': 'application/json',
