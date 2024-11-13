@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { ACCOUNT_DELETION } from "../constants/URIs/UserURIs";
 import { ERR_DELETING_ACCOUNT } from "../constants/ErrorMessages";
-import { HOME } from "../constants/URLs/Navigation";
+import { LOGIN } from "../constants/URLs/Navigation";
 import { deleteCookie, getCookie } from "../services/Cookies";
 
 
@@ -34,7 +34,7 @@ const AccountDeletion = () => {
             })
             .then(data => {
                 // If the request was successful, navigate to the home page
-                navigate(HOME);
+                navigate(LOGIN);
             })
             .catch(error => {
                 alert(ERR_DELETING_ACCOUNT + ' ' + error.message);

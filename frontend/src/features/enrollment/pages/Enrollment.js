@@ -42,10 +42,11 @@ const Enrollment = () => {
     // Generate role options for the select dropdown
     const roleOptions = [
         // TODO make proper store manager role parsing for API
-        { value: '', label: t('not_selected') },
-        { value: Roles.ADMINISTRATOR, label: t('admin') },
+        // TODO use translations for labels
+        { value: '', label: 'Nicht ausgewählt' },
+        { value: Roles.ADMINISTRATOR, label: 'Administrator' },
         ...stores.map((store) => (
-            { value: `Store: ${store.name}`, label: t('manager_of') + store.name }
+            { value: `Store: ${store.name}`, label: 'Manager von ' + store.name }
         )),
     ];
 
@@ -67,6 +68,7 @@ const Enrollment = () => {
             .then(response => {
                 if (response.ok) {
                     alert(t('enrollment_successful'));
+                    navigate(-1);
                 } else {
                     return response.json().then((errorText) => {
                         throw new Error(errorText.detail);
@@ -89,7 +91,7 @@ const Enrollment = () => {
             event.preventDefault();
         }
     };
-
+    
     // Handle enroll button click
     const handleEnrollClick = () => {
         if (selectedRole !== '') {
@@ -97,6 +99,10 @@ const Enrollment = () => {
         } else {
             alert(t('role_not_selected'));
         }
+    };
+
+    const handleCancelClick = () => {
+        navigate(-1);
     };
 
     return (
@@ -116,13 +122,13 @@ const Enrollment = () => {
             /> */}
 
             <textarea
-                title={t('enter_email')}
+                title={t('enter_contact_data')}
                 className='email'
                 rows='1'
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 onKeyDown={handleFieldKeyDown}
-                placeholder={t('enter_email')}
+                placeholder={t('enter_contact_data')}
             />
 
             <p>{t('select_role')}</p>
@@ -131,6 +137,7 @@ const Enrollment = () => {
             </select>
 
             <div className='button-container'>
+                <button type='button' className='button regular' onClick={handleCancelClick}>{t('cancel')}</button>
                 <button type='button' className='button accent' onClick={handleEnrollClick}>{t('enroll')}</button>
             </div>
         </>

@@ -12,7 +12,7 @@ const Home = () => {
     return (
         <>
             <h1>{t('homepage')}</h1>
-            <p>TOKEN: {token}</p>
+            <p>YOUR TOKEN: {token}</p>
         </>
     );
 };

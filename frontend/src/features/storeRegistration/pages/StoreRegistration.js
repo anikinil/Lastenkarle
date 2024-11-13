@@ -74,6 +74,7 @@ const StoreRegistration = () => {
 
     // Function to post new store data to the server
     const postNewStore = () => {
+        console.log(region)
         let payload = {
             region: region,
             phone_number: phoneNumber,
@@ -112,7 +113,7 @@ const StoreRegistration = () => {
     return (
         <>
             <h1>{t('new_store')}</h1>
-            <PictureAndDescriptionField editable={true} />
+            {/* <PictureAndDescriptionField editable={true} onDescriptionChange={}/> */}
 
             <p>{t('select_region')}</p>
             <select title='regions' className='select' onChange={handleRegionChange}>
