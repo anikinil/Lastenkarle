@@ -7,8 +7,8 @@ import { getCookie } from '../../services/Cookies';
 import { ERR_FETCHING_USER_FLAGS } from '../../constants/ErrorMessages';
 import { useLocation } from 'react-router-dom';
 import { FaUser } from 'react-icons/fa';
-import { ACCOUNT_DELETION, ALL_BIKES, LOGIN, LOGOUT, REGIONAL_BOOKING, REGISTER } from '../../constants/URLs/Navigation';
-import { REGION_NAME } from '../../constants/URLs/General';
+import { ACCOUNT_DELETION, ALL_BIKES, LOGIN, LOGOUT, REGIONAL_BOOKING, REGISTER, STORE_CONFIG } from '../../constants/URLs/Navigation';
+import { REGION_NAME, STORE_NAME } from '../../constants/URLs/General';
 import { Roles } from '../../constants/Roles';
 import { useTranslation } from 'react-i18next';
 
@@ -32,7 +32,7 @@ const Navbar = () => {
     // TODO make each title a translatoin constant
     // TODO use URL constants for each url
     const getMenuItems = (stores) => {
-        const storeItems = stores.map((store) => ({ title: store, url: '/store/' + store }))
+        const storeItems = stores.map((store) => ({ title: store, url: STORE_CONFIG.replace(STORE_NAME, store) }))
         const allItems = [
             {
                 title: 'Booking',
