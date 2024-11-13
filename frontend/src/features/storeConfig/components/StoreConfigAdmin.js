@@ -42,7 +42,7 @@ const StoreConfigAdmin = () => {
 
     // fetches store data
     const fetchStore = () => {
-        fetch(STORE.replace(STORE_NAME, storeName), {
+        fetch(STORE_PAGE_BY_STORE_NAME.replace(STORE_NAME, storeName), {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Token ${token}`

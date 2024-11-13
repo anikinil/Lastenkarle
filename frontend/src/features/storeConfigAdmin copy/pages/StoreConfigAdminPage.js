@@ -12,13 +12,13 @@ import { useNavigate } from 'react-router-dom';
 
 // Importing a text field component
 import SingleLineTextField from "../../../components/display/SingleLineTextField";
-import { STORE_PAGE_BY_STORE_NAME } from "../../../constants/URIs/ManagerURIs";
 import { ERR_FETCHING_STORE, ERR_UPDATING_STORE } from "../../../constants/ErrorMessages";
 import { useState } from "react";
 import { SUCCESS_UPDATING_STORE } from "../../../constants/SuccessMessages";
 import { BIKE_REGISTRATION, STORE } from "../../../constants/URLs/Navigation";
 import { STORE_NAME } from "../../../constants/URLs/General";
 import { getCookie } from "../../../services/Cookies";
+import { STORE_PAGE_BY_STORE_NAME } from "../../../constants/URIs/AdminURIs";
 
 // TODO make sure, storeName is passed to this component as parameter
 
