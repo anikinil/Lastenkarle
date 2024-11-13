@@ -6,7 +6,7 @@ import PictureAndDescriptionField from '../../../components/display/pictureAndDe
 import { useNavigate, useParams } from 'react-router-dom';
 import { ERR_POSTING_NEW_BIKE } from '../../../constants/ErrorMessages';
 import { getCookie } from '../../../services/Cookies';
-import { BIKES_OF_STORE, STORE_NAME } from '../../../constants/URIs/ManagerURI';
+import { BIKES_OF_STORE, STORE_NAME } from '../../../constants/URIs/ManagerURIs';
 import SingleLineTextField from '../../../components/display/SingleLineTextField';
 
 const BikeRegistration = () => {

@@ -63,7 +63,7 @@ const BikeListItem = ({ bike }) => {
         })
             .then(response => {
                 if (response) {
-                    alert(t('enrollment_successful'));
+                    alert(t('bike_deleted_successfully'));
                 }
                 else {
                     return response.json().then((errorText) => {

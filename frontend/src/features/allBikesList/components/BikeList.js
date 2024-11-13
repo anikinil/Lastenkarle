@@ -8,7 +8,7 @@ import { FaSortAlphaDown, FaSortAlphaUp } from 'react-icons/fa';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import f from '../../../assets/images/bike1.jpg'
-import { BIKES_OF_STORE, STORE_NAME } from '../../../constants/URIs/ManagerURI';
+import { BIKES_OF_STORE, STORE_NAME } from '../../../constants/URIs/ManagerURIs';
 import { getCookie } from '../../../services/Cookies';
 
 // const bikes = [

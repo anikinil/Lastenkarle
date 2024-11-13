@@ -19,3 +19,5 @@ export const ALL_STORES                     = `${BASE}/stores`
 
 export const CREATE_STORE                   = `${BASE}/create/store`
 export const CREATE_BIKE                    = `${BASE}/create/store/${STORE_ID}/bike`
+
+export const STORE_PAGE_BY_STORE_NAME       = `${BASE}/store/{STORE_NAME}`

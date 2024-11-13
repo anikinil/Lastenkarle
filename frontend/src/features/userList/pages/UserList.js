@@ -48,7 +48,6 @@ const UserList = () => {
 
     // Function to sort the users list
     const resort = () => {
-        console.log(users)
         users.sort((a, b) => sortAZ ? a.username.localeCompare(b.username) : b.username.localeCompare(a.username))
     }
 

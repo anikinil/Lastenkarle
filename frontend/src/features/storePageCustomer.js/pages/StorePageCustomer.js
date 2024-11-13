@@ -7,11 +7,11 @@ import { useTranslation } from 'react-i18next';
 import PictureAndDescriptionField from '../../../components/display/pictureAndDescriptionField/PictureAndDescriptionField';
 import { useParams } from 'react-router-dom';
 import SingleLineTextField from '../../../components/display/SingleLineTextField';
-import { STORE_NAME, STORE_PAGE_BY_STORE_NAME } from '../../../constants/URIs/ManagerURI';
+import { STORE_NAME, STORE_PAGE_BY_STORE_NAME } from '../../../constants/URIs/ManagerURIs';
 import { ERR_FETCHING_STORE } from '../../../constants/ErrorMessages';
 import { getCookie } from '../../../services/Cookies';
 
-const StorePage = () => {
+const AllStoresPage = () => {
     const { t } = useTranslation(); // Translation hook
 
     const { storeName } = useParams(); // Get store name from URL parameters
@@ -53,4 +53,4 @@ const StorePage = () => {
     );
 };
 
-export default StorePage;
+export default StorePageCustomer;

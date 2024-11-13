@@ -14,9 +14,7 @@ export const ProtectedElement = ({element, elementRoles}) => {
 
     const fetchUserRoles = () => {
         const token = getCookie('token');
-        console.log('TOKEN', token)
         if (token !== 'undefined' && token !== null) {
-            console.log("TOKEN FOUND")
             fetch(USER_DATA, {
                 headers: {
                     'Content-Type': 'application/json',
@@ -32,7 +30,6 @@ export const ProtectedElement = ({element, elementRoles}) => {
                     console.error(ERR_FETCHING_USER_FLAGS, error);
                 });
         } else {
-            // setUserRoles([Roles.VISITOR]);
             setHasPermissoin(false)
         }
     }

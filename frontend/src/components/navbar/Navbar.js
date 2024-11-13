@@ -58,8 +58,8 @@ const Navbar = () => {
                 ]
             },
             {
-                title: t('store_management'),
-                url: '/stores',
+                title: t('my_stores'),
+                url: '/my-stores',
                 roles: [Roles.MANAGER, Roles.ADMINISTRATOR],
                 submenu: storeItems
             },
@@ -76,8 +76,8 @@ const Navbar = () => {
                         url: '/users',
                     },
                     {
-                        title: t('stores'),
-                        url: '/stores',
+                        title: t('all_stores'),
+                        url: '/all-stores',
                     },
                     {
                         title: t('all_bikes'),

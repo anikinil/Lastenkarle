@@ -22,11 +22,11 @@
     "login_instead":                "Stattdessen anmelden",
 
     "booking":                      "Buchung",
-    "store_management":             "Stationen",
+    "my_stores":                    "Meine Stationen",
     "admin_activities":             "Adminaktivitäten",
     "bookings":                     "Buchungen",
     "users":                        "Benutzer",
-    "stores":                       "Stationen",
+    "all_stores":                   "Alle Stationen",
     "all_bikes":                    "Alle Lastenräder",
     "enrollment":                   "Einschreibung",
     "logout":                       "Abmelden",

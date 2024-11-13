@@ -22,11 +22,11 @@
     "login_instead":                "Login instead",
 
     "booking":                      "Booking",
-    "store_management":             "Store Management",
+    "my_stores":                    "My Stores",
     "admin_activities":             "Admin Activities",
     "bookings":                     "Bookings",
     "users":                        "Users",
-    "stores":                       "Stores",
+    "all_stores":                   "All Stores",
     "all_bikes":                    "All Bikes",
     "enrollment":                   "Enrollment",
     "logout":                       "Logout",

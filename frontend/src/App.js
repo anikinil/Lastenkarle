@@ -25,8 +25,7 @@ import LanguageToggle from './components/sidePanel/LanguageToggle';
 import UserList from './features/userList/pages/UserList';
 import RegionalBooking from './features/booking/pages/RegionalBooking';
 import BikeBooking from './features/booking/pages/BikeBooking';
-import StorePage from './features/storeDisplay/pages/StorePage';
-import StoreConfigPage from './features/storeConfig/pages/StoreConfigPage';
+import StorePage from './features/allStoresPage/pages/AllStoresPage';
 import BikeListPage from './features/allBikesList/pages/AllBikesPage';
 import BikeRegistration from './features/bikeRegistration/pages/BikeRegistration';
 import StoreRegistration from './features/storeRegistration/pages/StoreRegistration';
@@ -38,7 +37,7 @@ import Enrollment from './features/enrollment/pages/Enrollment';
 import StoreBookings from './features/storeBookings/pages/StoreBookings';
 
 import NavigationError from './pages/NavigationError';
-import { BIKE, BIKE_BOOKING, BIKE_REGISTRATION, ALL_BIKES, BOOKING, BOOKINGS, ACCOUNT_DELETION, EMAIL_VERIFICATION, ENROLLMENT, HOME, LOGIN, LOGOUT, REGIONAL_BOOKING, REGISTER, STORE, STORE_BOOKINGS, STORE_REGISTRATION, STORES, USER_BAN, USERS } from './constants/URLs/Navigation';
+import { BIKE, BIKE_BOOKING, BIKE_REGISTRATION, ALL_BIKES, BOOKING, BOOKINGS, ACCOUNT_DELETION, EMAIL_VERIFICATION, ENROLLMENT, HOME, LOGIN, LOGOUT, REGIONAL_BOOKING, REGISTER, STORE, STORE_BOOKINGS, STORE_REGISTRATION, USER_BAN, USERS, STORE_CONFIG, MY_STORES, ALL_STORES } from './constants/URLs/Navigation';
 import { getCookie } from './services/Cookies';
 import { ID, KEY, REGION_NAME, STORE_NAME } from './constants/URLs/General';
 import EmailVerification from './pages/EmailVerification';
@@ -46,6 +45,9 @@ import { Roles } from './constants/Roles';
 import { ERR_FETCHING_USER_DATA, ERR_FETCHING_USER_FLAGS } from './constants/ErrorMessages';
 import { USER_DATA } from './constants/URIs/UserURIs';
 import AllBikesPage from './features/allBikesList/pages/AllBikesPage';
+import AllStoresPage from './features/allStoresPage/pages/AllStoresPage';
+import MyStoresPage from './features/myStoresPage/pages/MyStoresPage';
+import StoreConfigPage from './features/storeConfig/pages/StoreConfigPage';
 
 const App = () => {
 
@@ -57,20 +59,6 @@ const App = () => {
     const switchTheme = () => {
         const newTheme = theme === 'light' ? 'dark' : 'light';
         setTheme(newTheme);
-    }
-
-    // Get the appropriate version of a page by path based on user role
-    const getComponentByPath = (path) => {
-        // switch (path) {
-        //     case '/bike/:id':
-        //         if (userRoles.includes('admin') || userRoles.includes('manager')) { return <BikeConfigPage /> }
-        //         else { return <BikePage /> }
-        //     case '/store/:id':
-        //         if (userRoles.includes('admin') || userRoles.includes('manager')) { return <StoreConfigPage /> }
-        //         else { return <StorePage /> }
-        //     default:
-        //         return <NavigationError />
-        // }
     }
 
     return (
@@ -90,8 +78,11 @@ const App = () => {
                         } />
                         <Route exact path={BOOKING} element={<Booking />} />
                         {/* <Route exact path={BOOKING} element={<BookingPage />} /> */}
-                        <Route exact path={STORES} element={
-                            <ProtectedElement element={<StoreListPage />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
+                        <Route exact path={ALL_STORES} element={
+                            <ProtectedElement element={<AllStoresPage />} elementRoles={[Roles.ADMINISTRATOR]} />
+                        } />
+                        <Route exact path={MY_STORES} element={
+                            <ProtectedElement element={<MyStoresPage />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
                         } />
                         <Route exact path={USERS} element={
                             <ProtectedElement element={<UserList />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
@@ -115,7 +106,11 @@ const App = () => {
                             <ProtectedElement element={<Enrollment />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
                         } />
                         <Route exact path={BOOKINGS} element={<BookingList />} />
-                        <Route exact path={STORE.replace(STORE_NAME, ':store')} element={<StoreConfigPage />} />
+
+                        <Route exact path={STORE_CONFIG.replace(STORE_NAME, ':store')} element={
+                            <ProtectedElement element={<StoreConfigPage />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
+                        } />
+                        
                         <Route exact path={STORE_BOOKINGS} element={
                             <ProtectedElement element={<StoreBookings />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
                         } />

@@ -4,40 +4,15 @@ import { FaSortAlphaDown, FaSortAlphaUp } from 'react-icons/fa';
 import StoreListItem from './StoreListItem';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { ALL_STORES } from '../../../constants/URIs/BookingURIs';
-import { getCookie } from '../../../services/Cookies';
 import { STORE_REGISTRATION } from '../../../constants/URLs/Navigation';
 
-const StoreList = () => {
+const StoreList = ({ stores }) => {
     // Initialize translation and navigation hooks
     const { t } = useTranslation();
     const navigate = useNavigate();
 
-    // Retrieve token from cookies
-    const token = getCookie('token');
-
-    // State to store the list of stores
-    const [stores, setStores] = useState([]);
-
     // State to manage sorting order
     const [sortAZ, setSortAZ] = useState(true);
-
-    // Function to fetch stores from the API
-    const fetchStores = async () => {
-        const response = await fetch(ALL_STORES, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${token}`,
-            }
-        });
-        const data = await response.json();
-        setStores(data);
-    };
-
-    // Fetch stores when the component mounts
-    useEffect(() => {
-        fetchStores();
-    }, [])
 
     // Handle sort button click
     const handleSortClick = () => {
