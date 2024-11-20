@@ -1,7 +1,9 @@
 
 // fetching
 export const ERR_FETCHING_BIKE                  = "Error: bike could not be fetched."
+export const ERR_FETCHING_BIKES                 = "Error: bikes could not be fetched."
 export const ERR_FETCHING_STORE                 = "Error: store could not be fetched."
+export const ERR_FETCHING_STORES                = "Error: stores could not be fetched."
 export const ERR_FETCHING_BOOKING               = "Error: booking could not be fetched."
 export const ERR_FETCHING_USER_DATA             = "Error: user data could not be fetched."
 export const ERR_FETCHING_USER_FLAGS            = "Error: user flags could not be fetched."
