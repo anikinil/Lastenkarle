@@ -7,7 +7,7 @@ import FilterForAvailabilities from '../components/FilterForAvailabilities';
 import AvailabilityCalendar from '../components/calendar/AvailabilityCalendar';
 import BikeList from '../../allBikesList/components/BikeList';
 import { ALL_BIKES, ALL_STORES } from '../../../constants/URIs/BookingURIs';
-import { ERR_FETCHING_BIKES, ERR_FETCHING_STORES } from '../../../constants/ErrorMessages';
+import { ERR_FETCHING_BIKES, ERR_FETCHING_DATA, ERR_FETCHING_STORES } from '../../../constants/ErrorMessages';
 //Standard page for a specific region
 //TODO: Add Map of region with station markers
 //TODO: Add Filter Bar for Availabilities
@@ -19,17 +19,13 @@ const RegionalBooking = () => {
 
     const regionName = useParams().region;
 
-    const [allStores, setAllStores] = useState([]);
-    const [storesInRegion, setStoresInRegion] = useState([]);
-    const [allBiikes, setAllBikes] = useState([]);
     const [bikesInRegion, setBikesInRegion] = useState([]);
 
     const fetchAllStores = async () => {
         try {
             const response = await fetch(ALL_STORES);
             const data = await response.json();
-            setAllStores(data);
-            console.log(data);
+            return data;
         } catch (error) {
             console.error(ERR_FETCHING_STORES, error);
         }
@@ -39,27 +35,39 @@ const RegionalBooking = () => {
         try {
             const response = await fetch(ALL_BIKES);
             const data = await response.json();
-            setAllBikes(data);
-            console.log(data);
+            return data;
         } catch (error) {
             console.error(ERR_FETCHING_BIKES, error);
         }
     };
 
-    const filterStoresByRegion = () => {
-        setStoresInRegion(allStores.filter(store => store.region.name.toLowerCase() === regionName));
-        console.log(storesInRegion);
+    const filterStoresByRegion = (allStores) => {
+        return allStores.filter(store => store.region.name.toLowerCase() === regionName);
     }
 
-    const filterBikesByRegionStores = () => {
-        setBikesInRegion(allBiikes.filter(bike => storesInRegion.some(store => store.id === bike.store)));
+    const filterBikesByRegionStores = (allBikes, storesInRegion) => {
+        return allBikes.filter(bike => storesInRegion.some(store => store.id === bike.store));
     }
 
     useEffect(() => {
-        fetchAllStores();
-        filterStoresByRegion();
-        fetchAllBikes();
-        filterBikesByRegionStores();
+        const fetchData = async () => {
+            try {
+                // Fetch data
+                const allStores = await fetchAllStores();
+                const allBikes = await fetchAllBikes();
+
+                // Filter data
+                const storesInRegion = filterStoresByRegion(allStores);
+                const bikesInRegion = filterBikesByRegionStores(allBikes, storesInRegion);
+
+                // Update state
+                setBikesInRegion(bikesInRegion);
+            } catch (error) {
+                console.error(ERR_FETCHING_DATA, error);
+            }
+        };
+
+        fetchData();
     }, []);
 
     return (
