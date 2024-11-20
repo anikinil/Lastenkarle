@@ -9,7 +9,6 @@ const PictureAndDescriptionField = ({ editable, object, onPictureChange, onDescr
     const [pictureFile, setPictureFile] = useState(object?.image);
     const [description, setDescription] = useState(object?.description);
 
-    
     function handlePictureFileChange(event) {
         const file = event.target.files[0];
         // THINK if duplication is the best way to handle this
@@ -39,7 +38,9 @@ const PictureAndDescriptionField = ({ editable, object, onPictureChange, onDescr
                     onClick={handleImgContainerClick}
                 >
                     {pictureFile ? (
-                        <img className="img" alt={t('image')} src={URL.createObjectURL(pictureFile)} />
+                        // TODO imlpement proper image handling with respect to backend
+                        null
+                        // <img className="img" alt={t('image')} src={URL.createObjectURL(pictureFile)} />
                     ) : editable ? (
                         <span className="img-container-label">{t('select_a_picture')}</span>
                     ) : (
