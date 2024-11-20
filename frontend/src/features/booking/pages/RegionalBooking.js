@@ -31,6 +31,7 @@ const RegionalBooking = () => {
         }
     }
 
+    // Fetchs all bikes
     const fetchAllBikes = async () => {
         try {
             const response = await fetch(ALL_BIKES);
@@ -41,33 +42,30 @@ const RegionalBooking = () => {
         }
     };
 
+    // Filters stores by the region of the page
     const filterStoresByRegion = (allStores) => {
         return allStores.filter(store => store.region.name.toLowerCase() === regionName);
     }
 
+    // Filters bikes by the stores in the region of the page
     const filterBikesByRegionStores = (allBikes, storesInRegion) => {
         return allBikes.filter(bike => storesInRegion.some(store => store.id === bike.store));
     }
 
+    // useEffect hook to fetch data when the component mounts
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // Fetch data
-                const allStores = await fetchAllStores();
-                const allBikes = await fetchAllBikes();
-
-                // Filter data
-                const storesInRegion = filterStoresByRegion(allStores);
-                const bikesInRegion = filterBikesByRegionStores(allBikes, storesInRegion);
-
-                // Update state
-                setBikesInRegion(bikesInRegion);
+                const allStores = await fetchAllStores(); // Fetch all stores
+                const allBikes = await fetchAllBikes(); // Fetch all bikes
+                const storesInRegion = filterStoresByRegion(allStores); // Filter stores by region
+                const bikesInRegion = filterBikesByRegionStores(allBikes, storesInRegion); // Filter bikes by region stores
+                setBikesInRegion(bikesInRegion); // Update state with bikes in the region
             } catch (error) {
-                console.error(ERR_FETCHING_DATA, error);
+                console.error(ERR_FETCHING_DATA, error); // Log any errors that occur during data fetching
             }
         };
-
-        fetchData();
+        fetchData(); // Call the fetchData function
     }, []);
 
     return (
@@ -77,6 +75,7 @@ const RegionalBooking = () => {
             {/* <Map /> */}
             {/* <FilterForAvailabilities /> */}
             {/* <AvailabilityCalendar /> */}
+            
             <BikeList bikes={bikesInRegion} />
         </>
 
