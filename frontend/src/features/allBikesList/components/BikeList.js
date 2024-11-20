@@ -13,6 +13,8 @@ import { getCookie } from '../../../services/Cookies';
 
 const BikeList = ({bikes}) => {
 
+    // TODO make different list components for different user roles
+
     const { t } = useTranslation();
 
     const navigate = useNavigate();

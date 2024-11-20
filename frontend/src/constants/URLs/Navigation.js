@@ -36,6 +36,6 @@ export const STORE_BOOKINGS         = `${STORE}/store-bookings`
 
 export const BOOKING                = `/booking`
 export const REGIONAL_BOOKING       = `/regional-booking/${REGION_NAME}`
-export const BIKE_BOOKING           = `/bike-booking`
+export const BIKE_BOOKING           = `/bike-booking/${ID}`
 
 export const EMAIL_VERIFICATION     = `/email-verification/${ID}/${KEY}`

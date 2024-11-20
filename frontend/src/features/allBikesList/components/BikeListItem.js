@@ -9,7 +9,7 @@ import defaultBikePicture from '../../../assets/images/default_bike.png'
 
 import { useNavigate } from 'react-router-dom';
 import ConfirmationPopup from '../../../components/confirmationDialog/ConfirmationPopup';
-import { BIKE, BOOKINGS } from '../../../constants/URLs/Navigation';
+import { BIKE, BIKE_BOOKING, BOOKINGS } from '../../../constants/URLs/Navigation';
 import { ID } from '../../../constants/URIs/General';
 import { STORE_BY_BIKE_ID } from '../../../constants/URIs/BookingURIs';
 import { DELETE_BIKE } from '../../../constants/URIs/AdminURIs';
@@ -22,7 +22,6 @@ const BikeListItem = ({ bike }) => {
 
     const navigate = useNavigate();
 
-    // THINK how to display different buttons to different roles
     // THINK maybe show big preview of bike image on clik on miniature preview
 
     const token = getCookie('token');
@@ -30,7 +29,7 @@ const BikeListItem = ({ bike }) => {
     const [showConfirmationPopup, setShowConfirmationPopup] = useState(false);
 
     const handlePanelClick = () => {
-        navigate(BIKE.replace(ID, bike.id));
+        navigate(BIKE_BOOKING.replace(ID, bike.id));
     }
 
     const handleBookingsClick = e => {

@@ -86,7 +86,7 @@ const App = () => {
                             <ProtectedElement element={<UserList />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
                         } />
                         <Route path={REGIONAL_BOOKING.replace(REGION_NAME, ':region')} element={<RegionalBooking />} />
-                        <Route exact path={BIKE_BOOKING} element={<BikeBookingPage />} />
+                        <Route exact path={BIKE_BOOKING.replace(ID, ':bike')} element={<BikeBookingPage />} />
                         <Route exact path={ALL_BIKES} element={
                             <ProtectedElement element={<AllBikesPage />} elementRoles={[Roles.ADMINISTRATOR]} />
                         } />
