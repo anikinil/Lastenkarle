@@ -24,7 +24,7 @@ const store = {
     address: 'Musterstraße 1, 12345 Musterstadt'
 }
 
-const BikePage = () => {
+const BikeBookingPage = () => {
     const { t } = useTranslation(); // Translation hook
     const navigate = useNavigate(); // Navigation hook
 
@@ -98,4 +98,4 @@ const BikePage = () => {
     );
 };
 
-export default BikePage;
+export default BikeBookingPage;

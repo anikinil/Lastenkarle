@@ -24,13 +24,10 @@ import StoreListPage from './features/storeList/pages/StoreListPage';
 import LanguageToggle from './components/sidePanel/LanguageToggle';
 import UserList from './features/userList/pages/UserList';
 import RegionalBooking from './features/booking/pages/RegionalBooking';
-import BikeBooking from './features/booking/pages/BikeBooking';
-import StorePage from './features/allStoresPage/pages/AllStoresPage';
 import BikeListPage from './features/allBikesList/pages/AllBikesPage';
 import BikeRegistration from './features/bikeRegistration/pages/BikeRegistration';
 import StoreRegistration from './features/storeRegistration/pages/StoreRegistration';
 import BookingList from './features/bookingListAdmin/pages/BookingList';
-import BikePage from './features/bikeDisplay/pages/BikePage';
 import BikeConfigPage from './features/bikeConfig/pages/BikeConfigPage';
 import Register from './pages/Register';
 import Enrollment from './features/enrollment/pages/Enrollment';
@@ -48,6 +45,7 @@ import AllBikesPage from './features/allBikesList/pages/AllBikesPage';
 import AllStoresPage from './features/allStoresPage/pages/AllStoresPage';
 import MyStoresPage from './features/myStoresPage/pages/MyStoresPage';
 import StoreConfigPage from './features/storeConfig/pages/StoreConfigPage';
+import BikeBookingPage from './features/bikeBooking/pages/BikeBookingPage';
 
 const App = () => {
 
@@ -79,7 +77,7 @@ const App = () => {
                         <Route exact path={BOOKING} element={<Booking />} />
                         {/* <Route exact path={BOOKING} element={<BookingPage />} /> */}
                         <Route exact path={ALL_STORES} element={
-                            <ProtectedElement element={<AllStoresPage />} elementRoles={[Roles.ADMINISTRATOR]} />
+                            <ProtectedElement element={<AllStoresPage />} elemenvtRoles={[Roles.ADMINISTRATOR]} />
                         } />
                         <Route exact path={MY_STORES} element={
                             <ProtectedElement element={<MyStoresPage />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
@@ -88,12 +86,12 @@ const App = () => {
                             <ProtectedElement element={<UserList />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
                         } />
                         <Route path={REGIONAL_BOOKING.replace(REGION_NAME, ':region')} element={<RegionalBooking />} />
-                        <Route exact path={BIKE_BOOKING} element={<BikeBooking />} />
+                        <Route exact path={BIKE_BOOKING} element={<BikeBookingPage />} />
                         <Route exact path={ALL_BIKES} element={
                             <ProtectedElement element={<AllBikesPage />} elementRoles={[Roles.ADMINISTRATOR]} />
                         } />
                         {/* <Route exact path={BIKE} element={getComponentByPath(BIKE)} /> */}
-                        <Route exact path={'/bike/1'} element={<BikePage />} />
+                        {/* <Route exact path={'/bike/1'} element={<BikePage />} /> */}
                         {/* TODO make inaccessible by just entering the store name in search bar by manager of different store */}
                         <Route exact path={BIKE_REGISTRATION.replace(STORE_NAME, ':store')} element={
                             <ProtectedElement element={<BikeRegistration />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
