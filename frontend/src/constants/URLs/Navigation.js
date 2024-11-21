@@ -18,17 +18,17 @@ export const ENROLLMENT             = `/enrollment`
 export const USER_BAN               = `/user-ban`
 export const USERS                  = `/users`
 
-export const ALL_BIKES              = `/all-bikes`                               // all bikes in the system (admin)
-export const BIKE                   = `/bike/${ID}`
-export const STORE_BIKES            = `/store/${STORE_NAME}/store-bikes`         // all bikes in a store
-export const BIKE_CONFIG            = `` // TODO add
-export const BIKE_REGISTRATION      = `/store/${STORE_NAME}/bike-registration`
-
 export const ALL_STORES             = `/all-stores`                              // all stores in the system (admin)
 export const MY_STORES              = `/my-stores`                               // stores of particular in manager (manager, admin)
 export const STORE_DISPLAY          = `/bike/${ID}/store`                        // display store (customer)
 export const STORE_CONFIG           = `/store-config/${STORE_NAME}`              // configure store (manager, admin)
 export const STORE_REGISTRATION     = `/store-registration`                      // register store (admin)
+
+export const ALL_BIKES              = `/all-bikes`                               // all bikes in the system (admin)
+export const BIKE                   = `/bike/${ID}`
+export const STORE_BIKES            = `/store/${STORE_NAME}/store-bikes`         // all bikes in a store
+export const BIKE_CONFIG            = `/bike-config/${ID}`                       // configure bike (manager, admin)
+export const BIKE_REGISTRATION      = `/store/${STORE_NAME}/bike-registration`   // register bike (manager, admin)
 
 export const BOOKINGS               = `/bookings`
 export const BOOKING_PAGE           = `/booking/${ID}`
