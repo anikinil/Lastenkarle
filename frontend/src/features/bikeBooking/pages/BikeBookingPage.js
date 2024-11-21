@@ -33,6 +33,7 @@ const BikeBookingPage = () => {
             .then(response => response.json())
             .then(data => {
                 setBike(data); // Set bike data to state
+                console.log(data);
             })
             .catch(error => {
                 console.error(ERR_FETCHING_BIKE, error); // Log error if fetching bike fails
