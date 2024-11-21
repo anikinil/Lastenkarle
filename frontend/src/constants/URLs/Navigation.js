@@ -26,13 +26,13 @@ export const BIKE_REGISTRATION      = `/store/${STORE_NAME}/bike-registration`
 
 export const ALL_STORES             = `/all-stores`                              // all stores in the system (admin)
 export const MY_STORES              = `/my-stores`                               // stores of particular in manager (manager, admin)
-export const STORE                  = `/store/${STORE_NAME}`                     // display store (customer)
+export const STORE_DISPLAY          = `/bike/${ID}/store`                        // display store (customer)
 export const STORE_CONFIG           = `/store-config/${STORE_NAME}`              // configure store (manager, admin)
 export const STORE_REGISTRATION     = `/store-registration`                      // register store (admin)
 
 export const BOOKINGS               = `/bookings`
 export const BOOKING_PAGE           = `/booking/${ID}`
-export const STORE_BOOKINGS         = `${STORE}/store-bookings`
+export const STORE_BOOKINGS         = `/store/${STORE_NAME}/store-bookings`
 
 export const BOOKING                = `/booking`
 export const REGIONAL_BOOKING       = `/regional-booking/${REGION_NAME}`

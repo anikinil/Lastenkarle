@@ -63,7 +63,7 @@ const PictureAndDescriptionField = ({ editable, object, onPictureChange, onDescr
                     className="description"
                     value={object?.description}
                     onChange={handleDescriptionChange}
-                    placeholder={t('write_description')}
+                    placeholder={editable ? t('write_description') : t('no_description')}
                     disabled={!editable}
                 ></textarea>
             </div>

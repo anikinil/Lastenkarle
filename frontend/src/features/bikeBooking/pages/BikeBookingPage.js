@@ -11,6 +11,8 @@ import { ID } from '../../../constants/URIs/General';
 import { BIKE_BY_ID, STORE_BY_BIKE_ID } from '../../../constants/URIs/BookingURIs';
 import { ERR_FETCHING_BIKE, ERR_FETCHING_STORE } from '../../../constants/ErrorMessages';
 import { getCookie } from '../../../services/Cookies';
+import { STORE_DISPLAY } from '../../../constants/URLs/Navigation';
+import { STORE_NAME } from '../../../constants/URLs/General';
 
 const BikeBookingPage = () => {
     const { t } = useTranslation(); // Translation hook
@@ -65,7 +67,7 @@ const BikeBookingPage = () => {
 
     // Handle click on store button
     const handleStoreClick = () => {
-        navigate(`/store/${bike.store}`) // Navigate to store page
+        navigate(STORE_DISPLAY.replace(ID, bike.id)) // Navigate to store page by bike ID
     }
 
     return (

@@ -15,7 +15,7 @@ import SingleLineTextField from "../../../components/display/SingleLineTextField
 import { ERR_DELETING_STORE, ERR_FETCHING_STORE, ERR_UPDATING_STORE } from "../../../constants/ErrorMessages";
 import { useState } from "react";
 import { SUCCESS_UPDATING_STORE } from "../../../constants/SuccessMessages";
-import { BIKE_REGISTRATION, STORE } from "../../../constants/URLs/Navigation";
+import { BIKE_REGISTRATION, STORE_DISPLAY } from "../../../constants/URLs/Navigation";
 import { STORE_NAME } from "../../../constants/URLs/General";
 import { getCookie } from "../../../services/Cookies";
 import { DELETE_STORE } from "../../../constants/URIs/AdminURIs";
@@ -80,9 +80,7 @@ const StoreConfigAdmin = () => {
     }
 
     const postStoreDeletion = () => {
-
         const payload = {}
-
         fetch(DELETE_STORE.replace(ID, store.id), {
             method: 'DELETE',
             headers: {
@@ -126,7 +124,7 @@ const StoreConfigAdmin = () => {
     // Handler for submit button click
     const handleSubmitClick = () => {
         postChanges();
-        navigate(STORE.replace(STORE_NAME, storeName));
+        navigate(STORE_DISPLAY.replace(STORE_NAME, storeName));
     }
 
     const handleDeleteStore = () => {

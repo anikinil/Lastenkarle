@@ -34,7 +34,7 @@ import Enrollment from './features/enrollment/pages/Enrollment';
 import StoreBookings from './features/storeBookings/pages/StoreBookings';
 
 import NavigationError from './pages/NavigationError';
-import { BIKE, BIKE_BOOKING, BIKE_REGISTRATION, ALL_BIKES, BOOKING, BOOKINGS, ACCOUNT_DELETION, EMAIL_VERIFICATION, ENROLLMENT, HOME, LOGIN, LOGOUT, REGIONAL_BOOKING, REGISTER, STORE, STORE_BOOKINGS, STORE_REGISTRATION, USER_BAN, USERS, STORE_CONFIG, MY_STORES, ALL_STORES } from './constants/URLs/Navigation';
+import { BIKE, BIKE_BOOKING, BIKE_REGISTRATION, ALL_BIKES, BOOKING, BOOKINGS, ACCOUNT_DELETION, EMAIL_VERIFICATION, ENROLLMENT, HOME, LOGIN, LOGOUT, REGIONAL_BOOKING, REGISTER, STORE, STORE_BOOKINGS, STORE_REGISTRATION, USER_BAN, USERS, STORE_CONFIG, MY_STORES, ALL_STORES, STORE_DISPLAY } from './constants/URLs/Navigation';
 import { getCookie } from './services/Cookies';
 import { ID, KEY, REGION_NAME, STORE_NAME } from './constants/URLs/General';
 import EmailVerification from './pages/EmailVerification';
@@ -46,6 +46,8 @@ import AllStoresPage from './features/allStoresPage/pages/AllStoresPage';
 import MyStoresPage from './features/myStoresPage/pages/MyStoresPage';
 import StoreConfigPage from './features/storeConfig/pages/StoreConfigPage';
 import BikeBookingPage from './features/bikeBooking/pages/BikeBookingPage';
+import StorePageCustomer from './features/storePageCustomer.js/pages/StorePageCustomer';
+import StoreDisplay from './features/storePageCustomer.js/pages/StorePageCustomer';
 
 const App = () => {
 
@@ -90,8 +92,6 @@ const App = () => {
                         <Route exact path={ALL_BIKES} element={
                             <ProtectedElement element={<AllBikesPage />} elementRoles={[Roles.ADMINISTRATOR]} />
                         } />
-                        {/* <Route exact path={BIKE} element={getComponentByPath(BIKE)} /> */}
-                        {/* <Route exact path={'/bike/1'} element={<BikePage />} /> */}
                         {/* TODO make inaccessible by just entering the store name in search bar by manager of different store */}
                         <Route exact path={BIKE_REGISTRATION.replace(STORE_NAME, ':store')} element={
                             <ProtectedElement element={<BikeRegistration />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
@@ -99,7 +99,7 @@ const App = () => {
                         <Route exact path={STORE_REGISTRATION} element={
                             <ProtectedElement element={<StoreRegistration />} elementRoles={[Roles.ADMINISTRATOR]} />
                         } />
-
+                        <Route exact path={STORE_DISPLAY.replace(ID, ':id')} element={<StoreDisplay />} />
                         <Route exact path={ENROLLMENT} element={
                             <ProtectedElement element={<Enrollment />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
                         } />
