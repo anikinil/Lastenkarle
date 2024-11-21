@@ -46,8 +46,8 @@ import AllStoresPage from './features/allStoresPage/pages/AllStoresPage';
 import MyStoresPage from './features/myStoresPage/pages/MyStoresPage';
 import StoreConfigPage from './features/storeConfig/pages/StoreConfigPage';
 import BikeBookingPage from './features/bikeBooking/pages/BikeBookingPage';
-import StorePageCustomer from './features/storePageCustomer.js/pages/StorePageCustomer';
-import StoreDisplay from './features/storePageCustomer.js/pages/StorePageCustomer';
+import StorePageCustomer from './features/storePageCustomer/pages/StorePageCustomer';
+import StoreDisplay from './features/storePageCustomer/pages/StorePageCustomer';
 
 const App = () => {
 
