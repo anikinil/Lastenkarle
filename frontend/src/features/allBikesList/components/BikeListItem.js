@@ -91,7 +91,6 @@ const BikeListItem = ({ bike }) => {
 
                 <button type='button' className='list-item-button regular' onClick={handleBookingsClick}>{t('bookings')}</button>
                 <button type='button' className='list-item-button regular' onClick={handleStoreClick}>{t('store')}</button>
-                <button type='button' className='list-item-button delete' onClick={handleDeleteClick}>{<MdDelete />}</button>
 
                 <div className='list-item-img-container'>
                     <img className='list-item-img' alt={bike.name} src={bike.image ? bike.image : defaultBikePicture}></img>
