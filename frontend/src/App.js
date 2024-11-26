@@ -100,7 +100,7 @@ const App = () => {
                         } />
                         <Route exact path={STORE_DISPLAY.replace(ID, ':id')} element={<StoreDisplay />} />
                         <Route exact path={ALL_STORES} element={
-                            <ProtectedElement element={<AllStoresPage />} elemenvtRoles={[Roles.ADMINISTRATOR]} />
+                            <ProtectedElement element={<AllStoresPage />} elementRoles={[Roles.ADMINISTRATOR]} />
                         } />
                         <Route exact path={STORE_CONFIG.replace(STORE_NAME, ':store')} element={
                             <ProtectedElement element={<StoreConfigPage />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
