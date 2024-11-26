@@ -9,7 +9,7 @@ import { getCookie } from "../../../services/Cookies";
 
 const StoreConfigPage = () => {
 
-    const [isAdmin, setIsAdmin] = useState(false);
+    const [isAdmin, setIsAdmin] = useState('rendering');
 
     const fetchUserRoles = () => {
         const token = getCookie('token');
@@ -39,11 +39,18 @@ const StoreConfigPage = () => {
 
     return (
         <>
-            { isAdmin ?
-                <StoreConfigAdmin />
+            {/* {isAdmin == 'rendering' ?
+                <div>Loading...</div>
                 :
-                <StoreConfigManager />
-            }
+                <> */}
+                    {isAdmin ?
+                        <StoreConfigAdmin />
+                        :
+                        <StoreConfigManager />
+                    }
+                {/* </>
+
+            } */}
         </>
     );
 }

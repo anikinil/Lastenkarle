@@ -33,7 +33,7 @@ const StoreConfigAdmin = () => {
     const navigate = useNavigate();
 
     // Extracting store name from URL parameters
-    const storeName = useParams().store.replace('%20', ' ');
+    const storeName = useParams().store;
 
     // State to hold store data
     const [store, setStore] = useState();
@@ -42,6 +42,7 @@ const StoreConfigAdmin = () => {
 
     // fetches store data
     const fetchStore = () => {
+        console.log(storeName);
         fetch(STORE_PAGE_BY_STORE_NAME.replace(STORE_NAME, storeName), {
             headers: {
                 'Content-Type': 'application/json',
