@@ -74,7 +74,6 @@ const StoreRegistration = () => {
 
     // Function to post new store data to the server
     const postNewStore = () => {
-        console.log(region)
         let payload = {
             region: region,
             phone_number: phoneNumber,
