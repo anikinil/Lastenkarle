@@ -1,4 +1,8 @@
 {
+    "//Navbar":                         "Navbar.js",
+    
+
+    
     "homepage":                         "Startseite",
     "bike_list":                        "Liste der Lastenräder",
     "store_list":                       "Liste der Stationen",
@@ -8,7 +12,7 @@
     "placeholder_closed_to_time":       "13:00",
 
     "login":                            "Anmelden",
-    "enter_username":                   "Benutzernamen eingeben",
+    "enter_username":                   "Benutzername eingeben",
     "enter_password":                   "Passwort eingeben",
     "helmholtz_login":                  "Helmholtz Login",
     "register_instead":                 "Stattdessen registrieren",
