@@ -5,6 +5,8 @@ import { ProtectedElement } from './utils/ProtectedElement';
 
 import './i18n';
 
+// TEST
+
 import { MdLightMode } from 'react-icons/md';
 import { MdDarkMode } from 'react-icons/md';
 
