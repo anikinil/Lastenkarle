@@ -14,3 +14,11 @@ export const deleteCookie = (name) => {
     // Set the cookie with the specified name to expire in the past, effectively deleting it
     document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
 };
+
+// Set a cookie with a specified label and value
+export const setCookie = (label, value) => {
+    var days = 1;
+    const expirationDate = new Date();
+    expirationDate.setDate(expirationDate.getDate() + days);
+    document.cookie = `${label}=${value}; expires=${expirationDate.toUTCString()}; path=/`;
+};

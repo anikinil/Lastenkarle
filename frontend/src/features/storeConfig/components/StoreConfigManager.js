@@ -31,7 +31,7 @@ const StoreConfigManager = () => {
     const navigate = useNavigate();
 
     // Extracting store name from URL parameters
-    const storeName = useParams().store;
+    const storeName = useParams().store.replace('%20', ' ');
 
     // State to hold store data
     const [store, setStore] = useState();

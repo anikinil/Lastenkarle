@@ -124,37 +124,12 @@ const Navbar = () => {
         return allItems.filter(item => userRoles.some(role => item.roles.includes(role)));
     };
 
-    const fetchUserRoles = () => {
-        if (token !== 'undefined' && token !== null) {
-            fetch(USER_DATA, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Token ${token}`,
-                }
-            })
-                .then(response => response.json())
-                .then(data => {
-                    // get the user flags from the response
-                    const flags = data.user_flags.map(element => element.flag);
-                    // get the store names from the flags
-                    const stores = flags.filter(role => role.includes('Store: ')).map(role => role.replace('Store: ', ''));
-                    // get the roles from the flags
-                    const roles = (flags.filter(role => !role.includes('Store: ')));
-                    // if the user is manager of at least one store, add the manager role
-                    if (stores.length > 0) { roles.push(Roles.MANAGER); setUserStores(stores); }
-                    setUserRoles(roles);
-                })
-                .catch(error => {
-                    console.error(ERR_FETCHING_USER_FLAGS, error);
-                });
-        } else {
-            setUserRoles([Roles.VISITOR]);
-        }
-    }
-
     // fetch user roles on first render, if token is present (user is logged in)
     useEffect(() => {
-        fetchUserRoles();
+        const userRoles = getCookie('userRoles');
+        if (userRoles) setUserRoles(userRoles.split(','));
+        const userStores = getCookie('userStores');
+        if (userStores) setUserStores(userStores.split(','));
     }, [location, t]);
 
     useEffect(() => {

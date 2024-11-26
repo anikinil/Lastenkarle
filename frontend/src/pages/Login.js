@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { LOGIN } from '../constants/URIs/UserURIs';
+import { LOGIN, USER_DATA } from '../constants/URIs/UserURIs';
 import { useNavigate } from 'react-router-dom';
 import { HELMHOLTZ, HOME, REGISTER } from '../constants/URLs/Navigation';
+import { getCookie, setCookie } from '../services/Cookies';
+import { ERR_FETCHING_USER_DATA } from '../constants/ErrorMessages';
+import { Roles } from '../constants/Roles';
 
 const Login = () => {
     // Translation hook
@@ -48,6 +51,7 @@ const Login = () => {
             // Set the token and user role state variables
             .then(data => {
                 setCookie('token', data.token);
+                fetchUserRoles();
                 // TODO account for different locations from which user can log in and navigate back to them
                 navigate(HOME);
             })
@@ -55,6 +59,37 @@ const Login = () => {
                 // Handle any network or other errors that occurred during the request
                 alert('Error making login request.' + error.message);
             });
+    }
+
+    const fetchUserRoles = () => {
+        const token = getCookie('token');
+        if (token !== 'undefined' && token !== null) {
+            fetch(USER_DATA, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${token}`,
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // get the user flags from the response
+                    const flags = data.user_flags.map(element => element.flag);
+                    // get the store names from the flags
+                    const stores = flags.filter(role => role.includes('Store: ')).map(role => role.replace('Store: ', ''));
+                    // get the roles from the flags
+                    const roles = (flags.filter(role => !role.includes('Store: ')));
+                    // if the user is manager of at least one store, add the manager role
+                    if (stores.length > 0) { roles.push(Roles.MANAGER); }
+                    // set the cookies
+                    setCookie('userRoles', roles);
+                    setCookie('userStores', stores);
+                })
+                .catch(error => {
+                    console.error(ERR_FETCHING_USER_DATA, error);
+                });
+        } else {
+            setCookie('userRoles', [Roles.VISITOR]);
+        }
     }
 
     // Handle Helmholtz login button click
@@ -66,14 +101,6 @@ const Login = () => {
     const handleRegisterClick = () => {
         navigate(REGISTER);
     }
-
-    // Set a cookie with a specified label and value
-    const setCookie = (label, value) => {
-        var days = 1;
-        const expirationDate = new Date();
-        expirationDate.setDate(expirationDate.getDate() + days);
-        document.cookie = `${label}=${value}; expires=${expirationDate.toUTCString()}; path=/`;
-    };
 
     // Prevent user from switching to a new line by hitting [Enter]
     const handleFieldKeyDown = (event) => {
