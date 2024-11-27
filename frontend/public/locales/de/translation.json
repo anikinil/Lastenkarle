@@ -1,6 +1,84 @@
 {
-    "//Navbar":                         "Navbar.js",
+    "__Navbar":                         "Navbar.js - war bereits abgedeckt",
+
+    "__DayRow":                         "DayRow.js - bereits abgedeckt",
+
+    "__StoreOpeningTimesConfig":        "StoreOpeningTimesConfig.js",
+    "monday":                           "Montag",
+    "tuesday":                          "Dienstag",
+    "wednesday":                        "Mittwoch",
+    "thursday":                         "Donnerstag",
+    "friday":                           "Freitag",
+    "saturday":                         "Samstag",
+    "sunday":                           "Sonntag",
+    "opening_times":                    "Öffnungszeiten",
+    "open":                             "Geöffnet",
+    "from":                             "von",
+    "to":                               "bis",
+    "closed":                           "Geschlossen",
+
+    "__BikeList":                       "BikeList.js",
+    "register_new_bike":                "Neues Lastenrad anlegen",
     
+    "__BikeListItem":                   "BikeListItem.js",
+    "bike_deleted_successfully":        "Lastenrad erfolgreich entfernt",
+    "store":                            "Station",
+    "are_you_sure_you_want_to_delete_bike": "Wollen Sie sicher folgendes Lastenrad entfernen:",
+
+    "__AllBikesPage":                   "AllBikesPage.js",
+    "all_bikes_in_system":              "Lastenradübersicht",
+
+    "__AllStoresPage":                  "AllStoresPage.js",
+    "stores":                           "Stationen",
+
+    "__BikeRegistration":               "BikeRegistration.js",
+    "bike_registration_successful":     "Registrierung des Lastenrades wurde erfolgreich abgeschlossen",
+    "new_bike_to":                      "Neues Lastenrad hinzufügen zu Station:",
+    "name":                             "Name",
+
+    "__BookingPage":                    "BookingPage.js",
+    "equipment":                        "Equipment",
+
+    "__BookingListItem":                "BookingListItem.js",
+    "[commented]":                      "kommentiert",
+
+    "__BookingList":                    "BookingList.js",
+    "filter":                           "Filtern",
+    "show_all":                         "Alle anzeigen",
+
+    "__Enrollment":                     "Enrollment.js",
+    "enrollment_successful":            "Ernennung war erfolgreich",
+    "role_not_selected":                "Es ist noch keine Rolle ausgewählt",
+
+    "__MyStoresPage":                   "MyStoresPage.js - bereits abgedeckt",
+
+    "__StoreBookings":                  "StoreBookings.js",
+    "bookings_of_store":                "Buchungen für die Station:",
+
+    "__StoreConfigAdmin":               "StoreConfigAdmin.js",
+    "store_deleted_successfully":       "Station wurde erfolgreich entfernt",
+    "admin_view":                       "Adminansicht",
+    "add_bike_to_store":                "Lastenrad zu Station hinzufügen",
+    "submit_changes":                   "Änderungen speichern",
+    "delete_store":                     "Station entfernen",
+
+    "__StoreConfigManager":             "StoreConfigManager.js",
+    "manager_view":                     "Manageransicht",
+
+    "__StoreList":                      "StoreList.js",
+    "add_new_store":                    "Neue Station hinzufügen",
+    
+    "__StoreRegistration":              "StoreRegistraion.js",
+    "store_registration_successful":    "Station erfolgreich hinzugefügt",
+    "new_store":                        "Neue Station",
+    "select_region":                    "Region auswählen",
+    "register_new_store":               "Station hinzufügen",
+
+    "__UserBan":                        "UserBan.js",
+    "user_ban":                         "Nutzer bannen",
+
+    "__UserListItem":                   "UserListItem.js",
+    "ban":                              "Bannen",
 
     
     "homepage":                         "Startseite",
@@ -40,5 +118,5 @@
     "cancel":                          "Abbrechen",
 
     "select_role":                     "Rolle auswählen",
-    "enroll":                          "Einschreiben"
+    "enroll":                          "Ernennen"
 }

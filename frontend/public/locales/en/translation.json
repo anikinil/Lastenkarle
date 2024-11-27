@@ -1,4 +1,22 @@
 {
+    "//Navbar":                         "Navbar.js - war bereits abgedeckt",
+
+    "//DayRow":                         "DayRow.js - bereits abgedeckt",
+
+    "//StoreOpeningTimesConfig":        "StoreOpeningTimesConfig.js",
+    "monday":                           "Monday",
+    "tuesday":                          "Tuesday",
+    "wednesday":                        "Wednesday",
+    "thursday":                         "Thursday",
+    "friday":                           "Friday",
+    "saturday":                         "Saturday",
+    "sunday":                           "Sunday",
+    "opening_times":                    "Opening Hours",
+    "open":                             "open",
+    "from":                             "from",
+    "to":                               "to",
+    "closed":                           "closed",
+
     "homepage":                         "Homepage",
     "bike_list":                        "Bike list",
     "store_list":                       "Store list",
