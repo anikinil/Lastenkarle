@@ -33,6 +33,8 @@ const Logout = () => {
                 if (response.ok) {
                     // If the response is successful, delete the token cookie
                     deleteCookie('token');
+                    deleteCookie('userRoles');
+                    deleteCookie('userStores');
                     // Navigate to the login page
                     startTransition(() => {
                         navigate(LOGIN);
