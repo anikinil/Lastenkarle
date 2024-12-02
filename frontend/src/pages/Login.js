@@ -4,7 +4,7 @@ import { LOGIN, USER_DATA } from '../constants/URIs/UserURIs';
 import { useNavigate } from 'react-router-dom';
 import { HELMHOLTZ, HOME, REGISTER } from '../constants/URLs/Navigation';
 import { getCookie, setCookie } from '../services/Cookies';
-import { ERR_FETCHING_USER_DATA } from '../constants/ErrorMessages';
+import { ERR_FETCHING_USER_DATA, ERR_POSTING_LOGIN_REQUEST } from '../constants/ErrorMessages';
 import { Roles } from '../constants/Roles';
 
 const Login = () => {
@@ -57,7 +57,7 @@ const Login = () => {
             })
             .catch(error => {
                 // Handle any network or other errors that occurred during the request
-                alert('Error making login request.' + error.message);
+                alert(ERR_POSTING_LOGIN_REQUEST, error);
             });
     }
 
