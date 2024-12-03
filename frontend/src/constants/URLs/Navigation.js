@@ -16,7 +16,7 @@ export const REGISTER               = `/register`
 
 export const ENROLLMENT             = `/enrollment`
 export const USER_BAN               = `/user-ban`
-export const USERS                  = `/users`
+export const ALL_USERS              = `/all-users`
 
 export const ALL_STORES             = `/all-stores`                              // all stores in the system (admin)
 export const MY_STORES              = `/my-stores`                               // stores of particular in manager (manager, admin)
@@ -30,7 +30,8 @@ export const STORE_BIKES            = `/store/${STORE_NAME}/store-bikes`        
 export const BIKE_CONFIG            = `/bike-config/${ID}`                       // configure bike (manager, admin)
 export const BIKE_REGISTRATION      = `/store/${STORE_NAME}/bike-registration`   // register bike (manager, admin)
 
-export const BOOKINGS               = `/bookings`
+export const ALL_BOOKINGS           = `/all-bookings`
+export const MY_BOOKINGS            = `/my-bookings`
 export const BOOKING_PAGE           = `/booking/${ID}`
 export const STORE_BOOKINGS         = `/store/${STORE_NAME}/store-bookings`
 

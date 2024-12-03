@@ -3,7 +3,7 @@ import MenuItems from './MenuItems';
 import './Navbar.css';
 import logo from '../../assets/images/logo.png';
 import { FaUser } from 'react-icons/fa';
-import { ACCOUNT_DELETION, ALL_BIKES, LOGIN, LOGOUT, REGIONAL_BOOKING, REGISTER, STORE_CONFIG } from '../../constants/URLs/Navigation';
+import { ACCOUNT_DELETION, ALL_BIKES, ALL_BOOKINGS, ALL_STORES, ALL_USERS, BOOKING, BOOKINGS, ENROLLMENT, LOGIN, LOGOUT, MY_BOOKINGS, MY_STORES, REGIONAL_BOOKING, REGISTER, STORE_CONFIG, USERS } from '../../constants/URLs/Navigation';
 import { REGION_NAME, STORE_NAME } from '../../constants/URLs/General';
 import { Roles } from '../../constants/Roles';
 import { useTranslation } from 'react-i18next';
@@ -21,8 +21,8 @@ const Navbar = () => {
         const storeItems = userStores.map((store) => ({ title: store, url: STORE_CONFIG.replace(STORE_NAME, store) }))
         const allItems = [
             {
-                title: 'Booking',
-                url: '/booking',
+                title: t('booking'),
+                url: BOOKING,
                 roles: [Roles.CUSTOMER, Roles.MANAGER, Roles.ADMINISTRATOR, Roles.VISITOR],
                 submenu: [
                     {
@@ -45,7 +45,7 @@ const Navbar = () => {
             },
             {
                 title: t('my_stores'),
-                url: '/my-stores',
+                url: MY_STORES,
                 roles: [Roles.MANAGER, Roles.ADMINISTRATOR],
                 submenu: storeItems
             },
@@ -54,16 +54,16 @@ const Navbar = () => {
                 roles: [Roles.ADMINISTRATOR],
                 submenu: [
                     {
-                        title: t('bookings'),
-                        url: '/bookings',
+                        title: t('all_bookings'),
+                        url: ALL_BOOKINGS,
                     },
                     {
-                        title: t('users'),
-                        url: '/users',
+                        title: t('all_users'),
+                        url: ALL_USERS,
                     },
                     {
                         title: t('all_stores'),
-                        url: '/all-stores',
+                        url: ALL_STORES,
                     },
                     {
                         title: t('all_bikes'),
@@ -71,13 +71,13 @@ const Navbar = () => {
                     },
                     {
                         title: t('enrollment'),
-                        url: '/enrollment',
+                        url: ENROLLMENT,
                     }
                 ]
             },
             {
                 title: <FaUser />,
-                url: '/my-bookings',
+                url: MY_BOOKINGS,
                 roles: [Roles.CUSTOMER, Roles.MANAGER, Roles.ADMINISTRATOR],
                 submenu: [
                     {

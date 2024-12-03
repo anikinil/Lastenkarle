@@ -34,7 +34,7 @@ import Enrollment from './features/enrollment/pages/Enrollment';
 import StoreBookings from './features/storeBookings/pages/StoreBookings';
 
 import NavigationError from './pages/NavigationError';
-import { BIKE, BIKE_BOOKING, BIKE_REGISTRATION, ALL_BIKES, BOOKING, BOOKINGS, ACCOUNT_DELETION, EMAIL_VERIFICATION, ENROLLMENT, HOME, LOGIN, LOGOUT, REGIONAL_BOOKING, REGISTER, STORE, STORE_BOOKINGS, STORE_REGISTRATION, USER_BAN, USERS, STORE_CONFIG, MY_STORES, ALL_STORES, STORE_DISPLAY, BIKE_CONFIG } from './constants/URLs/Navigation';
+import { BIKE_BOOKING, BIKE_REGISTRATION, ALL_BIKES, BOOKING, BOOKINGS, ACCOUNT_DELETION, EMAIL_VERIFICATION, ENROLLMENT, HOME, LOGIN, LOGOUT, REGIONAL_BOOKING, REGISTER, STORE_BOOKINGS, STORE_REGISTRATION, USER_BAN, STORE_CONFIG, MY_STORES, ALL_STORES, STORE_DISPLAY, BIKE_CONFIG, ALL_BOOKINGS, ALL_USERS } from './constants/URLs/Navigation';
 import { getCookie } from './services/Cookies';
 import { ID, KEY, REGION_NAME, STORE_NAME } from './constants/URLs/General';
 import EmailVerification from './pages/EmailVerification';
@@ -89,7 +89,7 @@ const App = () => {
                             <Route exact path={USER_BAN} element={
                                 <ProtectedElement element={<UserBan />} elementRoles={[Roles.MANAGER]} />
                             } />
-                            <Route exact path={USERS} element={
+                            <Route exact path={ALL_USERS} element={
                                 <ProtectedElement element={<UserList />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
                             } />
 
@@ -131,7 +131,9 @@ const App = () => {
                             {/* BOOKINGS */}
 
                             {/* <Route exact path={BOOKING_PAGE} element={<BookingPage />} /> */}
-                            <Route exact path={BOOKINGS} element={<BookingList />} />
+                            <Route exact path={ALL_BOOKINGS} element={
+                                <ProtectedElement element={<BookingList />} elementRoles={[Roles.ADMINISTRATOR]} />
+                                } />
                             <Route exact path={STORE_BOOKINGS} element={
                                 <ProtectedElement element={<StoreBookings />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
                             } />

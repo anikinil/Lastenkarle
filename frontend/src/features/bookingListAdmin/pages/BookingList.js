@@ -155,10 +155,9 @@ const BookingList = ({ filterStore, filterBike, filterUser }) => {
 
     // select first of each list as default filter element
     // const [store, setStore] = filterStore ? filterStore : useState(stores[0].key)
-    const [store, setStore] = useState(filterStore ? filterStore : stores[0].key)
-    const [bike, setBike] = useState(filterBike ? filterBike : bikes[0].key)
-    const [user, setUser] = useState(filterUser ? filterUser : users[0].key)
-
+    const [store, setStore] = useState()
+    const [bike, setBike] = useState()
+    const [user, setUser] = useState()
     const token = getCookie('token')
 
     const fetchBookings = async () => {
@@ -181,6 +180,7 @@ const BookingList = ({ filterStore, filterBike, filterUser }) => {
         });
         const data = await response.json();
         setStores(data);
+        setStore(data[0].key);
     };
 
     const fetchBikes = async () => {
@@ -192,6 +192,7 @@ const BookingList = ({ filterStore, filterBike, filterUser }) => {
         });
         const data = await response.json();
         setBikes(data);
+        setBike(data[0].key);
     };
 
     const fetchUsers = async () => {
@@ -203,6 +204,7 @@ const BookingList = ({ filterStore, filterBike, filterUser }) => {
         });
         const data = await response.json();
         setUsers(data);
+        setUser(data[0].key);
     };
 
     useEffect(() => {
@@ -260,9 +262,10 @@ const BookingList = ({ filterStore, filterBike, filterUser }) => {
 
             {/* TODO make a component? */}
             <ul className='list'>
-                {bookings.map((booking) => (
+                {bookings ?
+                bookings.map((booking) => (
                     <BookingListItem booking={booking} key={booking.id} />
-                ))}
+                )) : null}
             </ul>
         </>
     );

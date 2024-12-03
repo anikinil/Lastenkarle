@@ -9,7 +9,7 @@ import defaultBikePicture from '../../../assets/images/default_bike.png'
 
 import { useNavigate } from 'react-router-dom';
 import ConfirmationPopup from '../../../components/confirmationDialog/ConfirmationPopup';
-import { BIKE, BIKE_BOOKING, BOOKINGS } from '../../../constants/URLs/Navigation';
+import { ALL_BOOKINGS, BIKE_BOOKING, BOOKINGS } from '../../../constants/URLs/Navigation';
 import { ID } from '../../../constants/URIs/General';
 import { STORE_BY_BIKE_ID } from '../../../constants/URIs/BookingURIs';
 import { DELETE_BIKE } from '../../../constants/URIs/AdminURIs';
@@ -33,7 +33,7 @@ const BikeListItem = ({ bike }) => {
     }
 
     const handleBookingsClick = e => {
-        navigate(BOOKINGS, { state: { filterBike: bike } })
+        navigate(ALL_BOOKINGS, { state: { filterBike: bike } })
         e.stopPropagation()
     }
 

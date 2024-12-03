@@ -1,5 +1,7 @@
 {
     "//Navbar":                         "Navbar.js - war bereits abgedeckt",
+    "all_bookings":                     "All Bookings",
+    "all_users":                        "All Users",
 
     "//DayRow":                         "DayRow.js - bereits abgedeckt",
 
