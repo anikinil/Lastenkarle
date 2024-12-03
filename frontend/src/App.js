@@ -48,7 +48,10 @@ import StoreConfigPage from './features/storeConfig/pages/StoreConfigPage';
 import BikeBookingPage from './features/bikeBooking/pages/BikeBookingPage';
 import StorePageCustomer from './features/storePageCustomer/pages/StorePageCustomer';
 import StoreDisplay from './features/storePageCustomer/pages/StorePageCustomer';
+import { AuthProvider } from './AuthProvider';
 
+
+// THINK look into AuthService for login and logout
 const App = () => {
 
     // Determine if the user prefers a dark theme
@@ -64,74 +67,78 @@ const App = () => {
     return (
         <div className='App' data-theme={theme}>
             <div className='content-container'>
-                <BrowserRouter>
-                    <Navbar />
-                    <Routes>
+                <AuthProvider>
+                    <BrowserRouter>
 
-                        <Route exact path={HOME} element={<Home />} />
+                        <Navbar />
 
-                        {/* ACCOUNTS */}
+                        <Routes>
 
-                        <Route exact path={LOGIN} element={<Login />} />
-                        <Route exact path={LOGOUT} element={<Logout />} />
-                        <Route exact path={ACCOUNT_DELETION} element={<AccountDeletion />} />
-                        <Route exact path={REGISTER} element={<Register />} />
-                        <Route exact path={EMAIL_VERIFICATION.replace(ID, ':id').replace(KEY, ':key')} element={<EmailVerification />} />
-                        <Route exact path={ENROLLMENT} element={
-                            <ProtectedElement element={<Enrollment />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
-                        } />
-                        <Route exact path={USER_BAN} element={
-                            <ProtectedElement element={<UserBan />} elementRoles={[Roles.MANAGER]} />
-                        } />
-                        <Route exact path={USERS} element={
-                            <ProtectedElement element={<UserList />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
-                        } />
+                            <Route exact path={HOME} element={<Home />} />
 
-                        {/* BOOKING */}
+                            {/* ACCOUNTS */}
 
-                        <Route exact path={BOOKING} element={<Booking />} />
-                        <Route path={REGIONAL_BOOKING.replace(REGION_NAME, ':region')} element={<RegionalBooking />} />
-                        <Route exact path={BIKE_BOOKING.replace(ID, ':bike')} element={<BikeBookingPage />} />
+                            <Route exact path={LOGIN} element={<Login />} />
+                            <Route exact path={LOGOUT} element={<Logout />} />
+                            <Route exact path={ACCOUNT_DELETION} element={<AccountDeletion />} />
+                            <Route exact path={REGISTER} element={<Register />} />
+                            <Route exact path={EMAIL_VERIFICATION.replace(ID, ':id').replace(KEY, ':key')} element={<EmailVerification />} />
+                            <Route exact path={ENROLLMENT} element={
+                                <ProtectedElement element={<Enrollment />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
+                            } />
+                            <Route exact path={USER_BAN} element={
+                                <ProtectedElement element={<UserBan />} elementRoles={[Roles.MANAGER]} />
+                            } />
+                            <Route exact path={USERS} element={
+                                <ProtectedElement element={<UserList />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
+                            } />
 
-                        {/* STORES */}
+                            {/* BOOKING */}
 
-                        <Route exact path={MY_STORES} element={
-                            <ProtectedElement element={<MyStoresPage />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
-                        } />
-                        <Route exact path={STORE_DISPLAY.replace(ID, ':id')} element={<StoreDisplay />} />
-                        <Route exact path={ALL_STORES} element={
-                            <ProtectedElement element={<AllStoresPage />} elementRoles={[Roles.ADMINISTRATOR]} />
-                        } />
-                        <Route exact path={STORE_CONFIG.replace(STORE_NAME, ':store')} element={
-                            <ProtectedElement element={<StoreConfigPage />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
-                        } />
-                        <Route exact path={STORE_REGISTRATION} element={
-                            <ProtectedElement element={<StoreRegistration />} elementRoles={[Roles.ADMINISTRATOR]} />
-                        } />
+                            <Route exact path={BOOKING} element={<Booking />} />
+                            <Route path={REGIONAL_BOOKING.replace(REGION_NAME, ':region')} element={<RegionalBooking />} />
+                            <Route exact path={BIKE_BOOKING.replace(ID, ':bike')} element={<BikeBookingPage />} />
 
-                        {/* BIKES */}
+                            {/* STORES */}
 
-                        <Route exact path={ALL_BIKES} element={
-                            <ProtectedElement element={<AllBikesPage />} elementRoles={[Roles.ADMINISTRATOR]} />
-                        } />
-                        {/* TODO make inaccessible by just entering the store name in search bar by manager of different store */}
-                        <Route exact path={BIKE_REGISTRATION.replace(STORE_NAME, ':store')} element={
-                            <ProtectedElement element={<BikeRegistration />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
-                        } />
-                        <Route exact path={BIKE_CONFIG.replace(ID, ':id')} element={
-                            <ProtectedElement element={<BikeConfigPage />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
-                        } />
+                            <Route exact path={MY_STORES} element={
+                                <ProtectedElement element={<MyStoresPage />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
+                            } />
+                            <Route exact path={STORE_DISPLAY.replace(ID, ':id')} element={<StoreDisplay />} />
+                            <Route exact path={ALL_STORES} element={
+                                <ProtectedElement element={<AllStoresPage />} elementRoles={[Roles.ADMINISTRATOR]} />
+                            } />
+                            <Route exact path={STORE_CONFIG.replace(STORE_NAME, ':store')} element={
+                                <ProtectedElement element={<StoreConfigPage />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
+                            } />
+                            <Route exact path={STORE_REGISTRATION} element={
+                                <ProtectedElement element={<StoreRegistration />} elementRoles={[Roles.ADMINISTRATOR]} />
+                            } />
 
-                        {/* BOOKINGS */}
+                            {/* BIKES */}
 
-                        {/* <Route exact path={BOOKING_PAGE} element={<BookingPage />} /> */}
-                        <Route exact path={BOOKINGS} element={<BookingList />} />
-                        <Route exact path={STORE_BOOKINGS} element={
-                            <ProtectedElement element={<StoreBookings />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
-                        } />
+                            <Route exact path={ALL_BIKES} element={
+                                <ProtectedElement element={<AllBikesPage />} elementRoles={[Roles.ADMINISTRATOR]} />
+                            } />
+                            {/* TODO make inaccessible by just entering the store name in search bar by manager of different store */}
+                            <Route exact path={BIKE_REGISTRATION.replace(STORE_NAME, ':store')} element={
+                                <ProtectedElement element={<BikeRegistration />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
+                            } />
+                            <Route exact path={BIKE_CONFIG.replace(ID, ':id')} element={
+                                <ProtectedElement element={<BikeConfigPage />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
+                            } />
 
-                    </Routes>
-                </BrowserRouter>
+                            {/* BOOKINGS */}
+
+                            {/* <Route exact path={BOOKING_PAGE} element={<BookingPage />} /> */}
+                            <Route exact path={BOOKINGS} element={<BookingList />} />
+                            <Route exact path={STORE_BOOKINGS} element={
+                                <ProtectedElement element={<StoreBookings />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
+                            } />
+
+                        </Routes>
+                    </BrowserRouter>
+                </AuthProvider>
             </div>
             <div className='side-panel'>
                 <LanguageToggle />

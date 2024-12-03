@@ -6,9 +6,14 @@ import { useNavigate } from 'react-router-dom';
 import { deleteCookie, getCookie } from '../services/Cookies';
 import { LOGIN } from '../constants/URLs/Navigation';
 import { ERR_POSTING_LOGOUT_REQUEST } from '../constants/ErrorMessages';
+import { AuthContext } from '../AuthProvider';
+import { useContext } from 'react';
+import { Roles } from '../constants/Roles';
 
 // This component handles the logout process
 const Logout = () => {
+
+    const { setUserRoles, setUserStores } = useContext(AuthContext);
 
     // Hook for translation
     const { t } = useTranslation();
@@ -35,10 +40,10 @@ const Logout = () => {
                     deleteCookie('token');
                     deleteCookie('userRoles');
                     deleteCookie('userStores');
+                    setUserRoles([Roles.VISITOR]);
+                    setUserStores([]);
                     // Navigate to the login page
-                    startTransition(() => {
-                        navigate(LOGIN);
-                    });
+                    navigate(LOGIN);
                 } else {
                     // If the request was not successful, throw an error
                     return response.json().then(data => {
@@ -60,7 +65,7 @@ const Logout = () => {
     const handleCancelClick = () => {
         // Navigate back to the previous page
         navigate(-1);
-    }   
+    }
 
     return (
         <>

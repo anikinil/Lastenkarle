@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import MenuItems from './MenuItems';
 import './Navbar.css';
 import logo from '../../assets/images/logo.png';
@@ -11,28 +11,18 @@ import { ACCOUNT_DELETION, ALL_BIKES, LOGIN, LOGOUT, REGIONAL_BOOKING, REGISTER,
 import { REGION_NAME, STORE_NAME } from '../../constants/URLs/General';
 import { Roles } from '../../constants/Roles';
 import { useTranslation } from 'react-i18next';
-
+import { AuthContext } from '../../AuthProvider';
 
 const Navbar = () => {
 
-    // TODO only update when necessairy
-
     const { t } = useTranslation();
 
-    // gets the current location (Router) to update the navbar after cahnge of user roles
-    const location = useLocation();
-
-    const token = getCookie('token');
-
-    // default role is visitor (not logged in)
-    const [userRoles, setUserRoles] = useState([Roles.VISITOR]);
-    const [userStores, setUserStores] = useState([]);
-    const [filteredMenuItems, setFilteredMenuItems] = useState([]);
+    const { userRoles, userStores } = useContext(AuthContext);
 
     // TODO make each title a translatoin constant
     // TODO use URL constants for each url
-    const getMenuItems = (stores) => {
-        const storeItems = stores.map((store) => ({ title: store, url: STORE_CONFIG.replace(STORE_NAME, store) }))
+    const getMenuItems = () => {
+        const storeItems = userStores.map((store) => ({ title: store, url: STORE_CONFIG.replace(STORE_NAME, store) }))
         const allItems = [
             {
                 title: 'Booking',
@@ -124,18 +114,6 @@ const Navbar = () => {
         return allItems.filter(item => userRoles.some(role => item.roles.includes(role)));
     };
 
-    // fetch user roles on first render, if token is present (user is logged in)
-    useEffect(() => {
-        const userRoles = getCookie('userRoles');
-        if (userRoles) setUserRoles(userRoles.split(','));
-        const userStores = getCookie('userStores');
-        if (userStores) setUserStores(userStores.split(','));
-    }, [location, t]);
-
-    useEffect(() => {
-        setFilteredMenuItems(getMenuItems(userStores));
-    }, [userRoles]);
-
     return (
         <div className='nav-area'>
             <a href='/' className='logo-container'>
@@ -143,9 +121,9 @@ const Navbar = () => {
             </a>
             <nav className='nav'>
                 <ul className='menus'>
-                    {filteredMenuItems.length > 0 ? filteredMenuItems.map((item, index) => (
+                    {getMenuItems(userStores).map((item, index) => (
                         <MenuItems key={index} item={item} />
-                    )) : null}
+                    ))}
                 </ul>
             </nav>
         </div>
