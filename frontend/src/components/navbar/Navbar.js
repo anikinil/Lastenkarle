@@ -1,11 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import MenuItems from './MenuItems';
 import './Navbar.css';
 import logo from '../../assets/images/logo.png';
-import { USER_DATA } from '../../constants/URIs/UserURIs';
-import { getCookie } from '../../services/Cookies';
-import { ERR_FETCHING_USER_FLAGS } from '../../constants/ErrorMessages';
-import { useLocation } from 'react-router-dom';
 import { FaUser } from 'react-icons/fa';
 import { ACCOUNT_DELETION, ALL_BIKES, LOGIN, LOGOUT, REGIONAL_BOOKING, REGISTER, STORE_CONFIG } from '../../constants/URLs/Navigation';
 import { REGION_NAME, STORE_NAME } from '../../constants/URLs/General';
