@@ -6,13 +6,13 @@ import { useParams } from 'react-router-dom';
 import FilterForAvailabilities from '../components/FilterForAvailabilities';
 import AvailabilityCalendar from '../components/calendar/AvailabilityCalendar';
 
-const Booking = () => {
+const Renting = () => {
     const { t } = useTranslation();
 
     const { id } = useParams();
     return (
         <>
-            <h1>Booking</h1>
+            <h1>Renting</h1>
 
             {/* TODO: <ButtonsForRegions /> */}
             {/* <FilterForAvailabilities /> */}
@@ -22,4 +22,4 @@ const Booking = () => {
     );
 };
   
-export default Booking;
+export default Renting;

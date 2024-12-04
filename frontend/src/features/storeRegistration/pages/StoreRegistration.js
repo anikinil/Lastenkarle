@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import { CREATE_STORE } from '../../../constants/URIs/AdminURIs';
 import { getCookie } from '../../../services/Cookies';
 import { ERR_FETCHING_REGIONS, ERR_POSTING_NEW_STORE } from '../../../constants/ErrorMessages';
-import { REGIONS } from '../../../constants/URIs/BookingURIs';
+import { REGIONS } from '../../../constants/URIs/RentingURIs';
 
 const StoreRegistration = () => {
     

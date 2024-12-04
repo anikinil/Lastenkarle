@@ -9,9 +9,9 @@ import defaultBikePicture from '../../../assets/images/default_bike.png'
 
 import { useNavigate } from 'react-router-dom';
 import ConfirmationPopup from '../../../components/confirmationDialog/ConfirmationPopup';
-import { ALL_BOOKINGS, BIKE_BOOKING, BOOKINGS } from '../../../constants/URLs/Navigation';
+import { ALL_BOOKINGS, BIKE_RENTING } from '../../../constants/URLs/Navigation';
 import { ID } from '../../../constants/URIs/General';
-import { STORE_BY_BIKE_ID } from '../../../constants/URIs/BookingURIs';
+import { STORE_BY_BIKE_ID } from '../../../constants/URIs/RentingURIs';
 import { DELETE_BIKE } from '../../../constants/URIs/AdminURIs';
 import { ERR_DELETING_BIKE } from '../../../constants/ErrorMessages';
 import { getCookie } from '../../../services/Cookies';
@@ -29,7 +29,7 @@ const BikeListItem = ({ bike }) => {
     const [showConfirmationPopup, setShowConfirmationPopup] = useState(false);
 
     const handlePanelClick = () => {
-        navigate(BIKE_BOOKING.replace(ID, bike.id));
+        navigate(BIKE_RENTING.replace(ID, bike.id));
     }
 
     const handleBookingsClick = e => {

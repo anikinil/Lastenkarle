@@ -6,14 +6,14 @@ import Map from '../components/Map';
 import FilterForAvailabilities from '../components/FilterForAvailabilities';
 import AvailabilityCalendar from '../components/calendar/AvailabilityCalendar';
 import BikeList from '../../allBikesList/components/BikeList';
-import { ALL_BIKES, ALL_STORES } from '../../../constants/URIs/BookingURIs';
+import { ALL_BIKES, ALL_STORES } from '../../../constants/URIs/RentingURIs';
 import { ERR_FETCHING_BIKES, ERR_FETCHING_DATA, ERR_FETCHING_STORES } from '../../../constants/ErrorMessages';
 //Standard page for a specific region
 //TODO: Add Map of region with station markers
 //TODO: Add Filter Bar for Availabilities
 //TODO: Add Calendar overview of reservations sorted by bike
 
-const RegionalBooking = () => {
+const RegionalRenting = () => {
 
     const { t } = useTranslation();
 
@@ -82,4 +82,4 @@ const RegionalBooking = () => {
     );
 };
 
-export default RegionalBooking;
+export default RegionalRenting;

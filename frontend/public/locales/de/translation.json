@@ -120,11 +120,15 @@
     "helmholtz_registration":               "Helmholtz Registrierung",
     "login_instead":                        "Stattdessen anmelden",
 
+<<<<<<< HEAD
     "__ProtectedElement":                   "ProtectedElement.js",
     "you_have_no_permission_to_visit_page": "Sie haben keine Rechte für diesen Bereich",
     
 
     "booking":                              "Buchung",
+=======
+    "rent":                                 "Buchen",
+>>>>>>> d98fe68f451ec777b69d7cdf5720e1409c520137
     "my_stores":                            "Meine Stationen",
     "admin_activities":                     "Adminaktivitäten",
     "bookings":                             "Buchungen",

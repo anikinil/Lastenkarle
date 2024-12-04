@@ -12,6 +12,8 @@ const BookingListItem = ({ booking }) => {
 
     const navigate = useNavigate()
 
+    // TODO use urls from constants
+
     const handlePanelClick = () => {
         navigate(`/booking/${booking.id}`, { state: {booking: booking }})
     }
