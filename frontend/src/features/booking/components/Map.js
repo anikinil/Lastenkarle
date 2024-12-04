@@ -1,1 +1,0 @@
-// TODO: Map for a region with markers for stores
