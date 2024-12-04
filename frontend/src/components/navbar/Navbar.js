@@ -15,8 +15,6 @@ const Navbar = () => {
 
     const { userRoles, userStores } = useContext(AuthContext);
 
-    // TODO make each title a translatoin constant
-    // TODO use URL constants for each url
     const getMenuItems = () => {
         const storeItems = userStores.map((store) => ({ title: store, url: STORE_CONFIG.replace(STORE_NAME, store) }))
         const allItems = [
