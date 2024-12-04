@@ -57,7 +57,7 @@ const EmailVerification = () => {
 
     return (
         <>
-            <h1>{t('heading')}</h1>
+            <h1>{t('email_verification')}</h1>
 
             {verificationSuccessful ?
                 <>

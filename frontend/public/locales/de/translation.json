@@ -82,7 +82,27 @@
     "__UserListItem":                       "UserListItem.js",
     "ban":                                  "Bannen",
 
+    "__UserList":                           "UserList.js",
+    "sort":                                 "Sortieren",
 
+    "__AccountDeletion":                    "AccountDeletion.js",
+    "account_deletion":                     "Meinen Account löschen",
+    "are_you_sure_you_want_to_delete_your_account": "Sind Sie sicher, dass sie ihren Account löschen wollen?",
+
+    "__EmailVerification":                  "EmailVerification.js",
+    "email_verification":                   "E-Mail-Verifizierung",
+    "email_verification_successful":        "Verifizierung war errfolgreich",
+    "continue":                             "Fortfahren",
+    "verify_email":                         "E-Mail verifizieren",
+
+    "__Login":                              "Login.js",
+    "login":                                "Anmelden",
+    "enter_username":                       "Benutzername eingeben",
+    "enter_password":                       "Passwort eingeben",
+    "helmholtz_login":                      "Helmholtz Login",
+    "register_instead":                     "Stattdessen registrieren",
+
+    "__Home":                               "Home.js",
     "homepage":                             "Startseite",
     "bike_list":                            "Liste der Lastenräder",
     "store_list":                           "Liste der Stationen",
@@ -91,19 +111,18 @@
     "placeholder_closed_from_time":         "12:00",
     "placeholder_closed_to_time":           "13:00",
 
-    "login":                                "Anmelden",
-    "enter_username":                       "Benutzername eingeben",
-    "enter_password":                       "Passwort eingeben",
-    "helmholtz_login":                      "Helmholtz Login",
-    "register_instead":                     "Stattdessen registrieren",
-
+    "__Register":                           "Register.js",
+    "register":                             "Registrieren",
+    "enter_contact_data":                   "Kontaktdaten eingeben",
     "enter_year_of_birth":                  "Geburtsjahr eingeben",
     "enter_first_name":                     "Vorname eingeben",
     "enter_last_name":                      "Nachname eingeben",
-    "enter_contact_data":                   "Kontaktdaten eingeben",
-    "register":                             "Registrieren",
     "helmholtz_registration":               "Helmholtz Registrierung",
     "login_instead":                        "Stattdessen anmelden",
+
+    "__ProtectedElement":                   "ProtectedElement.js",
+    "you_have_no_permission_to_visit_page": "Sie haben keine Rechte für diesen Bereich",
+    
 
     "booking":                              "Buchung",
     "my_stores":                            "Meine Stationen",
