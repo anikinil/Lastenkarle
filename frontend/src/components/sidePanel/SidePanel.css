@@ -29,9 +29,9 @@
     color: var(--button-foreground-focus);
     border-color: var(--button-border-focus);
 }
-
+/* 
 .theme {
-}
+} */
 
 .language {
     font-weight: 300;

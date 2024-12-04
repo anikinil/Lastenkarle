@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import useLocalStorage from 'use-local-storage';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ProtectedElement } from './utils/ProtectedElement';
@@ -18,13 +18,10 @@ import AccountDeletion from './pages/AccountDeletion';
 import UserBan from './features/userBan/pages/UserBan';
 import Navbar from './components/navbar/Navbar';
 import Booking from './features/booking/pages/Booking';
-import BookingPage from './features/bookingDisplay/pages/BookingPage';
-import StoreListPage from './features/storeList/pages/StoreListPage';
 
 import LanguageToggle from './components/sidePanel/LanguageToggle';
 import UserList from './features/userList/pages/UserList';
 import RegionalBooking from './features/booking/pages/RegionalBooking';
-import BikeListPage from './features/allBikesList/pages/AllBikesPage';
 import BikeRegistration from './features/bikeRegistration/pages/BikeRegistration';
 import StoreRegistration from './features/storeRegistration/pages/StoreRegistration';
 import BookingList from './features/bookingListAdmin/pages/BookingList';
@@ -33,25 +30,22 @@ import Register from './pages/Register';
 import Enrollment from './features/enrollment/pages/Enrollment';
 import StoreBookings from './features/storeBookings/pages/StoreBookings';
 
-import NavigationError from './pages/NavigationError';
-import { BIKE_BOOKING, BIKE_REGISTRATION, ALL_BIKES, BOOKING, BOOKINGS, ACCOUNT_DELETION, EMAIL_VERIFICATION, ENROLLMENT, HOME, LOGIN, LOGOUT, REGIONAL_BOOKING, REGISTER, STORE_BOOKINGS, STORE_REGISTRATION, USER_BAN, STORE_CONFIG, MY_STORES, ALL_STORES, STORE_DISPLAY, BIKE_CONFIG, ALL_BOOKINGS, ALL_USERS } from './constants/URLs/Navigation';
-import { getCookie } from './services/Cookies';
+import { BIKE_BOOKING, BIKE_REGISTRATION, ALL_BIKES, BOOKING, ACCOUNT_DELETION, EMAIL_VERIFICATION, ENROLLMENT, HOME, LOGIN, LOGOUT, REGIONAL_BOOKING, REGISTER, STORE_BOOKINGS, STORE_REGISTRATION, USER_BAN, STORE_CONFIG, MY_STORES, ALL_STORES, STORE_DISPLAY, BIKE_CONFIG, ALL_BOOKINGS, ALL_USERS } from './constants/URLs/Navigation';
 import { ID, KEY, REGION_NAME, STORE_NAME } from './constants/URLs/General';
 import EmailVerification from './pages/EmailVerification';
 import { Roles } from './constants/Roles';
-import { ERR_FETCHING_USER_DATA, ERR_FETCHING_USER_FLAGS } from './constants/ErrorMessages';
-import { USER_DATA } from './constants/URIs/UserURIs';
 import AllBikesPage from './features/allBikesList/pages/AllBikesPage';
 import AllStoresPage from './features/allStoresPage/pages/AllStoresPage';
 import MyStoresPage from './features/myStoresPage/pages/MyStoresPage';
 import StoreConfigPage from './features/storeConfig/pages/StoreConfigPage';
 import BikeBookingPage from './features/bikeBooking/pages/BikeBookingPage';
-import StorePageCustomer from './features/storePageCustomer/pages/StorePageCustomer';
 import StoreDisplay from './features/storePageCustomer/pages/StorePageCustomer';
 import { AuthProvider } from './AuthProvider';
 
 
 // THINK look into AuthService for login and logout
+// TODO detect when session is expired and redirect to login page
+
 const App = () => {
 
     // Determine if the user prefers a dark theme
@@ -144,7 +138,7 @@ const App = () => {
             </div>
             <div className='side-panel'>
                 <LanguageToggle />
-                <button className='toggle theme' onClick={switchTheme}>{theme === 'light' ? <MdLightMode /> : <MdDarkMode />}</button>
+                <button className='toggle theme' onClick={switchTheme}>{theme === 'light' ? <MdDarkMode /> : <MdLightMode />}</button>
             </div>
         </div >
     );
