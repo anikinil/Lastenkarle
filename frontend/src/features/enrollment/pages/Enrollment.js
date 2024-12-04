@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 import { USER_FLAGS } from '../../../constants/URIs/AdminURIs';
-import { ALL_STORES } from '../../../constants/URIs/BookingURIs';
+import { ALL_STORES } from '../../../constants/URIs/RentingURIs';
 import { getCookie } from '../../../services/Cookies';
 import { ERR_POSTING_ENROLLMENT } from '../../../constants/ErrorMessages';
 import { Roles } from '../../../constants/Roles';

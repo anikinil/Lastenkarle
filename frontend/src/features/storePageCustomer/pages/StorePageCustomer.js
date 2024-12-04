@@ -9,7 +9,7 @@ import { useParams } from 'react-router-dom';
 import SingleLineTextField from '../../../components/display/SingleLineTextField';
 import { ERR_FETCHING_STORE } from '../../../constants/ErrorMessages';
 import { getCookie } from '../../../services/Cookies';
-import { STORE_BY_BIKE_ID } from '../../../constants/URIs/BookingURIs';
+import { STORE_BY_BIKE_ID } from '../../../constants/URIs/RentingURIs';
 import { ID } from '../../../constants/URIs/General';
 
 const StoreDisplay = () => {

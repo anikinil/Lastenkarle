@@ -35,8 +35,8 @@ export const MY_BOOKINGS            = `/my-bookings`
 export const BOOKING_PAGE           = `/booking/${ID}`
 export const STORE_BOOKINGS         = `/store/${STORE_NAME}/store-bookings`
 
-export const BOOKING                = `/booking`
-export const REGIONAL_BOOKING       = `/regional-booking/${REGION_NAME}`
-export const BIKE_BOOKING           = `/bike-booking/${ID}`
+export const RENTING                = `/renting`
+export const REGIONAL_RENTING       = `/regional-renting/${REGION_NAME}`
+export const BIKE_RENTING           = `/bike-renting/${ID}`
 
 export const EMAIL_VERIFICATION     = `/email-verification/${ID}/${KEY}`

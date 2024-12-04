@@ -3,7 +3,7 @@ import MenuItems from './MenuItems';
 import './Navbar.css';
 import logo from '../../assets/images/logo.png';
 import { FaUser } from 'react-icons/fa';
-import { ACCOUNT_DELETION, ALL_BIKES, ALL_BOOKINGS, ALL_STORES, ALL_USERS, BOOKING, BOOKINGS, ENROLLMENT, LOGIN, LOGOUT, MY_BOOKINGS, MY_STORES, REGIONAL_BOOKING, REGISTER, STORE_CONFIG, USERS } from '../../constants/URLs/Navigation';
+import { ACCOUNT_DELETION, ALL_BIKES, ALL_BOOKINGS, ALL_STORES, ALL_USERS, RENTING, ENROLLMENT, LOGIN, LOGOUT, MY_BOOKINGS, MY_STORES, REGIONAL_RENTING, REGISTER, STORE_CONFIG, USERS } from '../../constants/URLs/Navigation';
 import { REGION_NAME, STORE_NAME } from '../../constants/URLs/General';
 import { Roles } from '../../constants/Roles';
 import { useTranslation } from 'react-i18next';
@@ -21,25 +21,25 @@ const Navbar = () => {
         const storeItems = userStores.map((store) => ({ title: store, url: STORE_CONFIG.replace(STORE_NAME, store) }))
         const allItems = [
             {
-                title: t('booking'),
-                url: BOOKING,
+                title: t('renting'),
+                url: RENTING,
                 roles: [Roles.CUSTOMER, Roles.MANAGER, Roles.ADMINISTRATOR, Roles.VISITOR],
                 submenu: [
                     {
                         title: 'Karlsruhe',
-                        url: REGIONAL_BOOKING.replace(REGION_NAME, 'karlsruhe')
+                        url: REGIONAL_RENTING.replace(REGION_NAME, 'karlsruhe')
                     },
                     {
                         title: 'Ettlingen',
-                        url: REGIONAL_BOOKING.replace(REGION_NAME, 'ettlingen')
+                        url: REGIONAL_RENTING.replace(REGION_NAME, 'ettlingen')
                     },
                     {
                         title: 'Bruchsaal',
-                        url: REGIONAL_BOOKING.replace(REGION_NAME, 'bruchsaal')
+                        url: REGIONAL_RENTING.replace(REGION_NAME, 'bruchsaal')
                     },
                     {
                         title: 'Malsch',
-                        url: REGIONAL_BOOKING.replace(REGION_NAME, 'malsch')
+                        url: REGIONAL_RENTING.replace(REGION_NAME, 'malsch')
                     }
                 ]
             },
