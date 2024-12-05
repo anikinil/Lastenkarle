@@ -11,6 +11,7 @@ import f from '../../../assets/images/bike1.jpg'
 import { BIKES_OF_STORE, STORE_NAME } from '../../../constants/URIs/ManagerURIs';
 import { getCookie } from '../../../services/Cookies';
 
+// displays a sortable list of provided bikes for all roles
 const BikeList = ({bikes}) => {
 
     // TODO make different list components for different user roles
