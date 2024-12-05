@@ -19,7 +19,7 @@ const Navbar = () => {
         const storeItems = userStores.map((store) => ({ title: store, url: STORE_CONFIG.replace(STORE_NAME, store) }))
         const allItems = [
             {
-                title: t('renting'),
+                title: t('rent'),
                 url: RENTING,
                 roles: [Roles.CUSTOMER, Roles.MANAGER, Roles.ADMINISTRATOR, Roles.VISITOR],
                 submenu: [

@@ -12,7 +12,7 @@ const Renting = () => {
     const { id } = useParams();
     return (
         <>
-            <h1>Renting</h1>
+            <h1>{t('rent')}</h1>
 
             {/* TODO: <ButtonsForRegions /> */}
             {/* <FilterForAvailabilities /> */}
