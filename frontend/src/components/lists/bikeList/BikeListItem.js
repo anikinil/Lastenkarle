@@ -16,7 +16,7 @@ const BikeListItem = ({ bike }) => {
 
     const navigate = useNavigate();
 
-    // THINK maybe show big preview of bike image on clik on miniature preview
+    // THINK maybe show big preview of bike image on clik on miniature preview (aplies to all versions)
 
     const token = getCookie('token');
 

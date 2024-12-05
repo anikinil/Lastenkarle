@@ -9,7 +9,8 @@ const BikeListItemManager = ({ bike }) => {
 
     const navigate = useNavigate();
 
-   
+    // TODO manager will have a seperate list of bikes in his own stores and all bikes in system
+
     return (
         <>
             <p>MANAGER</p>

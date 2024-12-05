@@ -87,6 +87,7 @@ const BikeListItemAdmin = ({ bike }) => {
 
                 <button type='button' className='list-item-button regular' onClick={handleBookingsClick}>{t('bookings')}</button>
                 <button type='button' className='list-item-button regular' onClick={handleStoreClick}>{t('store')}</button>
+                <button type='button' className='list-item-button accent' onClick={handleDeleteClick}>{t('delete')}</button>
 
                 <div className='list-item-img-container'>
                     <img className='list-item-img' alt={bike.name} src={bike.image ? bike.image : defaultBikePicture}></img>
