@@ -1,22 +1,18 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import '../../../components/lists/List.css'
-
-import { MdDelete } from 'react-icons/md';
-
-import defaultBikePicture from '../../../assets/images/default_bike.png'
+import defaultBikePicture from '../../../../assets/images/default_bike.png'
 
 import { useNavigate } from 'react-router-dom';
-import ConfirmationPopup from '../../../components/confirmationDialog/ConfirmationPopup';
-import { ALL_BOOKINGS, BIKE_RENTING } from '../../../constants/URLs/Navigation';
-import { ID } from '../../../constants/URIs/General';
-import { STORE_BY_BIKE_ID } from '../../../constants/URIs/RentingURIs';
-import { DELETE_BIKE } from '../../../constants/URIs/AdminURIs';
-import { ERR_DELETING_BIKE } from '../../../constants/ErrorMessages';
-import { getCookie } from '../../../services/Cookies';
+import { ID } from '../../../../constants/URIs/General';
+import { STORE_BY_BIKE_ID } from '../../../../constants/URIs/RentingURIs';
+import { DELETE_BIKE } from '../../../../constants/URIs/AdminURIs';
+import { ERR_DELETING_BIKE } from '../../../../constants/ErrorMessages';
+import { getCookie } from '../../../../services/Cookies'
+import ConfirmationPopup from '../../../confirmationDialog/ConfirmationPopup';
+import { ALL_BOOKINGS, BIKE_CONFIG } from '../../../../constants/URLs/Navigation';
 
-const BikeListItem = ({ bike }) => {
+const BikeListItemAdmin = ({ bike }) => {
 
     const { t } = useTranslation();
 
@@ -29,7 +25,7 @@ const BikeListItem = ({ bike }) => {
     const [showConfirmationPopup, setShowConfirmationPopup] = useState(false);
 
     const handlePanelClick = () => {
-        navigate(BIKE_RENTING.replace(ID, bike.id));
+        navigate(BIKE_CONFIG.replace(ID, bike.id));
     }
 
     const handleBookingsClick = e => {
@@ -104,4 +100,4 @@ const BikeListItem = ({ bike }) => {
     );
 };
 
-export default BikeListItem;
+export default BikeListItemAdmin;

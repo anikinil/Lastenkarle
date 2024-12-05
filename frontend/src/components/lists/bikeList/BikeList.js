@@ -1,15 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import '../../../components/lists/List.css';
 import BikeListItem from './BikeListItem';
-import './BikeList.css'
+import '../List.css'
 import { FaSortAlphaDown, FaSortAlphaUp } from 'react-icons/fa';
-import { useLocation, useNavigate } from 'react-router-dom';
-
-import f from '../../../assets/images/bike1.jpg'
-import { BIKES_OF_STORE, STORE_NAME } from '../../../constants/URIs/ManagerURIs';
-import { getCookie } from '../../../services/Cookies';
+import { useNavigate } from 'react-router-dom';
 
 // displays a sortable list of provided bikes for all roles
 const BikeList = ({bikes}) => {

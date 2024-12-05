@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import '../../../components/lists/List.css';
-import BikeList from '../components/BikeList';
-import '../components/BikeList.css'
+import BikeList from '../../../components/lists/bikeList/BikeList';
+import '../../../components/lists/bikeList/BikeList.css';
 import { ALL_BIKES } from '../../../constants/URIs/AdminURIs';
 import { getCookie } from '../../../services/Cookies';
 

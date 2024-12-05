@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import Map from '../components/Map';
 import FilterForAvailabilities from '../components/FilterForAvailabilities';
 import AvailabilityCalendar from '../components/calendar/AvailabilityCalendar';
-import BikeList from '../../allBikesList/components/BikeList';
+import BikeList from '../../../components/lists/bikeList/BikeList';
 import { ALL_BIKES, ALL_STORES } from '../../../constants/URIs/RentingURIs';
 import { ERR_FETCHING_BIKES, ERR_FETCHING_DATA, ERR_FETCHING_STORES } from '../../../constants/ErrorMessages';
 //Standard page for a specific region
