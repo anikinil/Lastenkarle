@@ -24,8 +24,12 @@ const BikeListItem = ({ bike }) => {
 
     return (
         <>
-            {userRoles.includes(Roles.ADMINISTRATOR) ? <BikeListItemAdmin bike={bike} key={bike.id} /> :
-                userRoles.includes(Roles.MANAGER) ? <BikeListItemManager bike={bike} key={bike.id} /> :
+            {userRoles.includes(Roles.ADMINISTRATOR) ?
+                <BikeListItemAdmin bike={bike} key={bike.id} /> :
+
+                userRoles.includes(Roles.MANAGER) ?
+                    <BikeListItemManager bike={bike} key={bike.id} /> :
+                    
                     <BikeListItemCustomer bike={bike} key={bike.id} />}
         </>
     );
