@@ -6,9 +6,9 @@ import { getCookie } from '../../../services/Cookies';
 import { AuthContext } from '../../../AuthProvider';
 
 import { Roles } from '../../../constants/Roles';
-import BikeListItemAdmin from './bikeListItemVersions/BikeListItemAdmin';
-import BikeListItemCustomer from './bikeListItemVersions/BikeListItemCustomer';
-import BikeListItemManager from './bikeListItemVersions/BikeListItemManager';
+import BikeListItemAdmin from './listItemVersions/BikeListItemAdmin';
+import BikeListItemCustomer from './listItemVersions/BikeListItemCustomer';
+import BikeListItemManager from './listItemVersions/BikeListItemManager';
 
 const BikeListItem = ({ bike }) => {
 
@@ -29,7 +29,7 @@ const BikeListItem = ({ bike }) => {
 
                 userRoles.includes(Roles.MANAGER) ?
                     <BikeListItemManager bike={bike} key={bike.id} /> :
-                    
+
                     <BikeListItemCustomer bike={bike} key={bike.id} />}
         </>
     );
