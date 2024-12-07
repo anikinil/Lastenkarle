@@ -1,9 +1,9 @@
 
 import React, { useEffect, useState } from 'react';
-import StoreList from '../../storeList/components/StoreList';
 import { useTranslation } from 'react-i18next';
 import { getCookie } from '../../../services/Cookies';
 import { MY_STORES } from '../../../constants/URIs/ManagerURIs';
+import StoreList from '../../../components/lists/storeList/StoreList';
 
 const MyStoresPage = () => {
     const { t } = useTranslation(); // Hook for translation

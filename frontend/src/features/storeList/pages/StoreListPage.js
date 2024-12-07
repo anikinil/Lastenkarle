@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import '../../../components/lists/List.css'; // Importing CSS for styling the list
 
-import StoreList from '../components/StoreList'; // Importing the StoreList component
+import StoreList from '../../../components/lists/storeList/StoreList'; // Importing the StoreList component
 
 const StoreListPage = () => {
     const { t } = useTranslation(); // Hook for translation

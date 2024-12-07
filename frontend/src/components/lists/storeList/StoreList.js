@@ -1,7 +1,7 @@
 // Import necessary libraries and components
 import React, { useEffect, useState } from 'react';
 import { FaSortAlphaDown, FaSortAlphaUp } from 'react-icons/fa';
-import StoreListItem from './StoreListItem';
+import StoreListItem from '../../../components/lists/storeList/StoreListItem';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { STORE_REGISTRATION } from '../../../constants/URLs/Navigation';

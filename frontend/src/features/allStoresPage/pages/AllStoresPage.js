@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { getCookie } from '../../../services/Cookies';
-import StoreList from '../../storeList/components/StoreList';
+import StoreList from '../../../components/lists/storeList/StoreList';
 import { ALL_STORES } from '../../../constants/URIs/AdminURIs';
 
 const AllStoresPage = () => {
