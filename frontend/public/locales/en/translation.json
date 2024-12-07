@@ -32,6 +32,9 @@
 
     "__AllStoresPage":                      "AllStoresPage.js",
     "stores":                               "Stores",
+    "are_you_sure_you_want_to_delete_store": "Are you sure you want to delete this store:",
+    "delete":                               "Delete",
+    "confirm":                              "Confirm",
 
     "__BikeRegistration":                   "BikeRegistration.js",
     "bike_registration_successful":         "Bike registration complete",

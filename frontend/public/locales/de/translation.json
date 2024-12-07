@@ -32,6 +32,9 @@
 
     "__AllStoresPage":                      "AllStoresPage.js",
     "stores":                               "Stationen",
+    "are_you_sure_you_want_to_delete_store": "Wollen Sie sicher folgende Station entfernen:",
+    "delete":                               "Entfernen",
+    "confirm":                              "Bestätigen",
 
     "__BikeRegistration":                   "BikeRegistration.js",
     "bike_registration_successful":         "Registrierung des Lastenrades wurde erfolgreich abgeschlossen",
