@@ -20,7 +20,6 @@ import Navbar from './components/navbar/Navbar';
 import Renting from './features/renting/pages/Renting';
 
 import LanguageToggle from './components/sidePanel/LanguageToggle';
-import UserList from './features/userList/pages/UserList';
 import RegionalRenting from './features/renting/pages/RegionalRenting';
 import BikeRegistration from './features/bikeRegistration/pages/BikeRegistration';
 import StoreRegistration from './features/storeRegistration/pages/StoreRegistration';
@@ -41,6 +40,7 @@ import StoreConfigPage from './features/storeConfig/pages/StoreConfigPage';
 import BikeRentingPage from './features/renting/pages/BikeRentingPage';
 import StoreDisplay from './features/storePageCustomer/pages/StorePageCustomer';
 import { AuthProvider } from './AuthProvider';
+import UserListPage from './features/userList/pages/UserListPage';
 
 
 // THINK look into AuthService for login and logout
@@ -84,7 +84,7 @@ const App = () => {
                                 <ProtectedElement element={<UserBan />} elementRoles={[Roles.MANAGER]} />
                             } />
                             <Route exact path={ALL_USERS} element={
-                                <ProtectedElement element={<UserList />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
+                                <ProtectedElement element={<UserListPage />} elementRoles={[Roles.ADMINISTRATOR]} />
                             } />
 
                             {/* RENTING */}

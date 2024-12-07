@@ -1,11 +1,11 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { BAN_USER } from '../../../constants/URIs/AdminURIs';
 import { useNavigate } from 'react-router-dom';
-import { getCookie } from '../../../services/Cookies';
+import { BAN_USER } from '../../../../constants/URIs/AdminURIs';
+import { getCookie } from '../../../../services/Cookies';
 
 // Component to display a single user item in a list
-const UserListItem = ({ user }) => {
+const UserListItemAdmin = ({ user }) => {
 
     // Hook for translation
     const { t } = useTranslation();
@@ -52,9 +52,9 @@ const UserListItem = ({ user }) => {
         <li className='list-item' onClick={handlePanelClick}>
             <p className='list-item-label'>{user.username? user.username : "(no username)"}</p>
             <button type='button' className='list-item-button regular' onClick={handleBookingsClick}>{t('bookings')}</button>
-            <button type='button' className='list-item-button delete' onClick={handleBanClick}>{t('ban')}</button>
+            <button type='button' className='list-item-button accent' onClick={handleBanClick}>{t('ban')}</button>
         </li>
     );
 };
 
-export default UserListItem;
+export default UserListItemAdmin;

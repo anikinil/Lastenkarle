@@ -76,13 +76,14 @@
     border: 2px solid var(--button-border);
 }
 
-.delete {
+/* might need this later; note: fixed width with a trash bin symbol in mind */
+/* .delete {
     width: 2.5rem;
 
     color: var(--accent-button-foreground);
     background-color: transparent;
     border: 2px solid var(--accent-button-border);
-}
+} */
 
 .regular:hover {
     color: var(--button-foreground-focus);
