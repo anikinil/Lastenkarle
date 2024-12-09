@@ -126,6 +126,8 @@
     "__ProtectedElement":                   "ProtectedElement.js",
     "you_have_no_permission_to_visit_page": "You have no permission to visit this page",
     
+    "__PageNotFound":                       "PageNotFound.js",
+    "page_not_found":                       "This page could not be found :(",
 
     "booking":                              "Booking",
     "rent":                                 "Rent",

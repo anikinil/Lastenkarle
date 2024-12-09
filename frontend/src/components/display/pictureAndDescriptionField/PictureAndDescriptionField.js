@@ -39,8 +39,7 @@ const PictureAndDescriptionField = ({ editable, object, onPictureChange, onDescr
                 >
                     {pictureFile ? (
                         // TODO imlpement proper image handling with respect to backend
-                        null
-                        // <img className="img" alt={t('image')} src={URL.createObjectURL(pictureFile)} />
+                        <img className="img" alt={t('image')} src={URL.createObjectURL(pictureFile)} />
                     ) : editable ? (
                         <span className="img-container-label">{t('select_a_picture')}</span>
                     ) : (

@@ -41,6 +41,7 @@ import BikeRentingPage from './features/renting/pages/BikeRentingPage';
 import StoreDisplay from './features/storePageCustomer/pages/StorePageCustomer';
 import { AuthProvider } from './AuthProvider';
 import UserListPage from './features/userList/pages/UserListPage';
+import PageNotFound from './pages/PageNotFound';
 
 
 // THINK look into AuthService for login and logout
@@ -121,6 +122,7 @@ const App = () => {
                             <Route exact path={BIKE_CONFIG.replace(ID, ':id')} element={
                                 <ProtectedElement element={<BikeConfigPage />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
                             } />
+                            
 
                             {/* BOOKINGS */}
 
@@ -131,6 +133,10 @@ const App = () => {
                             <Route exact path={STORE_BOOKINGS} element={
                                 <ProtectedElement element={<StoreBookings />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
                             } />
+
+                            {/* OTHER */}
+
+                            <Route path='*' element={<PageNotFound />} />
 
                         </Routes>
                     </BrowserRouter>
