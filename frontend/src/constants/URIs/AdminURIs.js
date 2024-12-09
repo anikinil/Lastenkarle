@@ -1,4 +1,5 @@
 import { HOST } from "./General"
+import { ID } from "./General"
 
 const BASE = `${HOST}/api/admin/v1`
 const STORE_NAME = '{STORE_NAME}'
@@ -12,6 +13,7 @@ export const BAN_USER                       = `${BASE}/ban-user`
 export const ALL_BOOKINGS                   = `${BASE}/bookings`
 export const SELECTED_BOOKING               = `${BASE}/bookings/{BOOKING_ID}`
 export const ADD_BIKE_TO_STORE              = `${BASE}/create/store/{STORE_ID}/bike`
+export const UPDATE_BIKE                    = `${BASE}/bikes/${ID}/update`
 export const DELETE_BIKE                    = `${BASE}/delete/bike/{BIKE_ID}`
 export const DELETE_STORE                   = `${BASE}/delete/store/{STORE_NAME}`
 export const ALL_BIKES                      = `${BASE}/bikes`

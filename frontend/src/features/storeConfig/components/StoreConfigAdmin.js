@@ -21,6 +21,7 @@ import { getCookie } from "../../../services/Cookies";
 import { DELETE_STORE } from "../../../constants/URIs/AdminURIs";
 import { ID } from "../../../constants/URIs/General";
 import { STORE_PAGE_BY_STORE_NAME } from "../../../constants/URIs/AdminURIs";
+import ConfirmationPopup from '../../../components/confirmationDialog/ConfirmationPopup';
 
 // TODO make sure, storeName is passed to this component as parameter
 
@@ -39,6 +40,8 @@ const StoreConfigAdmin = () => {
     const [store, setStore] = useState();
 
     const token = getCookie('token');
+
+    const [showConfirmationPopup, setShowConfirmationPopup] = useState(false);
 
     // fetches store data
     const fetchStore = () => {
@@ -79,7 +82,7 @@ const StoreConfigAdmin = () => {
             });
     }
 
-    const postStoreDeletion = () => {
+    const deleteStore = () => {
         const payload = {}
         fetch(DELETE_STORE.replace(ID, store.id), {
             method: 'DELETE',
@@ -127,8 +130,16 @@ const StoreConfigAdmin = () => {
         navigate(STORE_DISPLAY.replace(STORE_NAME, storeName));
     }
 
-    const handleDeleteStore = () => {
-        postStoreDeletion();
+    const handleDeleteClick = () => {
+        setShowConfirmationPopup(true);
+    }
+
+    const handlePopupConfirm = () => {
+        deleteStore();
+    }
+
+    const handlePopupCancel = () => {
+        setShowConfirmationPopup(false)
     }
 
     return (
@@ -157,8 +168,12 @@ const StoreConfigAdmin = () => {
                     <button type='button' className='button accent' onClick={handleSubmitClick}>{t('submit_changes')}</button>
                 </div>
                 <div className='button-container'>
-                    <button type='button' className='button accent' onClick={handleDeleteStore}>{t('delete_store')}</button>
+                    <button type='button' className='button accent' onClick={handleDeleteClick}>{t('delete_store')}</button>
                 </div>
+
+                <ConfirmationPopup onConfirm={handlePopupConfirm} onCancel={handlePopupCancel} show={showConfirmationPopup}>
+                    {t('are_you_sure_you_want_to_delete_store') + ' ' + store.name + '?'}
+                </ConfirmationPopup>
             </>
             : null}
         </>
