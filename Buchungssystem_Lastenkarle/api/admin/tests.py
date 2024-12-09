@@ -183,7 +183,7 @@ class Test_admin_post_create_bike_of_store(APITestCase):
                 'image': image_file
             }
             self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_administrator_caro_token)
-            response = self.make_request(url=self.assign_values_to_placeholder(self.url_template, self.store_graphs.pk),
+            response = self.make_request(url=self.assign_values_to_placeholder(self.url_template, self.store_graphs.name),
                                          data=data, format='multipart')
             self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
@@ -195,7 +195,7 @@ class Test_admin_post_create_bike_of_store(APITestCase):
                 'image': image_file
             }
             self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_administrator_caro_token)
-            response = self.make_request(url=self.assign_values_to_placeholder(self.url_template, self.store_graphs.pk),
+            response = self.make_request(url=self.assign_values_to_placeholder(self.url_template, self.store_graphs.name),
                                          data=data, format='multipart')
             self.assertEqual(response.status_code, status.HTTP_201_CREATED)
             response_data = response.json()
@@ -205,7 +205,7 @@ class Test_admin_post_create_bike_of_store(APITestCase):
         for token in [self.user_customer_taylor_token, self.user_customer_wildegard_token, self.user_manager_store_koeri_token]:
             with open(self.image_path_bike, 'rb') as image_file:
                 self.invalid_permissions(user_token=token,
-                                         path=self.assign_values_to_placeholder(self.url_template, self.store_graphs.pk),
+                                         path=self.assign_values_to_placeholder(self.url_template, self.store_graphs.name),
                                          data={
                                                 'name': 'KI',
                                                 'description': 'gki ist ne Blöde!',
@@ -242,7 +242,7 @@ class Test_admin_post_create_bike_of_store(APITestCase):
                 if i == 3:
                     data['image'] = ['KEIN BILD']
                 self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_administrator_caro_token)
-                response = self.make_request(url=self.assign_values_to_placeholder(self.url_template, self.store_graphs.pk), data=data, format='multipart')
+                response = self.make_request(url=self.assign_values_to_placeholder(self.url_template, self.store_graphs.name), data=data, format='multipart')
                 self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
                 self.assertEqual(bike_count, Bike.objects.all().count())
 
@@ -303,7 +303,7 @@ class Test_admin_delete_store(APITestCase):
         bike_count_store = Bike.objects.filter(store=store).count()
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_administrator_caro_token)
         response = self.make_request(
-            url=self.assign_values_to_placeholder(self.url_template, self.store_graphs.pk))
+            url=self.assign_values_to_placeholder(self.url_template, self.store_graphs.name))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertNotIn(store, Store.objects.all())
         self.assertEqual(bike_count - bike_count_store, Bike.objects.all().count())
@@ -311,14 +311,13 @@ class Test_admin_delete_store(APITestCase):
 
     def test_admin_delete_store_unauthorized(self):
         self.invalid_permissions(user_token=self.user_customer_taylor_token,
-                                 path=self.assign_values_to_placeholder(self.url_template, self.store_graphs.pk))
+                                 path=self.assign_values_to_placeholder(self.url_template, self.store_graphs.name))
         self.invalid_permissions(user_token=self.user_customer_wildegard_token,
-                                 path=self.assign_values_to_placeholder(self.url_template, self.store_graphs.pk))
+                                 path=self.assign_values_to_placeholder(self.url_template, self.store_graphs.name))
         self.invalid_permissions(user_token=self.user_manager_store_koeri_token,
-                                 path=self.assign_values_to_placeholder(self.url_template, self.store_graphs.pk))
+                                 path=self.assign_values_to_placeholder(self.url_template, self.store_graphs.name))
 
     def test_admin_delete_store_handling_invalid_url(self):
-        self.invalid_url_params(self.user_administrator_caro_token, 25, self.regex_non_natural_numbers)
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_administrator_caro_token)
         response = self.make_request(url=self.assign_values_to_placeholder(self.url_template, self.random_number_not_in_id_set('Store')))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
@@ -326,7 +325,7 @@ class Test_admin_delete_store(APITestCase):
     def test_admin_delete_store_handling_bike_picked_up(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_administrator_caro_token)
         response = self.make_request(
-            url=self.assign_values_to_placeholder(self.url_template, self.booking_picked_up.bike.store.pk))
+            url=self.assign_values_to_placeholder(self.url_template, self.booking_picked_up.bike.store.name))
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
@@ -648,13 +647,13 @@ class Test_admin_get_store(APITestCase):
     def test_admin_get_store_functionality(self):
         for store in Store.objects.all():
             self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_administrator_caro_token)
-            response = self.make_request(url=self.assign_values_to_placeholder(self.url_template, store.pk))
+            response = self.make_request(url=self.assign_values_to_placeholder(self.url_template, store.name))
             self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_admin_get_store_integrity(self):
         for store in Store.objects.all():
             self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_administrator_caro_token)
-            response = self.make_request(url=self.assign_values_to_placeholder(self.url_template, store.pk))
+            response = self.make_request(url=self.assign_values_to_placeholder(self.url_template, store.name))
             self.assertEqual(response.status_code, status.HTTP_200_OK)
             response_data = response.json()
             self.validate_integrity(response_data, self.serialize_store_with_relations(store))
@@ -662,11 +661,11 @@ class Test_admin_get_store(APITestCase):
     def test_admin_get_store_unauthorized(self):
         for store in Store.objects.all():
             self.invalid_permissions(user_token=self.user_customer_taylor_token,
-                                     path=self.assign_values_to_placeholder(self.url_template, store.pk))
+                                     path=self.assign_values_to_placeholder(self.url_template, store.name))
             self.invalid_permissions(user_token=self.user_customer_wildegard_token,
-                                     path=self.assign_values_to_placeholder(self.url_template, store.pk))
+                                     path=self.assign_values_to_placeholder(self.url_template, store.name))
             self.invalid_permissions(user_token=self.user_manager_store_koeri_token,
-                                     path=self.assign_values_to_placeholder(self.url_template, store.pk))
+                                     path=self.assign_values_to_placeholder(self.url_template, store.name))
 
     def test_admin_get_store_handling_invalid_url(self):
         self.invalid_url_params(self.user_administrator_caro_token, 25, self.regex_non_natural_numbers)
@@ -683,28 +682,27 @@ class Test_admin_get_availabilities_of_store(APITestCase):
     def test_admin_get_availabilities_of_store_functionality(self):
         for store in Store.objects.all():
             self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_administrator_caro_token)
-            response = self.make_request(url=self.assign_values_to_placeholder(self.url_template, store.pk))
+            response = self.make_request(url=self.assign_values_to_placeholder(self.url_template, store.name))
             self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_admin_get_availabilities_of_store_integrity(self):
         for store in Store.objects.all():
             self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_administrator_caro_token)
-            response = self.make_request(url=self.assign_values_to_placeholder(self.url_template, store.pk))
+            response = self.make_request(url=self.assign_values_to_placeholder(self.url_template, store.name))
             self.assertEqual(response.status_code, status.HTTP_200_OK)
             self.validate_integrity_list(AvailabilitySerializer(Availability.objects.all(), many=True).data,
-                                         self.assign_values_to_placeholder(self.url_template, store.pk))
+                                         self.assign_values_to_placeholder(self.url_template, store.name))
 
     def test_admin_get_availabilities_of_store_unauthorized(self):
         for store in Store.objects.all():
             self.invalid_permissions(user_token=self.user_customer_taylor_token,
-                                     path=self.assign_values_to_placeholder(self.url_template, store.pk))
+                                     path=self.assign_values_to_placeholder(self.url_template, store.name))
             self.invalid_permissions(user_token=self.user_customer_wildegard_token,
-                                     path=self.assign_values_to_placeholder(self.url_template, store.pk))
+                                     path=self.assign_values_to_placeholder(self.url_template, store.name))
             self.invalid_permissions(user_token=self.user_manager_store_koeri_token,
-                                     path=self.assign_values_to_placeholder(self.url_template, store.pk))
+                                     path=self.assign_values_to_placeholder(self.url_template, store.name))
 
     def test_admin_get_availabilities_of_store_handling_invalid_url(self):
-        self.invalid_url_params(self.user_administrator_caro_token, 25, self.regex_non_natural_numbers)
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_administrator_caro_token)
         response = self.make_request(
             url=self.assign_values_to_placeholder(self.url_template, self.random_number_not_in_id_set('Store')))
@@ -728,7 +726,7 @@ class Test_admin_patch_store(APITestCase):
             for i in range(22):
                 change = self.random_exclude_key_value_pairs(data, i)
                 self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_administrator_caro_token)
-                response = self.make_request(url=self.assign_values_to_placeholder(self.url_template, store.pk), data=change)
+                response = self.make_request(url=self.assign_values_to_placeholder(self.url_template, store.name), data=change)
                 self.assertEqual(response.status_code, status.HTTP_200_OK)
                 response_data = response.json()
                 store.refresh_from_db()
@@ -740,17 +738,16 @@ class Test_admin_patch_store(APITestCase):
     def test_admin_patch_store_unauthorized(self):
         for store in Store.objects.all():
             self.invalid_permissions(user_token=self.user_customer_taylor_token,
-                                     path=self.assign_values_to_placeholder(self.url_template, store.pk),
+                                     path=self.assign_values_to_placeholder(self.url_template, store.name),
                                      data=self.store_update_data)
             self.invalid_permissions(user_token=self.user_customer_wildegard_token,
-                                     path=self.assign_values_to_placeholder(self.url_template, store.pk),
+                                     path=self.assign_values_to_placeholder(self.url_template, store.name),
                                      data=self.store_update_data)
             self.invalid_permissions(user_token=self.user_manager_store_koeri_token,
-                                     path=self.assign_values_to_placeholder(self.url_template, store.pk),
+                                     path=self.assign_values_to_placeholder(self.url_template, store.name),
                                      data=self.store_update_data)
 
     def test_admin_patch_store_handling_invalid_url(self):
-        self.invalid_url_params(self.user_administrator_caro_token, 25, self.regex_non_natural_numbers, data=self.store_update_data)
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_administrator_caro_token)
         response = self.make_request(
             url=self.assign_values_to_placeholder(self.url_template, self.random_number_not_in_id_set('Store')),
@@ -769,7 +766,7 @@ class Test_admin_patch_store(APITestCase):
                 data = {'store_flag': 37}
             if i == 3:
                 data = {'name': 'Gudelgunde von Gonde'}
-            response = self.make_request(url=self.assign_values_to_placeholder(self.url_template, self.store_graphs.pk),
+            response = self.make_request(url=self.assign_values_to_placeholder(self.url_template, self.store_graphs.name),
                                          data=data)
             self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
