@@ -30,6 +30,8 @@ const BikeRegistration = () => {
         navigate(-1)
     }
 
+    // TODO check if user is manager or admin and adjust the URI accordingly
+
     const postNewBike = () => {
         const formData = new FormData();
         formData.append("name", name);
