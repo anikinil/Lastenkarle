@@ -267,14 +267,14 @@ class APITestCase(TestCase):
     }
 
     booking_data = {
-        "begin": "2023-10-02",
-        "end": "2023-10-03",
+        "begin": "2123-10-02",
+        "end": "2123-10-03",
         "equipment": []
     }
 
     booking_data_with_equipment = {
-        "begin": "2023-10-04",
-        "end": "2023-10-05",
+        "begin": "2123-10-04",
+        "end": "2123-10-05",
         "equipment": ["Tarp", "Charger"]
     }
 

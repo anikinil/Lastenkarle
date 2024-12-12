@@ -89,7 +89,7 @@ class BikesOfStore(APIView):
     def post(self, request, store_name):
         store = Store.objects.get(name=store_name)
         data = {
-            "store": store.pk,
+            "store": store.name,
             "name": request.data.get('name', None),
             "description": request.data.get('description', None),
             "image": request.FILES.get('image', None)
