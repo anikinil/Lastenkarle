@@ -88,7 +88,7 @@ def merge_availabilities_algorithm(booking):
     booking_availability = Availability.objects.filter(from_date=begin_booking.isoformat(),
                                                        until_date=end_booking.isoformat(),
                                                        bike_id=booking.bike.pk,
-                                                       store_id=booking.bike.store.pk)
+                                                       store=booking.bike.store)
     new_from_date = booking.begin.isoformat()
     new_until_date = booking.end.isoformat()
     if begin_booking.isoformat() == date(1000, 1, 1).isoformat():
@@ -96,7 +96,7 @@ def merge_availabilities_algorithm(booking):
     else:
         left_side = Availability.objects.filter(until_date=(begin_booking - timedelta(days=1)).isoformat(),
                                                 bike_id=booking.bike.pk,
-                                                store_id=booking.bike.store.pk)
+                                                store=booking.bike.store)
 
         if left_side.filter(availability_status=Availability_Status.objects.get(availability_status='Booked')).exists():
             new_from_date = begin_booking
@@ -111,7 +111,7 @@ def merge_availabilities_algorithm(booking):
     else:
         right_side = Availability.objects.filter(from_date=(end_booking + timedelta(days=1)).isoformat(),
                                                  bike_id=booking.bike.pk,
-                                                 store_id=booking.bike.store.pk)
+                                                 store=booking.bike.store)
 
         if right_side.filter(
                 availability_status=Availability_Status.objects.get(availability_status='Booked')).exists():
@@ -125,7 +125,7 @@ def merge_availabilities_algorithm(booking):
     merged_availability = Availability.objects.create(from_date=new_from_date,
                                                       until_date=new_until_date,
                                                       bike_id=booking.bike.pk,
-                                                      store_id=booking.bike.store.pk)
+                                                      store=booking.bike.store)
     merged_availability.availability_status.set(Availability_Status.objects.filter(availability_status='Available'))
     booking_availability.delete()
 
@@ -136,11 +136,11 @@ def split_availabilities_algorithm(booking):
     to_edit = Availability.objects.filter(from_date__lte=begin_booking.isoformat(),
                                           until_date__gte=end_booking.isoformat(),
                                           bike_id=booking.bike.pk,
-                                          store_id=booking.bike.store.pk)
+                                          store=booking.bike.store)
     availability_of_booking = Availability.objects.create(from_date=begin_booking,
                                                           until_date=end_booking,
                                                           bike_id=booking.bike.pk,
-                                                          store_id=booking.bike.store.pk)
+                                                          store=booking.bike.store)
     availability_of_booking.availability_status.set(Availability_Status.objects.filter(availability_status='Booked'))
     if not availability_of_booking.from_date == to_edit.first().from_date:
         new_begin = to_edit.first().from_date
@@ -148,7 +148,7 @@ def split_availabilities_algorithm(booking):
         left_side = Availability.objects.create(from_date=new_begin,
                                                 until_date=new_end,
                                                 bike_id=booking.bike.pk,
-                                                store_id=booking.bike.store.pk)
+                                                store=booking.bike.store)
         left_side.availability_status.set(Availability_Status.objects.filter(availability_status='Available'))
     if not availability_of_booking.until_date == to_edit.first().until_date:
         new_begin = end_booking + timedelta(days=1)
@@ -156,6 +156,6 @@ def split_availabilities_algorithm(booking):
         right_side = Availability.objects.create(from_date=new_begin,
                                                  until_date=new_end,
                                                  bike_id=booking.bike.pk,
-                                                 store_id=booking.bike.store.pk)
+                                                 store=booking.bike.store)
         right_side.availability_status.set(Availability_Status.objects.filter(availability_status='Available'))
     to_edit.first().delete()

@@ -405,7 +405,7 @@ class MakeBookingSerializer(serializers.ModelSerializer):
         bike = attrs.get('bike')
         store = bike.store
         left = Availability.objects.filter(until_date__gte=end,
-                                           store=bike.store,
+                                           store__name=bike.store.name,
                                            bike=bike,
                                            availability_status=
                                            Availability_Status.objects.get(availability_status='Available'))
