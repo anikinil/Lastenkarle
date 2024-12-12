@@ -1,13 +1,18 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { LOGIN as LOGIN_URI, REGISTER } from '../constants/URIs/UserURIs';
+import { LOGIN as LOGIN_URI, REGISTER, USER_DATA } from '../constants/URIs/UserURIs';
 import { useNavigate } from 'react-router-dom';
 import { HELMHOLTZ, HOME, LOGIN as LOGIN_URL } from '../constants/URLs/Navigation';
-import { ERR_POSTING_LOGIN_REQUEST, ERR_POSTING_REGISTER_REQUEST } from '../constants/ErrorMessages';
+import { ERR_FETCHING_USER_DATA, ERR_POSTING_LOGIN_REQUEST, ERR_POSTING_REGISTER_REQUEST } from '../constants/ErrorMessages';
+import { AuthContext } from '../AuthProvider';
+import { getCookie, setCookie } from '../services/Cookies';
+import { Roles } from '../constants/Roles';
 
 const Register = () => {
     const { t } = useTranslation(); // Translation hook
     const navigate = useNavigate(); // Navigation hook
+
+    const { setUserRoles, setUserStores } = useContext(AuthContext);
 
     // State variables for form fields
     const [username, setUsername] = useState('');
@@ -24,13 +29,11 @@ const Register = () => {
 
     // Function to post registration data
     const postRegister = () => {
-
         let payload = {
             contact_data: contactData,
             username: username,
             password: password
         };
-
         if (yearOfBirth !== '') {
             payload.year_of_birth = yearOfBirth;
         }
@@ -64,7 +67,6 @@ const Register = () => {
             username: username,
             password: password
         };
-
         // Send the POST request to the login endpoint
         fetch(LOGIN_URI, {
             method: 'POST',
@@ -82,8 +84,11 @@ const Register = () => {
                         throw new Error(errorData.message);
                     });
                 }
-            }).then(data => {
-                setTokenCookie(data.token);
+            })
+            .then(data => {
+                setCookie('token', data.token);
+                fetchUserRoles();
+                // TODO account for different locations from which user can log in and navigate back to them
                 navigate(HOME);
             })
             .catch(error => {
@@ -91,18 +96,44 @@ const Register = () => {
             });
     };
 
+
+    const fetchUserRoles = () => {
+        const token = getCookie('token');
+        if (token !== 'undefined' && token !== null) {
+            fetch(USER_DATA, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${token}`,
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // get the user flags from the response
+                    const flags = data.user_flags.map(element => element.flag);
+                    // get the store names from the flags
+                    const stores = flags.filter(role => role.includes('Store: ')).map(role => role.replace('Store: ', ''));
+                    // get the roles from the flags
+                    const roles = (flags.filter(role => !role.includes('Store: ')));
+                    // if the user is manager of at least one store, add the manager role
+                    if (stores.length > 0) { roles.push(Roles.MANAGER); }
+                    // set the cookies
+                    setCookie('userRoles', roles);
+                    setCookie('userStores', stores);
+                    setUserRoles(roles);
+                    setUserStores(stores);
+                })
+                .catch(error => {
+                    console.error(ERR_FETCHING_USER_DATA, error);
+                });
+        } else {
+            setCookie('userRoles', [Roles.VISITOR]);
+        }
+    }
+
     // Handle Helmholtz registration button click
     const handleHelmholtzRegistrationClick = () => {
         window.location.replace(HELMHOLTZ);
-    };
-
-    // Function to set token cookie
-    const setTokenCookie = (token) => {
-        var days = 1;
-        const expirationDate = new Date();
-        expirationDate.setDate(expirationDate.getDate() + days);
-        document.cookie = `${'token'}=${token}; expires=${expirationDate.toUTCString()}; path=/`;
-    };
+    }
 
     // Prevent user from switching to new line by hitting [Enter]
     const handleFieldKeyDown = (event) => {
