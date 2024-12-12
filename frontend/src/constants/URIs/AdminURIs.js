@@ -18,7 +18,7 @@ export const DELETE_BIKE                    = `${BASE}/delete/bike/{BIKE_ID}`
 export const DELETE_STORE                   = `${BASE}/delete/store/{STORE_NAME}`
 export const ALL_BIKES                      = `${BASE}/bikes`
 export const ALL_STORES                     = `${BASE}/stores`
-export const BIKES_OF_STORE                 = `${BASE}/${STORE_NAME}/bikes`
+export const BIKES_OF_STORE                 = `${BASE}/stores/${STORE_NAME}/bikes`
 
 export const CREATE_STORE                   = `${BASE}/create/store`
 export const CREATE_BIKE                    = `${BASE}/create/store/${STORE_NAME}/bike`
