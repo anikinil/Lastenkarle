@@ -5,12 +5,12 @@ import defaultBikePicture from '../../../../assets/images/default_bike.png'
 
 import { useNavigate } from 'react-router-dom';
 import { ID } from '../../../../constants/URIs/General';
-import { STORE_BY_BIKE_ID } from '../../../../constants/URIs/RentingURIs';
 import { DELETE_BIKE } from '../../../../constants/URIs/AdminURIs';
 import { ERR_DELETING_BIKE } from '../../../../constants/ErrorMessages';
 import { getCookie } from '../../../../services/Cookies'
 import ConfirmationPopup from '../../../confirmationDialog/ConfirmationPopup';
-import { ALL_BOOKINGS, BIKE_CONFIG } from '../../../../constants/URLs/Navigation';
+import { ALL_BOOKINGS, BIKE_CONFIG, STORE_CONFIG } from '../../../../constants/URLs/Navigation';
+import { STORE_NAME } from '../../../../constants/URLs/General';
 
 const BikeListItemAdmin = ({ bike }) => {
 
@@ -34,7 +34,8 @@ const BikeListItemAdmin = ({ bike }) => {
     }
 
     const handleStoreClick = e => {
-        navigate(STORE_BY_BIKE_ID.replace(ID, bike.id))
+        // JAN wait til bike.store returns the store name and not the ID
+        navigate(STORE_CONFIG.replace(STORE_NAME, bike.store))
         e.stopPropagation()
     }
 

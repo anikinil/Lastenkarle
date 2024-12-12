@@ -15,7 +15,7 @@ import { BIKES_OF_STORE, STORE_PAGE_BY_STORE_NAME } from "../../../constants/URI
 import { ERR_FETCHING_STORE, ERR_UPDATING_STORE } from "../../../constants/ErrorMessages";
 import { useState } from "react";
 import { SUCCESS_UPDATING_STORE } from "../../../constants/SuccessMessages";
-import { BIKE_REGISTRATION, STORE_DISPLAY } from "../../../constants/URLs/Navigation";
+import { BIKE_REGISTRATION } from "../../../constants/URLs/Navigation";
 import { STORE_NAME } from "../../../constants/URLs/General";
 import { getCookie } from "../../../services/Cookies";
 import StoreOpeningTimesConfig from "../../../components/openingTimesConfig/StoreOpeningTimesConfig";
@@ -114,7 +114,6 @@ const StoreConfigManager = () => {
     // Handler for submit button click
     const handleSubmitClick = () => {
         postChanges();
-        navigate(STORE_DISPLAY.replace(STORE_NAME, storeName));
     }
 
     return (
