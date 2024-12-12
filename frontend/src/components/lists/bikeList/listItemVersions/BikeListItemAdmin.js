@@ -43,7 +43,6 @@ const BikeListItemAdmin = ({ bike }) => {
         e.stopPropagation()
     }
 
-    // TODO needs also to account for the case when the user is not an admin
     const postBikeDeletion = () => {
 
         const payload = {}
@@ -73,6 +72,8 @@ const BikeListItemAdmin = ({ bike }) => {
 
     const handlePopupConfirm = () => {
         postBikeDeletion();
+        // TODO check if needed
+        // window.location.reload();
     }
 
     const handlePopupCancel = () => {

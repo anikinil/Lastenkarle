@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 
 // Importing a text field component
 import SingleLineTextField from "../../../components/display/SingleLineTextField";
-import { STORE_PAGE_BY_STORE_NAME } from "../../../constants/URIs/ManagerURIs";
+import { BIKES_OF_STORE, STORE_PAGE_BY_STORE_NAME } from "../../../constants/URIs/ManagerURIs";
 import { ERR_FETCHING_STORE, ERR_UPDATING_STORE } from "../../../constants/ErrorMessages";
 import { useState } from "react";
 import { SUCCESS_UPDATING_STORE } from "../../../constants/SuccessMessages";
@@ -19,6 +19,7 @@ import { BIKE_REGISTRATION, STORE_DISPLAY } from "../../../constants/URLs/Naviga
 import { STORE_NAME } from "../../../constants/URLs/General";
 import { getCookie } from "../../../services/Cookies";
 import StoreOpeningTimesConfig from "../../../components/openingTimesConfig/StoreOpeningTimesConfig";
+import BikeList from "../../../components/lists/bikeList/BikeList";
 
 // TODO make sure, storeName is passed to this component as parameter
 
@@ -35,6 +36,7 @@ const StoreConfigManager = () => {
 
     // State to hold store data
     const [store, setStore] = useState();
+    const [bikes, setBikes] = useState([]);
 
     const token = getCookie('token');
 
@@ -49,11 +51,30 @@ const StoreConfigManager = () => {
             .then(response => response.json())
             .then(data => {
                 setStore(data);
+                fetchBikes();
             })
             .catch(error => {
                 console.error(ERR_FETCHING_STORE, error);
             });
     }
+
+    useEffect(() => {
+        fetchStore();
+    }, []);
+
+    const fetchBikes = async () => {
+        const response = await fetch(BIKES_OF_STORE.replace(STORE_NAME, storeName),
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${token}`
+                }
+            }
+        );
+        const data = await response.json();
+        setBikes(data);
+    };
+
 
     // Function to post changes to the store
     const postChanges = () => {
@@ -76,10 +97,6 @@ const StoreConfigManager = () => {
                 console.error(ERR_UPDATING_STORE, error);
             });
     }
-
-    useEffect(() => {
-        fetchStore();
-    }, []);
 
     // Handler for address change
     const handleAddressChange = (value) => {
@@ -118,7 +135,7 @@ const StoreConfigManager = () => {
                 <StoreOpeningTimesConfig />
 
                 {/* Displaying list of bikes of the store */}
-                {/* <BikeList /> */}
+                <BikeList bikes={bikes} />
 
                 <div className='button-container'>
                     <button type='button' className='button regulal' onClick={handleCancelClick}>{t('cancel')}</button>

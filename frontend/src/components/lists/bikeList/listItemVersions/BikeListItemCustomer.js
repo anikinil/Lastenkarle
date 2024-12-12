@@ -21,7 +21,6 @@ const BikeListItemCustomer = ({ bike }) => {
     }
 
     const handleStoreClick = e => {
-        // JAN wait til store name can bes used
         navigate(STORE_DISPLAY.replace(ID, bike.store))
         e.stopPropagation()
     }

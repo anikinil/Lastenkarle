@@ -22,6 +22,8 @@ import { DELETE_STORE } from "../../../constants/URIs/AdminURIs";
 import { ID } from "../../../constants/URIs/General";
 import { STORE_PAGE_BY_STORE_NAME } from "../../../constants/URIs/AdminURIs";
 import ConfirmationPopup from '../../../components/confirmationDialog/ConfirmationPopup';
+import { BIKES_OF_STORE } from "../../../constants/URIs/ManagerURIs";
+import BikeList from "../../../components/lists/bikeList/BikeList";
 
 // TODO make sure, storeName is passed to this component as parameter
 
@@ -38,6 +40,7 @@ const StoreConfigAdmin = () => {
 
     // State to hold store data
     const [store, setStore] = useState();
+    const [bikes, setBikes] = useState([]);
 
     const token = getCookie('token');
 
@@ -54,11 +57,25 @@ const StoreConfigAdmin = () => {
             .then(response => response.json())
             .then(data => {
                 setStore(data);
+                fetchBikes();
             })
             .catch(error => {
                 console.error(ERR_FETCHING_STORE, error);
             });
     }
+
+    const fetchBikes = async () => {
+        const response = await fetch(BIKES_OF_STORE.replace(STORE_NAME, storeName),
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${token}`
+                }
+            }
+        );
+        const data = await response.json();
+        setBikes(data);
+    };
 
     // Function to post changes to the store
     const postChanges = () => {
@@ -159,8 +176,9 @@ const StoreConfigAdmin = () => {
                 {/* Configuring store opening times */}
                 <StoreOpeningTimesConfig />
 
+                <h2>{t('bikes')}</h2>
                 {/* Displaying list of bikes of the store */}
-                {/* <BikeList /> */}
+                <BikeList bikes={bikes} />
 
                 <div className='button-container'>
                     <button type='button' className='button regulal' onClick={handleCancelClick}>{t('cancel')}</button>
