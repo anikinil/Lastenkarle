@@ -5,8 +5,8 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { getCookie } from '../../../services/Cookies';
-import StoreList from '../../../components/lists/storeList/StoreList';
 import { ALL_STORES } from '../../../constants/URIs/AdminURIs';
+import StoreListAdmin from '../../../components/lists/storeList/listVersions/StoreListAdmin';
 
 const AllStoresPage = () => {
     const { t } = useTranslation(); // Hook for translation
@@ -37,7 +37,7 @@ const AllStoresPage = () => {
             <h1>{t('stores')}</h1>
 
             {/* Component displaying the list of stores */}
-            <StoreList stores={stores}/>
+            <StoreListAdmin stores={stores}/>
         </>
     );
 };

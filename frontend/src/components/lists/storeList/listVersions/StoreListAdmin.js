@@ -1,12 +1,12 @@
 // Import necessary libraries and components
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { FaSortAlphaDown, FaSortAlphaUp } from 'react-icons/fa';
-import StoreListItem from '../../../components/lists/storeList/StoreListItem';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { STORE_REGISTRATION } from '../../../constants/URLs/Navigation';
+import StoreListItemAdmin from '../listItemVersions/StoreListItemAdmin';
+import { STORE_REGISTRATION } from '../../../../constants/URLs/Navigation';
 
-const StoreList = ({ stores }) => {
+const StoreListAdmin = ({ stores }) => {
     // Initialize translation and navigation hooks
     const { t } = useTranslation();
     const navigate = useNavigate();
@@ -41,13 +41,17 @@ const StoreList = ({ stores }) => {
             </div>
 
             {/* List of stores */}
-            <ul className='list'>
-                {stores.map((store) => (
-                    <StoreListItem store={store} key={store.id} />
-                ))}
-            </ul>
+            {stores.length === 0 ? (
+                <p>{t('no_stores_registered')}</p>
+            ) : 
+                <ul className='list'>
+                    {stores.map((store) => (
+                        <StoreListItemAdmin store={store} key={store.id} />
+                    ))}
+                </ul>
+            }
         </>
     );
 };
 
-export default StoreList;
+export default StoreListAdmin;

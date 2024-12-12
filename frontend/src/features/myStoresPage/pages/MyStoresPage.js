@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getCookie } from '../../../services/Cookies';
 import { MY_STORES } from '../../../constants/URIs/ManagerURIs';
-import StoreList from '../../../components/lists/storeList/StoreList';
+import StoreListManager from '../../../components/lists/storeList/listVersions/StoreListManager';
 
 const MyStoresPage = () => {
     const { t } = useTranslation(); // Hook for translation
@@ -35,7 +35,7 @@ const MyStoresPage = () => {
             <h1>{t('my_stores')}</h1>
 
             {/* Component displaying the list of stores */}
-            <StoreList stores={stores}/>
+            <StoreListManager stores={stores}/>
         </>
     );
 };
