@@ -899,3 +899,22 @@ class Test_admin_delete_equipment_from_bike(APITestCase):
             url=self.assign_values_to_placeholder(self.url_template, self.random_number_not_in_id_set('Bike')),
             data=self.equipment_data_gunde)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+class Test_admin_get_all_bikes_of_store(APITestCase):
+    def setUp(self):
+        super().setUp(url='/api/admin/v1/stores/{}/bikes', http_method='GET')
+
+    def test_manager_get_all_bikes_functionality(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_administrator_caro_token)
+        response = self.make_request(url=self.assign_values_to_placeholder(self.url_template, self.store_ikae.name))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_manager_get_all_bikes_integrity(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_administrator_caro_token)
+        self.validate_integrity_list(BikeSerializer(Bike.objects.all(), many=True).data, self.assign_values_to_placeholder(self.url_template, self.store_ikae.name))
+
+    def test_manager_get_all_bikes_unauthorized(self):
+        self.invalid_permissions(path=self.assign_values_to_placeholder(self.url_template, self.store_ikae.name), user_token=self.user_customer_taylor_token)
+        self.invalid_permissions(path=self.assign_values_to_placeholder(self.url_template, self.store_ikae.name), user_token=self.user_customer_wildegard_token)
+        self.invalid_permissions(path=self.assign_values_to_placeholder(self.url_template, self.store_ikae.name), user_token=self.user_manager_store_koeri_token)

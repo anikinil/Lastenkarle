@@ -22,5 +22,6 @@ urlpatterns = [
     path('stores', views.AllStores.as_view()),
     path('stores/<str:store_name>', views.SelectedStore.as_view()),
     path('stores/<str:store_name>/update', views.UpdateSelectedStore.as_view()),
-    path('stores/<str:store_name>/availability', views.AvailabilityOfBikesFromStore.as_view())
+    path('stores/<str:store_name>/availability', views.AvailabilityOfBikesFromStore.as_view()),
+    path('stores/<str:store_name>/bikes', views.BikesOfStore.as_view())
 ]
