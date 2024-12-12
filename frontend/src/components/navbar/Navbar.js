@@ -41,12 +41,13 @@ const Navbar = () => {
                     }
                 ]
             },
-            {
+            ...storeItems.length > 0 ?
+            [{
                 title: t('my_stores'),
                 url: MY_STORES,
                 roles: [Roles.MANAGER, Roles.ADMINISTRATOR],
                 submenu: storeItems
-            },
+            }] : [],
             {
                 title: t('admin_activities'),
                 roles: [Roles.ADMINISTRATOR],
