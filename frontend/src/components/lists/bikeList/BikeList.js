@@ -23,21 +23,23 @@ const BikeList = ({ bikes }) => {
 
     return (
         <>
-            <div className='list-button-container'>
-                <button type='button' className='sort-button' onClick={handleSortClick}>
-                    {sortAZ ? <FaSortAlphaUp /> : <FaSortAlphaDown />}
-                </button>
-            </div>
-
             {/* List of bikes */}
             {bikes.length === 0 ? (
                 <p>{t('no_bikes_registered')}</p>
             ) :
-                <ul className='list'>
-                    {bikes.map((bike) => (
-                        <BikeListItem bike={bike} key={bike.id} />
-                    ))}
-                </ul>
+                <>
+                    <div className='list-button-container'>
+                        <button type='button' className='sort-button' onClick={handleSortClick}>
+                            {sortAZ ? <FaSortAlphaUp /> : <FaSortAlphaDown />}
+                        </button>
+                    </div>
+
+                    <ul className='list'>
+                        {bikes.map((bike) => (
+                            <BikeListItem bike={bike} key={bike.id} />
+                        ))}
+                    </ul>
+                </>
             }
         </>
     );

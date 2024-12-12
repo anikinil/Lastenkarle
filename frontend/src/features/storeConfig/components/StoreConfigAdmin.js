@@ -18,11 +18,10 @@ import { SUCCESS_UPDATING_STORE } from "../../../constants/SuccessMessages";
 import { BIKE_REGISTRATION } from "../../../constants/URLs/Navigation";
 import { STORE_NAME } from "../../../constants/URLs/General";
 import { getCookie } from "../../../services/Cookies";
-import { DELETE_STORE } from "../../../constants/URIs/AdminURIs";
+import { BIKES_OF_STORE, DELETE_STORE } from "../../../constants/URIs/AdminURIs";
 import { ID } from "../../../constants/URIs/General";
 import { STORE_PAGE_BY_STORE_NAME } from "../../../constants/URIs/AdminURIs";
 import ConfirmationPopup from '../../../components/confirmationDialog/ConfirmationPopup';
-import { BIKES_OF_STORE } from "../../../constants/URIs/ManagerURIs";
 import BikeList from "../../../components/lists/bikeList/BikeList";
 
 // TODO make sure, storeName is passed to this component as parameter

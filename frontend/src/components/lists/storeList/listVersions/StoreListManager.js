@@ -24,22 +24,23 @@ const StoreListManager = ({ stores }) => {
 
     return (
         <>
-            {/* Buttons for sorting and adding new store */}
-            <div className='list-button-container'>
-                <button type='button' className='sort-button' onClick={handleSortClick}>
-                    {sortAZ ? <FaSortAlphaUp /> : <FaSortAlphaDown />}
-                </button>
-            </div>
-
-            {/* List of stores */}
             {stores.length === 0 ? (
                 <p>{t('no_stores_registered')}</p>
-            ) : 
-                <ul className='list'>
-                    {stores.map((store) => (
-                        <StoreListItemManager store={store} key={store.id} />
-                    ))}
-                </ul>
+
+            ) :
+                <>
+                    {/* Buttons for sorting and adding new store */}
+                    < div className='list-button-container'>
+                        <button type='button' className='sort-button' onClick={handleSortClick}>
+                            {sortAZ ? <FaSortAlphaUp /> : <FaSortAlphaDown />}
+                        </button>
+                    </div >
+                    <ul className='list'>
+                        {stores.map((store) => (
+                            <StoreListItemManager store={store} key={store.id} />
+                        ))}
+                    </ul>
+                </>
             }
         </>
     );
