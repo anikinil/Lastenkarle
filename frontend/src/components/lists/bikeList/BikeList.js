@@ -29,11 +29,16 @@ const BikeList = ({ bikes }) => {
                 </button>
             </div>
 
-            <ul className='list'>
-                {bikes.map((bike) => (
-                    <BikeListItem bike={bike} key={bike.id} />
-                ))}
-            </ul>
+            {/* List of bikes */}
+            {bikes.length === 0 ? (
+                <p>{t('no_bikes_registered')}</p>
+            ) :
+                <ul className='list'>
+                    {bikes.map((bike) => (
+                        <BikeListItem bike={bike} key={bike.id} />
+                    ))}
+                </ul>
+            }
         </>
     );
 };
