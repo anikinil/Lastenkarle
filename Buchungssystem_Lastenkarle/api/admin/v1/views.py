@@ -318,3 +318,11 @@ class BanUser(APIView):
         send_banned_mail_to_user(User.objects.get(contact_data=request.data.get('contact_data')))
         return Response(status=status.HTTP_200_OK)
 
+
+class BikesOfStore(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated & IsSuperUser & IsVerfied]
+
+    def get(self, request, store_name):
+        serializer = BikeSerializer(Bike.objects.filter(store=Store.objects.get(name=store_name)), many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
