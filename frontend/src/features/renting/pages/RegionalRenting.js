@@ -5,9 +5,9 @@ import { useParams } from 'react-router-dom';
 import Map from '../components/Map';
 import FilterForAvailabilities from '../components/FilterForAvailabilities';
 import AvailabilityCalendar from '../components/calendar/AvailabilityCalendar';
-import BikeList from '../../../components/lists/bikeList/BikeList';
 import { ALL_BIKES, ALL_STORES } from '../../../constants/URIs/RentingURIs';
 import { ERR_FETCHING_BIKES, ERR_FETCHING_DATA, ERR_FETCHING_STORES } from '../../../constants/ErrorMessages';
+import BikeListCustomer from '../../../components/lists/bikeList/listVersions/BikeListCustomer';
 //Standard page for a specific region
 //TODO: Add Map of region with station markers
 //TODO: Add Filter Bar for Availabilities
@@ -76,7 +76,7 @@ const RegionalRenting = () => {
             {/* <FilterForAvailabilities /> */}
             {/* <AvailabilityCalendar /> */}
             
-            <BikeList bikes={bikesInRegion} />
+            <BikeListCustomer bikes={bikesInRegion} />
         </>
 
     );

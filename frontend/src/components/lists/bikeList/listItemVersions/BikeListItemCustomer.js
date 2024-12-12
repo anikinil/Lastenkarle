@@ -10,6 +10,8 @@ import { BIKE_CONFIG, STORE_DISPLAY } from '../../../../constants/URLs/Navigatio
 
 const BikeListItemCustomer = ({ bike }) => {
 
+    // THINK maybe show big preview of bike image on clik on miniature preview
+
     const { t } = useTranslation();
 
     const navigate = useNavigate();

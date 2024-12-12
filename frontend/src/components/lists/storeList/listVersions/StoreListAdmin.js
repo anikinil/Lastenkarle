@@ -32,8 +32,14 @@ const StoreListAdmin = ({ stores }) => {
 
     return (
         <>
+
             {stores.length === 0 ? (
-                <p>{t('no_stores_registered')}</p>
+                <>
+                    < div className='list-button-container'>
+                        <button type='button' className='new-store-button' onClick={handleNewStoreClick}>{t('add_new_store')}</button>
+                    </div >
+                    <p>{t('no_stores_registered')}</p>
+                </>
             ) :
                 <>
                     {/* Buttons for sorting and adding new store */}

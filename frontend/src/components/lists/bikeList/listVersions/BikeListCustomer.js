@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import BikeListItem from './BikeListItem';
-import '../List.css'
+import '../../List.css'
 import { FaSortAlphaDown, FaSortAlphaUp } from 'react-icons/fa';
+import BikeListItemCustomer from '../listItemVersions/BikeListItemCustomer';
 
 // displays a sortable list of provided bikes for all roles
-const BikeList = ({ bikes }) => {
+const BikeListCustomer = ({ bikes }) => {
 
     const { t } = useTranslation();
 
@@ -25,7 +25,9 @@ const BikeList = ({ bikes }) => {
         <>
             {/* List of bikes */}
             {bikes.length === 0 ? (
-                <p>{t('no_bikes_registered')}</p>
+                <>
+                    <p>{t('no_bikes_registered')}</p>
+                </>
             ) :
                 <>
                     <div className='list-button-container'>
@@ -36,7 +38,7 @@ const BikeList = ({ bikes }) => {
 
                     <ul className='list'>
                         {bikes.map((bike) => (
-                            <BikeListItem bike={bike} key={bike.id} />
+                            <BikeListItemCustomer bike={bike} key={bike.id} />
                         ))}
                     </ul>
                 </>
@@ -45,4 +47,4 @@ const BikeList = ({ bikes }) => {
     );
 };
 
-export default BikeList;
+export default BikeListCustomer;

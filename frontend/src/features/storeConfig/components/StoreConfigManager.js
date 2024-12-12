@@ -19,7 +19,7 @@ import { BIKE_REGISTRATION } from "../../../constants/URLs/Navigation";
 import { STORE_NAME } from "../../../constants/URLs/General";
 import { getCookie } from "../../../services/Cookies";
 import StoreOpeningTimesConfig from "../../../components/openingTimesConfig/StoreOpeningTimesConfig";
-import BikeList from "../../../components/lists/bikeList/BikeList";
+import BikeListManager from "../../../components/lists/bikeList/listVersions/BikeListManager";
 
 // TODO make sure, storeName is passed to this component as parameter
 
@@ -134,7 +134,7 @@ const StoreConfigManager = () => {
                 <StoreOpeningTimesConfig />
 
                 {/* Displaying list of bikes of the store */}
-                <BikeList bikes={bikes} />
+                <BikeListManager bikes={bikes} />
 
                 <div className='button-container'>
                     <button type='button' className='button regulal' onClick={handleCancelClick}>{t('cancel')}</button>

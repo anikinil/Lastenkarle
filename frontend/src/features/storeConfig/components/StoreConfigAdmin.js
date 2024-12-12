@@ -22,7 +22,7 @@ import { BIKES_OF_STORE, DELETE_STORE } from "../../../constants/URIs/AdminURIs"
 import { ID } from "../../../constants/URIs/General";
 import { STORE_PAGE_BY_STORE_NAME } from "../../../constants/URIs/AdminURIs";
 import ConfirmationPopup from '../../../components/confirmationDialog/ConfirmationPopup';
-import BikeList from "../../../components/lists/bikeList/BikeList";
+import BikeListManager from "../../../components/lists/bikeList/listVersions/BikeListManager";
 
 // TODO make sure, storeName is passed to this component as parameter
 
@@ -176,7 +176,7 @@ const StoreConfigAdmin = () => {
 
                 <h2>{t('bikes')}</h2>
                 {/* Displaying list of bikes of the store */}
-                <BikeList bikes={bikes} />
+                <BikeListManager bikes={bikes} />
 
                 <div className='button-container'>
                     <button type='button' className='button regulal' onClick={handleCancelClick}>{t('cancel')}</button>
