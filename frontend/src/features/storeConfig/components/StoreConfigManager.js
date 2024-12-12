@@ -120,7 +120,7 @@ const StoreConfigManager = () => {
         // not sure why this is not working withouth the condition
         <> {store ?
             <>
-                <h1>{t('manager_view')} {store.name}</h1>
+                <h1>{t('manager_view')}: {store.name}</h1>
 
                 {/* Displaying store picture and description */}
                 <PictureAndDescriptionField

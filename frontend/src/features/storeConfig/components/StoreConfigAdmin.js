@@ -161,7 +161,7 @@ const StoreConfigAdmin = () => {
         // not sure why this is not working withouth the condition
         <> {store ?
             <>
-                <h1>{t('admin_view')} {store.name}</h1>
+                <h1>{t('admin_view')}: {store.name}</h1>
 
                 {/* Displaying store picture and description */}
                 <PictureAndDescriptionField
