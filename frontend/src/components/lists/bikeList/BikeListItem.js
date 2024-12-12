@@ -1,8 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { useNavigate } from 'react-router-dom';
-import { getCookie } from '../../../services/Cookies';
 import { AuthContext } from '../../../AuthProvider';
 
 import { Roles } from '../../../constants/Roles';
@@ -14,11 +12,7 @@ const BikeListItem = ({ bike }) => {
 
     const { t } = useTranslation();
 
-    const navigate = useNavigate();
-
     // THINK maybe show big preview of bike image on clik on miniature preview (aplies to all versions)
-
-    const token = getCookie('token');
 
     const { userRoles } = useContext(AuthContext);
 
