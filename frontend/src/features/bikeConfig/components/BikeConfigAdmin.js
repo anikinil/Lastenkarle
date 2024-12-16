@@ -134,8 +134,6 @@ const BikeConfigAdmin = () => {
         setShowConfirmationPopup(false)
     }
 
-    console.log(bike)
-
     return (
         <>
         {bike ?
