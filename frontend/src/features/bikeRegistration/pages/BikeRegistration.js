@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import './BikeRegistration.css'
@@ -6,8 +6,12 @@ import PictureAndDescriptionField from '../../../components/display/pictureAndDe
 import { useNavigate, useParams } from 'react-router-dom';
 import { ERR_POSTING_NEW_BIKE } from '../../../constants/ErrorMessages';
 import { getCookie } from '../../../services/Cookies';
-import { BIKES_OF_STORE, STORE_NAME } from '../../../constants/URIs/ManagerURIs';
+import { STORE_NAME } from '../../../constants/URIs/ManagerURIs';
+import { BIKES_OF_STORE as NEW_BIKE_URI_MANAGER } from '../../../constants/URIs/ManagerURIs';
+import { ADD_BIKE_TO_STORE as NEW_BIKE_URI_ADMIN } from '../../../constants/URIs/AdminURIs';
 import SingleLineTextField from '../../../components/display/SingleLineTextField';
+import { AuthContext } from '../../../AuthProvider';
+import { Roles } from '../../../constants/Roles';
 
 const BikeRegistration = () => {
     // Hook for translation
@@ -20,6 +24,8 @@ const BikeRegistration = () => {
 
     const token = getCookie('token') // Get authentication token
 
+    const { userRoles } = useContext(AuthContext);
+
     const [name, setName] = useState('');
     const [pictureFile, setPictureFile] = useState(null);
     const [description, setDescription] = useState('');
@@ -30,14 +36,15 @@ const BikeRegistration = () => {
         navigate(-1)
     }
 
-    // TODO check if user is manager or admin and adjust the URI accordingly
-
     const postNewBike = () => {
+        console.log(userRoles)
+        let uri = userRoles.includes(Roles.ADMINISTRATOR) ? NEW_BIKE_URI_ADMIN : NEW_BIKE_URI_MANAGER;
+        uri = uri.replace(STORE_NAME, storeName)
         const formData = new FormData();
         formData.append("name", name);
         formData.append("description", description);
         formData.append("image", pictureFile);
-        return fetch(BIKES_OF_STORE.replace(STORE_NAME, storeName), {
+        return fetch(uri, {
             method: 'POST',
             headers: {
                 'Authorization': `Token ${token}`
