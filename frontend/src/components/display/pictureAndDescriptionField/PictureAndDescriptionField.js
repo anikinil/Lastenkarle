@@ -27,7 +27,6 @@ const PictureAndDescriptionField = ({ editable, object, onPictureChange, onDescr
     };
 
     const handleDescriptionChange = (event) => {
-        console.log("###############", event.target.value); // TODO remove
         setDescription(event.target.value);
         onDescriptionChange(event.target.value);
     }
