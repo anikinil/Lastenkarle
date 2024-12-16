@@ -42,6 +42,7 @@ const BikeConfigAdmin = () => {
             .then(response => response.json())
             .then(data => {
                 setBike(data);
+                console.log(data);
             })
             .catch(error => {
                 console.error(ERR_FETCHING_BIKE, error);
@@ -55,7 +56,9 @@ const BikeConfigAdmin = () => {
     // function to post changes to the bike
     const postChanges = () => {
         let payload = {
-            name: name
+            name: name,
+            description: description,
+            image: pictureFile
         }
         fetch(UPDATE_BIKE.replace(ID, bike.id), {
             method: 'PATCH',
@@ -141,10 +144,10 @@ const BikeConfigAdmin = () => {
                 {/* Page title */}
                 <h1>{t('bike_config')}: {bike.name}</h1>
 
-                <SingleLineTextField title={t('name')} editable={true} onChange={handleNameChange} />
+                <SingleLineTextField title={t('name')} value={bike.name} editable={true} onChange={handleNameChange} />
 
                 {/* Picture and description field component */}
-                <PictureAndDescriptionField editable={true} onPictureChange={handlePictureChange} onDescriptionChange={handleDescriptionChange} />
+                <PictureAndDescriptionField editable={true} object={bike} onPictureChange={handlePictureChange} onDescriptionChange={handleDescriptionChange} />
 
                 {/* Button container */}
                 <div className='button-container'>

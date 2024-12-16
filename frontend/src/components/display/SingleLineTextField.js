@@ -1,5 +1,4 @@
-import React from 'react';
-import { useTranslation } from 'react-i18next';
+import React, { useState } from 'react';
 
 import './SingleLineTextField.css'
 
@@ -7,9 +6,10 @@ import './SingleLineTextField.css'
 // which can either be changed/entered (editable=true) or just viewed (editable=false)
 const SingleLineTextField = ({ editable, value, title, onChange}) => {
 
-    const { t } = useTranslation();
+    const [text, setText] = useState(value);
 
     const handleChange = (event) => {
+        setText(event.target.value);
         onChange(event.target.value);
     };
 
@@ -25,7 +25,7 @@ const SingleLineTextField = ({ editable, value, title, onChange}) => {
             title={title}
             className='text-field'
             rows='1'
-            value={value}
+            value={text}
             onChange={handleChange}
             onKeyDown={handleKeyDown}
             placeholder={title}

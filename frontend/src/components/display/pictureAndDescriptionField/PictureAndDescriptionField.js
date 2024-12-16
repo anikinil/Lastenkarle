@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import './PictureAndDescriptionField.css';
+import { HOST } from '../../../constants/URIs/General';
 
 const PictureAndDescriptionField = ({ editable, object, onPictureChange, onDescriptionChange }) => {
     const { t } = useTranslation();
@@ -26,6 +27,7 @@ const PictureAndDescriptionField = ({ editable, object, onPictureChange, onDescr
     };
 
     const handleDescriptionChange = (event) => {
+        console.log("###############", event.target.value); // TODO remove
         setDescription(event.target.value);
         onDescriptionChange(event.target.value);
     }
@@ -38,8 +40,7 @@ const PictureAndDescriptionField = ({ editable, object, onPictureChange, onDescr
                     onClick={handleImgContainerClick}
                 >
                     {pictureFile ? (
-                        // TODO imlpement proper image handling with respect to backend
-                        <img className="img" alt={t('image')} src={URL.createObjectURL(pictureFile)} />
+                        <img className="img" alt={t('image')} src={HOST + pictureFile} />
                     ) : editable ? (
                         <span className="img-container-label">{t('select_a_picture')}</span>
                     ) : (
@@ -60,7 +61,7 @@ const PictureAndDescriptionField = ({ editable, object, onPictureChange, onDescr
                 <textarea
                     title={t('write_description')}
                     className="description"
-                    value={object?.description}
+                    value={description}
                     onChange={handleDescriptionChange}
                     placeholder={editable ? t('write_description') : t('no_description')}
                     disabled={!editable}
