@@ -134,27 +134,32 @@ const BikeConfigAdmin = () => {
         setShowConfirmationPopup(false)
     }
 
+    console.log(bike)
+
     return (
         <>
-            {/* Page title */}
-            <h1>{t('bike_config')}: {bike.name}</h1>
+        {bike ?
+            <> 
+                {/* Page title */}
+                <h1>{t('bike_config')}: {bike.name}</h1>
 
-            <SingleLineTextField title={t('name')} editable={true} onChange={handleNameChange} />
+                <SingleLineTextField title={t('name')} editable={true} onChange={handleNameChange} />
 
-            {/* Picture and description field component */}
-            <PictureAndDescriptionField editable={true} onPictureChange={handlePictureChange} onDescriptionChange={handleDescriptionChange} />
+                {/* Picture and description field component */}
+                <PictureAndDescriptionField editable={true} onPictureChange={handlePictureChange} onDescriptionChange={handleDescriptionChange} />
 
-            {/* Button container */}
-            <div className='button-container'>
-                <button type='button' className='button' onClick={handleCancelClick}>{t('cancel')}</button>
-                <button type='button' className='button accent' onClick={handleConfirmClick}>{t('confirm')}</button>
-                <button type='button' className='button accent' onClick={handleDeleteClick}>{t('delete_bike')}</button>
-            </div>
+                {/* Button container */}
+                <div className='button-container'>
+                    <button type='button' className='button' onClick={handleCancelClick}>{t('cancel')}</button>
+                    <button type='button' className='button accent' onClick={handleConfirmClick}>{t('confirm')}</button>
+                    <button type='button' className='button accent' onClick={handleDeleteClick}>{t('delete_bike')}</button>
+                </div>
 
-            <ConfirmationPopup onConfirm={handlePopupConfirm} onCancel={handlePopupCancel} show={showConfirmationPopup}>
-                {t('are_you_sure_you_want_to_delete_bike') + ' ' + bike.name + '?'}
-            </ConfirmationPopup>
-
+                <ConfirmationPopup onConfirm={handlePopupConfirm} onCancel={handlePopupCancel} show={showConfirmationPopup}>
+                    {t('are_you_sure_you_want_to_delete_bike') + ' ' + bike.name + '?'}
+                </ConfirmationPopup>
+            </>
+            : null}
         </>
     );
 };
