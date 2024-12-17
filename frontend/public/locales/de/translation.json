@@ -145,5 +145,8 @@
     "cancel":                               "Abbrechen",
 
     "select_role":                          "Rolle auswählen",
-    "enroll":                               "Ernennen"
+    "enroll":                               "Ernennen",
+
+    "__Loading":                            "Loading.js",
+    "loading":                              "Lädt..."
 }

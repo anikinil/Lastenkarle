@@ -145,5 +145,8 @@
     "cancel":                               "Cancel",
 
     "select_role":                          "Select role",
-    "enroll":                               "Enroll"
+    "enroll":                               "Enroll",
+
+    "__Loading":                            "Loading.js",
+    "loading":                              "Loading..."
 }
