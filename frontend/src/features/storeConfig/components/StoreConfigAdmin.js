@@ -40,12 +40,6 @@ const StoreConfigAdmin = () => {
     // State to hold store data
     const [store, setStore] = useState();
     const [bikes, setBikes] = useState([]);
-
-    const [name, setName] = useState('');
-    const [image, setImage] = useState(null);
-    const [description, setDescription] = useState('');
-    
-    const [newAddress, setNewAddress] = useState('');
     
     const token = getCookie('token');
 
@@ -86,7 +80,7 @@ const StoreConfigAdmin = () => {
     // Function to post changes to the store
     const postChanges = () => {
         let payload = {
-            address: newAddress
+            // TODO add prep time and openning times
         }
         fetch(STORE_PAGE_BY_STORE_NAME.replace(STORE_NAME, storeName), {
             method: 'PATCH',
@@ -134,19 +128,6 @@ const StoreConfigAdmin = () => {
         fetchStore();
     }, []);
 
-    const handleImageChange = (value) => {
-        setImage(value)
-    }
-
-    const handleDescriptionChange = (value) => {
-        setDescription(value)
-    }
-
-    // Handler for address change
-    const handleAddressChange = (value) => {
-        setNewAddress(value);
-    }
-
     const handleCancelClick = () => {
         navigate(-1);
     }
@@ -177,18 +158,6 @@ const StoreConfigAdmin = () => {
         <> {store ?
             <>
                 <h1>{t('admin_view')}: {store.name}</h1>
-
-                {/* Displaying store image and description */}
-                <ImageAndDescriptionField
-                    editable={true}
-                    imageValue={store.image}
-                    descriptionValue={store.description}
-                    onImageChange={handleImageChange}
-                    onDescriptionChange={handleDescriptionChange}
-                />
-
-                {/* Single line text field for store address */}
-                <SingleLineTextField editable={true} value={store.address} title={'address'} onChange={handleAddressChange} />
 
                 {/* Configuring store opening times */}
                 <StoreOpeningTimesConfig />

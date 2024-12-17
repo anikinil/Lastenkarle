@@ -3,10 +3,11 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import DayRow from './DayRow';
+import TimePicker from 'react-time-picker';
 
 import './StoreOpeningTimesConfig.css'
 import 'react-time-picker/dist/TimePicker.css';
-// import 'react-clock/dist/Clock.css';
+import '../timePicker/TimePickerCustom.css';
 
 const StoreOpeningTimesConfig = () => {
     // Hook for translation
@@ -15,6 +16,7 @@ const StoreOpeningTimesConfig = () => {
     // Array of days of the week translated
     const daysOfWeek = [t('monday'), t('tuesday'), t('wednesday'), t('thursday'), t('friday'), t('saturday'), t('sunday')];
 
+    const [prepareTime, setPrepareTime] = useState('00:00');
     const [openingTimes, setOpeningTimes] = useState({
         monday: { open: false, from: '00:00', to: '00:00', closed: false, from: '00:00', to: '00:00' },
         tuesday: { open: false, from: '00:00', to: '00:00', closed: false, from: '00:00', to: '00:00' },
@@ -37,6 +39,20 @@ const StoreOpeningTimesConfig = () => {
             {/* Heading for the opening times section */}
             <h2>{t('opening_times')}</h2>
 
+            <div className='prepare-time-container'>
+                <span>{t('prepare_time')}</span>
+                <div>
+                    {/* Time picker for open from time */}
+                    <TimePicker
+                        className='time-picker'
+                        id={`prepare-time`}
+                        onChange={setPrepareTime}
+                        value={prepareTime}
+                        locale='de-de'
+                    />
+                </div>
+            </div>
+
             <div className='week-container'>
                 {/* Header row for the table */}
                 <div className='header'>
@@ -50,7 +66,7 @@ const StoreOpeningTimesConfig = () => {
                 </div>
                 {/* Render a DayRow component for each day of the week */}
                 {daysOfWeek.map((day) => (
-                    <DayRow key={day} day={day} onChange={handleDayChange}/>
+                    <DayRow key={day} day={day} onChange={handleDayChange} />
                 ))}
             </div>
         </>

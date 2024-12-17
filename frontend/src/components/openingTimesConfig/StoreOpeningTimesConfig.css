@@ -26,3 +26,8 @@
     padding: 10px 0;
     color: var(--label);
 }
+
+.prepare-time-container {
+    display: contents;
+    align-items: center;
+}
