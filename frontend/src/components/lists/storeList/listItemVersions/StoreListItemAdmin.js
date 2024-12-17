@@ -11,6 +11,7 @@ import { DELETE_STORE } from '../../../../constants/URIs/AdminURIs';
 import { ERR_DELETING_STORE } from '../../../../constants/ErrorMessages';
 import { getCookie } from '../../../../services/Cookies';
 import { useTranslation } from 'react-i18next';
+import { HOST } from '../../../../constants/URIs/General';
 
 const StoreListItemAdmin = ({ store }) => {
 
@@ -76,7 +77,7 @@ const StoreListItemAdmin = ({ store }) => {
                 <p className='list-item-label'>{store.address}</p>
                 <button type='button' className='list-item-button accent' onClick={handleDeleteClick}>{t('delete')}</button>
                 <div className='list-item-img-container'>
-                    <img className='list-item-img' alt={store.name} src={store.image ? store.image : defaultStoreImage}></img>
+                    <img className='list-item-img' alt={store.name} src={store.image ? HOST + store.image : defaultStoreImage}></img>
                 </div>
             </li>
 

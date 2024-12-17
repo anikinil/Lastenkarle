@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import defaultBikeImage from '../../../../assets/images/default_bike.png'
 
 import { useNavigate } from 'react-router-dom';
-import { ID } from '../../../../constants/URIs/General';
+import { HOST, ID } from '../../../../constants/URIs/General';
 import { ERR_DELETING_BIKE } from '../../../../constants/ErrorMessages';
 import { getCookie } from '../../../../services/Cookies'
 import ConfirmationPopup from '../../../confirmationDialog/ConfirmationPopup';
@@ -92,7 +92,7 @@ const BikeListItemManager = ({ bike }) => {
                 <button type='button' className='list-item-button accent' onClick={handleDeleteClick}>{t('delete')}</button>
 
                 <div className='list-item-img-container'>
-                    <img className='list-item-img' alt={bike.name} src={bike.image ? bike.image : defaultBikeImage}></img>
+                    <img className='list-item-img' alt={bike.name} src={bike.image ? HOST + bike.image : defaultBikeImage}></img>
                 </div>
             </li>
 

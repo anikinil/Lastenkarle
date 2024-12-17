@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import defaultBikeImage from '../../../../assets/images/default_bike.png'
 
 import { useNavigate } from 'react-router-dom';
-import { ID } from '../../../../constants/URIs/General';
+import { HOST, ID } from '../../../../constants/URIs/General';
 import { getCookie } from '../../../../services/Cookies'
 import { BIKE_CONFIG, STORE_DISPLAY } from '../../../../constants/URLs/Navigation';
 
@@ -38,7 +38,7 @@ const BikeListItemCustomer = ({ bike }) => {
                 <button type='button' className='list-item-button regular' onClick={handleStoreClick}>{t('store')}</button>
 
                 <div className='list-item-img-container'>
-                    <img className='list-item-img' alt={bike.name} src={bike.image ? bike.image : defaultBikeImage}></img>
+                    <img className='list-item-img' alt={bike.name} src={bike.image ? HOST + bike.image : defaultBikeImage}></img>
                 </div>
             </li>
         </>
