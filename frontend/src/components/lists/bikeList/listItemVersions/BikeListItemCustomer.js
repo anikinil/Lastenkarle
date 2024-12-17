@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import defaultBikePicture from '../../../../assets/images/default_bike.png'
+import defaultBikeImage from '../../../../assets/images/default_bike.png'
 
 import { useNavigate } from 'react-router-dom';
 import { ID } from '../../../../constants/URIs/General';
@@ -38,7 +38,7 @@ const BikeListItemCustomer = ({ bike }) => {
                 <button type='button' className='list-item-button regular' onClick={handleStoreClick}>{t('store')}</button>
 
                 <div className='list-item-img-container'>
-                    <img className='list-item-img' alt={bike.name} src={bike.image ? bike.image : defaultBikePicture}></img>
+                    <img className='list-item-img' alt={bike.name} src={bike.image ? bike.image : defaultBikeImage}></img>
                 </div>
             </li>
         </>

@@ -3,7 +3,7 @@ import React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import defaultBikePicture from '../../../assets/images/default_bike.png'
+import defaultBikeImage from '../../../assets/images/default_bike.png'
 import { useNavigate } from 'react-router-dom';
 
 const BookingListItem = ({ booking }) => {
@@ -50,7 +50,7 @@ const BookingListItem = ({ booking }) => {
             <button type='button' className='list-item-button regular' onClick={handleUserClick}>{booking.user.name}</button>
 
             <div className='list-item-img-container'>
-                <img className='list-item-img' alt={booking.bike.name} src={booking.bike.image ? booking.bike.image : defaultBikePicture}></img>
+                <img className='list-item-img' alt={booking.bike.name} src={booking.bike.image ? booking.bike.image : defaultBikeImage}></img>
             </div>
         </li>
     );

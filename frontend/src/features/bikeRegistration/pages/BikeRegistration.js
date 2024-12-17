@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import './BikeRegistration.css'
-import PictureAndDescriptionField from '../../../components/display/pictureAndDescriptionField/PictureAndDescriptionField';
+import ImageAndDescriptionField from '../../../components/display/imageAndDescriptionField/ImageAndDescriptionField';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ERR_POSTING_NEW_BIKE } from '../../../constants/ErrorMessages';
 import { getCookie } from '../../../services/Cookies';
@@ -27,7 +27,7 @@ const BikeRegistration = () => {
     const { userRoles } = useContext(AuthContext);
 
     const [name, setName] = useState('');
-    const [pictureFile, setPictureFile] = useState(null);
+    const [imageFile, setImageFile] = useState(null);
     const [description, setDescription] = useState('');
 
     // Handler for cancel button click
@@ -43,7 +43,7 @@ const BikeRegistration = () => {
         const formData = new FormData();
         formData.append("name", name);
         formData.append("description", description);
-        formData.append("image", pictureFile);
+        formData.append("image", imageFile);
         return fetch(uri, {
             method: 'POST',
             headers: {
@@ -70,8 +70,8 @@ const BikeRegistration = () => {
         setName(value)
     }
 
-    const handlePictureChange = (value) => {
-        setPictureFile(value)
+    const handleImageChange = (value) => {
+        setImageFile(value)
     }
 
     const handleDescriptionChange = (value) => {
@@ -90,8 +90,8 @@ const BikeRegistration = () => {
 
             <SingleLineTextField title={t('name')} editable={true} onChange={handleNameChange} />
 
-            {/* Picture and description field component */}
-            <PictureAndDescriptionField editable={true} onPictureChange={handlePictureChange} onDescriptionChange={handleDescriptionChange}/>
+            {/* Image and description field component */}
+            <ImageAndDescriptionField editable={true} onImageChange={handleImageChange} onDescriptionChange={handleDescriptionChange}/>
 
             {/* Button container */}
             <div className='button-container'>

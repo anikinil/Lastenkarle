@@ -1,10 +1,10 @@
 // Page of a singular store
 // TODO: Add List of bikes belonging to store
-// Consists of Name, Picture, Description and Information
+// Consists of Name, Image, Description and Information
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import PictureAndDescriptionField from '../../../components/display/pictureAndDescriptionField/PictureAndDescriptionField';
+import ImageAndDescriptionField from '../../../components/display/imageAndDescriptionField/ImageAndDescriptionField';
 import { useParams } from 'react-router-dom';
 import SingleLineTextField from '../../../components/display/SingleLineTextField';
 import { ERR_FETCHING_STORE } from '../../../constants/ErrorMessages';
@@ -46,7 +46,7 @@ const StoreDisplay = () => {
         <>
             <h1>{store?.name}</h1> {/* Display store name */}
 
-            <PictureAndDescriptionField editable={false} object={store} /> {/* Display picture and description */}
+            <ImageAndDescriptionField editable={false} object={store} /> {/* Display image and description */}
             <SingleLineTextField editable={false} value={store?.address} /> {/* Display store address */}
 
             {/* TODO add enrollment component for managers to enroll other managers to this particular store */}

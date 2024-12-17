@@ -1,24 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import './PictureAndDescriptionField.css';
+import './ImageAndDescriptionField.css';
 import { HOST } from '../../../constants/URIs/General';
 
-const PictureAndDescriptionField = ({ editable, object, onPictureChange, onDescriptionChange }) => {
+const ImageAndDescriptionField = ({ editable, object, onImageChange, onDescriptionChange }) => {
     const { t } = useTranslation();
 
-    const [pictureFile, setPictureFile] = useState(object?.image);
+    const [image, setImageFile] = useState(object?.image);
     const [description, setDescription] = useState(object?.description);
 
-    function handlePictureFileChange(event) {
+    function handleImageFileChange(event) {
         const file = event.target.files[0];
         // THINK if duplication is the best way to handle this
-        setPictureFile(file);
-        onPictureChange(file);
+        setImageFile(file);
+        onImageChange(file);
     }
 
     const handleImgContainerClick = () => {
-        document.getElementById('pictureFileInput').click();
+        document.getElementById('imageInput').click();
     };
 
     const handleDescriptionChange = (event) => {
@@ -33,21 +33,21 @@ const PictureAndDescriptionField = ({ editable, object, onPictureChange, onDescr
                     className={`img-container ${editable ? '' : 'disabled'}`}
                     onClick={handleImgContainerClick}
                 >
-                    {pictureFile ? (
-                        <img className="img" alt={t('image')} src={HOST + pictureFile} />
+                    {image ? (
+                        <img className="img" alt={t('image')} src={HOST + image} />
                     ) : editable ? (
-                        <span className="img-container-label">{t('select_a_picture')}</span>
+                        <span className="img-container-label">{t('select_an_imagee')}</span>
                     ) : (
-                        <span className="img-container-label">{t('no_picture')}</span>
+                        <span className="img-container-label">{t('no_image')}</span>
                     )}
                 </div>
 
                 <input
-                    id="pictureFileInput"
+                    id="imageInput"
                     type="file"
                     title={t('image-selection')}
                     accept="image/*"
-                    onChange={handlePictureFileChange}
+                    onChange={handleImageFileChange}
                     style={{ display: 'none' }}
                     disabled={!editable}
                 />
@@ -65,4 +65,4 @@ const PictureAndDescriptionField = ({ editable, object, onPictureChange, onDescr
     );
 };
 
-export default PictureAndDescriptionField;
+export default ImageAndDescriptionField;

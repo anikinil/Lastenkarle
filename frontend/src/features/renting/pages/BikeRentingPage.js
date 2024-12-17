@@ -1,10 +1,10 @@
 // Page of singular Bike
-// Consists of a Name, Picture, Description and Information about the store it belongs to
+// Consists of a Name, Image, Description and Information about the store it belongs to
 // Also has BikeCalendar which is component to make a reservation
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
-import PictureAndDescriptionField from '../../../components/display/pictureAndDescriptionField/PictureAndDescriptionField';
+import ImageAndDescriptionField from '../../../components/display/imageAndDescriptionField/ImageAndDescriptionField';
 import SingleLineTextField from '../../../components/display/SingleLineTextField';
 import BikeCalendar from '../components/calendar/BikeCalendar';
 import { ID } from '../../../constants/URIs/General';
@@ -14,7 +14,7 @@ import { getCookie } from '../../../services/Cookies';
 import { STORE_DISPLAY } from '../../../constants/URLs/Navigation';
 
 //Standard page for a Bike
-//TODO: organize Pictures
+//TODO: organize Images
 //TODO: Add bike description
 //TODO: Add Store information
 //TODO: Add calandar as availability overview
@@ -81,8 +81,8 @@ const BikeRentingPage = () => {
         <>
             <h1>{bike?.name}</h1> {/* Display bike name */}
 
-            {/* Display bike picture and description */}
-            <PictureAndDescriptionField editable={false} object={bike} />
+            {/* Display bike image and description */}
+            <ImageAndDescriptionField editable={false} object={bike} />
              {/* Display store address */}
             <SingleLineTextField editable={false} value={store?.address} title='address' />
 

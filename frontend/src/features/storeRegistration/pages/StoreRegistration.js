@@ -6,7 +6,7 @@ import './StoreRegistration.css'
 
 import 'react-time-picker/dist/TimePicker.css';
 
-import PictureAndDescriptionField from '../../../components/display/pictureAndDescriptionField/PictureAndDescriptionField';
+import ImageAndDescriptionField from '../../../components/display/imageAndDescriptionField/ImageAndDescriptionField';
 import SingleLineTextField from '../../../components/display/SingleLineTextField';
 import { useNavigate } from 'react-router-dom';
 import { CREATE_STORE } from '../../../constants/URIs/AdminURIs';
@@ -112,7 +112,7 @@ const StoreRegistration = () => {
     return (
         <>
             <h1>{t('new_store')}</h1>
-            {/* <PictureAndDescriptionField editable={true} onDescriptionChange={}/> */}
+            {/* <ImageAndDescriptionField editable={true} onDescriptionChange={}/> */}
 
             <p>{t('select_region')}</p>
             <select title='regions' className='select' onChange={handleRegionChange}>

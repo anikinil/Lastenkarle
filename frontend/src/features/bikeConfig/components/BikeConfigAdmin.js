@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import PictureAndDescriptionField from '../../../components/display/pictureAndDescriptionField/PictureAndDescriptionField';
+import ImageAndDescriptionField from '../../../components/display/imageAndDescriptionField/ImageAndDescriptionField';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ERR_DELETING_BIKE, ERR_FETCHING_BIKE, ERR_UPDATING_BIKE } from '../../../constants/ErrorMessages';
 import { getCookie } from '../../../services/Cookies';
@@ -63,9 +63,9 @@ const BikeConfigAdmin = () => {
         if (description !== bike.description) { // if the description has changed
             formData.append("description", description); // append the new description
         }
-        if (image !== bike.image) { // if the picture has changed
-            formData.append("image", image); // append the new picture
-        } // else: do not append anything, the picture remains the same
+        if (image !== bike.image) { // if the image has changed
+            formData.append("image", image); // append the new image
+        } // else: do not append anything, the image remains the same
 
         fetch(UPDATE_BIKE.replace(ID, bike.id), {
             method: 'PATCH',
@@ -159,7 +159,7 @@ const BikeConfigAdmin = () => {
                     <SingleLineTextField title={t('name')} value={bike.name} editable={true} onChange={handleNameChange} />
 
                     {/* Image and description field component */}
-                    <PictureAndDescriptionField editable={true} object={bike} onPictureChange={handleImageChange} onDescriptionChange={handleDescriptionChange} />
+                    <ImageAndDescriptionField editable={true} object={bike} onImageChange={handleImageChange} onDescriptionChange={handleDescriptionChange} />
 
                     {/* Button container */}
                     <div className='button-container'>

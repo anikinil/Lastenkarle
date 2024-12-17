@@ -2,7 +2,7 @@
 import React, { useEffect } from "react";
 
 // Importing components for display and configuration
-import PictureAndDescriptionField from "../../../components/display/pictureAndDescriptionField/PictureAndDescriptionField";
+import ImageAndDescriptionField from "../../../components/display/imageAndDescriptionField/ImageAndDescriptionField";
 import StoreOpeningTimesConfig from "../../../components/openingTimesConfig/StoreOpeningTimesConfig";
 
 // Importing hooks for routing and translation
@@ -163,8 +163,8 @@ const StoreConfigAdmin = () => {
             <>
                 <h1>{t('admin_view')}: {store.name}</h1>
 
-                {/* Displaying store picture and description */}
-                <PictureAndDescriptionField
+                {/* Displaying store image and description */}
+                <ImageAndDescriptionField
                     image={store.image}
                     description={store.description}
                 />

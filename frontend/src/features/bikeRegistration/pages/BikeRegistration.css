@@ -2,12 +2,12 @@
     margin-bottom: 1rem;
 }
 
-.picture {
+.image {
     /* float: left; */
     color: var(--button-foreground);
 }
 
-.picture:hover {
+.image:hover {
     color: var(--button-foreground-focus);
     border-color: var(--button-border-focus);
 }
