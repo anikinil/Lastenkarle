@@ -27,9 +27,8 @@ const BikeConfigAdmin = () => {
     const [bike, setBike] = useState();
 
     const [name, setName] = useState('');
-    const [pictureFile, setPictureFile] = useState(null);
+    const [image, setImage] = useState(null);
     const [description, setDescription] = useState('');
-
 
     // fetches bike data
     const fetchBike = () => {
@@ -40,9 +39,11 @@ const BikeConfigAdmin = () => {
             }
         })
             .then(response => response.json())
-            .then(data => {
-                setBike(data);
-                console.log(data);
+            .then(bike => {
+                setBike(bike);
+                setName(bike.name);
+                setImage(bike.image);
+                setDescription(bike.description);
             })
             .catch(error => {
                 console.error(ERR_FETCHING_BIKE, error);
@@ -55,22 +56,33 @@ const BikeConfigAdmin = () => {
 
     // function to post changes to the bike
     const postChanges = () => {
-        let payload = {
-            name: name,
-            description: description,
-            image: pictureFile
+        const formData = new FormData();
+        if (name !== bike.name) { // if the name has changed
+            formData.append("name", name); // append the new name
         }
+        if (description !== bike.description) { // if the description has changed
+            formData.append("description", description); // append the new description
+        }
+        if (image !== bike.image) { // if the picture has changed
+            formData.append("image", image); // append the new picture
+        } // else: do not append anything, the picture remains the same
+
         fetch(UPDATE_BIKE.replace(ID, bike.id), {
             method: 'PATCH',
             headers: {
-                'Content-Type': 'application/json',
                 'Authorization': `Token ${token}`
             },
-            body: JSON.stringify(payload)
+            body: formData
         })
-            .then(response => response.json())
-            .then(data => {
-                console.log(SUCCESS_UPDATING_BIKE, data);
+            .then(response => {
+                if (response.ok) {
+                    alert(SUCCESS_UPDATING_BIKE);
+                    navigate(-1);
+                } else {
+                    return response.json().then((errorText) => {
+                        throw new Error(errorText.detail);
+                    });
+                }
             })
             .catch(error => {
                 console.error(ERR_UPDATING_BIKE, error);
@@ -89,7 +101,7 @@ const BikeConfigAdmin = () => {
         })
             .then(response => {
                 if (response) {
-                    alert(t('store_deleted_successfully'));
+                    alert(t('bike_deleted_successfully'));
                 }
                 else {
                     return response.json().then((errorText) => {
@@ -112,8 +124,8 @@ const BikeConfigAdmin = () => {
         setName(value)
     }
 
-    const handlePictureChange = (value) => {
-        setPictureFile(value)
+    const handleImageChange = (value) => {
+        setImage(value)
     }
 
     const handleDescriptionChange = (value) => {
@@ -139,28 +151,28 @@ const BikeConfigAdmin = () => {
 
     return (
         <>
-        {bike ?
-            <> 
-                {/* Page title */}
-                <h1>{t('bike_config')}: {bike.name}</h1>
+            {bike ?
+                <>
+                    {/* Page title */}
+                    <h1>{t('bike_config')}: {bike.name}</h1>
 
-                <SingleLineTextField title={t('name')} value={bike.name} editable={true} onChange={handleNameChange} />
+                    <SingleLineTextField title={t('name')} value={bike.name} editable={true} onChange={handleNameChange} />
 
-                {/* Picture and description field component */}
-                <PictureAndDescriptionField editable={true} object={bike} onPictureChange={handlePictureChange} onDescriptionChange={handleDescriptionChange} />
+                    {/* Image and description field component */}
+                    <PictureAndDescriptionField editable={true} object={bike} onPictureChange={handleImageChange} onDescriptionChange={handleDescriptionChange} />
 
-                {/* Button container */}
-                <div className='button-container'>
-                    <button type='button' className='button' onClick={handleCancelClick}>{t('cancel')}</button>
-                    <button type='button' className='button accent' onClick={handleConfirmClick}>{t('confirm')}</button>
-                    <button type='button' className='button accent' onClick={handleDeleteClick}>{t('delete_bike')}</button>
-                </div>
+                    {/* Button container */}
+                    <div className='button-container'>
+                        <button type='button' className='button' onClick={handleCancelClick}>{t('cancel')}</button>
+                        <button type='button' className='button accent' onClick={handleConfirmClick}>{t('confirm')}</button>
+                        <button type='button' className='button accent' onClick={handleDeleteClick}>{t('delete_bike')}</button>
+                    </div>
 
-                <ConfirmationPopup onConfirm={handlePopupConfirm} onCancel={handlePopupCancel} show={showConfirmationPopup}>
-                    {t('are_you_sure_you_want_to_delete_bike') + ' ' + bike.name + '?'}
-                </ConfirmationPopup>
-            </>
-            : null}
+                    <ConfirmationPopup onConfirm={handlePopupConfirm} onCancel={handlePopupCancel} show={showConfirmationPopup}>
+                        {t('are_you_sure_you_want_to_delete_bike') + ' ' + bike.name + '?'}
+                    </ConfirmationPopup>
+                </>
+                : null}
         </>
     );
 };

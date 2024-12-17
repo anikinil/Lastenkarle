@@ -21,11 +21,6 @@ const PictureAndDescriptionField = ({ editable, object, onPictureChange, onDescr
         document.getElementById('pictureFileInput').click();
     };
 
-    const handleRemovePictureClick = () => {
-        setPictureFile(null);
-        onPictureChange(null);
-    };
-
     const handleDescriptionChange = (event) => {
         setDescription(event.target.value);
         onDescriptionChange(event.target.value);
@@ -66,18 +61,6 @@ const PictureAndDescriptionField = ({ editable, object, onPictureChange, onDescr
                     disabled={!editable}
                 ></textarea>
             </div>
-
-            {editable && (
-                <div className="button-container">
-                    <button
-                        type="button"
-                        className="button regular"
-                        onClick={handleRemovePictureClick}
-                    >
-                        {t('remove_picture')}
-                    </button>
-                </div>
-            )}
         </>
     );
 };
