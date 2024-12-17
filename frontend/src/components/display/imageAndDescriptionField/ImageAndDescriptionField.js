@@ -7,14 +7,16 @@ import { HOST } from '../../../constants/URIs/General';
 const ImageAndDescriptionField = ({ editable, object, onImageChange, onDescriptionChange }) => {
     const { t } = useTranslation();
 
-    const [image, setImageFile] = useState(object?.image);
+    const [image, setImageFile] = useState(HOST + object?.image);
     const [description, setDescription] = useState(object?.description);
 
     function handleImageFileChange(event) {
         const file = event.target.files[0];
-        // THINK if duplication is the best way to handle this
-        setImageFile(file);
-        onImageChange(file);
+        if (file) {
+            const fileURL = URL.createObjectURL(file); // Create a temporary URL for the file
+            setImageFile(fileURL); // Set the temporary URL to state
+            onImageChange(file);   // Pass the actual file to parent
+        }
     }
 
     const handleImgContainerClick = () => {
@@ -34,7 +36,7 @@ const ImageAndDescriptionField = ({ editable, object, onImageChange, onDescripti
                     onClick={handleImgContainerClick}
                 >
                     {image ? (
-                        <img className="img" alt={t('image')} src={HOST + image} />
+                        <img className="img" alt={t('image')} src={image} />
                     ) : editable ? (
                         <span className="img-container-label">{t('select_an_imagee')}</span>
                     ) : (
