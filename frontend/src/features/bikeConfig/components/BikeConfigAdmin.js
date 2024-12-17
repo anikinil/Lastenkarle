@@ -159,7 +159,7 @@ const BikeConfigAdmin = () => {
                     <SingleLineTextField title={t('name')} value={bike.name} editable={true} onChange={handleNameChange} />
 
                     {/* Image and description field component */}
-                    <ImageAndDescriptionField editable={true} object={bike} onImageChange={handleImageChange} onDescriptionChange={handleDescriptionChange} />
+                    <ImageAndDescriptionField editable={true} imageValue={bike.image} descriptionValue={bike.description} onImageChange={handleImageChange} onDescriptionChange={handleDescriptionChange} />
 
                     {/* Button container */}
                     <div className='button-container'>

@@ -82,7 +82,7 @@ const BikeRentingPage = () => {
             <h1>{bike?.name}</h1> {/* Display bike name */}
 
             {/* Display bike image and description */}
-            <ImageAndDescriptionField editable={false} object={bike} />
+            <ImageAndDescriptionField editable={false} imageValue={bike.image} descriptionValue={bike.description} />
              {/* Display store address */}
             <SingleLineTextField editable={false} value={store?.address} title='address' />
 

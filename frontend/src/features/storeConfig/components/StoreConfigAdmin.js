@@ -29,18 +29,24 @@ import BikeListManager from "../../../components/lists/bikeList/listVersions/Bik
 // page for the configuration of an existing store
 const StoreConfigAdmin = () => {
 
-    const [newAddress, setNewAddress] = useState('');
     const { t } = useTranslation();
+    
     // Hook for navigation
     const navigate = useNavigate();
-
+    
     // Extracting store name from URL parameters
     const storeName = useParams().store;
-
+    
     // State to hold store data
     const [store, setStore] = useState();
     const [bikes, setBikes] = useState([]);
 
+    const [name, setName] = useState('');
+    const [image, setImage] = useState(null);
+    const [description, setDescription] = useState('');
+    
+    const [newAddress, setNewAddress] = useState('');
+    
     const token = getCookie('token');
 
     const [showConfirmationPopup, setShowConfirmationPopup] = useState(false);
@@ -56,6 +62,7 @@ const StoreConfigAdmin = () => {
             .then(response => response.json())
             .then(data => {
                 setStore(data);
+                storeName(data.name);
                 fetchBikes();
             })
             .catch(error => {
@@ -127,6 +134,14 @@ const StoreConfigAdmin = () => {
         fetchStore();
     }, []);
 
+    const handleImageChange = (value) => {
+        setImage(value)
+    }
+
+    const handleDescriptionChange = (value) => {
+        setDescription(value)
+    }
+
     // Handler for address change
     const handleAddressChange = (value) => {
         setNewAddress(value);
@@ -165,9 +180,13 @@ const StoreConfigAdmin = () => {
 
                 {/* Displaying store image and description */}
                 <ImageAndDescriptionField
-                    image={store.image}
-                    description={store.description}
+                    editable={true}
+                    imageValue={store.image}
+                    descriptionValue={store.description}
+                    onImageChange={handleImageChange}
+                    onDescriptionChange={handleDescriptionChange}
                 />
+
                 {/* Single line text field for store address */}
                 <SingleLineTextField editable={true} value={store.address} title={'address'} onChange={handleAddressChange} />
 

@@ -46,7 +46,7 @@ const StoreDisplay = () => {
         <>
             <h1>{store?.name}</h1> {/* Display store name */}
 
-            <ImageAndDescriptionField editable={false} object={store} /> {/* Display image and description */}
+            <ImageAndDescriptionField editable={false} imageValue={store.image} descriptionValue={store.description} /> {/* Display image and description */}
             <SingleLineTextField editable={false} value={store?.address} /> {/* Display store address */}
 
             {/* TODO add enrollment component for managers to enroll other managers to this particular store */}

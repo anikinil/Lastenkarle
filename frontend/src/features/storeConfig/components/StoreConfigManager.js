@@ -124,8 +124,8 @@ const StoreConfigManager = () => {
 
                 {/* Displaying store image and description */}
                 <ImageAndDescriptionField
-                    image={store.image}
-                    description={store.description}
+                    imageValue={store.image}
+                    descriptionValue={store.description}
                 />
                 {/* Single line text field for store address */}
                 <SingleLineTextField editable={true} value={store.address} title={'address'} onChange={handleAddressChange} />

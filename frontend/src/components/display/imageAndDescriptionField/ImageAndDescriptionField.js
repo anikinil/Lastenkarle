@@ -4,17 +4,17 @@ import { useTranslation } from 'react-i18next';
 import './ImageAndDescriptionField.css';
 import { HOST } from '../../../constants/URIs/General';
 
-const ImageAndDescriptionField = ({ editable, object, onImageChange, onDescriptionChange }) => {
+const ImageAndDescriptionField = ({ editable, imageValue, descriptionValue, onImageChange, onDescriptionChange }) => {
     const { t } = useTranslation();
 
-    const [image, setImageFile] = useState(HOST + object?.image);
-    const [description, setDescription] = useState(object?.description);
+    const [image, setImage] = useState(HOST + imageValue);
+    const [description, setDescription] = useState(descriptionValue);
 
     function handleImageFileChange(event) {
         const file = event.target.files[0];
         if (file) {
             const fileURL = URL.createObjectURL(file); // Create a temporary URL for the file
-            setImageFile(fileURL); // Set the temporary URL to state
+            setImage(fileURL); // Set the temporary URL to state
             onImageChange(file);   // Pass the actual file to parent
         }
     }

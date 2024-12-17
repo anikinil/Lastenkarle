@@ -6,7 +6,6 @@ import './StoreRegistration.css'
 
 import 'react-time-picker/dist/TimePicker.css';
 
-import ImageAndDescriptionField from '../../../components/display/imageAndDescriptionField/ImageAndDescriptionField';
 import SingleLineTextField from '../../../components/display/SingleLineTextField';
 import { useNavigate } from 'react-router-dom';
 import { CREATE_STORE } from '../../../constants/URIs/AdminURIs';
