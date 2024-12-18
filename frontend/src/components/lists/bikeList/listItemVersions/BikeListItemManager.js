@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import defaultBikeImage from '../../../../assets/images/default_bike.png'
@@ -10,7 +10,10 @@ import { getCookie } from '../../../../services/Cookies'
 import ConfirmationPopup from '../../../confirmationDialog/ConfirmationPopup';
 import { ALL_BOOKINGS, BIKE_CONFIG, STORE_CONFIG } from '../../../../constants/URLs/Navigation';
 import { STORE_NAME } from '../../../../constants/URLs/General';
-import { DELETE_BIKE } from '../../../../constants/URIs/ManagerURIs';
+import { DELETE_BIKE as DELETE_BIKE_ADMIN  } from '../../../../constants/URIs/AdminURIs';
+import { DELETE_BIKE as DELETE_BIKE_MANAGER } from '../../../../constants/URIs/ManagerURIs';
+import { AuthContext } from '../../../../AuthProvider';
+import { Roles } from '../../../../constants/Roles';
 
 const BikeListItemManager = ({ bike }) => {
 
@@ -21,6 +24,7 @@ const BikeListItemManager = ({ bike }) => {
     // THINK maybe show big preview of bike image on clik on miniature preview
 
     const token = getCookie('token');
+    const { userRoles } = useContext(AuthContext);    
 
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
 
@@ -34,7 +38,6 @@ const BikeListItemManager = ({ bike }) => {
     }
 
     const handleStoreClick = e => {
-        // JAN wait til bike.store returns the store name and not the ID
         navigate(STORE_CONFIG.replace(STORE_NAME, bike.store))
         e.stopPropagation()
     }
@@ -45,22 +48,20 @@ const BikeListItemManager = ({ bike }) => {
     }
 
     const postBikeDeletion = () => {
-
-        const payload = {}
-
-        fetch(DELETE_BIKE.replace(ID, bike.id), {
+        let uri = userRoles.includes(Roles.ADMINISTRATOR) ? DELETE_BIKE_ADMIN : DELETE_BIKE_MANAGER;
+        uri = uri.replace(ID, bike.id)
+        fetch(uri, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Token ${token}`
-            },
-            body: JSON.stringify(payload) // TODO check if needed
+            }
         })
             .then(response => {
-                if (response) {
+                if (response.ok) {
                     alert(t('bike_deleted_successfully'));
-                }
-                else {
+                    window.location.reload();
+                } else {
                     return response.json().then((errorText) => {
                         throw new Error(errorText.detail);
                     });
@@ -73,8 +74,7 @@ const BikeListItemManager = ({ bike }) => {
 
     const handleDeleteConfirm = () => {
         postBikeDeletion();
-        // TODO check if needed
-        // window.location.reload();
+        setShowDeleteConfirmation(false)
     }
 
     const handleDeleteCancel = () => {

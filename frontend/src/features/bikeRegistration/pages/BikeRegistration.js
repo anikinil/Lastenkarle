@@ -37,7 +37,6 @@ const BikeRegistration = () => {
     }
 
     const postNewBike = () => {
-        console.log(userRoles)
         let uri = userRoles.includes(Roles.ADMINISTRATOR) ? NEW_BIKE_URI_ADMIN : NEW_BIKE_URI_MANAGER;
         uri = uri.replace(STORE_NAME, storeName)
         const formData = new FormData();
