@@ -49,7 +49,7 @@ const RegionalRenting = () => {
 
     // Filters bikes by the stores in the region of the page
     const filterBikesByRegionStores = (allBikes, storesInRegion) => {
-        return allBikes.filter(bike => storesInRegion.some(store => store.id === bike.store));
+        return allBikes.filter(bike => storesInRegion.some(store => store.name === bike.store));
     }
 
     // useEffect hook to fetch data when the component mounts
