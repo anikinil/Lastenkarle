@@ -63,7 +63,7 @@ const App = () => {
     // THINK if some sort of encapsulation needed
     // On each location change, redirect to session expired page if token has expired
     useEffect(() => {
-        if (!sessionUpdated && tokenExpired()) {
+        if (tokenExpired()) {
             // TODO implement logic for session expiration
         }
     }, [location])
