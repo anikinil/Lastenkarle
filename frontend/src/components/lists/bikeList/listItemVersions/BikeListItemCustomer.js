@@ -6,7 +6,8 @@ import defaultBikeImage from '../../../../assets/images/default_bike.png'
 import { useNavigate } from 'react-router-dom';
 import { HOST, ID } from '../../../../constants/URIs/General';
 import { getCookie } from '../../../../services/Cookies'
-import { BIKE_CONFIG, STORE_DISPLAY } from '../../../../constants/URLs/Navigation';
+import { BIKE_RENTING, STORE_DISPLAY } from '../../../../constants/URLs/Navigation';
+import { STORE_NAME } from '../../../../constants/URLs/General';
 
 const BikeListItemCustomer = ({ bike }) => {
 
@@ -19,11 +20,11 @@ const BikeListItemCustomer = ({ bike }) => {
     const token = getCookie('token');
 
     const handlePanelClick = () => {
-        navigate(BIKE_CONFIG.replace(ID, bike.id));
+        navigate(BIKE_RENTING.replace(ID, bike.id));
     }
 
     const handleStoreClick = e => {
-        navigate(STORE_DISPLAY.replace(ID, bike.store))
+        navigate(STORE_DISPLAY.replace(STORE_NAME, bike.store))
         e.stopPropagation()
     }
 
