@@ -36,8 +36,7 @@ const BikeRentingPage = () => {
     const fetchBike = () => {
         fetch(BIKE_BY_ID.replace(ID, bikeId), {
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${token}`,
+                'Content-Type': 'application/json'
             }
         })
             .then(response => response.json())
@@ -53,8 +52,7 @@ const BikeRentingPage = () => {
     const fetchStore = () => {
         fetch(STORE_BY_BIKE_ID.replace(ID, bikeId), {
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${token}`,
+                'Content-Type': 'application/json'
             }
         })
             .then(response => response.json())
