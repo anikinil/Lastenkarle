@@ -22,7 +22,7 @@ const BikeListItemManager = ({ bike }) => {
 
     const token = getCookie('token');
 
-    const [showConfirmationPopup, setShowConfirmationPopup] = useState(false);
+    const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
 
     const handlePanelClick = () => {
         navigate(BIKE_CONFIG.replace(ID, bike.id));
@@ -40,7 +40,7 @@ const BikeListItemManager = ({ bike }) => {
     }
 
     const handleDeleteClick = e => {
-        setShowConfirmationPopup(true)
+        setShowDeleteConfirmation(true)
         e.stopPropagation()
     }
 
@@ -54,7 +54,7 @@ const BikeListItemManager = ({ bike }) => {
                 'Content-Type': 'application/json',
                 'Authorization': `Token ${token}`
             },
-            body: JSON.stringify(payload)
+            body: JSON.stringify(payload) // TODO check if needed
         })
             .then(response => {
                 if (response) {
@@ -71,14 +71,14 @@ const BikeListItemManager = ({ bike }) => {
             })
     }
 
-    const handlePopupConfirm = () => {
+    const handleDeleteConfirm = () => {
         postBikeDeletion();
         // TODO check if needed
         // window.location.reload();
     }
 
-    const handlePopupCancel = () => {
-        setShowConfirmationPopup(false)
+    const handleDeleteCancel = () => {
+        setShowDeleteConfirmation(false)
     }
 
     return (
@@ -96,7 +96,7 @@ const BikeListItemManager = ({ bike }) => {
                 </div>
             </li>
 
-            <ConfirmationPopup onConfirm={handlePopupConfirm} onCancel={handlePopupCancel} show={showConfirmationPopup}>
+            <ConfirmationPopup onConfirm={handleDeleteConfirm} onCancel={handleDeleteCancel} show={showDeleteConfirmation}>
                 {t('are_you_sure_you_want_to_delete_bike') + ' ' + bike.name + '?'}
             </ConfirmationPopup>
         </>

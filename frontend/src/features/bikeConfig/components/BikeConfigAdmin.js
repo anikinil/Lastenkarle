@@ -21,7 +21,8 @@ const BikeConfigAdmin = () => {
 
     const token = getCookie('token')
 
-    const [showConfirmationPopup, setShowConfirmationPopup] = useState(false);
+    const [showCancelConfigConfirmation, setShowCancelConfigConfirmation] = useState(false);
+    const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
 
     const bikeId = useParams().id;
     const [bike, setBike] = useState();
@@ -116,7 +117,7 @@ const BikeConfigAdmin = () => {
 
     // Handler for cancel button click
     const handleCancelClick = () => {
-        // TODO maybe add a confirmation dialog
+        setShowCancelConfigConfirmation(true);
         navigate(-1)
     }
 
@@ -138,15 +139,20 @@ const BikeConfigAdmin = () => {
     }
 
     const handleDeleteClick = () => {
-        setShowConfirmationPopup(true);
+        setShowDeleteConfirmation(true);
     }
 
-    const handlePopupConfirm = () => {
+    const handleCancelConfigConfirm = () => {
+        setShowCancelConfigConfirmation(false);
+    }
+
+    const handleDeleteConfirm = () => {
         deleteBike();
     }
 
     const handlePopupCancel = () => {
-        setShowConfirmationPopup(false)
+        setShowCancelConfigConfirmation(false)
+        setShowDeleteConfirmation(false)
     }
 
     return (
@@ -168,7 +174,12 @@ const BikeConfigAdmin = () => {
                         <button type='button' className='button accent' onClick={handleDeleteClick}>{t('delete_bike')}</button>
                     </div>
 
-                    <ConfirmationPopup onConfirm={handlePopupConfirm} onCancel={handlePopupCancel} show={showConfirmationPopup}>
+                    <ConfirmationPopup onConfirm={handleCancelConfigConfirm} onCancel={handlePopupCancel} show={showCancelConfigConfirmation}>
+                        {t('are_you_sure_you_want_to_cancel_config') + ' ' + bike.name + '?'}
+                    </ConfirmationPopup>
+
+
+                    <ConfirmationPopup onConfirm={handleDeleteConfirm} onCancel={handlePopupCancel} show={showDeleteConfirmation}>
                         {t('are_you_sure_you_want_to_delete_bike') + ' ' + bike.name + '?'}
                     </ConfirmationPopup>
                 </>
