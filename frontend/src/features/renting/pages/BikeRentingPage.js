@@ -79,19 +79,23 @@ const BikeRentingPage = () => {
 
     return (
         <>
-            <h1>{bike?.name}</h1> {/* Display bike name */}
+            {bike &&
+                <>
+                    <h1>{bike?.name}</h1> {/* Display bike name */}
 
-            {/* Display bike image and description */}
-            <ImageAndDescriptionField editable={false} imageValue={bike.image} descriptionValue={bike.description} />
-             {/* Display store address */}
-            <SingleLineTextField editable={false} value={store?.address} title='address' />
+                    {/* Display bike image and description */}
+                    <ImageAndDescriptionField editable={false} imageValue={bike.image} descriptionValue={bike.description} />
+                    {/* Display store address */}
+                    <SingleLineTextField editable={false} value={store?.address} title='address' />
 
-            <div className='button-container'>
-                <button type='button' className='button regular' onClick={handleStoreClick}>{store?.name}</button> {/* Button to navigate to store page */}
-            </div>
+                    <div className='button-container'>
+                        <button type='button' className='button regular' onClick={handleStoreClick}>{store?.name}</button> {/* Button to navigate to store page */}
+                    </div>
 
-            {/* Display bike calendar for reservations */}
-            <BikeCalendar />
+                    {/* Display bike calendar for reservations */}
+                    <BikeCalendar />
+                </>
+            }
         </>
     );
 };
