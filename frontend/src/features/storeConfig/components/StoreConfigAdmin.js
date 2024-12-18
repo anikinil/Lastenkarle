@@ -56,7 +56,6 @@ const StoreConfigAdmin = () => {
             .then(response => response.json())
             .then(data => {
                 setStore(data);
-                storeName(data.name);
                 fetchBikes();
             })
             .catch(error => {
@@ -101,7 +100,7 @@ const StoreConfigAdmin = () => {
 
     const deleteStore = () => {
         const payload = {}
-        fetch(DELETE_STORE.replace(ID, store.id), {
+        fetch(DELETE_STORE.replace(STORE_NAME, store.name), {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
