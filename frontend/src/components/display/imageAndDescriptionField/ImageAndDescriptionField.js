@@ -7,7 +7,7 @@ import { HOST } from '../../../constants/URIs/General';
 const ImageAndDescriptionField = ({ editable, imageValue, descriptionValue, onImageChange, onDescriptionChange }) => {
     const { t } = useTranslation();
 
-    const [image, setImage] = useState(HOST + imageValue);
+    const [image, setImage] = useState(imageValue ? HOST + imageValue : null);
     const [description, setDescription] = useState(descriptionValue);
 
     function handleImageFileChange(event) {
@@ -38,7 +38,7 @@ const ImageAndDescriptionField = ({ editable, imageValue, descriptionValue, onIm
                     {image ? (
                         <img className="img" alt={t('image')} src={image} />
                     ) : editable ? (
-                        <span className="img-container-label">{t('select_an_imagee')}</span>
+                        <span className="img-container-label">{t('select_an_image')}</span>
                     ) : (
                         <span className="img-container-label">{t('no_image')}</span>
                     )}

@@ -12,6 +12,7 @@ import { ADD_BIKE_TO_STORE as NEW_BIKE_URI_ADMIN } from '../../../constants/URIs
 import SingleLineTextField from '../../../components/display/SingleLineTextField';
 import { AuthContext } from '../../../AuthProvider';
 import { Roles } from '../../../constants/Roles';
+import ConfirmationPopup from '../../../components/confirmationDialog/ConfirmationPopup';
 
 const BikeRegistration = () => {
     // Hook for translation
@@ -30,10 +31,16 @@ const BikeRegistration = () => {
     const [imageFile, setImageFile] = useState(null);
     const [description, setDescription] = useState('');
 
+    const [showCancelConfirmation, setShowCancelConfirmation] = useState(false);
+
+
     // Handler for cancel button click
     const handleCancelClick = () => {
-        // TODO maybe add a confirmation dialog
-        navigate(-1)
+        if (name !== '' || description !== '' || imageFile !== null) {
+            setShowCancelConfirmation(true);
+        } else {
+            navigate(-1);
+        }
     }
 
     const postNewBike = () => {
@@ -82,6 +89,15 @@ const BikeRegistration = () => {
         postNewBike();
     }
 
+    const handleConfirmPopup = () => {
+        setShowCancelConfirmation(false);
+        navigate(-1);
+    }
+
+    const handleCancelPopup = () => {
+        setShowCancelConfirmation(false);
+    }
+
     return (
         <>
             {/* Page title */}
@@ -90,15 +106,21 @@ const BikeRegistration = () => {
             <SingleLineTextField title={t('name')} editable={true} onChange={handleNameChange} />
 
             {/* Image and description field component */}
-            <ImageAndDescriptionField editable={true} onImageChange={handleImageChange} onDescriptionChange={handleDescriptionChange}/>
+            <ImageAndDescriptionField editable={true} onImageChange={handleImageChange} onDescriptionChange={handleDescriptionChange} />
 
             {/* Button container */}
             <div className='button-container'>
                 <button type='button' className='button' onClick={handleCancelClick}>{t('cancel')}</button>
                 <button type='button' className='button register' onClick={handleRegisterClick}>{t('register_new_bike')}</button>
             </div>
+
+
+            <ConfirmationPopup onConfirm={handleConfirmPopup} onCancel={handleCancelPopup} show={showCancelConfirmation}>
+                {t('are_you_sure_you_want_to_cancel_registration')}
+            </ConfirmationPopup>
+
         </>
     );
-};
+}
 
 export default BikeRegistration;
