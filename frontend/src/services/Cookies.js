@@ -1,3 +1,5 @@
+const sessionDurationHours = 3; // 3 hours
+
 // Function to get the value of a specified cookie by its name
 export const getCookie = (name) => {
     // Split the document.cookie string into individual cookies and find the one that starts with the specified name
@@ -17,8 +19,7 @@ export const deleteCookie = (name) => {
 
 // Set a cookie with a specified label and value
 export const setCookie = (label, value) => {
-    var days = 1;
-    const expirationDate = new Date();
-    expirationDate.setDate(expirationDate.getDate() + days);
-    document.cookie = `${label}=${value}; expires=${expirationDate.toUTCString()}; path=/`;
+    const expirationTime = new Date();
+    expirationTime.setHours(expirationTime.getHours() + sessionDurationHours);
+    document.cookie = `${label}=${value}; expires=${expirationTime.toUTCString()}; path=/`;
 };

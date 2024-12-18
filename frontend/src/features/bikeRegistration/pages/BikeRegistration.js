@@ -114,7 +114,6 @@ const BikeRegistration = () => {
                 <button type='button' className='button register' onClick={handleRegisterClick}>{t('register_new_bike')}</button>
             </div>
 
-
             <ConfirmationPopup onConfirm={handleConfirmPopup} onCancel={handleCancelPopup} show={showCancelConfirmation}>
                 {t('are_you_sure_you_want_to_cancel_registration')}
             </ConfirmationPopup>

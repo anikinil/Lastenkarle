@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import useLocalStorage from 'use-local-storage';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ProtectedElement } from './utils/ProtectedElement';
@@ -43,22 +43,30 @@ import { AuthProvider } from './AuthProvider';
 import UserListPage from './features/userList/pages/UserListPage';
 import PageNotFound from './pages/PageNotFound';
 import Loading from './pages/loading/Loading';
-
+import { tokenExpired } from './services/Token';
 
 // THINK look into AuthService for login and logout
-// TODO detect when session is expired and redirect to login page
-
 const App = () => {
 
     // Determine if the user prefers a dark theme
     const defaultDark = window.matchMedia('(prefers-color-sceme: dark)').matches
     const [theme, setTheme] = useLocalStorage('theme', defaultDark ? 'dark' : 'light')
 
+    let location = window.location.pathname;
+
     // Function to switch between light and dark themes
     const switchTheme = () => {
         const newTheme = theme === 'light' ? 'dark' : 'light';
         setTheme(newTheme);
     }
+
+    // THINK if some sort of encapsulation needed
+    // On each location change, redirect to session expired page if token has expired
+    useEffect(() => {
+        if (!sessionUpdated && tokenExpired()) {
+            // TODO implement logic for session expiration
+        }
+    }, [location])
 
     return (
         <div className='App' data-theme={theme}>
@@ -139,7 +147,7 @@ const App = () => {
                                 {/* OTHER */}
 
                                 <Route path='*' element={<PageNotFound />} />
-
+                            
                             </Routes>
                         </BrowserRouter>
                     </Suspense>
