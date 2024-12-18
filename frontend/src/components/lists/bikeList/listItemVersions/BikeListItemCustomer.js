@@ -17,8 +17,6 @@ const BikeListItemCustomer = ({ bike }) => {
 
     const navigate = useNavigate();
 
-    const token = getCookie('token');
-
     const handlePanelClick = () => {
         navigate(BIKE_RENTING.replace(ID, bike.id));
     }
@@ -27,8 +25,6 @@ const BikeListItemCustomer = ({ bike }) => {
         navigate(STORE_DISPLAY.replace(STORE_NAME, bike.store))
         e.stopPropagation()
     }
-
-    console.log(bike)
 
     return (
         <>
