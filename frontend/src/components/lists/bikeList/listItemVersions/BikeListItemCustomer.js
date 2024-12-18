@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import defaultBikeImage from '../../../../assets/images/default_bike.png'
 
 import { useNavigate } from 'react-router-dom';
-import { HOST } from '../../../../constants/URIs/General';
+import { HOST, ID } from '../../../../constants/URIs/General';
 import { getCookie } from '../../../../services/Cookies'
 import { BIKE_RENTING, STORE_DISPLAY } from '../../../../constants/URLs/Navigation';
 import { STORE_NAME } from '../../../../constants/URLs/General';
