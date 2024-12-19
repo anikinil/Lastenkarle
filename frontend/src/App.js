@@ -29,7 +29,10 @@ import Register from './pages/Register';
 import Enrollment from './features/enrollment/pages/Enrollment';
 import StoreBookings from './features/storeBookings/pages/StoreBookings';
 
-import { BIKE_RENTING, BIKE_REGISTRATION, ALL_BIKES, RENTING, ACCOUNT_DELETION, EMAIL_VERIFICATION, ENROLLMENT, HOME, LOGIN, LOGOUT, REGIONAL_RENTING, REGISTER, STORE_BOOKINGS, STORE_REGISTRATION, USER_BAN, STORE_CONFIG, MY_STORES, ALL_STORES, STORE_DISPLAY, BIKE_CONFIG, ALL_BOOKINGS, ALL_USERS } from './constants/URLs/Navigation';
+import { BIKE_RENTING, BIKE_REGISTRATION, ALL_BIKES, RENTING, ACCOUNT_DELETION, EMAIL_VERIFICATION, 
+    ENROLLMENT, HOME, LOGIN, LOGOUT, REGIONAL_RENTING, REGISTER, STORE_BOOKINGS, STORE_REGISTRATION, 
+    USER_BAN, STORE_CONFIG, MY_STORES, ALL_STORES, STORE_DISPLAY, BIKE_CONFIG, ALL_BOOKINGS, ALL_USERS } 
+    from './constants/URLs/Navigation';
 import { ID, KEY, REGION_NAME, STORE_NAME } from './constants/URLs/General';
 import EmailVerification from './pages/EmailVerification';
 import { Roles } from './constants/Roles';
@@ -62,6 +65,7 @@ const App = () => {
     }
 
     // THINK if some sort of encapsulation needed
+    // TODO maybe add a notification when session expired (may be with a button leading to the login page)
     // on page load, check if the token is expired and reset the user roles and stores, to update the navbar
     useEffect(() => {
         if (tokenExpired()) {
