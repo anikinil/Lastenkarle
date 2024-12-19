@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect } from 'react';
+import React, { Suspense, useContext, useEffect } from 'react';
 import useLocalStorage from 'use-local-storage';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ProtectedElement } from './utils/ProtectedElement';
@@ -53,7 +53,7 @@ const App = () => {
     const [theme, setTheme] = useLocalStorage('theme', defaultDark ? 'dark' : 'light')
 
     let location = window.location.pathname;
-
+    
     // Function to switch between light and dark themes
     const switchTheme = () => {
         const newTheme = theme === 'light' ? 'dark' : 'light';
@@ -64,7 +64,7 @@ const App = () => {
     // On each location change, redirect to session expired page if token has expired
     useEffect(() => {
         if (tokenExpired()) {
-            // TODO implement logic for session expiration
+            // TODO implement session expiration logic
         }
     }, [location])
 

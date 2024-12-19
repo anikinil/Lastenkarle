@@ -9,7 +9,7 @@ export const AuthProvider = ({ children }) => {
     const [userRoles, setUserRoles] = useState([Roles.VISITOR]);
     const [userStores, setUserStores] = useState([]);
 
-    const updateUserRoles = () => {
+    const updateUserData = () => {
         const userRoles = getCookie('userRoles');
         if (userRoles) setUserRoles(userRoles.split(','));
         const userStores = getCookie('userStores');
@@ -17,15 +17,16 @@ export const AuthProvider = ({ children }) => {
     }
 
     useEffect(() => {
-        updateUserRoles();
-        window.addEventListener('cookieChange', updateUserRoles);
+        
+        updateUserData();
+        window.addEventListener('cookieChange', updateUserData);
         return () => {
-            window.removeEventListener('cookieChange', updateUserRoles);
+            window.removeEventListener('cookieChange', updateUserData);
         };
     }, []);
 
     return (
-        <AuthContext.Provider value={{ userRoles, setUserRoles, userStores, setUserStores }}>
+        <AuthContext.Provider value={{ userRoles, setUserRoles, userStores, setUserStores}}>
             {children}
         </AuthContext.Provider>
     );
