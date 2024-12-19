@@ -31,7 +31,8 @@ import StoreBookings from './features/storeBookings/pages/StoreBookings';
 
 import { BIKE_RENTING, BIKE_REGISTRATION, ALL_BIKES, RENTING, ACCOUNT_DELETION, EMAIL_VERIFICATION, 
     ENROLLMENT, HOME, LOGIN, LOGOUT, REGIONAL_RENTING, REGISTER, STORE_BOOKINGS, STORE_REGISTRATION, 
-    USER_BAN, STORE_CONFIG, MY_STORES, ALL_STORES, STORE_DISPLAY, BIKE_CONFIG, ALL_BOOKINGS, ALL_USERS } 
+    USER_BAN, STORE_CONFIG, MY_STORES, ALL_STORES, STORE_DISPLAY, BIKE_CONFIG, ALL_BOOKINGS, ALL_USERS, 
+    USER_PAGE} 
     from './constants/URLs/Navigation';
 import { ID, KEY, REGION_NAME, STORE_NAME } from './constants/URLs/General';
 import EmailVerification from './pages/EmailVerification';
@@ -48,6 +49,7 @@ import PageNotFound from './pages/PageNotFound';
 import Loading from './pages/loading/Loading';
 import { tokenExpired } from './services/Token';
 import { setCookie } from './services/Cookies';
+import UserPage from './features/userPage/UserPage';
 
 // THINK look into AuthService for login and logout
 const App = () => {
@@ -102,6 +104,9 @@ const App = () => {
                                 } />
                                 <Route exact path={ALL_USERS} element={
                                     <ProtectedElement element={<UserListPage />} elementRoles={[Roles.ADMINISTRATOR]} />
+                                } />
+                                <Route exact path={USER_PAGE.replace(ID, ':user')} element={
+                                    <ProtectedElement element={<UserPage />} elementRoles={[Roles.ADMINISTRATOR]} />
                                 } />
 
                                 {/* RENTING */}

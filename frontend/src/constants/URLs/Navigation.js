@@ -17,6 +17,7 @@ export const REGISTER               = `/register`
 export const ENROLLMENT             = `/enrollment`
 export const USER_BAN               = `/user-ban`
 export const ALL_USERS              = `/all-users`
+export const USER_PAGE              = `/user/${ID}`
 
 export const ALL_STORES             = `/all-stores`                              // all stores in the system (admin)
 export const MY_STORES              = `/my-stores`                               // stores of particular in manager (manager, admin)

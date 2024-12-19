@@ -2,7 +2,6 @@
 import React, { useEffect } from "react";
 
 // Importing components for display and configuration
-import ImageAndDescriptionField from "../../../components/display/imageAndDescriptionField/ImageAndDescriptionField";
 import StoreOpeningTimesConfig from "../../../components/openingTimesConfig/StoreOpeningTimesConfig";
 
 // Importing hooks for routing and translation
@@ -11,7 +10,6 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from 'react-router-dom';
 
 // Importing a text field component
-import SingleLineTextField from "../../../components/display/SingleLineTextField";
 import { ERR_DELETING_STORE, ERR_FETCHING_STORE, ERR_UPDATING_STORE } from "../../../constants/ErrorMessages";
 import { useState } from "react";
 import { SUCCESS_UPDATING_STORE } from "../../../constants/SuccessMessages";
