@@ -44,6 +44,7 @@ import UserListPage from './features/userList/pages/UserListPage';
 import PageNotFound from './pages/PageNotFound';
 import Loading from './pages/loading/Loading';
 import { tokenExpired } from './services/Token';
+import { setCookie } from './services/Cookies';
 
 // THINK look into AuthService for login and logout
 const App = () => {
@@ -61,10 +62,11 @@ const App = () => {
     }
 
     // THINK if some sort of encapsulation needed
-    // On each location change, redirect to session expired page if token has expired
+    // on page load, check if the token is expired and reset the user roles and stores, to update the navbar
     useEffect(() => {
         if (tokenExpired()) {
-            // TODO implement session expiration logic
+            setCookie('userRoles', [Roles.VISITOR]);
+            setCookie('userStores', []);
         }
     }, [location])
 
@@ -132,7 +134,6 @@ const App = () => {
                                 <Route exact path={BIKE_CONFIG.replace(ID, ':id')} element={
                                     <ProtectedElement element={<BikeConfigPage />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
                                 } />
-
 
                                 {/* BOOKINGS */}
 
