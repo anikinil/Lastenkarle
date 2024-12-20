@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { BAN_USER, SELECTED_USER } from '../../constants/URIs/AdminURIs';
-import { ERR_FETCHING_USER_DATA } from '../../constants/ErrorMessages';
+import { ERR_BNNING_USER, ERR_FETCHING_USER_DATA } from '../../constants/ErrorMessages';
 import { ID } from '../../constants/URIs/General';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { getCookie } from '../../services/Cookies';
 import { useTranslation } from 'react-i18next';
 import ConfirmationPopup from '../../components/confirmationDialog/ConfirmationPopup';
@@ -12,11 +12,15 @@ const UserPage = () => {
 
     const { t } = useTranslation(); // Translation hook
 
-    const id = useParams().user; // Get bike ID from URL parameters
+    const navigate = useNavigate(); // Navigation hook
 
     const token = getCookie('token'); // Get authentication token from cookies
+    
+    const id = useParams().user; // Get bike ID from URL parameters
 
     const [user, setUser] = useState(); // State to store user data
+    const [showConfirmationPopup, setShowConfirmationPopup] = useState(false);
+
 
     const fetchUser = () => {
         fetch(SELECTED_USER.replace(ID, id), {
@@ -46,12 +50,33 @@ const UserPage = () => {
                 'Authorization': `Token ${token}`
             },
             body: JSON.stringify(payload)
-        });
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert(t('user_ban_successful'));
+                    navigate(-1);
+                } else {
+                    return response.json().then((errorText) => {
+                        throw new Error(errorText.detail);
+                    });
+                }
+            })
+            .catch(error => {
+                alert(ERR_BNNING_USER + ' ' + error.message);
+            });
     }
 
     const handleBanClick = () => {
-        // TODO confirmation dialog
+        setShowConfirmationPopup(true);
+    }
+
+
+    const handlePopupConfirm = () => {
         postBan();
+    }
+
+    const handlePopupCancel = () => {
+        setShowConfirmationPopup(false)
     }
 
     useEffect(() => {
@@ -67,6 +92,11 @@ const UserPage = () => {
                     <p>{user.contact_data}</p>
 
                     <button onClick={handleBanClick}>Ban User</button>
+
+
+                    <ConfirmationPopup onConfirm={handlePopupConfirm} onCancel={handlePopupCancel} show={showConfirmationPopup}>
+                        {t('are_you_sure_you_want_to_ban_user') + ' ' + user.username + '?'}
+                    </ConfirmationPopup>
                 </>
             }
         </>

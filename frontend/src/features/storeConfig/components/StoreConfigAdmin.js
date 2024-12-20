@@ -107,7 +107,7 @@ const StoreConfigAdmin = () => {
             body: JSON.stringify(payload)
         })
             .then(response => {
-                if (response) {
+                if (response.ok) {
                     alert(t('store_deleted_successfully'));
                 }
                 else {

@@ -18,6 +18,7 @@ export const ERR_POSTING_LOGOUT_REQUEST         = "Error: logout could not be po
 export const ERR_POSTING_EMAIL_VERIFICATION     = "Error: email verification could not be posted."
 export const ERR_POSTING_NEW_STORE              = "Error: new store could not be posted."
 export const ERR_POSTING_NEW_BIKE               = "Error: new bike could not be posted."
+export const ERR_BNNING_USER                    = "Error: user ban could not be posted."
 
 // deleting
 export const ERR_DELETING_BIKE                  = "Error: bike could not be deleted."
