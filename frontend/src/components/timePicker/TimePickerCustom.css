@@ -1,0 +1,27 @@
+.react-time-picker__clock,
+.react-time-picker__clock-button,
+.react-time-picker__clear-button { 
+    display: none;
+}
+
+.react-time-picker {
+    height: 100%;
+    width: 5rem;
+    border-radius: 0.5rem;
+    transition: all .3s;
+    color: var(--foreground);
+    background-color: var(--background);
+    border: solid 2px var(--foreground);
+}
+
+.react-time-picker--disabled {
+    opacity: 0.25;
+}
+
+.react-time-picker__wrapper {
+    border: none;
+}
+
+.react-time-picker__inputGroup__input {
+    outline: none;
+}

@@ -1,0 +1,203 @@
+/* TODO make border-radius global (and change everywhere) */
+
+html,
+body {
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: var(--background);
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+div#root {
+    min-height: 100vh;
+    width: 100%;
+    background-color: var(--background);
+    color: var(--foreground);
+}
+
+h1, h2 {
+    text-align: left;
+    padding-top: 2rem;
+    padding-bottom: 1rem;
+}
+
+ul {
+    padding: 0;
+}
+
+img {
+    border-radius: 0.5rem;
+}
+
+.logo-img {
+    border-radius: 0;
+}
+
+.button-container {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    margin-right: 1rem;
+    margin-top: 1rem;
+}
+
+button {
+    color: var(--button-foreground);
+    background-color: transparent;
+    border: 2px solid var(--button-border);
+    border-radius: 0.5rem;
+
+    margin-right: 1rem;
+
+    height: 2.5rem;
+    cursor: pointer;
+
+    transition: all 0.15s ease;
+}
+
+button:hover {
+    color: var(--button-foreground-focus);
+    border: 2px solid var(--button-border-focus);
+}
+
+textarea {
+    width: 100%;
+    padding: 1rem;
+    /* margin-bottom: 2rem; */
+    box-sizing: border-box;
+    color: var(--foreground);
+    background-color: var(--content-background);
+    outline: none;
+    border: none;
+    border-radius: 0.5rem;
+    
+    font-size: 105%;
+
+    overflow-x: hidden;
+    overflow-y: scroll;
+
+    resize: none;
+
+    transition: background-color 0.3s ease;
+}
+
+textarea:hover {
+    cursor: pointer;
+}
+
+textarea:focus {
+    background-color: var(--content-background-focused);
+}
+
+textarea::-webkit-scrollbar {
+    width: 0.9rem;
+}
+
+/* textarea::-webkit-scrollbar-track {
+} */
+
+textarea::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb-background);
+    border: 0.3rem solid transparent;
+    background-clip: padding-box;
+    border-radius: 0.5rem;
+}
+
+select {
+    /* width: 5rem; */
+    height: 2.5rem;
+    margin-left: 1rem;
+    padding: 0.5rem;
+
+    color: var(--button-foreground);
+    background-color: var(--button-background);
+    border: solid 2px var(--button-foreground);
+    border-radius: 0.5rem;
+
+    outline: none;
+}
+
+
+[data-theme='light'] {
+    --primary: #e30613; /* Lastenkarle red */
+    --primary-light: #fb3744;
+    --primary-light-light: #fb505b;
+    --foreground: black;
+    --foreground-dim: #707070;
+    --background: white;
+    --content-background: #f1f3f3;
+    --content-background-focused: #e3e8e8;
+    --shadow: 2px 4px 6px rgba(0, 0, 0, 0.3);
+
+    --button-foreground: #707070;
+    --button-foreground-focus: black;
+    --button-background: var(--background);
+    --button-border: var(--button-foreground);
+    --button-border-focus: var(--button-foreground-focus);
+
+    --accent-button-foreground: var(--primary-light);
+    --accent-button-foreground-focus: var(--primary);
+    --accent-button-border: var(--primary-light);
+    --accent-button-border-focus: var(--primary);
+    --accent-button-background: var(--background);
+
+    --textarea-placeholder: #757575;
+
+    --scrollbar-thumb-background: #c7d1d1;
+
+    --label: var(--foreground-dim);
+
+    --popup-overlay: rgba(0, 0, 0, 0.5);
+}
+
+[data-theme='dark'] {
+    --primary: #e30613; /* Lastenkarle red */
+    --primary-light: #fb3744;
+    --primary-light-light: #fb505b;
+    --foreground: white;
+    --foreground-dim: #909090;
+    --background: #2a2d2e;
+    --content-background: #303436;
+    --content-background-focused: #3c4144;
+    --shadow: 2px 4px 6px rgba(0, 0, 0, 0.3);
+
+    --button-foreground: #b0b0b0;
+    --button-foreground-focus: white;
+    --button-background: var(--background);
+    --button-border: var(--button-foreground);
+    --button-border-focus: var(--button-foreground-focus);
+
+    --accent-button-foreground: var(--primary);
+    --accent-button-foreground-focus: var(--primary-light);
+    --accent-button-border: var(--primary);
+    --accent-button-border-focus: var(--primary-light);
+    --accent-button-background: var(--background);
+
+    --textarea-placeholder: #757575;
+
+    --scrollbar-thumb-background: #5c7070;
+
+    --label: var(--foreground-dim);
+
+    --popup-overlay: rgba(0, 0, 0, 0.5);
+    
+}
+
+* {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+        sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    transition: color 0.3s ease;             /* transitions for darkmode/lightmode change */
+    transition: background-color 0.3s ease;                                          
+}
+
+*::selection {
+    color: var(--background);
+    background-color: var(--foreground-dim);
+}

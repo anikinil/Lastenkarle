@@ -1,0 +1,20 @@
+.App {
+    /* flex: 1; */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: center;
+    color: var(--foreground);
+    background-color: var(--background);
+}
+
+/* THINK how to make an adjustable, but not to wide content container */
+.content-container {
+    display: inline-block;
+    justify-content: left;
+    height: 100%;
+    width: 75%;
+    padding: 5rem;
+}

@@ -1,0 +1,24 @@
+.button {
+    position: relative;
+    margin-top: 1rem;
+    margin-left: 0;
+}
+
+.regular {
+    color: var(--button-foreground);
+}
+
+.regular:hover {
+    color: var(--button-foreground-focus);
+    border-color: var(--button-border-focus);
+}
+
+.accent {
+    color: var(--accent-button-foreground);
+    border-color: var(--acent-button-border);
+}
+
+.accent:hover {
+    color: var(--accent-button-foreground-focus);
+    border-color: var(--accent-button-border-focus);
+}

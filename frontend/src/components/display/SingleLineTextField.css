@@ -1,0 +1,18 @@
+.text-field {
+    float: inline-start;
+    width: calc(100% - 1rem);
+    resize: none;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+}
+
+.text-field:disabled {
+    cursor: default;
+}
+
+.text-field::placeholder {
+    color: var(--textarea-placeholder);
+}

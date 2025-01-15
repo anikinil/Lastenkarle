@@ -1,0 +1,152 @@
+{
+    "__Navbar":                             "Navbar.js - war bereits abgedeckt",
+    "all_bookings":                         "Alle Buchungen",
+    "all_users":                            "Alle Benutzer",
+
+    "__DayRow":                             "DayRow.js - bereits abgedeckt",
+
+    "__StoreOpeningTimesConfig":            "StoreOpeningTimesConfig.js",
+    "monday":                               "Montag",
+    "tuesday":                              "Dienstag",
+    "wednesday":                            "Mittwoch",
+    "thursday":                             "Donnerstag",
+    "friday":                               "Freitag",
+    "saturday":                             "Samstag",
+    "sunday":                               "Sonntag",
+    "opening_times":                        "Öffnungszeiten",
+    "open":                                 "Geöffnet",
+    "from":                                 "von",
+    "to":                                   "bis",
+    "closed":                               "Geschlossen",
+
+    "__BikeList":                           "BikeList.js",
+    "register_new_bike":                    "Neues Lastenrad anlegen",
+    
+    "__BikeListItem":                       "BikeListItem.js",
+    "bike_deleted_successfully":            "Lastenrad erfolgreich entfernt",
+    "store":                                "Station",
+    "are_you_sure_you_want_to_delete_bike": "Wollen Sie sicher folgendes Lastenrad entfernen:",
+
+    "__AllBikesPage":                       "AllBikesPage.js",
+    "all_bikes_in_system":                  "Lastenradübersicht",
+
+    "__AllStoresPage":                      "AllStoresPage.js",
+    "stores":                               "Stationen",
+    "are_you_sure_you_want_to_delete_store": "Wollen Sie sicher folgende Station entfernen:",
+    "delete":                               "Entfernen",
+    "confirm":                              "Bestätigen",
+
+    "__BikeRegistration":                   "BikeRegistration.js",
+    "bike_registration_successful":         "Registrierung des Lastenrades wurde erfolgreich abgeschlossen",
+    "new_bike_to":                          "Neues Lastenrad hinzufügen zu Station:",
+    "name":                                 "Name",
+
+    "__BookingPage":                        "BookingPage.js",
+    "equipment":                            "Equipment",
+
+    "__BookingListItem":                    "BookingListItem.js",
+    "[commented]":                          "kommentiert",
+
+    "__BookingList":                        "BookingList.js",
+    "filter":                               "Filtern",
+    "show_all":                             "Alle anzeigen",
+
+    "__Enrollment":                         "Enrollment.js",
+    "enrollment_successful":                "Ernennung war erfolgreich",
+    "role_not_selected":                    "Es ist noch keine Rolle ausgewählt",
+
+    "__MyStoresPage":                       "MyStoresPage.js - bereits abgedeckt",
+
+    "__StoreBookings":                      "StoreBookings.js",
+    "bookings_of_store":                    "Buchungen für die Station:",
+
+    "__StoreConfigAdmin":                   "StoreConfigAdmin.js",
+    "store_deleted_successfully":           "Station wurde erfolgreich entfernt",
+    "admin_view":                           "Adminansicht",
+    "add_bike_to_store":                    "Lastenrad zu Station hinzufügen",
+    "submit_changes":                       "Änderungen speichern",
+    "delete_store":                         "Station entfernen",
+
+    "__StoreConfigManager":                 "StoreConfigManager.js",
+    "manager_view":                         "Manageransicht",
+
+    "__StoreList":                          "StoreList.js",
+    "add_new_store":                        "Neue Station hinzufügen",
+
+    "__StoreRegistration":                  "StoreRegistraion.js",
+    "store_registration_successful":        "Station erfolgreich hinzugefügt",
+    "new_store":                            "Neue Station",
+    "select_region":                        "Region auswählen",
+    "register_new_store":                   "Station hinzufügen",
+
+    "__UserBan":                            "UserBan.js",
+    "user_ban":                             "Nutzer bannen",
+
+    "__UserListItem":                       "UserListItem.js",
+    "ban":                                  "Bannen",
+
+    "__UserList":                           "UserList.js",
+    "sort":                                 "Sortieren",
+
+    "__AccountDeletion":                    "AccountDeletion.js",
+    "account_deletion":                     "Meinen Account löschen",
+    "are_you_sure_you_want_to_delete_your_account": "Sind Sie sicher, dass sie ihren Account löschen wollen?",
+
+    "__EmailVerification":                  "EmailVerification.js",
+    "email_verification":                   "E-Mail-Verifizierung",
+    "email_verification_successful":        "Verifizierung war errfolgreich",
+    "continue":                             "Fortfahren",
+    "verify_email":                         "E-Mail verifizieren",
+
+    "__Login":                              "Login.js",
+    "login":                                "Anmelden",
+    "enter_username":                       "Benutzername eingeben",
+    "enter_password":                       "Passwort eingeben",
+    "helmholtz_login":                      "Helmholtz Login",
+    "register_instead":                     "Stattdessen registrieren",
+
+    "__Home":                               "Home.js",
+    "homepage":                             "Startseite",
+    "bike_list":                            "Liste der Lastenräder",
+    "store_list":                           "Liste der Stationen",
+    "placeholder_open_from_time":           "8:00",
+    "placeholder_open_to_time":             "19:00",
+    "placeholder_closed_from_time":         "12:00",
+    "placeholder_closed_to_time":           "13:00",
+
+    "__Register":                           "Register.js",
+    "register":                             "Registrieren",
+    "enter_contact_data":                   "Kontaktdaten eingeben",
+    "enter_year_of_birth":                  "Geburtsjahr eingeben",
+    "enter_first_name":                     "Vorname eingeben",
+    "enter_last_name":                      "Nachname eingeben",
+    "helmholtz_registration":               "Helmholtz Registrierung",
+    "login_instead":                        "Stattdessen anmelden",
+
+    "__ProtectedElement":                   "ProtectedElement.js",
+    "you_have_no_permission_to_visit_page": "Sie haben keine Rechte für diesen Bereich",
+
+    "__PageNotFound":                       "PageNotFound.js",
+    "page_not_found":                       "Diese Seite konnte nicht gefunden werden :(",
+
+    "booking":                              "Buchung",
+    "rent":                                 "Buchen",
+    "my_stores":                            "Meine Stationen",
+    "admin_activities":                     "Adminaktivitäten",
+    "bookings":                             "Buchungen",
+    "users":                                "Benutzer",
+    "all_stores":                           "Alle Stationen",
+    "all_bikes":                            "Alle Lastenräder",
+    "enrollment":                           "Einschreibung",
+    "logout":                               "Abmelden",
+    "delete_account":                       "Account löschen",
+
+    "are_you_sure_you_want_to_logout":      "Möchten Sie sich wirklich abmelden?",
+    "cancel":                               "Abbrechen",
+
+    "select_role":                          "Rolle auswählen",
+    "enroll":                               "Ernennen",
+
+    "__Loading":                            "Loading.js",
+    "loading":                              "Lädt..."
+}

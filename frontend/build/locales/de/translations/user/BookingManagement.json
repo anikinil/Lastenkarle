@@ -1,8 +1,0 @@
-{
-    "heading":          "Buchungsverwaltung",
-    "start_date":       "Startdatum",
-    "end_date":         "Enddatum",
-    "booking_status":   "Buchungsstatus",
-    "no_bookings":      "Es sind keine Buchungen im System gespeichert.",
-    "back":             "Zurück"
-}
