@@ -52,4 +52,4 @@ services:
     depends_on:
       - db
     ports:
-      - "40001:80"
+      - "40002:80"
