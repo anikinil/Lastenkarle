@@ -17,21 +17,15 @@ const BikeCalendar = () => {
     const [selectedEndDate, setSelectedEndDate] = useState(null);
     const [availability, setAvailability] = useState({
         // Beispiel-Daten für die Verfügbarkeit (0 = buchbar, 1 = reserviert, 2 = geschlossen, 3 = nicht buchbar)
-        '2024-11-06': 0,
-        '2024-11-07': 1,
-        '2024-11-08': 3,
-        '2024-11-09': 0,
-        '2024-11-10': 0,
-        '2024-11-11': 0,
-        '2024-11-12': 0,
-        '2024-11-13': 0,
-        '2024-11-14': 0,
-        '2024-11-15': 0,
-        '2024-11-16': 0,
-        '2024-11-17': 0,
-        '2024-11-18': 0
+        '2025-01-17': 0,
+        '2025-01-00': 0,
+        '2025-01-01': 0,
+        '2025-01-15': 0,
+        '2025-01-16': 0,
+        '2025-01-18': 0 
         // Weitere Verfügbarkeiten
     });
+
 
     const handleDayClick = (date) => {
         const dateString = date.toISOString().split('T')[0];
@@ -89,17 +83,18 @@ const BikeCalendar = () => {
         });
     };
 
+    //TODO: Monatsstring in jeweils gewählter Sprache ausgeben lassen
     return (
         <div className="booking-calendar">
             <div className="month-container">
-                <h2>Aktueller Monat {currentMonth + 1} {currentYear}</h2>
+                <h2>{new Date(currentYear, currentMonth).toLocaleString('de-DE', { month: 'long' })} {currentYear}</h2>
                 <div className="calendar-grid">
                     {renderCalendarDays(currentMonth, currentYear)}
                 </div>
             </div>
 
             <div className="month-container">
-                <h2>Nächster Monat {currentMonth + 2} {currentYear}</h2>
+                <h2>{new Date(currentYear, currentMonth + 1).toLocaleString('de-DE', { month: 'long' })} {currentYear}</h2>
                 <div className="calendar-grid">
                     {renderCalendarDays(currentMonth + 1, currentYear)}
                 </div>
