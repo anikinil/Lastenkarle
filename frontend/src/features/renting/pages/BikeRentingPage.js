@@ -6,13 +6,12 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import ImageAndDescriptionField from '../../../components/display/imageAndDescriptionField/ImageAndDescriptionField';
 import SingleLineTextField from '../../../components/display/SingleLineTextField';
-import BikeCalendar from '../components/calendar/BikeCalendar';
+import BikeCalendar from '../../renting/components/calendar/BikeCalendar';
 import { ID } from '../../../constants/URIs/General';
 import { BIKE_BY_ID, STORE_BY_BIKE_ID } from '../../../constants/URIs/RentingURIs';
 import { ERR_FETCHING_BIKE, ERR_FETCHING_STORE } from '../../../constants/ErrorMessages';
 import { getCookie } from '../../../services/Cookies';
 import { STORE_DISPLAY } from '../../../constants/URLs/Navigation';
-import { STORE_NAME } from '../../../constants/URLs/General';
 
 //Standard page for a Bike
 //TODO: organize Images
@@ -37,7 +36,8 @@ const BikeRentingPage = () => {
     const fetchBike = () => {
         fetch(BIKE_BY_ID.replace(ID, bikeId), {
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`,
             }
         })
             .then(response => response.json())
@@ -53,7 +53,8 @@ const BikeRentingPage = () => {
     const fetchStore = () => {
         fetch(STORE_BY_BIKE_ID.replace(ID, bikeId), {
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`,
             }
         })
             .then(response => response.json())
@@ -73,28 +74,24 @@ const BikeRentingPage = () => {
 
     // Handle click on store button
     const handleStoreClick = () => {
-        navigate(STORE_DISPLAY.replace(ID, bikeId)) // Navigate to store page
+        navigate(STORE_DISPLAY.replace(ID, bike.id)) // Navigate to store page by bike ID
     }
 
     return (
         <>
-            {bike &&
-                <>
-                    <h1>{bike?.name}</h1> {/* Display bike name */}
+            <h1>{bike?.name}</h1> {/* Display bike name */}
 
-                    {/* Display bike image and description */}
-                    <ImageAndDescriptionField editable={false} imageValue={bike.image} descriptionValue={bike.description} />
-                    {/* Display store address */}
-                    <SingleLineTextField editable={false} value={store?.address} title='address' />
+            {/* Display bike image and description */}
+            <ImageAndDescriptionField editable={false} object={bike} />
+             {/* Display store address */}
+            <SingleLineTextField editable={false} value={store?.address} title='address' />
 
-                    <div className='button-container'>
-                        <button type='button' className='button regular' onClick={handleStoreClick}>{store?.name}</button> {/* Button to navigate to store page */}
-                    </div>
+            <div className='button-container'>
+                <button type='button' className='button regular' onClick={handleStoreClick}>{store?.name}</button> {/* Button to navigate to store page */}
+            </div>
 
-                    {/* Display bike calendar for reservations */}
-                    <BikeCalendar />
-                </>
-            }
+            {/* Display bike calendar for reservations */}
+            <BikeCalendar />
         </>
     );
 };
