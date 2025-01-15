@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import defaultBikeImage from '../../../assets/images/default_bike.png'
 import { useNavigate } from 'react-router-dom';
 import { HOST } from '../../../constants/URIs/General';
+import { BOOKING_PAGE } from '../../../constants/URLs/Navigation';
 
 const BookingListItem = ({ booking }) => {
 
