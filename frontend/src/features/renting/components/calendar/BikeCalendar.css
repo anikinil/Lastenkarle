@@ -11,18 +11,18 @@
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 10px;
+  gap: 0px;
 }
 
 .calendar-day {
   padding: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid #48494bfd;
   text-align: center;
   cursor: pointer;
 }
 
 .calendar-day.available {
-  background-color: #8fbc8f; /* Grün für buchbar */
+  background-color: #5f5ea3; /* Grün für buchbar */
 }
 
 .calendar-day.reserved {
@@ -34,12 +34,12 @@
 }
 
 .calendar-day.not-bookable {
-  background-color: #ff6347; /* Rot für nicht buchbar */
+  background-color: #ac685c; /* Rot für nicht buchbar */
   /* pointer-events: none; */
 }
 
 .calendar-day.selected {
-  border: 2px solid #000;
+  border: 3px solid #3b6499;
 }
 
 .selection-info {
