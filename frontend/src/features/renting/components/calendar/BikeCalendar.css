@@ -2,7 +2,6 @@
 /* BikeCalendar.css */
 .booking-calendar {
   font-family: Arial, sans-serif;
-  align-items: center;
 }
 
 .month-container {
@@ -11,7 +10,7 @@
 
 .calendar-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(10, 1fr);
   gap: 0px;
   width: 60%;
 }
