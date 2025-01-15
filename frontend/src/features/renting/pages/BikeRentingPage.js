@@ -12,6 +12,7 @@ import { BIKE_BY_ID, STORE_BY_BIKE_ID } from '../../../constants/URIs/RentingURI
 import { ERR_FETCHING_BIKE, ERR_FETCHING_STORE } from '../../../constants/ErrorMessages';
 import { getCookie } from '../../../services/Cookies';
 import { STORE_DISPLAY } from '../../../constants/URLs/Navigation';
+import { STORE_NAME } from '../../../constants/URLs/General';
 
 //Standard page for a Bike
 //TODO: organize Images
@@ -72,7 +73,7 @@ const BikeRentingPage = () => {
 
     // Handle click on store button
     const handleStoreClick = () => {
-        navigate(STORE_DISPLAY.replace(ID, bike.id)) // Navigate to store page by bike ID
+        navigate(STORE_DISPLAY.replace(ID, bikeId)) // Navigate to store page
     }
 
     return (

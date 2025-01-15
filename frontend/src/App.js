@@ -1,4 +1,4 @@
-import React, { Suspense, useContext, useEffect } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import useLocalStorage from 'use-local-storage';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ProtectedElement } from './utils/ProtectedElement';
@@ -15,7 +15,6 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Logout from './pages/Logout';
 import AccountDeletion from './pages/AccountDeletion';
-// import UserBan from './features/userBan/pages/UserBan';
 import Navbar from './components/navbar/Navbar';
 import Renting from './features/renting/pages/Renting';
 
@@ -31,7 +30,6 @@ import StoreBookings from './features/storeBookings/pages/StoreBookings';
 
 import { BIKE_RENTING, BIKE_REGISTRATION, ALL_BIKES, RENTING, ACCOUNT_DELETION, EMAIL_VERIFICATION, 
     ENROLLMENT, HOME, LOGIN, LOGOUT, REGIONAL_RENTING, REGISTER, STORE_BOOKINGS, STORE_REGISTRATION, 
-    // USER_BAN,
     STORE_CONFIG, MY_STORES, ALL_STORES, STORE_DISPLAY, BIKE_CONFIG, ALL_BOOKINGS, ALL_USERS, 
     USER_PAGE} 
     from './constants/URLs/Navigation';
@@ -51,6 +49,8 @@ import Loading from './pages/loading/Loading';
 import { tokenExpired } from './services/Token';
 import { setCookie } from './services/Cookies';
 import UserPage from './features/userPage/UserPage';
+
+// TODO fix region selection everywhere
 
 // THINK look into AuthService for login and logout
 const App = () => {
