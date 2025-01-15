@@ -15,7 +15,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Logout from './pages/Logout';
 import AccountDeletion from './pages/AccountDeletion';
-import UserBan from './features/userBan/pages/UserBan';
+// import UserBan from './features/userBan/pages/UserBan';
 import Navbar from './components/navbar/Navbar';
 import Renting from './features/renting/pages/Renting';
 
@@ -31,7 +31,8 @@ import StoreBookings from './features/storeBookings/pages/StoreBookings';
 
 import { BIKE_RENTING, BIKE_REGISTRATION, ALL_BIKES, RENTING, ACCOUNT_DELETION, EMAIL_VERIFICATION, 
     ENROLLMENT, HOME, LOGIN, LOGOUT, REGIONAL_RENTING, REGISTER, STORE_BOOKINGS, STORE_REGISTRATION, 
-    USER_BAN, STORE_CONFIG, MY_STORES, ALL_STORES, STORE_DISPLAY, BIKE_CONFIG, ALL_BOOKINGS, ALL_USERS, 
+    // USER_BAN,
+    STORE_CONFIG, MY_STORES, ALL_STORES, STORE_DISPLAY, BIKE_CONFIG, ALL_BOOKINGS, ALL_USERS, 
     USER_PAGE} 
     from './constants/URLs/Navigation';
 import { ID, KEY, REGION_NAME, STORE_NAME } from './constants/URLs/General';
@@ -99,9 +100,9 @@ const App = () => {
                                 <Route exact path={ENROLLMENT} element={
                                     <ProtectedElement element={<Enrollment />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
                                 } />
-                                <Route exact path={USER_BAN} element={
+                                {/* <Route exact path={USER_BAN} element={
                                     <ProtectedElement element={<UserBan />} elementRoles={[Roles.MANAGER]} />
-                                } />
+                                } /> */}
                                 <Route exact path={ALL_USERS} element={
                                     <ProtectedElement element={<UserListPage />} elementRoles={[Roles.ADMINISTRATOR]} />
                                 } />
