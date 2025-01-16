@@ -2,6 +2,10 @@
 /* BikeCalendar.css */
 .booking-calendar {
   font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column; /* Align content in a vertical stack */
+  align-items: center;    /* Center horizontally */
+  text-align: center;     /* Ensure text is centered within blocks */
 }
 
 .month-container {
