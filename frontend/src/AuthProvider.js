@@ -4,6 +4,8 @@ import { Roles } from './constants/Roles';
 
 export const AuthContext = createContext();
 
+// THINK maybe check if user owns a store and add "manager" to userRoles if so
+// (needs to be adjusted everywhere where AuthProvider is used)
 export const AuthProvider = ({ children }) => {
 
     const [userRoles, setUserRoles] = useState([Roles.VISITOR]);

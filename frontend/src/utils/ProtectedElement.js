@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { getCookie } from '../services/Cookies';
-import { USER_DATA } from '../constants/URIs/UserURIs';
-import { ERR_FETCHING_USER_FLAGS } from '../constants/ErrorMessages';
+import React, { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { AuthContext } from '../AuthProvider';
+import { Roles } from '../constants/Roles';
 
 // ProtectedElement component to restrict access based on user roles
 export const ProtectedElement = ({element, elementRoles}) => {
@@ -10,33 +9,14 @@ export const ProtectedElement = ({element, elementRoles}) => {
     // Translation hook
     const { t } = useTranslation();
 
+    const { userRoles, userStores } = useContext(AuthContext);
     const [hasPermission, setHasPermissoin] = useState(false)
 
-    const fetchUserRoles = () => {
-        const token = getCookie('token');
-        if (token !== 'undefined' && token !== null) {
-            fetch(USER_DATA, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Token ${token}`,
-                }
-            })
-                .then(response => response.json())
-                .then(data => {
-                    const userRoles = data.user_flags.map(element => element.flag)
-                    setHasPermissoin(elementRoles.some(role => userRoles.includes(role)))
-                })
-                .catch(error => {
-                    console.error(ERR_FETCHING_USER_FLAGS, error);
-                });
-        } else {
-            setHasPermissoin(false)
-        }
-    }
-
     useEffect(() => {
-        fetchUserRoles();
-    }, [])
+        let roles = userRoles;
+        if (userStores.length > 0) roles.push(Roles.MANAGER);
+        setHasPermissoin(elementRoles.some(role => roles.includes(role)))
+    }, [userRoles, userStores])
 
     // If the user has permission, render the provided element, otherwise redirect to the no-permission page
     return (hasPermission ? (
