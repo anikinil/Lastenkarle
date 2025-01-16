@@ -124,7 +124,7 @@
     "login_instead":                        "Stattdessen anmelden",
 
     "__ProtectedElement":                   "ProtectedElement.js",
-    "you_have_no_permission_to_visit_page": "Sie haben keine Rechte für diesen Bereich",
+    "you_have_no_permission_to_visit_page": "Sie haben keine Rechte für diesen Bereich.",
 
     "__PageNotFound":                       "PageNotFound.js",
     "page_not_found":                       "Diese Seite konnte nicht gefunden werden :(",
