@@ -1,6 +1,4 @@
 // Calendar for page of a singular bike
-// TODO: Reservation Calendar with two months in advance view
-// TODO: Legend for Colours (available, booked, closed, unavailable)
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import './BikeCalendar.css'; // CSS für die Farblegende
@@ -50,10 +48,12 @@ const BikeCalendar = () => {
         } else if (selectedStartDate && !selectedEndDate) {
             if (date >= selectedStartDate) {
                 setSelectedEndDate(date);
-            } else {
+            }
+            if (date <= selectedStartDate){
                 setSelectedStartDate(date);
             }
         }
+
     };
 
     const renderCalendarDays = (month, year) => {
@@ -92,7 +92,6 @@ const BikeCalendar = () => {
         });
     };
 
-    //TODO: Monatsstring in jeweils gewählter Sprache ausgeben lassen
     return (
         <div className="booking-calendar">
             <div className="month-container-wrapper">
