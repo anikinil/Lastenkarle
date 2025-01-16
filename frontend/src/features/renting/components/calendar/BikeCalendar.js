@@ -2,13 +2,22 @@
 // TODO: Reservation Calendar with two months in advance view
 // TODO: Legend for Colours (available, booked, closed, unavailable)
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import './BikeCalendar.css'; // CSS für die Farblegende
+import i18n from 'i18next';
 
 const getDaysInMonth = (month, year) => {
     return new Date(year, month + 1, 0).getDate();
 };
 
+const getCurrLang = () => {
+    return i18n.language
+}
+
 const BikeCalendar = () => {
+
+
+    const { t } = useTranslation(); // Translation hook
     const today = new Date();
     const currentMonth = today.getMonth();
     const currentYear = today.getFullYear();
@@ -88,14 +97,14 @@ const BikeCalendar = () => {
         <div className="booking-calendar">
             <div className="month-container-wrapper">
                 <div className="month-container">
-                    <h2>{new Date(currentYear, currentMonth).toLocaleString('de-DE', { month: 'long' })} {currentYear}</h2>
+                    <h2>{new Date(currentYear, currentMonth).toLocaleString(getCurrLang(), { month: 'long' })} {currentYear}</h2>
                     <div className="calendar-grid">
                         {renderCalendarDays(currentMonth, currentYear)}
                     </div>
                 </div>
 
                 <div className="month-container">
-                    <h2>{new Date(currentYear, currentMonth + 1).toLocaleString('de-DE', { month: 'long' })} {currentYear}</h2>
+                    <h2>{new Date(currentYear, currentMonth + 1).toLocaleString(getCurrLang(), { month: 'long' })} {currentYear}</h2>
                     <div className="calendar-grid">
                         {renderCalendarDays(currentMonth + 1, currentYear)}
                     </div>
@@ -103,8 +112,8 @@ const BikeCalendar = () => {
             </div>
 
             <div className="selection-info">
-                <p>Abholung: {selectedStartDate ? selectedStartDate.toDateString() : "Bitte wählen Sie ein Datum"}</p>
-                <p>Rückgabe: {selectedEndDate ? selectedEndDate.toDateString() : "Bitte wählen Sie ein Datum"}</p>
+                <p>{t('pickup_date')}: {selectedStartDate ? selectedStartDate.toDateString() : t('select_date')}</p>
+                <p>{t('return_date')}: {selectedEndDate ? selectedEndDate.toDateString(): t('select_date')}</p>
             </div>
 
             <div className="legend">
