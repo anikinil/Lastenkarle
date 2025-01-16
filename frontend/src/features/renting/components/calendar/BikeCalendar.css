@@ -13,8 +13,8 @@
   .month-container-wrapper {
     display: flex;
     justify-content: center;
-    gap: 20px; /* Space between the two months */
-    width: 100%; /* Ensure it spans the entire booking-calendar width */
+    gap: 15px; /* Space between the two months */
+    width: 10%; /* Ensure it spans the entire booking-calendar width */
   }
   
   /* Ensure each month container is centered and has equal width */
