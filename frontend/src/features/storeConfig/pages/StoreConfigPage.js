@@ -8,7 +8,7 @@ import { AuthContext } from '../../../AuthProvider';
 
 const StoreConfigPage = () => {
 
-    const [isAdmin, setIsAdmin] = useState('rendering');
+    const [isAdmin, setIsAdmin] = useState(false);
 
     const { userRoles } = useContext(AuthContext);
 
