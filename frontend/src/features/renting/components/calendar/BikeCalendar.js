@@ -22,7 +22,7 @@ const BikeCalendar = () => {
         '2025-01-01': 0,
         '2025-01-15': 0,
         '2025-01-16': 0,
-        '2025-01-18': 0 
+        '2025-01-18': 0
         // Weitere Verfügbarkeiten
     });
 
@@ -86,17 +86,19 @@ const BikeCalendar = () => {
     //TODO: Monatsstring in jeweils gewählter Sprache ausgeben lassen
     return (
         <div className="booking-calendar">
-            <div className="month-container">
-                <h2>{new Date(currentYear, currentMonth).toLocaleString('de-DE', { month: 'long' })} {currentYear}</h2>
-                <div className="calendar-grid">
-                    {renderCalendarDays(currentMonth, currentYear)}
+            <div className="month-container-wrapper">
+                <div className="month-container">
+                    <h2>{new Date(currentYear, currentMonth).toLocaleString('de-DE', { month: 'long' })} {currentYear}</h2>
+                    <div className="calendar-grid">
+                        {renderCalendarDays(currentMonth, currentYear)}
+                    </div>
                 </div>
-            </div>
 
-            <div className="month-container">
-                <h2>{new Date(currentYear, currentMonth + 1).toLocaleString('de-DE', { month: 'long' })} {currentYear}</h2>
-                <div className="calendar-grid">
-                    {renderCalendarDays(currentMonth + 1, currentYear)}
+                <div className="month-container">
+                    <h2>{new Date(currentYear, currentMonth + 1).toLocaleString('de-DE', { month: 'long' })} {currentYear}</h2>
+                    <div className="calendar-grid">
+                        {renderCalendarDays(currentMonth + 1, currentYear)}
+                    </div>
                 </div>
             </div>
 
@@ -112,6 +114,7 @@ const BikeCalendar = () => {
                 <p><span className="legend-color not-bookable"></span> Nicht buchbar</p>
             </div>
         </div>
+
     );
 };
 

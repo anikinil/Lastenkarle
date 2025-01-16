@@ -1,17 +1,28 @@
 /* Standard-Styles von react-calendar importieren */
 /* BikeCalendar.css */
+/* Update .booking-calendar to arrange months side by side */
 .booking-calendar {
-  font-family: Arial, sans-serif;
-  display: flex;
-  flex-direction: column; /* Align content in a vertical stack */
-  align-items: center;    /* Center horizontally */
-  text-align: center;     /* Ensure text is centered within blocks */
-}
-
-.month-container {
-  margin-bottom: 20px;
-}
-
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  /* Flex container for the two months */
+  .month-container-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 20px; /* Space between the two months */
+    width: 100%; /* Ensure it spans the entire booking-calendar width */
+  }
+  
+  /* Ensure each month container is centered and has equal width */
+  .month-container {
+    flex: 1;
+    text-align: center;
+  }
+  
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(10, 1fr);
