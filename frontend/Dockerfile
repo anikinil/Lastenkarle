@@ -1,4 +1,4 @@
-# Use an official node image as the base (Node version 20)
+# Use an official node image as the base (Node version 16)
 FROM node:16-alpine
 
 # Set the working directory
