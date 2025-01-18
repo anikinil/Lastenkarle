@@ -37,16 +37,15 @@ const Enrollment = () => {
     // Fetch stores on component mount
     useEffect(() => {
         fetchStores();
-    });
+    }, []);
 
     // Generate role options for the select dropdown
     const roleOptions = [
         // TODO make proper store manager role parsing for API
-        // TODO use translations for labels
-        { value: '', label: 'Nicht ausgewählt' },
-        { value: Roles.ADMINISTRATOR, label: 'Administrator' },
+        { value: '', label: t('not_selected') },
+        { value: Roles.ADMINISTRATOR, label: Roles.ADMINISTRATOR },
         ...stores.map((store) => (
-            { value: `Store: ${store.name}`, label: 'Manager von ' + store.name }
+            { value: `Store: ${store.name}`, label: t('manager_of') + ' ' + store.name }
         )),
     ];
 

@@ -22,11 +22,6 @@ const Register = () => {
     const [lastName, setLastName] = useState('');
     const [password, setPassword] = useState('');
 
-    // Handle register button click
-    const handleRegisterClick = () => {
-        postRegister();
-    };
-
     // Function to post registration data
     const postRegister = () => {
         let payload = {
@@ -135,94 +130,89 @@ const Register = () => {
         window.location.replace(HELMHOLTZ);
     }
 
-    // Prevent user from switching to new line by hitting [Enter]
-    const handleFieldKeyDown = (event) => {
-        if (event.key === 'Enter') {
-            event.preventDefault();
-        }
-    };
+    // // Prevent user from switching to new line by hitting [Enter]
+    // const handleFieldKeyDown = (event) => {
+    //     if (event.key === 'Enter') {
+    //         event.preventDefault();
+    //     }
+    // };
 
     // Handle login button click
     const handleLoginClick = () => {
         navigate(LOGIN_URL);
     };
 
-    // TODO use SingleLineInput component everywhere
+    const handleSubmit = e => {
+        e.preventDefault();
+        postRegister();
+    };
+
     return (
         <>
             <h1>{t('register')}</h1>
 
-            <textarea
-                title={t('enter_username')}
-                className='username'
-                rows='1'
-                value={username}
-                onChange={e => setUsername(e.target.value)}
-                onKeyDown={handleFieldKeyDown}
-                placeholder={t('enter_username')}
-            >
-            </textarea>
+            <form onSubmit={handleSubmit}>
 
-            <textarea
-                title={t('enter_contact_data')}
-                className='contact-data'
-                rows='1'
-                value={contactData}
-                onChange={e => setContactData(e.target.value)}
-                onKeyDown={handleFieldKeyDown}
-                placeholder={t('enter_contact_data')}
-            >
-            </textarea>
+                <input
+                    type='text'
+                    title={t('enter_username')}
+                    className='username'
+                    value={username}
+                    onChange={e => setUsername(e.target.value)}
+                    placeholder={t('enter_username')}
+                />
 
-            <textarea
-                title={t('enter_year_of_birth')}
-                className='year-of-birth'
-                rows='1'
-                value={yearOfBirth}
-                onChange={e => setYearOfBirth(e.target.value)}
-                onKeyDown={handleFieldKeyDown}
-                placeholder={t('enter_year_of_birth')}
-            >
-            </textarea>
+                <input
+                    type='text'
+                    title={t('enter_contact_data')}
+                    className='contact-data'
+                    value={contactData}
+                    onChange={e => setContactData(e.target.value)}
+                    placeholder={t('enter_contact_data')}
+                />
 
-            <textarea
-                title={t('enter_first_name')}
-                className='first_name'
-                rows='1'
-                value={firstName}
-                onChange={e => setFirstName(e.target.value)}
-                onKeyDown={handleFieldKeyDown}
-                placeholder={t('enter_first_name')}
-            >
-            </textarea>
+                <input
+                    type='number'
+                    title={t('enter_year_of_birth')}
+                    className='year-of-birth'
+                    value={yearOfBirth}
+                    onChange={e => setYearOfBirth(e.target.value)}
+                    placeholder={t('enter_year_of_birth')}
+                />
 
-            <textarea
-                title={t('enter_last_name')}
-                className='last_name'
-                rows='1'
-                value={lastName}
-                onChange={e => setLastName(e.target.value)}
-                onKeyDown={handleFieldKeyDown}
-                placeholder={t('enter_last_name')}
-            >
-            </textarea>
+                <input
+                    type='text'
+                    title={t('enter_first_name')}
+                    className='first-name'
+                    value={firstName}
+                    onChange={e => setFirstName(e.target.value)}
+                    placeholder={t('enter_first_name')}
+                />
 
-            <textarea
-                title={t('enter_password')}
-                className='password'
-                rows='1'
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                onKeyDown={handleFieldKeyDown}
-                placeholder={t('enter_password')}
-            >
-            </textarea>
+                <input
+                    type='text'
+                    title={t('enter_last_name')}
+                    className='last-name'
+                    value={lastName}
+                    onChange={e => setLastName(e.target.value)}
+                    placeholder={t('enter_last_name')}
+                />
 
-            <div className='button-container'>
-                <button type='button' className='button accent' onClick={handleRegisterClick}>{t('register')}</button>
-                <button type='button' className='button regular' onClick={handleHelmholtzRegistrationClick}>{t('helmholtz_registration')}</button>
-                <button type='button' className='button regular' onClick={handleLoginClick}>{t('login_instead')}</button>
-            </div>
+                <input
+                    type='password'
+                    title={t('enter_password')}
+                    className='password'
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    placeholder={t('enter_password')}
+                />
+
+                <div className='button-container'>
+                    <button type='submit' className='button accent'>{t('register')}</button>
+                    <button type='button' className='button regular' onClick={handleHelmholtzRegistrationClick}>{t('helmholtz_registration')}</button>
+                    <button type='button' className='button regular' onClick={handleLoginClick}>{t('login_instead')}</button>
+                </div>
+            </form>
         </>
     );
 };

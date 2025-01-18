@@ -1,6 +1,5 @@
 import { getCookie } from "./Cookies";
 
-// TODO use everywhere where getCookie('token') is used
 export const getToken = () => {
     return getCookie('token');
 };

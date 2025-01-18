@@ -1,9 +1,7 @@
 import React from 'react';
 
 
-
-
-
+// TODO implement this component
 const BikeConfigManager = () => {
     return (
         <div>

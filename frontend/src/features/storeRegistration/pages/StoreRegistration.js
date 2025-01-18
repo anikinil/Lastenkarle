@@ -47,6 +47,7 @@ const StoreRegistration = () => {
             .then(response => response.json())
             .then(data => {
                 setRegionOptions(data.map(element => ({label: element.name, value: element.name})));
+                setRegion(data[0].name);
             })
             .catch(error => {
                 console.error(ERR_FETCHING_REGIONS, error);

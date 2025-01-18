@@ -1,14 +1,21 @@
 // Calendar for page of a singular bike
-// TODO: Reservation Calendar with two months in advance view
-// TODO: Legend for Colours (available, booked, closed, unavailable)
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import './BikeCalendar.css'; // CSS für die Farblegende
+import i18n from 'i18next';
 
 const getDaysInMonth = (month, year) => {
     return new Date(year, month + 1, 0).getDate();
 };
 
+const getCurrLang = () => {
+    return i18n.language
+}
+
 const BikeCalendar = () => {
+
+
+    const { t } = useTranslation(); // Translation hook
     const today = new Date();
     const currentMonth = today.getMonth();
     const currentYear = today.getFullYear();
@@ -17,21 +24,15 @@ const BikeCalendar = () => {
     const [selectedEndDate, setSelectedEndDate] = useState(null);
     const [availability, setAvailability] = useState({
         // Beispiel-Daten für die Verfügbarkeit (0 = buchbar, 1 = reserviert, 2 = geschlossen, 3 = nicht buchbar)
-        '2024-11-06': 0,
-        '2024-11-07': 1,
-        '2024-11-08': 3,
-        '2024-11-09': 0,
-        '2024-11-10': 0,
-        '2024-11-11': 0,
-        '2024-11-12': 0,
-        '2024-11-13': 0,
-        '2024-11-14': 0,
-        '2024-11-15': 0,
-        '2024-11-16': 0,
-        '2024-11-17': 0,
-        '2024-11-18': 0
+        '2025-01-17': 0,
+        '2025-01-00': 0,
+        '2025-01-01': 0,
+        '2025-01-15': 0,
+        '2025-01-16': 0,
+        '2025-01-18': 0
         // Weitere Verfügbarkeiten
     });
+
 
     const handleDayClick = (date) => {
         const dateString = date.toISOString().split('T')[0];
@@ -47,10 +48,12 @@ const BikeCalendar = () => {
         } else if (selectedStartDate && !selectedEndDate) {
             if (date >= selectedStartDate) {
                 setSelectedEndDate(date);
-            } else {
+            }
+            if (date <= selectedStartDate){
                 setSelectedStartDate(date);
             }
         }
+
     };
 
     const renderCalendarDays = (month, year) => {
@@ -91,23 +94,25 @@ const BikeCalendar = () => {
 
     return (
         <div className="booking-calendar">
-            <div className="month-container">
-                <h2>Aktueller Monat {currentMonth + 1} {currentYear}</h2>
-                <div className="calendar-grid">
-                    {renderCalendarDays(currentMonth, currentYear)}
+            <div className="month-container-wrapper">
+                <div className="month-container">
+                    <h2>{new Date(currentYear, currentMonth).toLocaleString(getCurrLang(), { month: 'long' })} {currentYear}</h2>
+                    <div className="calendar-grid">
+                        {renderCalendarDays(currentMonth, currentYear)}
+                    </div>
                 </div>
-            </div>
 
-            <div className="month-container">
-                <h2>Nächster Monat {currentMonth + 2} {currentYear}</h2>
-                <div className="calendar-grid">
-                    {renderCalendarDays(currentMonth + 1, currentYear)}
+                <div className="month-container">
+                    <h2>{new Date(currentYear, currentMonth + 1).toLocaleString(getCurrLang(), { month: 'long' })} {currentYear}</h2>
+                    <div className="calendar-grid">
+                        {renderCalendarDays(currentMonth + 1, currentYear)}
+                    </div>
                 </div>
             </div>
 
             <div className="selection-info">
-                <p>Abholung: {selectedStartDate ? selectedStartDate.toDateString() : "Bitte wählen Sie ein Datum"}</p>
-                <p>Rückgabe: {selectedEndDate ? selectedEndDate.toDateString() : "Bitte wählen Sie ein Datum"}</p>
+                <p>{t('pickup_date')}: {selectedStartDate ? selectedStartDate.toDateString() : t('select_date')}</p>
+                <p>{t('return_date')}: {selectedEndDate ? selectedEndDate.toDateString(): t('select_date')}</p>
             </div>
 
             <div className="legend">
@@ -117,6 +122,7 @@ const BikeCalendar = () => {
                 <p><span className="legend-color not-bookable"></span> Nicht buchbar</p>
             </div>
         </div>
+
     );
 };
 

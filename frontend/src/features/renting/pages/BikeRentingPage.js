@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import ImageAndDescriptionField from '../../../components/display/imageAndDescriptionField/ImageAndDescriptionField';
 import SingleLineTextField from '../../../components/display/SingleLineTextField';
-import BikeCalendar from '../components/calendar/BikeCalendar';
+import BikeCalendar from '../../renting/components/calendar/BikeCalendar';
 import { ID } from '../../../constants/URIs/General';
 import { BIKE_BY_ID, STORE_BY_BIKE_ID } from '../../../constants/URIs/RentingURIs';
 import { ERR_FETCHING_BIKE, ERR_FETCHING_STORE } from '../../../constants/ErrorMessages';
@@ -30,18 +30,16 @@ const BikeRentingPage = () => {
     const [bike, setBike] = useState(); // State to store bike data
     const [store, setStore] = useState(); // State to store store data
 
-    const token = getCookie('token'); // Get authentication token from cookies
-
     // fetch bike
     const fetchBike = () => {
         fetch(BIKE_BY_ID.replace(ID, bikeId), {
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
             }
         })
             .then(response => response.json())
             .then(data => {
-                setBike(data); // Set bike data to state
+                setBike(data); // Set bike data to statec
             })
             .catch(error => {
                 console.error(ERR_FETCHING_BIKE, error); // Log error if fetching bike fails
@@ -52,7 +50,7 @@ const BikeRentingPage = () => {
     const fetchStore = () => {
         fetch(STORE_BY_BIKE_ID.replace(ID, bikeId), {
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
             }
         })
             .then(response => response.json())
@@ -76,24 +74,22 @@ const BikeRentingPage = () => {
     }
 
     return (
-        <>
-            {bike &&
-                <>
-                    <h1>{bike?.name}</h1> {/* Display bike name */}
+        <> {bike && store &&
+            <>
+                <h1>{bike?.name}</h1> {/* Display bike name */}
 
-                    {/* Display bike image and description */}
-                    <ImageAndDescriptionField editable={false} imageValue={bike.image} descriptionValue={bike.description} />
-                    {/* Display store address */}
-                    <SingleLineTextField editable={false} value={store?.address} title='address' />
+                <ImageAndDescriptionField editable={false} imageValue={bike?.image} descriptionValue={bike?.description} />
+                {/* Display store address */}
+                <SingleLineTextField editable={false} value={store?.address} title='address' />
 
-                    <div className='button-container'>
-                        <button type='button' className='button regular' onClick={handleStoreClick}>{store?.name}</button> {/* Button to navigate to store page */}
-                    </div>
+                <div className='button-container'>
+                    <button type='button' className='button regular' onClick={handleStoreClick}>{store?.name}</button> {/* Button to navigate to store page */}
+                </div>
 
-                    {/* Display bike calendar for reservations */}
-                    <BikeCalendar />
-                </>
-            }
+                {/* Display bike calendar for reservations */}
+                <BikeCalendar />
+            </>
+        }
         </>
     );
 };

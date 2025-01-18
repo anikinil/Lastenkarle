@@ -63,6 +63,27 @@ button:hover {
     border: 2px solid var(--button-border-focus);
 }
 
+input {
+    width: 100%;
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    box-sizing: border-box;
+    color: var(--foreground);
+    background-color: var(--content-background);
+    outline: none;
+    border: none;
+    border-radius: 0.5rem;
+    
+    font-size: 105%;
+
+    overflow-x: hidden;
+    overflow-y: scroll;
+
+    resize: none;
+
+    transition: background-color 0.3s ease;
+}
+
 textarea {
     width: 100%;
     padding: 1rem;

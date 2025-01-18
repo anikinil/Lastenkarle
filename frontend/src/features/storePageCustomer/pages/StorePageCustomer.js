@@ -43,13 +43,17 @@ const StoreDisplay = () => {
     }, []); // Empty dependency array ensures this runs only once
 
     return (
-        <>
-            <h1>{store?.name}</h1> {/* Display store name */}
+        <> {store &&
+            <>
+                <h1>{store?.name}</h1> {/* Display store name */}
 
-            <ImageAndDescriptionField editable={false} imageValue={store.image} descriptionValue={store.description} /> {/* Display image and description */}
-            <SingleLineTextField editable={false} value={store?.address} /> {/* Display store address */}
+                {/* NOTE crrently no image and description support for stores by the API */}
+                <ImageAndDescriptionField editable={false} imageValue={store?.image} descriptionValue={store?.description} /> {/* Display image and description */}
+                <SingleLineTextField editable={false} value={store?.address} title={t('address')} /> {/* Display store address */}
 
-            {/* TODO add enrollment component for managers to enroll other managers to this particular store */}
+                {/* TODO maybe add enrollment component for managers to enroll other managers to this particular store */}
+            </>
+        }
         </>
     );
 };
