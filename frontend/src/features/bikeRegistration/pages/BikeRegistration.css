@@ -1,0 +1,23 @@
+.button {
+    margin-bottom: 1rem;
+}
+
+.image {
+    /* float: left; */
+    color: var(--button-foreground);
+}
+
+.image:hover {
+    color: var(--button-foreground-focus);
+    border-color: var(--button-border-focus);
+}
+
+.register {
+    color: var(--accent-button-foreground);
+    border-color: var(--acent-button-border);
+}
+
+.register:hover {
+    color: var(--accent-button-foreground-focus);
+    border-color: var(--accent-button-border-focus);
+}

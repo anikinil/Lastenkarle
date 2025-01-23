@@ -1,8 +1,0 @@
-{
-    "heading":          "Booking Management",
-    "start_date":       "Start Date",
-    "end_date":         "End Date",
-    "booking_status":   "Booking Status",
-    "no_bookings":      "There are no bookings in the system.",
-    "back":             "Back"
-}

@@ -1,0 +1,33 @@
+.week-container {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1rem;
+    width: 95%;
+}
+
+.header {
+    display: contents;
+    color: var(--label);
+    font-size: small;
+}
+
+.header-label {
+    padding: 10px 0;
+    text-align: center;
+}
+
+.day-row {
+    display: contents;
+    align-items: center;
+}
+
+.day-label {
+    text-align: left;
+    padding: 10px 0;
+    color: var(--label);
+}
+
+.prepare-time-container {
+    display: contents;
+    align-items: center;
+}

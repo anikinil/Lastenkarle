@@ -1,0 +1,90 @@
+/* Standard-Styles von react-calendar importieren */
+/* BikeCalendar.css */
+/* Update .booking-calendar to arrange months side by side */
+.booking-calendar {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  /* Flex container for the two months */
+  .month-container-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 15px; /* Space between the two months */
+    width: 10%; /* Ensure it spans the entire booking-calendar width */
+  }
+  
+  /* Ensure each month container is centered and has equal width */
+  .month-container {
+    flex: 1;
+    text-align: center;
+  }
+  
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 0px;
+  width: 60%;
+}
+
+.calendar-day {
+  padding: 10px;
+  border: 1px solid #48494bfd;
+  text-align: center;
+  cursor: pointer;
+}
+
+.calendar-day.available {
+  background-color: #68ce4a; /* Grün für buchbar */
+}
+
+.calendar-day.reserved {
+  background-color: #f0e68c; /* Gelb für reserviert */
+}
+
+.calendar-day.closed {
+  background-color: #d3d3d3; /* Grau für Standort geschlossen */
+}
+
+.calendar-day.not-bookable {
+  background-color: #b3503f; /* Rot für nicht buchbar */
+  /* pointer-events: none; */
+}
+
+.calendar-day.selected {
+  border: 3px solid #b6e4b8;
+}
+
+.selection-info {
+  margin-top: 20px;
+}
+
+.legend {
+  margin-top: 20px;
+}
+
+.legend-color {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}
+
+.legend-color.available {
+  background-color: #68ce4a;
+}
+
+.legend-color.reserved {
+  background-color: #f0e68c;
+}
+
+.legend-color.closed {
+  background-color: #d3d3d3;
+}
+
+.legend-color.not-bookable {
+  background-color: #b3503f;
+}

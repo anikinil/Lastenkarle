@@ -26,6 +26,18 @@ services:
     depends_on:
       - django_gunicorn
 
+  frontend:
+    build:
+      context: ./frontend     # Point to the frontend directory
+      dockerfile: Dockerfile  # Optional: Explicitly specify the Dockerfile if not named 'Dockerfile'
+    ports:
+      - "3000:3000"           # Map container port 3000 to host port 3000
+    volumes:
+      - ./frontend:/app       # Mount the frontend directory into the container
+      - /app/node_modules     # Prevent overwriting node_modules inside the container
+    stdin_open: true          # Optional: keep stdin open
+    tty: true                 # Optional: allow interaction in the terminal
+
   db:
     container_name: pg_container
     image: postgres:15.3-bullseye
@@ -52,4 +64,4 @@ services:
     depends_on:
       - db
     ports:
-      - "40001:80"
+      - "40002:80"

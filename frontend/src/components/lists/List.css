@@ -1,0 +1,119 @@
+.list {
+    width: 100%;
+    list-style-type: none;
+}
+
+.list-button-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 3rem;
+}
+
+.sort-button {
+    float: left;
+    
+    margin-right: 0.5rem;
+    
+    width: 2.5rem;
+    height: 2.5rem;
+    cursor: pointer;
+    
+    border-radius: 0.5rem;
+    
+    color: var(--button-foreground);
+    background-color: var(--button-background);    
+    border: 2px solid var(--button-border);
+}
+
+.sort-button:hover {
+    color: var(--button-foreground-focus);
+    border-color: var(--button-border-focus);
+}
+
+.list-item {
+    height: 5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    background-color: var(--content-background);
+    border-radius: 0.5rem;
+    box-shadow: var(--shadow);
+    transition: all 0.15s ease;
+}
+
+.list-item:hover {
+    background-color: var(--content-background-focused);
+    cursor: pointer;
+}
+
+.list-item-label {
+    font-size: large;
+
+    /* margin-left: 0.5rem; */
+    margin-right: auto;
+}
+
+.list-item-button {
+    float: right;
+    
+    margin-left: 1rem;
+    /* margin-right: 0.5rem; */
+    margin-bottom: 0;
+}
+
+.regular {
+    width: auto;
+
+    color: var(--button-foreground);
+    background-color: transparent;
+    border: 2px solid var(--button-border);
+}
+
+/* might need this later; note: fixed width with a trash bin symbol in mind */
+/* .delete {
+    width: 2.5rem;
+
+    color: var(--accent-button-foreground);
+    background-color: transparent;
+    border: 2px solid var(--accent-button-border);
+} */
+
+.regular:hover {
+    color: var(--button-foreground-focus);
+    border-color: var(--button-border-focus);
+}
+
+.delete:hover {
+    color: var(--accent-button-foreground-focus);
+    border-color: var(--accent-button-border-focus);
+}
+
+.list-item-img-container {
+    float: right;
+    width: 6rem;
+    height: 5rem;
+
+    margin-left: 1rem;
+
+    /* margin-left: 1rem;
+    margin-right: 2rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem; */
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.list-item-img {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 0.5rem;
+}

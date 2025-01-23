@@ -1,0 +1,67 @@
+.switch {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.switch-checkbox {
+    height: 0;
+    width: 0;
+    margin: 0;
+    visibility: hidden;
+}
+
+.switch-label {
+    cursor: pointer;
+    height: 1.5rem;
+    width: 3rem;
+    background-color: var(--button-background);
+    border: 2px solid var(--button-border);
+    border-radius: 2rem;
+    position: relative;
+    transition: all 0.15s;
+}
+
+.switch-label .switch-button {
+    position: absolute;
+    top: 8%;
+    left: 4%;
+    height: calc(84% - 4px);
+    width: calc(42% - 4px);
+    border: 2px solid var(--button-foreground);
+    border-radius: 1rem;
+    background-color: var(--button-background);
+    transition: all 0.15s;
+}
+
+.switch-label:hover, 
+.switch-checkbox:checked + .switch-label {
+    border-color: var(--button-foreground-focus);
+}
+
+.switch-label:hover .switch-button, 
+.switch-checkbox:checked + .switch-label .switch-button {
+    background-color: var(--button-foreground-focus);
+    border-color: var(--button-foreground-focus);
+}
+
+.switch-checkbox:checked + .switch-label .switch-button {
+    left: 96%;
+    transform: translateX(-100%);
+}
+
+.switch-label:active .switch-button {
+    width: 60%;
+}
+
+.switch-checkbox:disabled + .switch-label {
+    cursor: not-allowed;
+    pointer-events: none;
+    border-color: var(--foreground);
+    opacity: 0.25;
+}
+
+.switch-checkbox:disabled + .switch-label .switch-button {
+    border-color: var(--foreground);
+    background-color: var(--button-background);
+}
