@@ -22,6 +22,6 @@ EMAIL_HOST_PASSWORD= 'uHzF8OWcl8G5XVaCGF5l'
 CANONICAL_HOST='http://localhost'
 
 3. run in root directory of project: docker compose up --build
-4. in the django-gunicorn-1 container go to terminal and run command: python3 manage.py createsuperuser
-5. go to http://localhost:3000
+4. in the django-gunicorn-1 container go to terminal and run command: `python3 manage.py createsuperuser`
+5. go to <http://localhost:3000>
 6. login in with credentials from createsuperuser or register new account
