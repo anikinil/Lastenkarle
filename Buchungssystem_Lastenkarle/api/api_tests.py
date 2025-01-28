@@ -17,7 +17,6 @@ from django.test.client import RequestFactory
 from django.contrib.sessions.backends.db import SessionStore
 from rest_framework.test import APIClient, force_authenticate
 
-from api.algorithm import split_availabilities_algorithm
 from db_model.models import *
 from knox.views import LoginView
 from rest_framework import serializers
@@ -30,13 +29,7 @@ class EquipmentSerializer(serializers.ModelSerializer):
         model = Equipment
         fields = '__all__'
 
-class AvailabilityStatusSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Availability_Status
-        fields = '__all__'
-
 class AvailabilitySerializer(serializers.ModelSerializer):
-    availability_status = AvailabilityStatusSerializer(many=True, read_only=True)
 
     class Meta:
         model = Availability
@@ -378,7 +371,6 @@ class APITestCase(TestCase):
         bike = Bike.objects.create(name=bike_data.get('name')[0], description=bike_data.get('description')[0],
                                    image=image,
                                    store=store)
-        Availability.create_availability(store, bike)
         return bike
 
     def create_booking_of_bike_with_flag(self, user, bike, booking_status_label, begin, end):
@@ -392,7 +384,7 @@ class APITestCase(TestCase):
             booking.status.add(Booking_Status.objects.filter(status='Booked')[0].pk)
         booking_status_labels_split = ['Booked', 'Internal usage', 'Picked up']
         if booking_status_label in booking_status_labels_split:
-            split_availabilities_algorithm(booking)
+            Availability.create(booking)
         return booking
 
     def add_equipment_to_bike(self, bike, equipment):

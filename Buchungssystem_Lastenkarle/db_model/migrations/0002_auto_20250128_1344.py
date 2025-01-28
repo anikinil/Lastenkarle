@@ -1,7 +1,6 @@
 from django.db import migrations
 
 user_status_labels = ['Verified', 'Deleted', 'Reminded', 'Administrator', 'Banned', 'Customer']
-availability_status_labels = ['Booked', 'Available']
 booking_status_labels = ['Booked', 'Internal usage', 'Picked up', 'Cancelled', 'Returned']
 bike_equipment_labels = ['Lock And Key', 'Child Safety Seat And Seatbelt', 'Tarp', 'Battery', 'Charger']
 region_data = [("KA", "Karlsruhe"), ("ETT", "Ettlingen"), ("BAD", "Baden-Baden"), ("BRU", "Bruchsal"), ("MAL", "Malsch"), ]
@@ -22,15 +21,6 @@ def populate_bike_equipment_entries(apps, schema_editor):
         # Check if the equipment with the given label already exists
         if not Equipment.objects.filter(equipment=label).exists():
             Equipment.objects.create(equipment=label)
-
-
-def populate_availability_status_entries(apps, schema_editor):
-    Availability_Status = apps.get_model('db_model', 'Availability_Status')
-
-    for label in availability_status_labels:
-        # Check if the availability status with the given label already exists
-        if not Availability_Status.objects.filter(availability_status=label).exists():
-            Availability_Status.objects.create(availability_status=label)
 
 
 def populate_booking_status_entries(apps, schema_editor):
@@ -59,7 +49,6 @@ class Migration(migrations.Migration):
     operations = [
         migrations.RunPython(populate_user_status_entries),
         migrations.RunPython(populate_booking_status_entries),
-        migrations.RunPython(populate_availability_status_entries),
         migrations.RunPython(populate_bike_equipment_entries),
         migrations.RunPython(populate_region_entries),
     ]

@@ -2,7 +2,7 @@ from django.test import TestCase
 from knox.models import AuthToken
 from db_model.models import generate_random_string
 from api.api_tests import APITestCase, BookingSerializer
-from db_model.models import User_Flag, User, Equipment, Availability_Status, Booking_Status, Booking
+from db_model.models import User_Flag, User, Equipment, Booking_Status, Booking
 from rest_framework import status
 from django.core import mail
 from django.template.loader import render_to_string
@@ -19,11 +19,6 @@ class Test_default_migration(TestCase):
         equipment_json = serializers.serialize('json', equipment)
         search_terms = ['Lock And Key', 'Child Safety Seat And Seatbelt', 'Tarp', 'Battery', 'Charger']
         self.find_and_test_terms_in_json(search_terms, equipment_json, 'equipment')
-
-        availabilities_status = Availability_Status.objects.all()
-        availabilities_status_json = serializers.serialize('json', availabilities_status)
-        search_terms = ['Booked', 'Available']
-        self.find_and_test_terms_in_json(search_terms, availabilities_status_json, 'availability_status')
 
         booking_status = Booking_Status.objects.all()
         booking_status_json = serializers.serialize('json', booking_status)

@@ -1,10 +1,13 @@
 from django.contrib.auth import authenticate
+
+from Buchungssystem_Lastenkarle.settings import TIME_ZONE
 from db_model.models import *
 from rest_framework import serializers
 from validate_email import validate_email
 from datetime import datetime, date, time, timedelta
 from django.utils import timezone
-
+import time
+from django.db.models import Q
 
 def weekday_prefix_of_date(date_obj):
     if date_obj:
@@ -399,38 +402,26 @@ class MakeBookingSerializer(serializers.ModelSerializer):
         begin = attrs.get('begin')
         end = attrs.get('end')
         no_limit = self.context.get('no_limit')
-        if not no_limit:
-            if (end - begin).days > 7:
-                raise serializers.ValidationError('Customers are not allowed to make booking of attempted length.')
+        begin_timestamp = time.mktime(begin.timetuple())
+        end_timestamp = time.mktime(end.timetuple())
+        time_difference_seconds = end_timestamp - begin_timestamp
+        time_now_timestamp = time.mktime(timezone.localtime(timezone.now()).timetuple())
+        if not no_limit and time_difference_seconds > 604800:
+            raise serializers.ValidationError('Customers are not allowed to make booking of attempted length.')
         bike = attrs.get('bike')
         store = bike.store
-        left = Availability.objects.filter(until_date__gte=end,
-                                           store__name=bike.store.name,
-                                           bike=bike,
-                                           availability_status=
-                                           Availability_Status.objects.get(availability_status='Available'))
-        if not no_limit:
-            if not left.exists():
-                raise serializers.ValidationError('Bike not available in selected time frame.')
-            availability = left.order_by('until_date').first()
-            if not availability.from_date <= begin or not availability.until_date >= end:
-                raise serializers.ValidationError('Bike not available in selected time frame.')
-        if begin > end:
+        store_begin = store.get_settings_for_day(weekday_prefix_of_date(begin))
+        store_end = store.get_settings_for_day(weekday_prefix_of_date(end))
+        bike_booked = Availability.objects.filter(
+            Q(from_date__lte=end) & Q(until_date__gte=begin) & Q(bike=bike)
+        )
+        if not no_limit and bike_booked.exists():
+            raise serializers.ValidationError('Bike not available in selected time frame.')
+        if begin_timestamp > end_timestamp or begin_timestamp < time_now_timestamp:
             raise serializers.ValidationError('Time travel is not permitted.')
-        day_prefix_begin = weekday_prefix_of_date(begin)
-        settings_for_day = store.get_settings_for_day(day_prefix_begin)
-        if not settings_for_day[0]:
+        if not store_begin[0]:
             raise serializers.ValidationError('Store closed on starting day of booking.')
-        prep_time = store.prep_time
-        current_time = timezone.now()
-        earliest_booking_begin = current_time + timedelta(hours=prep_time.hour, minutes=prep_time.minute)
-        start_time = datetime.strptime(settings_for_day[1], "%H:%M").time()
-        start_booking = timezone.make_aware(datetime.combine(begin, start_time), timezone.get_current_timezone())
-        if earliest_booking_begin > start_booking:
-            raise serializers.ValidationError('Store does not provide bike this early.')
-        day_prefix_end = weekday_prefix_of_date(end)
-        settings_for_day = store.get_settings_for_day(day_prefix_end)
-        if not settings_for_day[0]:
+        if not store_end[0]:
             raise serializers.ValidationError('Store closed on ending day of booking.')
         return attrs
 
@@ -443,6 +434,7 @@ class MakeBookingSerializer(serializers.ModelSerializer):
         booking.booking_status.add(Booking_Status.objects.get(status='Booked').pk)
         booking.string = generate_random_string(5)
         booking.save()
+        Availability.create(booking)
         return booking
 
 
@@ -475,22 +467,8 @@ class UpdateCommentOfBookingSerializer(serializers.ModelSerializer):
         return attrs
 
 
-class AvailabilityStatusSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Availability_Status
-        fields = ['availability_status']
-
-    def __init__(self, *args, **kwargs):
-        exclude_fields = kwargs.pop('exclude', None)
-        super(AvailabilityStatusSerializer, self).__init__(*args, **kwargs)
-        if exclude_fields is not None:
-            for field in exclude_fields:
-                self.fields.pop(field, None)
-
 
 class AvailabilitySerializer(serializers.ModelSerializer):
-    availability_status = AvailabilityStatusSerializer(many=True, read_only=True)
-
     class Meta:
         model = Availability
         fields = '__all__'
