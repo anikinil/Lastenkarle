@@ -38,6 +38,7 @@ services:
     stdin_open: true
     tty: true
 
+
   db:
     container_name: pg_container
     image: postgres:15.3-bullseye

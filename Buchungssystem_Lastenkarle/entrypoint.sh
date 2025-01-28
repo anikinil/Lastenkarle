@@ -5,7 +5,7 @@ set -e
 
 echo "Execute migration Command"
 python manage.py collectstatic --no-input
-#python manage.py makemigrations db_model
+python manage.py makemigrations db_model
 #python manage.py makemigrations api
 
 python manage.py migrate --no-input

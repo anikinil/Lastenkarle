@@ -9,7 +9,6 @@ from django.core.exceptions import *
 from authlib.integrations.django_client import OAuth
 from django.http import Http404
 
-from api.algorithm import merge_availabilities_algorithm
 from api.serializer import *
 from db_model.models import *
 
@@ -54,7 +53,6 @@ class HelmholtzAuthView(KnoxLoginView):
         token_value = response.data.get('token')
         redirect_url = f"{CANONICAL_HOST}/menu/?token={token_value}"
 
-        # Redirect to the constructed URL
         return redirect(redirect_url)
 
 
@@ -139,7 +137,6 @@ class BookingFromUser(APIView):
                 or Booking_Status.objects.get(status='Booked') not in booking.booking_status.all():
             return Response(status=status.HTTP_400_BAD_REQUEST)
         booking.cancel_booking()
-        merge_availabilities_algorithm(booking)
         send_cancellation_confirmation(booking)
         return Response(status=status.HTTP_200_OK)
 
@@ -192,6 +189,5 @@ class DeleteUserAccount(APIView):
             LocalData.objects.get(user=request.user).anonymize().save()
         for booking in Booking.objects.filter(user=request.user, booking_status=Booking_Status.objects.get(status='Booked')):
             booking.cancel_booking()
-            merge_availabilities_algorithm(booking)
         request.user.anonymize().save()
         return Response(status=status.HTTP_200_OK)
