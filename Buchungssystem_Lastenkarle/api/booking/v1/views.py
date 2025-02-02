@@ -8,7 +8,6 @@ from django.core.exceptions import *
 from django.http import Http404
 from api.serializer import *
 from db_model.models import *
-from api.algorithm import split_availabilities_algorithm
 from send_mail.views import send_booking_confirmation
 
 
@@ -105,6 +104,5 @@ class MakeBooking(APIView):
         serializer = MakeBookingSerializer(data=data, context={'no_limit': False})
         serializer.is_valid(raise_exception=True)
         booking = serializer.save(user=request.user)
-        split_availabilities_algorithm(booking)
         send_booking_confirmation(booking)
         return Response(status=status.HTTP_201_CREATED)

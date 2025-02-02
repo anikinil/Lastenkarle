@@ -7,7 +7,6 @@ from knox.auth import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django.http import Http404
 
-from api.algorithm import *
 from api.permissions import *
 from api.serializer import *
 from db_model.models import *
@@ -94,7 +93,6 @@ class SelectedBooking(APIView):
         if not booking.booking_status.contains(Booking_Status.objects.get(status='Booked')):
             return Response(status=status.HTTP_400_BAD_REQUEST)
         booking.cancel_booking()
-        merge_availabilities_algorithm(booking)
         send_cancellation_through_store_confirmation(booking)
         return Response(status=status.HTTP_200_OK)
 
@@ -111,8 +109,7 @@ class AddBike(APIView):
             raise Http404
         serializer = BikeCreationSerializer(data=request.data, context={'store': store})
         serializer.is_valid(raise_exception=True)
-        bike = serializer.save()
-        Availability.create_availability(store, bike)
+        serializer.save()
         return Response(serializer.data,  status=status.HTTP_201_CREATED)
 
 
