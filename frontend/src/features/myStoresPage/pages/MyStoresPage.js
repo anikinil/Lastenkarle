@@ -13,7 +13,7 @@ const MyStoresPage = () => {
     const token = getCookie('token')
 
     const fetchMyStores = async () => {
-        // TODO wait till Jan adds the call
+        // JAN wait till Jan adds the call
         const response = await fetch(MY_STORES,{
                 headers: {
                     'Content-Type': 'application/json',

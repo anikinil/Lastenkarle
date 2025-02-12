@@ -1,5 +1,3 @@
-// TODO replace everywhere by these variables
-
 import { HOST } from "../URIs/General"
 import { ID, KEY } from "./General"
 import { STORE_NAME, REGION_NAME } from "./General"
