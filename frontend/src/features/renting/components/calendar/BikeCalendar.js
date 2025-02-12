@@ -12,6 +12,18 @@ const getCurrLang = () => {
     return i18n.language
 }
 
+const generateDefaultAvailability = (year, month) => {
+    const daysInMonth = getDaysInMonth(month, year);
+    const availability = {};
+    
+    for (let day = 1; day <= daysInMonth; day++) {
+        const dateString = new Date(year, month, day).toISOString().split('T')[0];
+        availability[dateString] = 0; // Default all days to 'available' (0)
+    }
+
+    return availability;
+};
+
 const BikeCalendar = () => {
 
 
@@ -22,16 +34,7 @@ const BikeCalendar = () => {
 
     const [selectedStartDate, setSelectedStartDate] = useState(null);
     const [selectedEndDate, setSelectedEndDate] = useState(null);
-    const [availability, setAvailability] = useState({
-        // Beispiel-Daten für die Verfügbarkeit (0 = buchbar, 1 = reserviert, 2 = geschlossen, 3 = nicht buchbar)
-        '2025-01-17': 0,
-        '2025-01-00': 0,
-        '2025-01-01': 0,
-        '2025-01-15': 0,
-        '2025-01-16': 0,
-        '2025-01-18': 0
-        // Weitere Verfügbarkeiten
-    });
+    const [availability, setAvailability] = useState(generateDefaultAvailability(currentYear, currentMonth));
 
 
     const handleDayClick = (date) => {
@@ -58,39 +61,60 @@ const BikeCalendar = () => {
 
     const renderCalendarDays = (month, year) => {
         const daysInMonth = getDaysInMonth(month, year);
+        const firstDayOfMonth = new Date(year, month, 1).getDay(); // Get the weekday index (0 = Sunday, 1 = Monday, etc.)
+    
+        // Convert Sunday (0) to be the last day instead (aligning Monday as the first day)
+        const firstDayIndex = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
+    
         const daysArray = Array.from({ length: daysInMonth }, (_, i) => new Date(year, month, i + 1));
-
-        return daysArray.map((day) => {
-            const dateString = day.toISOString().split('T')[0];
-            const isSelectedStart = selectedStartDate && selectedStartDate.toISOString().split('T')[0] === dateString;
-            const isSelectedEnd = selectedEndDate && selectedEndDate.toISOString().split('T')[0] === dateString;
-
-            let dayClass = '';
-            if (availability[dateString] === 0) {
-                dayClass = 'available';
-            } else if (availability[dateString] === 1) {
-                dayClass = 'reserved';
-            } else if (availability[dateString] === 2) {
-                dayClass = 'closed';
-            } else {
-                dayClass = 'not-bookable';
-            }
-
-            if (isSelectedStart || isSelectedEnd) {
-                dayClass += ' selected';
-            }
-
-            return (
-                <div
-                    key={dateString}
-                    className={`calendar-day ${dayClass}`}
-                    onClick={() => handleDayClick(day)}
-                >
-                    {day.getDate()}
-                </div>
-            );
-        });
+    
+        return (
+            <>
+                {/* Weekday Labels */}
+                {["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"].map((day, index) => (
+                    <div key={index} className="weekday-label">{day}</div>
+                ))}
+    
+                {/* Empty slots for alignment */}
+                {Array.from({ length: firstDayIndex }).map((_, i) => (
+                    <div key={`empty-${i}`} className="calendar-day empty"></div>
+                ))}
+    
+                {/* Actual days */}
+                {daysArray.map((day) => {
+                    const dateString = day.toISOString().split('T')[0];
+                    const isSelectedStart = selectedStartDate && selectedStartDate.toISOString().split('T')[0] === dateString;
+                    const isSelectedEnd = selectedEndDate && selectedEndDate.toISOString().split('T')[0] === dateString;
+    
+                    let dayClass = '';
+                    if (availability[dateString] === 0) {
+                        dayClass = 'available';
+                    } else if (availability[dateString] === 1) {
+                        dayClass = 'reserved';
+                    } else if (availability[dateString] === 2) {
+                        dayClass = 'closed';
+                    } else {
+                        dayClass = 'not-bookable';
+                    }
+    
+                    if (isSelectedStart || isSelectedEnd) {
+                        dayClass += ' selected';
+                    }
+    
+                    return (
+                        <div
+                            key={dateString}
+                            className={`calendar-day ${dayClass}`}
+                            onClick={() => handleDayClick(day)}
+                        >
+                            {day.getDate()}
+                        </div>
+                    );
+                })}
+            </>
+        );
     };
+    
 
     return (
         <div className="booking-calendar">
