@@ -1,13 +1,12 @@
-// TODO replace everywhere by these variables
-
+import { HOST } from "../URIs/General"
 import { ID, KEY } from "./General"
 import { STORE_NAME, REGION_NAME } from "./General"
 
 export const HOME                   = `/`
 export const NO_PERMISSION          = `/no-permission`
 
-// TODO replace by correct URL
-export const HELMHOLTZ              = `/HELMHOLTZ`
+// TODO check if correct
+export const HELMHOLTZ              = `${HOST}/api/user/v1/helmholtz/login`
 
 export const LOGIN                  = `/login`
 export const LOGOUT                 = `/logout`

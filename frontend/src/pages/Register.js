@@ -55,7 +55,7 @@ const Register = () => {
             });
     };
 
-    // TODO think about how to avoid duplicate code (Login.js)
+    // THINK about how to avoid duplicate code (Login.js)
     // Function to post login data after successful registration
     const postLogin = () => {
         let payload = {
