@@ -27,18 +27,23 @@ import BikeListManager from "../../../components/lists/bikeList/listVersions/Bik
 // page for the configuration of an existing store
 const StoreConfigAdmin = () => {
 
+    console.log("StoreConfigAdmin");
+
     const { t } = useTranslation();
-    
+
     // Hook for navigation
     const navigate = useNavigate();
-    
+
     // Extracting store name from URL parameters
     const storeName = useParams().store;
-    
+
     // State to hold store data
     const [store, setStore] = useState();
     const [bikes, setBikes] = useState([]);
-    
+
+    const [prepareTime, setPrepareTime] = useState('');
+    const [openingTimes, setOpeningTimes] = useState({});
+
     const token = getCookie('token');
 
     const [showConfirmationPopup, setShowConfirmationPopup] = useState(false);
@@ -54,6 +59,18 @@ const StoreConfigAdmin = () => {
             .then(response => response.json())
             .then(data => {
                 setStore(data);
+                setPrepareTime(data.prep_time);
+                setOpeningTimes({
+                    monday: { open: data.mon_opened, from: data.mon_open, to: data.mon_close},
+                    tuesday: { open: data.tue_opened, from: data.tue_open, to: data.tue_close},
+                    wednesday: { open: data.wed_opened, from: data.wed_open, to: data.wed_close},
+                    thursday: { open: data.thu_opened, from: data.thu_open, to: data.thu_close},
+                    friday: { open: data.fri_opened, from: data.fri_open, to: data.fri_close},
+                    saturday: { open: data.sat_opened, from: data.sat_open, to: data.sat_close},
+                    sunday: { open: data.sun_opened, from: data.sun_open, to: data.sun_close}
+                })
+                console.log("STORE");
+                console.log(data);
                 fetchBikes();
             })
             .catch(error => {
@@ -74,11 +91,14 @@ const StoreConfigAdmin = () => {
         setBikes(data);
     };
 
+    // JAN time format should be HH:MM not HH:MM:SS (as it is now), to much conversion work for the frontend
     // Function to post changes to the store
     const postChanges = () => {
         let payload = {
-            // TODO add prep time and openning times
-        }
+            prepareTime: prepareTime,
+            ...openingTimes
+        };
+        console.log(payload);
         fetch(STORE_PAGE_BY_STORE_NAME.replace(STORE_NAME, storeName), {
             method: 'PATCH',
             headers: {
@@ -125,6 +145,14 @@ const StoreConfigAdmin = () => {
         fetchStore();
     }, []);
 
+    const handlePrepareTimeChange = (data) => {
+        setPrepareTime(data);
+    }
+
+    const handleOpeningTimesChange = (data) => {
+        setOpeningTimes(data)
+    }
+
     const handleCancelClick = () => {
         navigate(-1);
     }
@@ -157,7 +185,7 @@ const StoreConfigAdmin = () => {
                 <h1>{t('admin_view')}: {store.name}</h1>
 
                 {/* Configuring store opening times */}
-                <StoreOpeningTimesConfig />
+                <StoreOpeningTimesConfig prepareTimeValue={prepareTime} openingTimesValue={openingTimes} onPrepareTimeChange={handlePrepareTimeChange} onOpeningTimesChange={handleOpeningTimesChange} />
 
                 <h2>{t('bikes')}</h2>
                 {/* Displaying list of bikes of the store */}

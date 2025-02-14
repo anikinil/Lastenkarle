@@ -8,33 +8,32 @@ import '../timePicker/TimePickerCustom.css';
 
 import { useTranslation } from 'react-i18next';
 
-const DayRow = ({ day, onChange }) => {
+const DayRow = ({ day, onOpenChange, onFromChange, onToChange }) => {
 
     const { t } = useTranslation();
 
     // State to manage the open toggle
     const [isOpen, setIsOpen] = useState(false);
-    // State to manage the closed toggle
-    const [isClosed, setIsClosed] = useState(false);
 
     // State to manage the open from time
     const [openFromTime, setOpenFromTime] = useState(t('placeholder_open_from_time'));
     // State to manage the open to time
     const [openToTime, setOpenToTime] = useState(t('placeholder_open_to_time'));
-    // State to manage the closed from time
-    const [closedFromTime, setClosedFromTime] = useState(t('placeholder_closed_from_time'));
-    // State to manage the closed to time
-    const [closedToTime, setClosedToTime] = useState(t('placeholder_closed_to_time'));
 
     // Handler for the open toggle switch
-    const handleOpenToggle = () => {
-        if (isOpen) { setIsClosed(false) } // If open is toggled off, also turn off closed
+    const handleOpenChange = () => {
         setIsOpen(!isOpen) // Toggle the open state
+        onOpenChange(!isOpen) // Notify the parent of the change
     }
 
-    // Handler for the closed toggle switch
-    const handleClosedToggle = () => {
-        setIsClosed(!isClosed) // Toggle the closed state
+    const handleFromChange = (time) => {
+        setOpenFromTime(time) // Update the state
+        onFromChange(time) // Notify the parent of the change
+    }
+
+    const handleToChange = (time) => {
+        setOpenToTime(time) // Update the state
+        onToChange(time) // Notify the parent of the change
     }
 
     return (
@@ -42,13 +41,13 @@ const DayRow = ({ day, onChange }) => {
             {/* Display the day label */}
             <span className='day-label'>{day}</span>
             {/* Open toggle switch */}
-            <Switch id={`${day}-open`} isOn={isOpen} handleToggle={handleOpenToggle} disabled={false} />
+            <Switch id={`${day}-open`} isOn={isOpen} handleToggle={handleOpenChange} disabled={false} />
             <div>
                 {/* Time picker for open from time */}
                 <TimePicker
                     className='time-picker'
                     id={`${day}-open-from`}
-                    onChange={setOpenFromTime}
+                    onChange={handleFromChange}
                     value={openFromTime}
                     disabled={!isOpen}
                     locale='de-de'
@@ -59,34 +58,9 @@ const DayRow = ({ day, onChange }) => {
                 <TimePicker
                     className='time-picker'
                     id={`${day}-open-to`}
-                    onChange={setOpenToTime}
+                    onChange={handleToChange}
                     value={openToTime}
                     disabled={!isOpen}
-                    locale='de-de'
-                />
-            </div>
-
-            {/* Closed toggle switch */}
-            <Switch id={`${day}-closed`} isOn={isClosed} handleToggle={handleClosedToggle} disabled={!isOpen} />
-            <div>
-                {/* Time picker for closed from time */}
-                <TimePicker
-                    className='time-picker'
-                    id={`${day}-closed-from`}
-                    onChange={setClosedFromTime}
-                    value={closedFromTime}
-                    disabled={!isClosed}
-                    locale='de-de'
-                />
-            </div>
-            <div>
-                {/* Time picker for closed to time */}
-                <TimePicker
-                    className='time-picker'
-                    id={`${day}-closed-to`}
-                    onChange={setClosedToTime}
-                    value={closedToTime}
-                    disabled={!isClosed}
                     locale='de-de'
                 />
             </div>
