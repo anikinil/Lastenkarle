@@ -27,8 +27,6 @@ import BikeListManager from "../../../components/lists/bikeList/listVersions/Bik
 // page for the configuration of an existing store
 const StoreConfigAdmin = () => {
 
-    console.log("StoreConfigAdmin");
-
     const { t } = useTranslation();
 
     // Hook for navigation
