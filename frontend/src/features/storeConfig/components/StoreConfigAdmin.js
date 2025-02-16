@@ -89,8 +89,7 @@ const StoreConfigAdmin = () => {
         setBikes(data);
     };
 
-    // JAN time format should be HH:MM not HH:MM:SS (as it is now), to much conversion work for the frontend
-    // Function to post changes to the store
+    // JAN getting "Method \"PATCH\" not allowed." error
     const postChanges = () => {
         let payload = {
             prepareTime: prepareTime,

@@ -9,17 +9,6 @@ import './StoreOpeningTimesConfig.css'
 import 'react-time-picker/dist/TimePicker.css';
 import '../timePicker/TimePickerCustom.css';
 
-// NOTE remove
-// const defaultOpeningTimes = {
-//     monday: { open: false, from: '00:00', to: '00:00', closed: false, from: '00:00', to: '00:00' },
-//     tuesday: { open: false, from: '00:00', to: '00:00', closed: false, from: '00:00', to: '00:00' },
-//     wednesday: { open: false, from: '00:00', to: '00:00', closed: false, from: '00:00', to: '00:00' },
-//     thursday: { open: false, from: '00:00', to: '00:00', closed: false, from: '00:00', to: '00:00' },
-//     friday: { open: false, from: '00:00', to: '00:00', closed: false, from: '00:00', to: '00:00' },
-//     saturday: { open: false, from: '00:00', to: '00:00', closed: false, from: '00:00', to: '00:00' },
-//     sunday: { open: false, from: '00:00', to: '00:00', closed: false, from: '00:00', to: '00:00' }
-// }
-
 const StoreOpeningTimesConfig = ({prepareTimeValue, openingTimesValue, onPrepareTimeChange, onOpeningTimesChange}) => {
     // Hook for translation
     const { t } = useTranslation();
@@ -29,16 +18,6 @@ const StoreOpeningTimesConfig = ({prepareTimeValue, openingTimesValue, onPrepare
 
     const [prepareTime, setPrepareTime] = useState(prepareTimeValue);
     const [openingTimes, setOpeningTimes] = useState(openingTimesValue);
-
-    // const handleDayChange = (day, open, from, to) => {
-    //     let change = {
-    //         ...openingTimes,
-    //         // [day]: { open, from, to, closed, fromClosed, toClosed }
-    //         [day]: { open, from, to}
-    //     }
-    //     setOpeningTimes(change);
-    //     onOpeningTimesChange(change);
-    // }
 
     const handleOpenChange = (day, open) => {
         let change = {
@@ -74,9 +53,8 @@ const StoreOpeningTimesConfig = ({prepareTimeValue, openingTimesValue, onPrepare
     }
 
     const handlePrepareTimeChange = (time) => {
-        time += ':00'; // adding seconds to accound for backend format
         setPrepareTime(time);
-        onPrepareTimeChange(time);
+        onPrepareTimeChange(time + ":00"); // sending time with added seconds to the parent to accound for backend format
     }
     
     return (
@@ -93,6 +71,7 @@ const StoreOpeningTimesConfig = ({prepareTimeValue, openingTimesValue, onPrepare
                         id={`prepare-time`}
                         onChange={handlePrepareTimeChange}
                         value={prepareTime}
+                        format='HH:mm'
                         locale='de-de'
                     />
                 </div>
@@ -105,9 +84,6 @@ const StoreOpeningTimesConfig = ({prepareTimeValue, openingTimesValue, onPrepare
                     <span className='header-label'>{t('open')}</span>
                     <span className='header-label'>{t('from')}</span>
                     <span className='header-label'>{t('to')}</span>
-                    {/* <span className='header-label'>{t('closed')}</span>
-                    <span className='header-label'>{t('from')}</span>
-                    <span className='header-label'>{t('to')}</span> */}
                 </div>
                 {/* Render a DayRow component for each day of the week */}
                 {daysOfWeek.map((day, index) => (

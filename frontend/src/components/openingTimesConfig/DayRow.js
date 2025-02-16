@@ -51,6 +51,7 @@ const DayRow = ({ day, onOpenChange, onFromChange, onToChange }) => {
                     value={openFromTime}
                     disabled={!isOpen}
                     locale='de-de'
+                    format='HH:mm'
                 />
             </div>
             <div>
@@ -62,6 +63,7 @@ const DayRow = ({ day, onOpenChange, onFromChange, onToChange }) => {
                     value={openToTime}
                     disabled={!isOpen}
                     locale='de-de'
+                    format='HH:mm'
                 />
             </div>
         </div>
