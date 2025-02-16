@@ -50,6 +50,7 @@ const StoreOpeningTimesConfig = ({prepareTimeValue, openingTimesValue, onPrepare
     }
 
     const handleFromChange = (day, from) => {
+        from += ':00'; // adding seconds to accound for backend format
         let change = {
             ...openingTimes,
             [day]: { ...openingTimes[day], from }
@@ -63,6 +64,7 @@ const StoreOpeningTimesConfig = ({prepareTimeValue, openingTimesValue, onPrepare
     }
 
     const handleToChange = (day, to) => {
+        to += ':00'; // adding seconds to accound for backend format
         let change = {
             ...openingTimes,
             [day]: { ...openingTimes[day], to }
@@ -72,6 +74,7 @@ const StoreOpeningTimesConfig = ({prepareTimeValue, openingTimesValue, onPrepare
     }
 
     const handlePrepareTimeChange = (time) => {
+        time += ':00'; // adding seconds to accound for backend format
         setPrepareTime(time);
         onPrepareTimeChange(time);
     }
