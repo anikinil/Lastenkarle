@@ -17,7 +17,6 @@ import { BIKE_REGISTRATION } from "../../../constants/URLs/Navigation";
 import { STORE_NAME } from "../../../constants/URLs/General";
 import { getCookie } from "../../../services/Cookies";
 import { BIKES_OF_STORE, DELETE_STORE } from "../../../constants/URIs/AdminURIs";
-import { ID } from "../../../constants/URIs/General";
 import { STORE_PAGE_BY_STORE_NAME } from "../../../constants/URIs/AdminURIs";
 import ConfirmationPopup from '../../../components/confirmationDialog/ConfirmationPopup';
 import BikeListManager from "../../../components/lists/bikeList/listVersions/BikeListManager";
@@ -163,10 +162,6 @@ const StoreConfigAdmin = () => {
         postChanges();
     }
 
-    const handleDeleteClick = () => {
-        setShowConfirmationPopup(true);
-    }
-
     const handlePopupConfirm = () => {
         deleteStore();
     }
@@ -192,9 +187,6 @@ const StoreConfigAdmin = () => {
                     <button type='button' className='button regulal' onClick={handleCancelClick}>{t('cancel')}</button>
                     <button type='button' className='button regular' onClick={handleAddBikeClick}>{t('add_bike_to_store')}</button>
                     <button type='button' className='button accent' onClick={handleSubmitClick}>{t('submit_changes')}</button>
-                </div>
-                <div className='button-container'>
-                    <button type='button' className='button accent' onClick={handleDeleteClick}>{t('delete_store')}</button>
                 </div>
 
                 <ConfirmationPopup onConfirm={handlePopupConfirm} onCancel={handlePopupCancel} show={showConfirmationPopup}>

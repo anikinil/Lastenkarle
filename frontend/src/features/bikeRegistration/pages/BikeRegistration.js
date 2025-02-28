@@ -23,7 +23,7 @@ const BikeRegistration = () => {
 
     const storeName = useParams().store;
 
-    const token = getCookie('token') // Get authentication token
+    const token = getCookie('token')
 
     const { userRoles } = useContext(AuthContext);
 
@@ -59,7 +59,7 @@ const BikeRegistration = () => {
         })
             .then(response => {
                 if (response.ok) {
-                    alert(t('bike_registration_successful'));
+                    console.log(t('bike_registration_successful'));
                     navigate(-1);
                 } else {
                     return response.json().then((errorText) => {

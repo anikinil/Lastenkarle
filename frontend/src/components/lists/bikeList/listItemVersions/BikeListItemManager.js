@@ -59,7 +59,7 @@ const BikeListItemManager = ({ bike }) => {
         })
             .then(response => {
                 if (response.ok) {
-                    alert(t('bike_deleted_successfully'));
+                    console.log(t('bike_deleted_successfully'));
                     window.location.reload();
                 } else {
                     return response.json().then((errorText) => {
