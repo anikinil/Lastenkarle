@@ -4,10 +4,9 @@ import { useTranslation } from 'react-i18next';
 import defaultBikeImage from '../../../../assets/images/default_bike.png'
 
 import { useNavigate } from 'react-router-dom';
-import { HOST, ID } from '../../../../constants/URIs/General';
-import { getCookie } from '../../../../services/Cookies'
-import { BIKE_RENTING, STORE_DISPLAY } from '../../../../constants/URLs/Navigation';
-import { STORE_NAME } from '../../../../constants/URLs/General';
+import { HOST } from '../../../../constants/URIs/General';
+import { STORE_NAME, ID } from '../../../../constants/URLs/General';
+import { BIKE_RENTING, STORE_PAGE } from '../../../../constants/URLs/Navigation';
 
 const BikeListItemCustomer = ({ bike }) => {
 
@@ -22,9 +21,11 @@ const BikeListItemCustomer = ({ bike }) => {
     }
 
     const handleStoreClick = e => {
-        navigate(STORE_DISPLAY.replace(STORE_NAME, bike.store))
+        navigate(STORE_PAGE.replace(ID, bike.id))
         e.stopPropagation()
     }
+
+    console.log(bike)
 
     return (
         <>
@@ -32,7 +33,7 @@ const BikeListItemCustomer = ({ bike }) => {
 
                 <p className='list-item-label'>{bike.name}</p>
 
-                <button type='button' className='list-item-button regular' onClick={handleStoreClick}>{t('store')}</button>
+                <button type='button' className='list-item-button regular' onClick={handleStoreClick}>{bike.store}</button>
 
                 <div className='list-item-img-container'>
                     <img className='list-item-img' alt={bike.name} src={bike.image ? HOST + bike.image : defaultBikeImage}></img>

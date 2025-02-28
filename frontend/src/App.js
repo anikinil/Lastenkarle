@@ -30,8 +30,7 @@ import StoreBookings from './features/storeBookings/pages/StoreBookings';
 
 import { BIKE_RENTING, BIKE_REGISTRATION, ALL_BIKES, RENTING, ACCOUNT_DELETION, EMAIL_VERIFICATION, 
     ENROLLMENT, HOME, LOGIN, LOGOUT, REGIONAL_RENTING, REGISTER, STORE_BOOKINGS, STORE_REGISTRATION, 
-    STORE_CONFIG, MY_STORES, ALL_STORES, STORE_DISPLAY, BIKE_CONFIG, ALL_BOOKINGS, ALL_USERS, 
-    USER_PAGE} 
+    STORE_CONFIG, MY_STORES, ALL_STORES, BIKE_CONFIG, ALL_BOOKINGS, ALL_USERS, USER_PAGE, STORE_PAGE} 
     from './constants/URLs/Navigation';
 import { ID, KEY, REGION_NAME, STORE_NAME } from './constants/URLs/General';
 import EmailVerification from './pages/EmailVerification';
@@ -41,7 +40,6 @@ import AllStoresPage from './features/allStoresPage/pages/AllStoresPage';
 import MyStoresPage from './features/myStoresPage/pages/MyStoresPage';
 import StoreConfigPage from './features/storeConfig/pages/StoreConfigPage';
 import BikeRentingPage from './features/renting/pages/BikeRentingPage';
-import StoreDisplay from './features/storePageCustomer/pages/StorePageCustomer';
 import { AuthProvider } from './AuthProvider';
 import UserListPage from './features/userList/pages/UserListPage';
 import PageNotFound from './pages/PageNotFound';
@@ -49,6 +47,7 @@ import Loading from './pages/loading/Loading';
 import { tokenExpired } from './services/Token';
 import { setCookie } from './services/Cookies';
 import UserPage from './features/userPage/UserPage';
+import StorePageCustomer from './features/storePage/pages/StorePageCustomer';
 
 // TODO fix region selection everywhere
 
@@ -121,7 +120,7 @@ const App = () => {
                                 <Route exact path={MY_STORES} element={
                                     <ProtectedElement element={<MyStoresPage />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
                                 } />
-                                <Route exact path={STORE_DISPLAY.replace(ID, ':id')} element={<StoreDisplay />} />
+                                <Route exact path={STORE_PAGE.replace(ID, ':bike')} element={<StorePageCustomer />} />
                                 <Route exact path={ALL_STORES} element={
                                     <ProtectedElement element={<AllStoresPage />} elementRoles={[Roles.ADMINISTRATOR]} />
                                 } />

@@ -12,10 +12,10 @@ import { getCookie } from '../../../services/Cookies';
 import { STORE_BY_BIKE_ID } from '../../../constants/URIs/RentingURIs';
 import { ID } from '../../../constants/URIs/General';
 
-const StoreDisplay = () => {
+const StorePageCustomer = () => {
     const { t } = useTranslation(); // Translation hook
 
-    const bikeId = useParams().id; // Get store name from URL parameters
+    const bikeId = useParams().bike;
     const [store, setStore] = useState(); // State to hold store data
 
     const token = getCookie('token'); // Get authentication token from cookies
@@ -58,4 +58,4 @@ const StoreDisplay = () => {
     );
 };
 
-export default StoreDisplay;
+export default StorePageCustomer;

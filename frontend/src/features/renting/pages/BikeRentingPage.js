@@ -10,15 +10,13 @@ import BikeCalendar from '../../renting/components/calendar/BikeCalendar';
 import { ID } from '../../../constants/URIs/General';
 import { BIKE_BY_ID, STORE_BY_BIKE_ID } from '../../../constants/URIs/RentingURIs';
 import { ERR_FETCHING_BIKE, ERR_FETCHING_STORE } from '../../../constants/ErrorMessages';
-import { getCookie } from '../../../services/Cookies';
-import { STORE_DISPLAY } from '../../../constants/URLs/Navigation';
+import { STORE_PAGE } from '../../../constants/URLs/Navigation';
 
 //Standard page for a Bike
 //TODO: organize Images
 //TODO: Add bike description
 //TODO: Add Store information
 //TODO: Add calandar as availability overview
-//TODO implement fetching
 
 // TODO add equipment selection (Ilja)
 
@@ -70,7 +68,7 @@ const BikeRentingPage = () => {
 
     // Handle click on store button
     const handleStoreClick = () => {
-        navigate(STORE_DISPLAY.replace(ID, bike.id)) // Navigate to store page by bike ID
+        navigate(STORE_PAGE.replace(ID, bike.id)) // Navigate to store page by bike ID
     }
 
     return (
