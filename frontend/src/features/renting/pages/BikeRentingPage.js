@@ -10,7 +10,7 @@ import BikeCalendar from '../../renting/components/calendar/BikeCalendar';
 import { ID } from '../../../constants/URIs/General';
 import { BIKE_BY_ID, STORE_BY_BIKE_ID } from '../../../constants/URIs/RentingURIs';
 import { ERR_FETCHING_BIKE, ERR_FETCHING_STORE } from '../../../constants/ErrorMessages';
-import { STORE_PAGE } from '../../../constants/URLs/Navigation';
+import { STORE_PAGE_OF_BIKE } from '../../../constants/URLs/Navigation';
 
 //Standard page for a Bike
 //TODO: organize Images
@@ -68,7 +68,7 @@ const BikeRentingPage = () => {
 
     // Handle click on store button
     const handleStoreClick = () => {
-        navigate(STORE_PAGE.replace(ID, bike.id)) // Navigate to store page by bike ID
+        navigate(STORE_PAGE_OF_BIKE.replace(ID, bike.id)) // Navigate to store page by bike ID
     }
 
     return (

@@ -1,5 +1,4 @@
 // Page of a singular store
-// TODO: Add List of bikes belonging to store
 // Consists of Name, Image, Description and Information
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -11,6 +10,7 @@ import { ERR_FETCHING_STORE } from '../../../constants/ErrorMessages';
 import { getCookie } from '../../../services/Cookies';
 import { STORE_BY_BIKE_ID } from '../../../constants/URIs/RentingURIs';
 import { ID } from '../../../constants/URIs/General';
+import BikeListCustomer from '../../../components/lists/bikeList/listVersions/BikeListCustomer';
 
 const StorePageCustomer = () => {
     const { t } = useTranslation(); // Translation hook
@@ -47,11 +47,9 @@ const StorePageCustomer = () => {
             <>
                 <h1>{store?.name}</h1> {/* Display store name */}
 
-                {/* NOTE crrently no image and description support for stores by the API */}
-                <ImageAndDescriptionField editable={false} imageValue={store?.image} descriptionValue={store?.description} /> {/* Display image and description */}
+                {/* NOTE crrently no image and description of store returned from backend */}
+                {/* <ImageAndDescriptionField editable={false} imageValue={store?.image} descriptionValue={store?.description} /> */}
                 <SingleLineTextField editable={false} value={store?.address} title={t('address')} /> {/* Display store address */}
-
-                {/* TODO maybe add enrollment component for managers to enroll other managers to this particular store */}
             </>
         }
         </>

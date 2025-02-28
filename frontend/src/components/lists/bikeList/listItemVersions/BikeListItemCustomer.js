@@ -5,8 +5,8 @@ import defaultBikeImage from '../../../../assets/images/default_bike.png'
 
 import { useNavigate } from 'react-router-dom';
 import { HOST } from '../../../../constants/URIs/General';
-import { STORE_NAME, ID } from '../../../../constants/URLs/General';
-import { BIKE_RENTING, STORE_PAGE } from '../../../../constants/URLs/Navigation';
+import { ID } from '../../../../constants/URLs/General';
+import { BIKE_RENTING, STORE_PAGE_OF_BIKE } from '../../../../constants/URLs/Navigation';
 
 const BikeListItemCustomer = ({ bike }) => {
 
@@ -21,7 +21,7 @@ const BikeListItemCustomer = ({ bike }) => {
     }
 
     const handleStoreClick = e => {
-        navigate(STORE_PAGE.replace(ID, bike.id))
+        navigate(STORE_PAGE_OF_BIKE.replace(ID, bike.id))
         e.stopPropagation()
     }
 
