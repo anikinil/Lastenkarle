@@ -1,7 +1,29 @@
 /* Standard-Styles von react-calendar importieren */
 /* BikeCalendar.css */
 /* Update .booking-calendar to arrange months side by side */
+/* Update .booking-calendar to arrange months side by side */
 .booking-calendar {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  /* Flex container for the two months */
+  .month-container-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 15px; /* Space between the two months */
+    width: 10%; /* Ensure it spans the entire booking-calendar width */
+  }
+  
+  /* Ensure each month container is centered and has equal width */
+  .month-container {
+    flex: 1;
+    text-align: center;
+  }
+  
     font-family: Arial, sans-serif;
     display: flex;
     flex-direction: column;
@@ -28,6 +50,23 @@
   grid-template-columns: repeat(10, 1fr);
   gap: 0px;
   width: 60%;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  width: 60%;
+  text-align: center;
+}
+
+/* Styling for weekday labels */
+.weekday-label {
+  font-weight: bold;
+  text-align: center;
+  padding: 5px;
+  border-bottom: 2px solid #000;
+}
+
+/* Empty spaces before the first day */
+.calendar-day.empty {
+  visibility: hidden;
 }
 
 .calendar-day {

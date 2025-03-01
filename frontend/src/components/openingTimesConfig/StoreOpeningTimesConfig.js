@@ -9,31 +9,56 @@ import './StoreOpeningTimesConfig.css'
 import 'react-time-picker/dist/TimePicker.css';
 import '../timePicker/TimePickerCustom.css';
 
-const StoreOpeningTimesConfig = () => {
+const StoreOpeningTimesConfig = ({prepareTimeValue, openingTimesValue, onPrepareTimeChange, onOpeningTimesChange}) => {
     // Hook for translation
     const { t } = useTranslation();
 
-    // Array of days of the week translated
-    const daysOfWeek = [t('monday'), t('tuesday'), t('wednesday'), t('thursday'), t('friday'), t('saturday'), t('sunday')];
+    const daysOfWeek = [
+        {long: 'monday',    short: 'mon'},
+        {long: 'tuesday',   short: 'tue'},
+        {long: 'wednesday', short: 'wed'},
+        {long: 'thursday',  short: 'thu'},
+        {long: 'friday',    short: 'fri'},
+        {long: 'saturday',  short: 'sat'},
+        {long: 'sunday',    short: 'sun'}];
 
-    const [prepareTime, setPrepareTime] = useState('00:00');
-    const [openingTimes, setOpeningTimes] = useState({
-        monday: { open: false, from: '00:00', to: '00:00', closed: false, from: '00:00', to: '00:00' },
-        tuesday: { open: false, from: '00:00', to: '00:00', closed: false, from: '00:00', to: '00:00' },
-        wednesday: { open: false, from: '00:00', to: '00:00', closed: false, from: '00:00', to: '00:00' },
-        thursday: { open: false, from: '00:00', to: '00:00', closed: false, from: '00:00', to: '00:00' },
-        friday: { open: false, from: '00:00', to: '00:00', closed: false, from: '00:00', to: '00:00' },
-        saturday: { open: false, from: '00:00', to: '00:00', closed: false, from: '00:00', to: '00:00' },
-        sunday: { open: false, from: '00:00', to: '00:00', closed: false, from: '00:00', to: '00:00' }
-    });
+    const [prepareTime, setPrepareTime] = useState(prepareTimeValue);
+    const [openingTimes, setOpeningTimes] = useState(openingTimesValue);
 
-    const handleDayChange = (day, open, from, to, closed, fromClosed, toClosed) => {
-        setOpeningTimes({
+    const handleOpenChange = (day, open) => {
+        console.log(openingTimes)
+
+        let change = {
             ...openingTimes,
-            [day]: { open, from, to, closed, fromClosed, toClosed }
-        });
+            [day.short+'_opened']: open
+        }
+        setOpeningTimes(change);
+        onOpeningTimesChange(change);
     }
 
+    const handleFromChange = (day, from) => {
+        let change = {
+            ...openingTimes,
+            [day.short+'_open']: from
+        }
+        setOpeningTimes(change);
+        onOpeningTimesChange(change);
+    }
+
+    const handleToChange = (day, to) => {
+        let change = {
+            ...openingTimes,
+            [day.short+'_close']: to
+        }
+        setOpeningTimes(change);
+        onOpeningTimesChange(change);
+    }
+
+    const handlePrepareTimeChange = (time) => {
+        setPrepareTime(time);
+        onPrepareTimeChange(time);
+    }
+    
     return (
         <>
             {/* Heading for the opening times section */}
@@ -46,8 +71,9 @@ const StoreOpeningTimesConfig = () => {
                     <TimePicker
                         className='time-picker'
                         id={`prepare-time`}
-                        onChange={setPrepareTime}
+                        onChange={handlePrepareTimeChange}
                         value={prepareTime}
+                        format='HH:mm'
                         locale='de-de'
                     />
                 </div>
@@ -60,13 +86,19 @@ const StoreOpeningTimesConfig = () => {
                     <span className='header-label'>{t('open')}</span>
                     <span className='header-label'>{t('from')}</span>
                     <span className='header-label'>{t('to')}</span>
-                    <span className='header-label'>{t('closed')}</span>
-                    <span className='header-label'>{t('from')}</span>
-                    <span className='header-label'>{t('to')}</span>
                 </div>
                 {/* Render a DayRow component for each day of the week */}
-                {daysOfWeek.map((day) => (
-                    <DayRow key={day} day={day} onChange={handleDayChange} />
+                {daysOfWeek.map((day, index) => (
+                    <DayRow 
+                        key={index} 
+                        day={t(day.long)}
+                        isOpenValue={openingTimes[day.short+'_opened']}
+                        fromValue={openingTimes[day.short+'_open']}
+                        toValue={openingTimes[day.short+'_close']}
+                        onOpenChange={(open) => handleOpenChange(day, open)} 
+                        onFromChange={(from) => handleFromChange(day, from)} 
+                        onToChange={(to) => handleToChange(day, to)} 
+                    />
                 ))}
             </div>
         </>

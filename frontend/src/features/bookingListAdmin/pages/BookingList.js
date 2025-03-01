@@ -53,7 +53,10 @@ const BookingList = ({ filterStore, filterBike, filterUser }) => {
         });
         const data = await response.json();
         setStores(data);
-        setStore(data[0].key);
+        console.log("stores", data)
+        if (data.length > 0) {
+            setStore(data[0].key);
+        }
     };
 
     const fetchBikes = async () => {
@@ -65,7 +68,10 @@ const BookingList = ({ filterStore, filterBike, filterUser }) => {
         });
         const data = await response.json();
         setBikes(data);
-        setBike(data[0].key);
+        console.log("bikes", data)
+        if (data.length > 0) {
+            setBike(data[0].key);
+        }
     };
 
     const fetchUsers = async () => {
@@ -77,12 +83,15 @@ const BookingList = ({ filterStore, filterBike, filterUser }) => {
         });
         const data = await response.json();
         setUsers(data);
-        setUser(data[0].key);
+        console.log("users", data)
+        if (data.length > 0) {
+            setUser(data[0].key);
+        }
     };
 
     useEffect(() => {
-        fetchBookings();
         fetchStores();
+        fetchBookings();
         fetchBikes();
         fetchUsers();
         // THINK if filtering should happen on load (in case filter parameters passed)
@@ -120,25 +129,39 @@ const BookingList = ({ filterStore, filterBike, filterUser }) => {
             <h1>{t('bookings')}</h1>
 
             <div className='list-button-container'>
-                <select title='stores' className='select' onChange={handleStoreSelect}>
-                    {stores.map(e => <option key={e.key} value={e.key}>{e.value}</option>)};
-                </select>
-                <select title='bikes' className='select' onChange={handleBikeSelect}>
-                    {bikes.map(e => <option key={e.key} value={e.key}>{e.value}</option>)};
-                </select>
-                <select title='users' className='select' onChange={handleUserSelect}>
-                    {users.map(e => <option key={e.key} value={e.key}>{e.value}</option>)};
-                </select>
-                <button type='button' title={t('filter')} onClick={handleFilterClick}>{t('filter')}</button>
-                <button type='button' title={t('show_all')} onClick={handleShowAllClick}>{t('show_all')}</button>
+                {stores.length > 0 &&
+                    <select title='stores' className='select' onChange={handleStoreSelect}>
+                        {stores.map(e => <option key={'store' + e.name} value={e.name}>{e.name}</option>)};
+                    </select>
+                }
+                {bikes.length > 0 &&
+                    <select title='bikes' className='select' onChange={handleBikeSelect}>
+                        {bikes.map(e => <option key={'bike' + e.name} value={e.name}>{e.name}</option>)};
+                    </select>
+                }
+                {users.length > 0 &&
+                    <select title='users' className='select' onChange={handleUserSelect}>
+                        {users.map(e => <option key={'user' + e.username} value={e.username}>{e.username}</option>)};
+                    </select>
+                }
+                {(stores.length > 0 || bikes.length > 0 || users.length > 0) &&
+                    <>
+                        <button type='button' title={t('filter')} onClick={handleFilterClick}>{t('filter')}</button>
+                        <button type='button' title={t('show_all')} onClick={handleShowAllClick}>{t('show_all')}</button>
+                    </>
+                }
             </div>
 
-            {/* TODO make a component? */}
+            {/* THINK make a component? */}
             <ul className='list'>
                 {bookings ?
-                bookings.map((booking) => (
-                    <BookingListItem booking={booking} key={booking.id} />
-                )) : null}
+                <>
+                    {bookings.length > 0 ?
+                        bookings.map((booking) => (
+                            <BookingListItem booking={booking} key={booking.id} />
+                        )) : t('no_bookings')}
+                </>
+                : null}
             </ul>
         </>
     );

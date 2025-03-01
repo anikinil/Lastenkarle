@@ -4,28 +4,25 @@ import { Roles } from "../../../constants/Roles";
 import StoreConfigAdmin from "../components/StoreConfigAdmin";
 import StoreConfigManager from "../components/StoreConfigManager";
 import { AuthContext } from '../../../AuthProvider';
+import PageNotFound from "../../../pages/PageNotFound";
 
 
 const StoreConfigPage = () => {
 
-    const [isAdmin, setIsAdmin] = useState(false);
-
     const { userRoles } = useContext(AuthContext);
-
-    useEffect(() => {
-        if (userRoles.includes(Roles.ADMINISTRATOR)) {
-            setIsAdmin(true)
-        } else {
-            setIsAdmin(false)
-        }
-    }, [])
 
     return (
         <>
-            {isAdmin ?
+            {userRoles.includes(Roles.ADMINISTRATOR) ?
                 <StoreConfigAdmin />
                 :
-                <StoreConfigManager />
+                <>
+                    {userRoles.includes(Roles.MANAGER) ?
+                        <StoreConfigManager />
+                        :
+                        <PageNotFound />
+                    }
+                </>
             }
         </>
     );

@@ -1,4 +1,4 @@
-import React, { useState, startTransition, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { LOGOUT } from '../constants/URIs/UserURIs';
@@ -21,11 +21,9 @@ const Logout = () => {
     // Hook to navigate to different routes
     const navigate = useNavigate();
 
-    // Retrieve the token from cookies
-    const token = getCookie('token');
-
+    // JAN for some reason returns error "user is not authorized" when trying to logout, but user still gets logged out
     // Function to handle the logout process
-    function logout() {
+    function logout(token) {
         // Send the POST request to the server endpoint
         fetch(LOGOUT, {
             method: 'POST',
@@ -53,27 +51,17 @@ const Logout = () => {
             })
             .catch(error => {
                 // Handle any network or other errors that occurred during the request
-                alert(ERR_POSTING_LOGOUT_REQUEST + ': ' + error);
                 console.log(ERR_POSTING_LOGOUT_REQUEST + ': ' + error);
             });
     }
 
-    const handleLogoutClick = () => {
-        logout();
-    }
-
-    const handleCancelClick = () => {
-        // Navigate back to the previous page
-        navigate(-1);
-    }
+    useEffect(() => {
+        logout(getCookie('token'));
+    }, []);
 
     return (
         <>
-            <h1>{t('are_you_sure_you_want_to_logout')}</h1>
-            <div className='button-container'>
-                <button type='button' className='button accent' onClick={handleLogoutClick}>{t('logout')}</button>
-                <button type='button' className='button regular' onClick={handleCancelClick}>{t('cancel')}</button>
-            </div>
+            <h1>{t('logging_out')}</h1>
         </>
     );
 };
