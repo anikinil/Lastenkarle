@@ -1,16 +1,12 @@
 
 import React, { useEffect } from "react";
 
-// Importing components for display and configuration
-import ImageAndDescriptionField from "../../../components/display/imageAndDescriptionField/ImageAndDescriptionField";
-
 // Importing hooks for routing and translation
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from 'react-router-dom';
 
 // Importing a text field component
-import SingleLineTextField from "../../../components/display/SingleLineTextField";
 import { BIKES_OF_STORE, STORE_PAGE_BY_STORE_NAME } from "../../../constants/URIs/ManagerURIs";
 import { ERR_FETCHING_STORE, ERR_UPDATING_STORE } from "../../../constants/ErrorMessages";
 import { useState } from "react";
@@ -26,7 +22,6 @@ import BikeListManager from "../../../components/lists/bikeList/listVersions/Bik
 // page for the configuration of an existing store
 const StoreConfigManager = () => {
 
-    const [newAddress, setNewAddress] = useState('');
     const { t } = useTranslation();
     // Hook for navigation
     const navigate = useNavigate();
@@ -37,6 +32,9 @@ const StoreConfigManager = () => {
     // State to hold store data
     const [store, setStore] = useState();
     const [bikes, setBikes] = useState([]);
+
+    const [prepareTime, setPrepareTime] = useState('');
+    const [openingTimes, setOpeningTimes] = useState({});
 
     const token = getCookie('token');
 
@@ -51,6 +49,17 @@ const StoreConfigManager = () => {
             .then(response => response.json())
             .then(data => {
                 setStore(data);
+                setPrepareTime(data.prep_time);
+                setOpeningTimes({
+                    mon_opened: data.mon_opened, mon_open: data.mon_open, mon_close: data.mon_close,
+                    tue_opened: data.tue_opened, tue_open: data.tue_open, tue_close: data.tue_close,
+                    wed_opened: data.wed_opened, wed_open: data.wed_open, wed_close: data.wed_close,
+                    thu_opened: data.thu_opened, thu_open: data.thu_open, thu_close: data.thu_close,
+                    fri_opened: data.fri_opened, fri_open: data.fri_open, fri_close: data.fri_close,
+                    sat_opened: data.sat_opened, sat_open: data.sat_open, sat_close: data.sat_close,
+                    sun_opened: data.sun_opened, sun_open: data.sun_open, sun_close: data.sun_close
+                });
+                console.log(data);
                 fetchBikes();
             })
             .catch(error => {
@@ -79,8 +88,9 @@ const StoreConfigManager = () => {
     // Function to post changes to the store
     const postChanges = () => {
         let payload = {
-            address: newAddress
-        }
+            prep_time: prepareTime,
+            ...openingTimes
+        };
         fetch(STORE_PAGE_BY_STORE_NAME.replace(STORE_NAME, storeName), {
             method: 'PATCH',
             headers: {
@@ -98,9 +108,12 @@ const StoreConfigManager = () => {
             });
     }
 
-    // Handler for address change
-    const handleAddressChange = (value) => {
-        setNewAddress(value);
+    const handlePrepareTimeChange = (data) => {
+        setPrepareTime(data);
+    }
+
+    const handleOpeningTimesChange = (data) => {
+        setOpeningTimes(data)
     }
 
     const handleCancelClick = () => {
@@ -122,17 +135,10 @@ const StoreConfigManager = () => {
             <>
                 <h1>{t('manager_view')}: {store.name}</h1>
 
-                {/* Displaying store image and description */}
-                <ImageAndDescriptionField
-                    imageValue={store.image}
-                    descriptionValue={store.description}
-                />
-                {/* Single line text field for store address */}
-                <SingleLineTextField editable={true} value={store.address} title={'address'} onChange={handleAddressChange} />
+                {/* Configuring store opening times */}                
+                <StoreOpeningTimesConfig prepareTimeValue={prepareTime} openingTimesValue={openingTimes} onPrepareTimeChange={handlePrepareTimeChange} onOpeningTimesChange={handleOpeningTimesChange} />
 
-                {/* Configuring store opening times */}
-                <StoreOpeningTimesConfig />
-
+                <h2>{t('bikes')}</h2>
                 {/* Displaying list of bikes of the store */}
                 <BikeListManager bikes={bikes} />
 

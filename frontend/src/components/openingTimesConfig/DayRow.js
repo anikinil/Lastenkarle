@@ -8,17 +8,18 @@ import '../timePicker/TimePickerCustom.css';
 
 import { useTranslation } from 'react-i18next';
 
-const DayRow = ({ day, onOpenChange, onFromChange, onToChange }) => {
+const DayRow = ({ day, isOpenValue, fromValue, toValue,  onOpenChange, onFromChange, onToChange }) => {
 
     const { t } = useTranslation();
 
     // State to manage the open toggle
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(isOpenValue);
+    // const [isOpen, setIsOpen] = useState(isOpenValue == "true" ? true : false);
 
     // State to manage the open from time
-    const [openFromTime, setOpenFromTime] = useState(t('placeholder_open_from_time'));
+    const [fromTime, setFromTime] = useState(fromValue);
     // State to manage the open to time
-    const [openToTime, setOpenToTime] = useState(t('placeholder_open_to_time'));
+    const [toTime, setToTime] = useState(toValue);
 
     // Handler for the open toggle switch
     const handleOpenChange = () => {
@@ -27,12 +28,12 @@ const DayRow = ({ day, onOpenChange, onFromChange, onToChange }) => {
     }
 
     const handleFromChange = (time) => {
-        setOpenFromTime(time) // Update the state
+        setFromTime(time) // Update the state
         onFromChange(time) // Notify the parent of the change
     }
 
     const handleToChange = (time) => {
-        setOpenToTime(time) // Update the state
+        setToTime(time) // Update the state
         onToChange(time) // Notify the parent of the change
     }
 
@@ -48,7 +49,7 @@ const DayRow = ({ day, onOpenChange, onFromChange, onToChange }) => {
                     className='time-picker'
                     id={`${day}-open-from`}
                     onChange={handleFromChange}
-                    value={openFromTime}
+                    value={fromTime}
                     disabled={!isOpen}
                     locale='de-de'
                     format='HH:mm'
@@ -60,7 +61,7 @@ const DayRow = ({ day, onOpenChange, onFromChange, onToChange }) => {
                     className='time-picker'
                     id={`${day}-open-to`}
                     onChange={handleToChange}
-                    value={openToTime}
+                    value={toTime}
                     disabled={!isOpen}
                     locale='de-de'
                     format='HH:mm'

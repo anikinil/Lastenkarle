@@ -13,40 +13,42 @@ const StoreOpeningTimesConfig = ({prepareTimeValue, openingTimesValue, onPrepare
     // Hook for translation
     const { t } = useTranslation();
 
-    // Array of days of the week translated
-    const daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+    const daysOfWeek = [
+        {long: 'monday',    short: 'mon'},
+        {long: 'tuesday',   short: 'tue'},
+        {long: 'wednesday', short: 'wed'},
+        {long: 'thursday',  short: 'thu'},
+        {long: 'friday',    short: 'fri'},
+        {long: 'saturday',  short: 'sat'},
+        {long: 'sunday',    short: 'sun'}];
 
     const [prepareTime, setPrepareTime] = useState(prepareTimeValue);
     const [openingTimes, setOpeningTimes] = useState(openingTimesValue);
 
     const handleOpenChange = (day, open) => {
+        console.log(openingTimes)
+
         let change = {
             ...openingTimes,
-            [day]: { ...openingTimes[day], open }
+            [day.short+'_opened']: open
         }
         setOpeningTimes(change);
         onOpeningTimesChange(change);
     }
 
     const handleFromChange = (day, from) => {
-        from += ':00'; // adding seconds to accound for backend format
         let change = {
             ...openingTimes,
-            [day]: { ...openingTimes[day], from }
+            [day.short+'_open']: from
         }
-        console.log("DAY");
-        console.log(day);
-        console.log("CHANGE");
-        console.log(change);
         setOpeningTimes(change);
         onOpeningTimesChange(change);
     }
 
     const handleToChange = (day, to) => {
-        to += ':00'; // adding seconds to accound for backend format
         let change = {
             ...openingTimes,
-            [day]: { ...openingTimes[day], to }
+            [day.short+'_close']: to
         }
         setOpeningTimes(change);
         onOpeningTimesChange(change);
@@ -54,7 +56,7 @@ const StoreOpeningTimesConfig = ({prepareTimeValue, openingTimesValue, onPrepare
 
     const handlePrepareTimeChange = (time) => {
         setPrepareTime(time);
-        onPrepareTimeChange(time + ":00"); // sending time with added seconds to the parent to accound for backend format
+        onPrepareTimeChange(time);
     }
     
     return (
@@ -89,7 +91,10 @@ const StoreOpeningTimesConfig = ({prepareTimeValue, openingTimesValue, onPrepare
                 {daysOfWeek.map((day, index) => (
                     <DayRow 
                         key={index} 
-                        day={t(day)} 
+                        day={t(day.long)}
+                        isOpenValue={openingTimes[day.short+'_opened']}
+                        fromValue={openingTimes[day.short+'_open']}
+                        toValue={openingTimes[day.short+'_close']}
                         onOpenChange={(open) => handleOpenChange(day, open)} 
                         onFromChange={(from) => handleFromChange(day, from)} 
                         onToChange={(to) => handleToChange(day, to)} 

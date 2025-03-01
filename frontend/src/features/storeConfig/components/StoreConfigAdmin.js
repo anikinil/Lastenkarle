@@ -16,7 +16,7 @@ import { SUCCESS_UPDATING_STORE } from "../../../constants/SuccessMessages";
 import { BIKE_REGISTRATION } from "../../../constants/URLs/Navigation";
 import { STORE_NAME } from "../../../constants/URLs/General";
 import { getCookie } from "../../../services/Cookies";
-import { BIKES_OF_STORE, DELETE_STORE } from "../../../constants/URIs/AdminURIs";
+import { BIKES_OF_STORE, DELETE_STORE, UPDATE_STORE_PAGE_BY_STORE_NAME } from "../../../constants/URIs/AdminURIs";
 import { STORE_PAGE_BY_STORE_NAME } from "../../../constants/URIs/AdminURIs";
 import ConfirmationPopup from '../../../components/confirmationDialog/ConfirmationPopup';
 import BikeListManager from "../../../components/lists/bikeList/listVersions/BikeListManager";
@@ -58,16 +58,28 @@ const StoreConfigAdmin = () => {
                 setStore(data);
                 setPrepareTime(data.prep_time);
                 setOpeningTimes({
-                    monday: { open: data.mon_opened, from: data.mon_open, to: data.mon_close},
-                    tuesday: { open: data.tue_opened, from: data.tue_open, to: data.tue_close},
-                    wednesday: { open: data.wed_opened, from: data.wed_open, to: data.wed_close},
-                    thursday: { open: data.thu_opened, from: data.thu_open, to: data.thu_close},
-                    friday: { open: data.fri_opened, from: data.fri_open, to: data.fri_close},
-                    saturday: { open: data.sat_opened, from: data.sat_open, to: data.sat_close},
-                    sunday: { open: data.sun_opened, from: data.sun_open, to: data.sun_close}
+                    mon_opened: data.mon_opened, 
+                    mon_open: data.mon_open,
+                    mon_close: data.mon_close,
+                    tue_opened: data.tue_opened,
+                    tue_open: data.tue_open,
+                    tue_close: data.tue_close,
+                    wed_opened: data.wed_opened,
+                    wed_open: data.wed_open,
+                    wed_close: data.wed_close,
+                    thu_opened: data.thu_opened,
+                    thu_open: data.thu_open,
+                    thu_close: data.thu_close,
+                    fri_opened: data.fri_opened,
+                    fri_open: data.fri_open,
+                    fri_close: data.fri_close,
+                    sat_opened: data.sat_opened,
+                    sat_open: data.sat_open,
+                    sat_close: data.sat_close,
+                    sun_opened: data.sun_opened,
+                    sun_open: data.sun_open,
+                    sun_close: data.sun_close
                 })
-                console.log("STORE");
-                console.log(data);
                 fetchBikes();
             })
             .catch(error => {
@@ -88,14 +100,13 @@ const StoreConfigAdmin = () => {
         setBikes(data);
     };
 
-    // JAN getting "Method \"PATCH\" not allowed." error
     const postChanges = () => {
         let payload = {
-            prepareTime: prepareTime,
+            prep_time: prepareTime,
             ...openingTimes
         };
         console.log(payload);
-        fetch(STORE_PAGE_BY_STORE_NAME.replace(STORE_NAME, storeName), {
+        fetch(UPDATE_STORE_PAGE_BY_STORE_NAME.replace(STORE_NAME, storeName), {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',

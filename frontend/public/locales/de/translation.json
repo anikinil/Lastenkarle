@@ -109,10 +109,8 @@
     "homepage":                             "Startseite",
     "bike_list":                            "Liste der Lastenräder",
     "store_list":                           "Liste der Stationen",
-    "placeholder_open_from_time":           "8:00",
-    "placeholder_open_to_time":             "19:00",
-    "placeholder_closed_from_time":         "12:00",
-    "placeholder_closed_to_time":           "13:00",
+    "placeholder_open_from_time":           "00:00",
+    "placeholder_open_to_time":             "00:00",
 
     "__Register":                           "Register.js",
     "register":                             "Registrieren",
