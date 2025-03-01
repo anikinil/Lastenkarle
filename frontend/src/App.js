@@ -30,9 +30,8 @@ import StoreBookings from './features/storeBookings/pages/StoreBookings';
 
 import { BIKE_RENTING, BIKE_REGISTRATION, ALL_BIKES, RENTING, ACCOUNT_DELETION, EMAIL_VERIFICATION, 
     ENROLLMENT, HOME, LOGIN, LOGOUT, REGIONAL_RENTING, REGISTER, STORE_BOOKINGS, STORE_REGISTRATION, 
-    STORE_CONFIG, MY_STORES, ALL_STORES, BIKE_CONFIG, ALL_BOOKINGS, ALL_USERS, USER_PAGE, STORE_PAGE_OF_BIKE} 
-    STORE_CONFIG, MY_STORES, ALL_STORES, STORE_DISPLAY, BIKE_CONFIG, ALL_BOOKINGS, ALL_USERS, 
-    USER_PAGE} 
+    STORE_CONFIG, MY_STORES, ALL_STORES, BIKE_CONFIG, ALL_BOOKINGS, ALL_USERS, USER_PAGE, STORE_PAGE_OF_BIKE,
+    MY_STORES, ALL_STORES, BIKE_CONFIG, ALL_BOOKINGS, ALL_USERS, USER_PAGE} 
     from './constants/URLs/Navigation';
 import { ID, KEY, REGION_NAME, STORE_NAME } from './constants/URLs/General';
 import EmailVerification from './pages/EmailVerification';
@@ -106,7 +105,6 @@ const App = () => {
                                 {/* <Route exact path={USER_BAN} element={
                                 {/* <Route exact path={USER_BAN} element={
                                     <ProtectedElement element={<UserBan />} elementRoles={[Roles.MANAGER]} />
-                                } /> */}
                                 } /> */}
                                 <Route exact path={ALL_USERS} element={
                                     <ProtectedElement element={<UserListPage />} elementRoles={[Roles.ADMINISTRATOR]} />
