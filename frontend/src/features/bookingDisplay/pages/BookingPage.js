@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useLocation, useNavigate } from 'react-router-dom';
 import DisplayPanel from '../../../components/display/DisplayPanel';
-
-// TODO ! make every list a seperate component, so e. g. a bike list can be displayed inside store page 
 
 // Displays a single booking without the option of editing.
 const BookingPage = () => {
