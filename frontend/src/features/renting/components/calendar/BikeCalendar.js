@@ -1,9 +1,7 @@
 // Calendar for page of a singular bike
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useTranslation } from 'react-i18next';
 import './BikeCalendar.css'; // CSS für die Farblegende
-import i18n from 'i18next';
 import i18n from 'i18next';
 
 const getDaysInMonth = (month, year) => {
