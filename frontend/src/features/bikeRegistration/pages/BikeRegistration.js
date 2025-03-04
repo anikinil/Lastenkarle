@@ -13,13 +13,15 @@ import SingleLineTextField from '../../../components/display/SingleLineTextField
 import { AuthContext } from '../../../AuthProvider';
 import { Roles } from '../../../constants/Roles';
 import ConfirmationPopup from '../../../components/confirmationDialog/ConfirmationPopup';
+import { useNotification } from '../../../components/notifications/NotificationContext';
 
 const BikeRegistration = () => {
     // Hook for translation
     const { t } = useTranslation();
 
-    // Hook for navigation
     const navigate = useNavigate()
+
+    const { showNotification } = useNotification();
 
     const storeName = useParams().store;
 
@@ -59,7 +61,7 @@ const BikeRegistration = () => {
         })
             .then(response => {
                 if (response.ok) {
-                    console.log(t('bike_registration_successful'));
+                    showNotification(t('bike_registration_successful'), 'success');
                     navigate(-1);
                 } else {
                     return response.json().then((errorText) => {
@@ -68,7 +70,7 @@ const BikeRegistration = () => {
                 }
             })
             .catch(error => {
-                alert(ERR_POSTING_NEW_BIKE + ' ' + error.message);
+                showNotification(`${ERR_POSTING_NEW_BIKE} ${error.message}`, 'error');
             });
     }
 

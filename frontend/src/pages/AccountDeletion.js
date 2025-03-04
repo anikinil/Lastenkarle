@@ -6,11 +6,14 @@ import { ERR_DELETING_ACCOUNT } from "../constants/ErrorMessages";
 import { LOGIN } from "../constants/URLs/Navigation";
 import { deleteCookie, getCookie } from "../services/Cookies";
 
+import { useNotification } from "../components/notifications/NotificationContext";
 
 const AccountDeletion = () => {
 
     const { t } = useTranslation(); // Translation hook
     const navigate = useNavigate(); // Navigation hook
+
+    const { showNotification } = useNotification(); // Notification hook
 
     const token = getCookie('token');
 
@@ -37,7 +40,7 @@ const AccountDeletion = () => {
                 navigate(LOGIN);
             })
             .catch(error => {
-                alert(ERR_DELETING_ACCOUNT + ' ' + error.message);
+                showNotification(`${ERR_DELETING_ACCOUNT} ${error.message}`, 'error');
             });
     }
 

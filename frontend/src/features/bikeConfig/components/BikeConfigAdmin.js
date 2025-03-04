@@ -11,10 +11,14 @@ import { ID } from '../../../constants/URIs/General';
 import { BIKE_BY_ID } from '../../../constants/URIs/RentingURIs';
 import { SUCCESS_UPDATING_BIKE } from '../../../constants/SuccessMessages';
 import ConfirmationPopup from '../../../components/confirmationDialog/ConfirmationPopup';
+import { useNotification } from '../../../components/notifications/NotificationContext';
 
 const BikeConfigAdmin = () => {
     // Hook for translation
     const { t } = useTranslation();
+
+    const { showNotification } = useNotification();
+    
 
     // Hook for navigation
     const navigate = useNavigate()
@@ -77,7 +81,7 @@ const BikeConfigAdmin = () => {
         })
             .then(response => {
                 if (response.ok) {
-                    alert(SUCCESS_UPDATING_BIKE);
+                    showNotification(SUCCESS_UPDATING_BIKE, 'success');
                     navigate(-1);
                 } else {
                     return response.json().then((errorText) => {
@@ -86,7 +90,7 @@ const BikeConfigAdmin = () => {
                 }
             })
             .catch(error => {
-                console.error(ERR_UPDATING_BIKE, error);
+                showNotification(`${ERR_UPDATING_BIKE} ${error}`, 'error');
             });
     }
 
@@ -102,7 +106,7 @@ const BikeConfigAdmin = () => {
         })
             .then(response => {
                 if (response) {
-                    alert(t('bike_deleted_successfully'));
+                    showNotification(t('bike_deleted_successfully'), 'success');
                 }
                 else {
                     return response.json().then((errorText) => {
@@ -111,7 +115,7 @@ const BikeConfigAdmin = () => {
                 }
             })
             .catch(error => {
-                alert(ERR_DELETING_BIKE + ' ' + error.message);
+                showNotification(`${ERR_DELETING_BIKE} ${error.message}`, 'error');
             })
     }
 

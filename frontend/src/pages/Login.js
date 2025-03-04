@@ -8,10 +8,15 @@ import { ERR_FETCHING_USER_DATA, ERR_POSTING_LOGIN_REQUEST } from '../constants/
 import { Roles } from '../constants/Roles';
 import { AuthContext } from '../AuthProvider';
 
+import { useNotification } from '../components/notifications/NotificationContext';
+
 const Login = () => {
     const { t } = useTranslation();
     const { setUserRoles, setUserStores } = useContext(AuthContext);
     const navigate = useNavigate();
+
+    const { showNotification } = useNotification();
+
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
@@ -37,7 +42,7 @@ const Login = () => {
                 navigate(HOME);
             })
             .catch(error => {
-                alert(ERR_POSTING_LOGIN_REQUEST, error);
+                showNotification(`${ERR_POSTING_LOGIN_REQUEST} ${error}`, 'error');
             });
     };
 

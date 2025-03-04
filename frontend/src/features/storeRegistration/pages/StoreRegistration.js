@@ -13,7 +13,11 @@ import { getCookie } from '../../../services/Cookies';
 import { ERR_FETCHING_REGIONS, ERR_POSTING_NEW_STORE } from '../../../constants/ErrorMessages';
 import { REGIONS } from '../../../constants/URIs/RentingURIs';
 
+import { useNotification } from '../../../components/notifications/NotificationContext';
+
 const StoreRegistration = () => {
+
+    const { showNotification } = useNotification();
     
     const { t } = useTranslation(); // Translation hook
     
@@ -91,7 +95,7 @@ const StoreRegistration = () => {
         })
             .then(response => {
                 if (response.ok) {
-                    alert(t('store_registration_successful'));
+                    showNotification(t('store_registration_successful'), 'success');
                     navigate(-1);
                 } else {
                     return response.json().then((errorText) => {
@@ -100,7 +104,7 @@ const StoreRegistration = () => {
                 }
             })
             .catch(error => {
-                alert(ERR_POSTING_NEW_STORE + ' ' + error.message);
+                showNotification(`${ERR_POSTING_NEW_STORE} ${error.message}`, 'error');
             });
     }
 

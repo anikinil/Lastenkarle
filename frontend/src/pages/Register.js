@@ -8,9 +8,13 @@ import { AuthContext } from '../AuthProvider';
 import { getCookie, setCookie } from '../services/Cookies';
 import { Roles } from '../constants/Roles';
 
+import { useNotification } from '../components/notifications/NotificationContext';
+
 const Register = () => {
     const { t } = useTranslation(); // Translation hook
     const navigate = useNavigate(); // Navigation hook
+
+    const { showNotification } = useNotification(); // Notification hook
 
     const { setUserRoles, setUserStores } = useContext(AuthContext);
 
@@ -51,7 +55,7 @@ const Register = () => {
                 }
             })
             .catch(error => {
-                alert(ERR_POSTING_REGISTER_REQUEST + ' ' + error.message);
+                showNotification(`${ERR_POSTING_REGISTER_REQUEST} ${error.message}`, 'error');
             });
     };
 
@@ -87,7 +91,7 @@ const Register = () => {
                 navigate(HOME);
             })
             .catch(error => {
-                alert(ERR_POSTING_LOGIN_REQUEST + ' ' + error.message);
+                showNotification(`${ERR_POSTING_LOGIN_REQUEST} ${error.message}`);
             });
     };
 
