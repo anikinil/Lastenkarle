@@ -10,6 +10,7 @@ import { ERR_FETCHING_STORE } from '../../../constants/ErrorMessages';
 import { getCookie } from '../../../services/Cookies';
 import { STORE_BY_BIKE_ID } from '../../../constants/URIs/RentingURIs';
 import { ID } from '../../../constants/URIs/General';
+import BikeListCustomer from '../../../components/lists/bikeList/listVersions/BikeListCustomer';
 
 const StorePageCustomer = () => {
     const { t } = useTranslation(); // Translation hook

@@ -1,0 +1,60 @@
+# Default image for jobs
+image: docker:24.0.5
+# All build stages
+stages:
+  - build
+  - test
+ # - deploy
+# Builds the docker container
+build-job:
+  stage: build
+  tags:
+    - linux
+    - debian
+  script:
+    - docker builder prune --force
+    - docker build . -f ./Buchungssystem_Lastenkarle/Dockerfile_Django -t django_gunicorn 
+    - docker login -u email@dan-lauer.de -p $DOCKER_ACCESS_TOKEN
+    - docker tag django_gunicorn danjackson01/django_gunicorn:pse
+    - docker push danjackson01/django_gunicorn:pse
+    - cat *.env
+    - docker build . -f ./Buchungssystem_Lastenkarle/Dockerfile_Django -t django_gunicorn
+    - docker save django_gunicorn -o django_gunicorn.tar
+  artifacts:
+    paths:
+      - django_gunicorn.tar
+
+unit-test-job:   # This job runs in the test stage.
+  stage: test    # It only starts when the job in the build stage completes successfully.
+  tags:
+    - linux
+    - debian
+  script:
+    - apk add --no-cache bash
+    - apk --no-cache add curl
+    - curl -s https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/download-secure-files/-/raw/main/installer | bash
+    - cp ./.secure_files/*.env .
+    - chmod +x ./Buchungssystem_Lastenkarle/testing.sh
+    - docker login -u email@dan-lauer.de -p $DOCKER_ACCESS_TOKEN
+    - docker pull danjackson01/django_gunicorn:pse
+    - docker compose -f docker-compose-test.yml up --abort-on-container-exit
+
+lint-test-job:   # This job also runs in the test stage.
+  stage: test    # It can run at the same time as unit-test-job (in parallel).
+  tags:
+    - linux
+    - debian
+  script:
+    - echo "Linting code... This will take about 2 seconds."
+    - sleep 2
+    - echo "No lint issues found."
+
+#deploy-job:      # This job runs in the deploy stage.
+#  stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
+#  tags:
+#    - linux
+#    - debian
+#  environment: production
+#  script:
+#    - echo "Deploying application..."
+#    - echo "Application successfully deployed."

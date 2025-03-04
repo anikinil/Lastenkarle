@@ -2,7 +2,9 @@ version: "3.8"
 
 services:
   django_gunicorn:
-    image: danjackson01/django_gunicorn:pse
+    build:
+      context: .
+      dockerfile: ./Buchungssystem_Lastenkarle/Dockerfile_Django
     volumes:
       - ./Buchungssystem_Lastenkarle/:/usr/src/app/
     env_file:
@@ -23,6 +25,19 @@ services:
       - "80:80"
     depends_on:
       - django_gunicorn
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    stdin_open: true
+    tty: true
+
 
   db:
     container_name: pg_container
@@ -50,4 +65,4 @@ services:
     depends_on:
       - db
     ports:
-      - "40001:80"
+      - "40002:80"

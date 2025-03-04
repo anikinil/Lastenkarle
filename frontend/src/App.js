@@ -34,6 +34,7 @@ import {
     STORE_CONFIG, MY_STORES, ALL_STORES, BIKE_CONFIG, ALL_BOOKINGS, ALL_USERS, USER_PAGE, STORE_PAGE_OF_BIKE
 }
     from './constants/URLs/Navigation';
+    
 import { ID, KEY, REGION_NAME, STORE_NAME } from './constants/URLs/General';
 import EmailVerification from './pages/EmailVerification';
 import { Roles } from './constants/Roles';
@@ -51,6 +52,8 @@ import { setCookie } from './services/Cookies';
 import UserPage from './features/userPage/UserPage';
 import StorePageCustomer from './features/storePage/pages/StorePageCustomer';
 import { NotificationProvider } from './components/notifications/NotificationContext';
+
+// TODO fix region selection everywhere
 
 // TODO fix region selection everywhere
 

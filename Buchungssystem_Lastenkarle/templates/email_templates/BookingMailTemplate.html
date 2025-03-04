@@ -24,7 +24,6 @@
 </style>
 </head>
 <body>
-  <img src="{{ lastenkarle_logo_url }}" alt="Header Image" style="width: 100%; max-width: 400px; display: block;">
   <p class="text-black">Hallo {{ username }},</p>
   
   <p class="text-black">danke für deine Buchung von {{ bike_name }} bei {{ store_name }}!</p>
@@ -37,8 +36,8 @@
   {% endif %}
   <p class="headline-red"><b>Informationen zur Abholung</b></p>
   
-  <p class="text-black">Hole {{ bike_name }} am {{ start_date }} bei der Station {{ store_name }} ab.<br>
-    Bringe es dort spätestens am {{ end_date }} wieder zurück.</p>
+  <p class="text-black">Hole {{ bike_name }} am {{ start_date|date:"d.m.Y" }} bei der Station {{ store_name }} ab.<br>
+    Bringe es dort spätestens am {{ end_date|date:"d.m.Y" }} wieder zurück.</p>
   
   <p class="bold-black">Bitte zeige bei der Abholung und bei der Rückgabe jeweils den im Anhang beigefügten QR-Code vor.<br>
     Es kann passieren, dass du dich beim Abholen ausweisen musst.<br>
@@ -49,13 +48,8 @@
     {{ store_address }}
   </p>
   
-  <p class="bold-black"><b>Öffnungszeiten:</b></p>
+  <p class="bold-black"><b>Öffnungszeiten: müssen noch hinzugefügt werden upsi</b></p>
 
-  <p class="text-black">
-      {% for weekday in store_opening_hours %}
-            {{ weekday }}<br>
-      {% endfor %}<br>
-    Bitte beachte, dass die Öffnungszeiten der Station eventuell kurzzeitig von unseren Angaben abweichen können. Daher empfehlen wir dir, auf der Webseite des Shops die aktuellen Öffnungszeiten nachzuschauen.</p> <br>
   <p class="bold-black"><b>Kontaktdaten der Station:</b></p>
   <p class="text-black">
     {{ store_name }}<br>

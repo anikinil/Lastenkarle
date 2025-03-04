@@ -12,18 +12,6 @@ const getCurrLang = () => {
     return i18n.language
 }
 
-const generateDefaultAvailability = (year, month) => {
-    const daysInMonth = getDaysInMonth(month, year);
-    const availability = {};
-    
-    for (let day = 1; day <= daysInMonth; day++) {
-        const dateString = new Date(year, month, day).toISOString().split('T')[0];
-        availability[dateString] = 0; // Default all days to 'available' (0)
-    }
-
-    return availability;
-};
-
 const BikeCalendar = () => {
 
 
@@ -34,7 +22,16 @@ const BikeCalendar = () => {
 
     const [selectedStartDate, setSelectedStartDate] = useState(null);
     const [selectedEndDate, setSelectedEndDate] = useState(null);
-    const [availability, setAvailability] = useState(generateDefaultAvailability(currentYear, currentMonth));
+    const [availability, setAvailability] = useState({
+        // Beispiel-Daten für die Verfügbarkeit (0 = buchbar, 1 = reserviert, 2 = geschlossen, 3 = nicht buchbar)
+        '2025-01-17': 0,
+        '2025-01-00': 0,
+        '2025-01-01': 0,
+        '2025-01-15': 0,
+        '2025-01-16': 0,
+        '2025-01-18': 0
+        // Weitere Verfügbarkeiten
+    });
 
 
     const handleDayClick = (date) => {
