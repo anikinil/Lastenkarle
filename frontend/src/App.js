@@ -28,9 +28,11 @@ import Register from './pages/Register';
 import Enrollment from './features/enrollment/pages/Enrollment';
 import StoreBookings from './features/storeBookings/pages/StoreBookings';
 
-import { BIKE_RENTING, BIKE_REGISTRATION, ALL_BIKES, RENTING, ACCOUNT_DELETION, EMAIL_VERIFICATION, 
-    ENROLLMENT, HOME, LOGIN, LOGOUT, REGIONAL_RENTING, REGISTER, STORE_BOOKINGS, STORE_REGISTRATION, 
-    STORE_CONFIG, MY_STORES, ALL_STORES, BIKE_CONFIG, ALL_BOOKINGS, ALL_USERS, USER_PAGE, STORE_PAGE_OF_BIKE} 
+import {
+    BIKE_RENTING, BIKE_REGISTRATION, ALL_BIKES, RENTING, ACCOUNT_DELETION, EMAIL_VERIFICATION,
+    ENROLLMENT, HOME, LOGIN, LOGOUT, REGIONAL_RENTING, REGISTER, STORE_BOOKINGS, STORE_REGISTRATION,
+    STORE_CONFIG, MY_STORES, ALL_STORES, BIKE_CONFIG, ALL_BOOKINGS, ALL_USERS, USER_PAGE, STORE_PAGE_OF_BIKE
+}
     from './constants/URLs/Navigation';
 import { ID, KEY, REGION_NAME, STORE_NAME } from './constants/URLs/General';
 import EmailVerification from './pages/EmailVerification';
@@ -48,6 +50,7 @@ import { tokenExpired } from './services/Token';
 import { setCookie } from './services/Cookies';
 import UserPage from './features/userPage/UserPage';
 import StorePageCustomer from './features/storePage/pages/StorePageCustomer';
+import { NotificationProvider } from './components/notifications/NotificationContext';
 
 // TODO fix region selection everywhere
 
@@ -59,7 +62,7 @@ const App = () => {
     const [theme, setTheme] = useLocalStorage('theme', defaultDark ? 'dark' : 'light')
 
     let location = window.location.pathname;
-    
+
     // Function to switch between light and dark themes
     const switchTheme = () => {
         const newTheme = theme === 'light' ? 'dark' : 'light';
@@ -80,87 +83,89 @@ const App = () => {
         <div className='App' data-theme={theme}>
             <div className='content-container'>
                 <AuthProvider>
-                    <Suspense fallback={<Loading />}>
-                        <BrowserRouter>
+                    <NotificationProvider>
+                        <Suspense fallback={<Loading />}>
+                            <BrowserRouter>
 
-                            <Navbar />
+                                <Navbar />
 
-                            <Routes>
+                                <Routes>
 
-                                <Route exact path={HOME} element={<Home />} />
+                                    <Route exact path={HOME} element={<Home />} />
 
-                                {/* ACCOUNTS */}
+                                    {/* ACCOUNTS */}
 
-                                <Route exact path={LOGIN} element={<Login />} />
-                                <Route exact path={LOGOUT} element={<Logout />} />
-                                <Route exact path={ACCOUNT_DELETION} element={<AccountDeletion />} />
-                                <Route exact path={REGISTER} element={<Register />} />
-                                <Route exact path={EMAIL_VERIFICATION.replace(ID, ':id').replace(KEY, ':key')} element={<EmailVerification />} />
-                                <Route exact path={ENROLLMENT} element={
-                                    <ProtectedElement element={<Enrollment />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
-                                } />
-                                {/* <Route exact path={USER_BAN} element={
+                                    <Route exact path={LOGIN} element={<Login />} />
+                                    <Route exact path={LOGOUT} element={<Logout />} />
+                                    <Route exact path={ACCOUNT_DELETION} element={<AccountDeletion />} />
+                                    <Route exact path={REGISTER} element={<Register />} />
+                                    <Route exact path={EMAIL_VERIFICATION.replace(ID, ':id').replace(KEY, ':key')} element={<EmailVerification />} />
+                                    <Route exact path={ENROLLMENT} element={
+                                        <ProtectedElement element={<Enrollment />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
+                                    } />
+                                    {/* <Route exact path={USER_BAN} element={
                                     <ProtectedElement element={<UserBan />} elementRoles={[Roles.MANAGER]} />
-                                } /> */}
-                                <Route exact path={ALL_USERS} element={
-                                    <ProtectedElement element={<UserListPage />} elementRoles={[Roles.ADMINISTRATOR]} />
-                                } />
-                                <Route exact path={USER_PAGE.replace(ID, ':user')} element={
-                                    <ProtectedElement element={<UserPage />} elementRoles={[Roles.ADMINISTRATOR]} />
-                                } />
+                                    } /> */}
+                                    <Route exact path={ALL_USERS} element={
+                                        <ProtectedElement element={<UserListPage />} elementRoles={[Roles.ADMINISTRATOR]} />
+                                    } />
+                                    <Route exact path={USER_PAGE.replace(ID, ':user')} element={
+                                        <ProtectedElement element={<UserPage />} elementRoles={[Roles.ADMINISTRATOR]} />
+                                    } />
 
-                                {/* RENTING */}
+                                    {/* RENTING */}
 
-                                <Route exact path={RENTING} element={<Renting />} />
-                                <Route path={REGIONAL_RENTING.replace(REGION_NAME, ':region')} element={<RegionalRenting />} />
-                                <Route exact path={BIKE_RENTING.replace(ID, ':bike')} element={<BikeRentingPage />} />
+                                    <Route exact path={RENTING} element={<Renting />} />
+                                    <Route path={REGIONAL_RENTING.replace(REGION_NAME, ':region')} element={<RegionalRenting />} />
+                                    <Route exact path={BIKE_RENTING.replace(ID, ':bike')} element={<BikeRentingPage />} />
 
-                                {/* STORES */}
+                                    {/* STORES */}
 
-                                <Route exact path={MY_STORES} element={
-                                    <ProtectedElement element={<MyStoresPage />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
-                                } />
-                                <Route exact path={STORE_PAGE_OF_BIKE.replace(ID, ':bike')} element={<StorePageCustomer />} />
-                                <Route exact path={ALL_STORES} element={
-                                    <ProtectedElement element={<AllStoresPage />} elementRoles={[Roles.ADMINISTRATOR]} />
-                                } />
-                                <Route exact path={STORE_CONFIG.replace(STORE_NAME, ':store')} element={
-                                    <ProtectedElement element={<StoreConfigPage />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
-                                } />
-                                <Route exact path={STORE_REGISTRATION} element={
-                                    <ProtectedElement element={<StoreRegistration />} elementRoles={[Roles.ADMINISTRATOR]} />
-                                } />
+                                    <Route exact path={MY_STORES} element={
+                                        <ProtectedElement element={<MyStoresPage />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
+                                    } />
+                                    <Route exact path={STORE_PAGE_OF_BIKE.replace(ID, ':bike')} element={<StorePageCustomer />} />
+                                    <Route exact path={ALL_STORES} element={
+                                        <ProtectedElement element={<AllStoresPage />} elementRoles={[Roles.ADMINISTRATOR]} />
+                                    } />
+                                    <Route exact path={STORE_CONFIG.replace(STORE_NAME, ':store')} element={
+                                        <ProtectedElement element={<StoreConfigPage />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
+                                    } />
+                                    <Route exact path={STORE_REGISTRATION} element={
+                                        <ProtectedElement element={<StoreRegistration />} elementRoles={[Roles.ADMINISTRATOR]} />
+                                    } />
 
-                                {/* BIKES */}
+                                    {/* BIKES */}
 
-                                <Route exact path={ALL_BIKES} element={
-                                    <ProtectedElement element={<AllBikesPage />} elementRoles={[Roles.ADMINISTRATOR]} />
-                                } />
-                                {/* TODO make inaccessible by just entering the store name in search bar by manager of different store */}
-                                <Route exact path={BIKE_REGISTRATION.replace(STORE_NAME, ':store')} element={
-                                    <ProtectedElement element={<BikeRegistration />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
-                                } />
-                                <Route exact path={BIKE_CONFIG.replace(ID, ':id')} element={
-                                    <ProtectedElement element={<BikeConfigPage />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
-                                } />
+                                    <Route exact path={ALL_BIKES} element={
+                                        <ProtectedElement element={<AllBikesPage />} elementRoles={[Roles.ADMINISTRATOR]} />
+                                    } />
+                                    {/* TODO make inaccessible by just entering the store name in search bar by manager of different store */}
+                                    <Route exact path={BIKE_REGISTRATION.replace(STORE_NAME, ':store')} element={
+                                        <ProtectedElement element={<BikeRegistration />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
+                                    } />
+                                    <Route exact path={BIKE_CONFIG.replace(ID, ':id')} element={
+                                        <ProtectedElement element={<BikeConfigPage />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
+                                    } />
 
-                                {/* BOOKINGS */}
+                                    {/* BOOKINGS */}
 
-                                {/* <Route exact path={BOOKING_PAGE} element={<BookingPage />} /> */}
-                                <Route exact path={ALL_BOOKINGS} element={
-                                    <ProtectedElement element={<BookingList />} elementRoles={[Roles.ADMINISTRATOR]} />
-                                } />
-                                <Route exact path={STORE_BOOKINGS} element={
-                                    <ProtectedElement element={<StoreBookings />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
-                                } />
+                                    {/* <Route exact path={BOOKING_PAGE} element={<BookingPage />} /> */}
+                                    <Route exact path={ALL_BOOKINGS} element={
+                                        <ProtectedElement element={<BookingList />} elementRoles={[Roles.ADMINISTRATOR]} />
+                                    } />
+                                    <Route exact path={STORE_BOOKINGS} element={
+                                        <ProtectedElement element={<StoreBookings />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
+                                    } />
 
-                                {/* OTHER */}
+                                    {/* OTHER */}
 
-                                <Route path='*' element={<PageNotFound />} />
-                            
-                            </Routes>
-                        </BrowserRouter>
-                    </Suspense>
+                                    <Route path='*' element={<PageNotFound />} />
+
+                                </Routes>
+                            </BrowserRouter>
+                        </Suspense>
+                    </NotificationProvider>
                 </AuthProvider>
             </div>
             <div className='side-panel'>

@@ -13,12 +13,13 @@ import { getCookie } from '../../../../services/Cookies';
 import { useTranslation } from 'react-i18next';
 import { HOST } from '../../../../constants/URIs/General';
 
+import { useNotification } from '../../../notifications/NotificationContext';
+
 const StoreListItemAdmin = ({ store }) => {
 
     const { t } = useTranslation();
-
+    const { showNotification } = useNotification();
     const navigate = useNavigate();
-
     const token = getCookie('token');
 
     const [showConfirmationPopup, setShowConfirmationPopup] = useState(false);
@@ -46,8 +47,9 @@ const StoreListItemAdmin = ({ store }) => {
             body: JSON.stringify(payload)
         })
             .then(response => {
-                if (response) {
-                    alert(t('store_deleted_successfully'));
+                if (response.ok) {
+                    setShowConfirmationPopup(false);
+                    window.location.reload();
                 }
                 else {
                     return response.json().then((errorText) => {
@@ -56,7 +58,8 @@ const StoreListItemAdmin = ({ store }) => {
                 }
             })
             .catch(error => {
-                alert(ERR_DELETING_STORE + ' ' + error.message);
+                setShowConfirmationPopup(false);
+                showNotification(`${ERR_DELETING_STORE} ${error.message}`, 'error');
             })
     }
 
@@ -73,7 +76,6 @@ const StoreListItemAdmin = ({ store }) => {
 
             <li className='list-item' onClick={handlePanelClick}>
                 <p className='list-item-label'>{store.name}</p>
-                {/* TODO format properly */}
                 <p className='list-item-label'>{store.address}</p>
                 <button type='button' className='list-item-button accent' onClick={handleDeleteClick}>{t('delete')}</button>
                 <div className='list-item-img-container'>
