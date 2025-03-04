@@ -8,12 +8,15 @@ import { EMAIL_VERIFICATION } from '../constants/URIs/UserURIs';
 import { ERR_POSTING_EMAIL_VERIFICATION } from '../constants/ErrorMessages';
 import { EMAIL_VERIFICATOIN_SUCCESSFUL } from '../constants/SuccessMessages';
 
+import { useNotification } from '../components/notifications/NotificationContext';
 
 const EmailVerification = () => {
 
     const { t } = useTranslation('');
 
     const navigate = useNavigate();
+
+    const { showNotification } = useNotification();
 
     const params = useParams();
     const id = params.id;
@@ -43,11 +46,11 @@ const EmailVerification = () => {
                 }
             })
             .then(data => {
-                alert(EMAIL_VERIFICATOIN_SUCCESSFUL);
+                showNotification(EMAIL_VERIFICATOIN_SUCCESSFUL, 'success');
                 navigate(HOME);
             })
             .catch(error => {
-                alert(ERR_POSTING_EMAIL_VERIFICATION + error.message)
+                showNotification(`${ERR_POSTING_EMAIL_VERIFICATION} ${error.message}`, 'error');
             })
     }
 

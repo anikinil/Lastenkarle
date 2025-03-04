@@ -21,7 +21,7 @@ import { STORE_PAGE_BY_STORE_NAME } from "../../../constants/URIs/AdminURIs";
 import ConfirmationPopup from '../../../components/confirmationDialog/ConfirmationPopup';
 import BikeListManager from "../../../components/lists/bikeList/listVersions/BikeListManager";
 
-// TODO make sure, storeName is passed to this component as parameter
+import { useNotification } from "../../../components/notifications/NotificationContext";
 
 // page for the configuration of an existing store
 const StoreConfigAdmin = () => {
@@ -30,6 +30,8 @@ const StoreConfigAdmin = () => {
 
     // Hook for navigation
     const navigate = useNavigate();
+
+    const { showNotification } = useNotification();
 
     // Extracting store name from URL parameters
     const storeName = useParams().store;
@@ -135,7 +137,7 @@ const StoreConfigAdmin = () => {
         })
             .then(response => {
                 if (response.ok) {
-                    alert(t('store_deleted_successfully'));
+                    showNotification(t('store_deleted_successfully'), 'success');
                 }
                 else {
                     return response.json().then((errorText) => {
@@ -144,7 +146,7 @@ const StoreConfigAdmin = () => {
                 }
             })
             .catch(error => {
-                alert(ERR_DELETING_STORE + ' ' + error.message);
+                showNotification(`${ERR_DELETING_STORE} ${error.message}`, 'error');
             })
     }
 

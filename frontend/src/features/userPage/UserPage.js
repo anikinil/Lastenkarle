@@ -7,12 +7,15 @@ import { getCookie } from '../../services/Cookies';
 import { useTranslation } from 'react-i18next';
 import ConfirmationPopup from '../../components/confirmationDialog/ConfirmationPopup';
 
+import { useNotification } from '../../components/notifications/NotificationContext';
 
 const UserPage = () => {
 
     const { t } = useTranslation(); // Translation hook
 
     const navigate = useNavigate(); // Navigation hook
+
+    const { showNotification } = useNotification(); // Notification hook
 
     const token = getCookie('token'); // Get authentication token from cookies
     
@@ -53,7 +56,7 @@ const UserPage = () => {
         })
             .then(response => {
                 if (response.ok) {
-                    alert(t('user_ban_successful'));
+                    showNotification(t('user_ban_successful'), 'success');
                     navigate(-1);
                 } else {
                     return response.json().then((errorText) => {
@@ -62,7 +65,7 @@ const UserPage = () => {
                 }
             })
             .catch(error => {
-                alert(ERR_BNNING_USER + ' ' + error.message);
+                showNotification(`${ERR_BNNING_USER} ${error.message}`, 'error');
             });
     }
 

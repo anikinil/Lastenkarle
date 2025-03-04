@@ -104,7 +104,7 @@ const StoreRegistration = () => {
                 }
             })
             .catch(error => {
-                alert(ERR_POSTING_NEW_STORE + ' ' + error.message);
+                showNotification(`${ERR_POSTING_NEW_STORE} ${error.message}`, 'error');
             });
     }
 

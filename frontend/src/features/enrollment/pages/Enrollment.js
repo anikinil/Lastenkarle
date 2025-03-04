@@ -9,9 +9,13 @@ import { getCookie } from '../../../services/Cookies';
 import { ERR_POSTING_ENROLLMENT } from '../../../constants/ErrorMessages';
 import { Roles } from '../../../constants/Roles';
 
+import { useNotification } from '../../../components/notifications/NotificationContext';
+
 const Enrollment = () => {
     const { t } = useTranslation(); // Translation hook
     const navigate = useNavigate(); // Navigation hook
+
+    const { showNotification} = useNotification();
 
     // State variables
     const [email, setEmail] = useState();
@@ -66,8 +70,7 @@ const Enrollment = () => {
         })
             .then(response => {
                 if (response.ok) {
-                    alert(t('enrollment_successful'));
-                    navigate(-1);
+                    showNotification(t('enrollment_successful'), 'success');
                 } else {
                     return response.json().then((errorText) => {
                         throw new Error(errorText.detail);
@@ -75,7 +78,7 @@ const Enrollment = () => {
                 }
             })
             .catch(error => {
-                alert(ERR_POSTING_ENROLLMENT + ' ' + error.message);
+                showNotification(`${ERR_POSTING_ENROLLMENT} ${error.message}`, 'error');
             });
     };
 
@@ -96,7 +99,7 @@ const Enrollment = () => {
         if (selectedRole !== '') {
             postEnrollment();
         } else {
-            alert(t('role_not_selected'));
+            showNotification('role_not_selected');
         }
     };
 

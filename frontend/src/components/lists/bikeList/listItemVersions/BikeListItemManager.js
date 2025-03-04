@@ -15,11 +15,15 @@ import { DELETE_BIKE as DELETE_BIKE_MANAGER } from '../../../../constants/URIs/M
 import { AuthContext } from '../../../../AuthProvider';
 import { Roles } from '../../../../constants/Roles';
 
+import { useNotification } from '../../../notifications/NotificationContext';
+
 const BikeListItemManager = ({ bike }) => {
 
     const { t } = useTranslation();
 
     const navigate = useNavigate();
+
+    const { showNotification } = useNotification();
 
     // THINK maybe show big preview of bike image on clik on miniature preview
 
@@ -68,7 +72,7 @@ const BikeListItemManager = ({ bike }) => {
                 }
             })
             .catch(error => {
-                alert(ERR_DELETING_BIKE + ' ' + error.message);
+                showNotification(`${ERR_DELETING_BIKE} ${error.message}`, 'error');
             })
     }
 

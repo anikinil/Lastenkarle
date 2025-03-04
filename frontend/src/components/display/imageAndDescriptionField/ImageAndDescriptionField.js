@@ -31,7 +31,6 @@ const ImageAndDescriptionField = ({ editable, imageValue, descriptionValue, onIm
     return (
         <>
             {descriptionValue}
-            AAAAAAa
 
             <div className="image-and-description-container">
                 <div
