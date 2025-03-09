@@ -2,11 +2,15 @@
 
 import React from 'react';
 
+import FromToDatePicker from '../components/FromToDatePicker';
+
 const GeneralFilterPage = () => {
     
     return (
         <div>
             <h1>General Filter Page</h1>
+
+            <FromToDatePicker />
         </div>
     );
 }
