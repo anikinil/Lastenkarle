@@ -3,6 +3,7 @@
     grid-template-columns: repeat(4, 1fr);
     gap: 1rem;
     width: 95%;
+    margin-bottom: 3rem;
 }
 
 .header {
@@ -28,6 +29,7 @@
 }
 
 .prepare-time-container {
-    display: contents;
+    display: flex;
     align-items: center;
+    gap: 1rem;
 }

@@ -111,18 +111,6 @@ const Enrollment = () => {
         <>
             <h1>{t('enrollment')}</h1>
 
-            {/* <p>{t('enter_one_of_the_following_to_identify_user')}</p> */}
-{/* 
-            <textarea
-                title={t('enter_username')}
-                className='username'
-                rows='1'
-                value={username}
-                onChange={e => setUsername(e.target.value)}
-                onKeyDown={handleFieldKeyDown}
-                placeholder={t('enter_username')}
-            /> */}
-
             <textarea
                 title={t('enter_contact_data')}
                 className='email'

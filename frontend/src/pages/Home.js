@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getCookie } from '../services/Cookies';
 import { USER_DATA } from '../constants/URIs/UserURIs';
+import GeneralFilterPage from '../features/availabilityFilter/pages/GeneralFilterPage';
 
 
 const Home = () => {
@@ -34,8 +35,13 @@ const Home = () => {
 
     return (
         <>
-            <h1>{t('homepage')}: {username}</h1>
-            <p>YOUR TOKEN: {token}</p>
+            {/* developement purposes */}
+            <div align='left'>
+                <p>Username: {username}</p>
+                <p>Token: {token}</p>
+            </div>
+
+            <GeneralFilterPage />
         </>
     );
 };

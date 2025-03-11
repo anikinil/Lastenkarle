@@ -1,0 +1,23 @@
+.from-to-date-picker-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.date-container {
+    display: flex;
+    align-items: center;
+}
+
+.datepicker-input {
+    transition: all .3s;
+    margin: 1rem;
+}
+
+/* inverts the color of the calendar icon, when dark theme enabled, to make it white */
+[data-theme='dark'] {
+    ::-webkit-calendar-picker-indicator {
+        filter: invert(1);
+        transition: .3s;
+    }
+}

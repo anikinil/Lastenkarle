@@ -9,18 +9,18 @@ import './StoreOpeningTimesConfig.css'
 import 'react-time-picker/dist/TimePicker.css';
 import '../timePicker/TimePickerCustom.css';
 
-const StoreOpeningTimesConfig = ({prepareTimeValue, openingTimesValue, onPrepareTimeChange, onOpeningTimesChange}) => {
+const StoreOpeningTimesConfig = ({ prepareTimeValue, openingTimesValue, onPrepareTimeChange, onOpeningTimesChange }) => {
     // Hook for translation
     const { t } = useTranslation();
 
     const daysOfWeek = [
-        {long: 'monday',    short: 'mon'},
-        {long: 'tuesday',   short: 'tue'},
-        {long: 'wednesday', short: 'wed'},
-        {long: 'thursday',  short: 'thu'},
-        {long: 'friday',    short: 'fri'},
-        {long: 'saturday',  short: 'sat'},
-        {long: 'sunday',    short: 'sun'}];
+        { long: 'monday', short: 'mon' },
+        { long: 'tuesday', short: 'tue' },
+        { long: 'wednesday', short: 'wed' },
+        { long: 'thursday', short: 'thu' },
+        { long: 'friday', short: 'fri' },
+        { long: 'saturday', short: 'sat' },
+        { long: 'sunday', short: 'sun' }];
 
     const [prepareTime, setPrepareTime] = useState(prepareTimeValue);
     const [openingTimes, setOpeningTimes] = useState(openingTimesValue);
@@ -30,7 +30,7 @@ const StoreOpeningTimesConfig = ({prepareTimeValue, openingTimesValue, onPrepare
 
         let change = {
             ...openingTimes,
-            [day.short+'_opened']: open
+            [day.short + '_opened']: open
         }
         setOpeningTimes(change);
         onOpeningTimesChange(change);
@@ -39,7 +39,7 @@ const StoreOpeningTimesConfig = ({prepareTimeValue, openingTimesValue, onPrepare
     const handleFromChange = (day, from) => {
         let change = {
             ...openingTimes,
-            [day.short+'_open']: from
+            [day.short + '_open']: from
         }
         setOpeningTimes(change);
         onOpeningTimesChange(change);
@@ -48,7 +48,7 @@ const StoreOpeningTimesConfig = ({prepareTimeValue, openingTimesValue, onPrepare
     const handleToChange = (day, to) => {
         let change = {
             ...openingTimes,
-            [day.short+'_close']: to
+            [day.short + '_close']: to
         }
         setOpeningTimes(change);
         onOpeningTimesChange(change);
@@ -58,26 +58,11 @@ const StoreOpeningTimesConfig = ({prepareTimeValue, openingTimesValue, onPrepare
         setPrepareTime(time);
         onPrepareTimeChange(time);
     }
-    
+
     return (
         <>
             {/* Heading for the opening times section */}
             <h2>{t('opening_times')}</h2>
-
-            <div className='prepare-time-container'>
-                <span>{t('prepare_time')}</span>
-                <div>
-                    {/* Time picker for open from time */}
-                    <TimePicker
-                        className='time-picker'
-                        id={`prepare-time`}
-                        onChange={handlePrepareTimeChange}
-                        value={prepareTime}
-                        format='HH:mm'
-                        locale='de-de'
-                    />
-                </div>
-            </div>
 
             <div className='week-container'>
                 {/* Header row for the table */}
@@ -89,17 +74,30 @@ const StoreOpeningTimesConfig = ({prepareTimeValue, openingTimesValue, onPrepare
                 </div>
                 {/* Render a DayRow component for each day of the week */}
                 {daysOfWeek.map((day, index) => (
-                    <DayRow 
-                        key={index} 
+                    <DayRow
+                        key={index}
                         day={t(day.long)}
-                        isOpenValue={openingTimes[day.short+'_opened']}
-                        fromValue={openingTimes[day.short+'_open']}
-                        toValue={openingTimes[day.short+'_close']}
-                        onOpenChange={(open) => handleOpenChange(day, open)} 
-                        onFromChange={(from) => handleFromChange(day, from)} 
-                        onToChange={(to) => handleToChange(day, to)} 
+                        isOpenValue={openingTimes[day.short + '_opened']}
+                        fromValue={openingTimes[day.short + '_open']}
+                        toValue={openingTimes[day.short + '_close']}
+                        onOpenChange={(open) => handleOpenChange(day, open)}
+                        onFromChange={(from) => handleFromChange(day, from)}
+                        onToChange={(to) => handleToChange(day, to)}
                     />
                 ))}
+            </div>
+
+            <div className='prepare-time-container'>
+                <p>{t('prepare_time')}</p>
+                {/* Time picker for open from time */}
+                <TimePicker
+                    className='time-picker'
+                    id={`prepare-time`}
+                    onChange={handlePrepareTimeChange}
+                    value={prepareTime}
+                    format='HH:mm'
+                    locale='de-de'
+                />
             </div>
         </>
     );

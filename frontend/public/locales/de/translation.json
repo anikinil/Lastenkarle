@@ -3,6 +3,12 @@
     "all_bookings":                         "Alle Buchungen",
     "all_users":                            "Alle Benutzer",
 
+    "__GenerealFilterPage":                 "GeneralFilterPage.js",
+    "availabilities_in_all_regions":        "Verfügbarkeiten in allen Regionen",
+
+    "__RegionFilterPage":                   "RegionFilterPage.js",
+    "availabilities_in_region":             "Verfügbarkeiten in Region:",
+
     "__DayRow":                             "DayRow.js - bereits abgedeckt",
 
     "__StoreOpeningTimesConfig":            "StoreOpeningTimesConfig.js",
@@ -15,9 +21,11 @@
     "sunday":                               "Sonntag",
     "opening_times":                        "Öffnungszeiten",
     "open":                                 "Geöffnet",
-    "from":                                 "von",
-    "to":                                   "bis",
+    "from":                                 "Von",
+    "to":                                   "Bis",
     "closed":                               "Geschlossen",
+    "prepare_time":                         "Vorlaufszeit",
+    "store_bikes":                          "Lastenräder der Station",
 
     "__BikeList":                           "BikeList.js",
     "register_new_bike":                    "Neues Lastenrad anlegen",
