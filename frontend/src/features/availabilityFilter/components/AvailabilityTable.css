@@ -1,0 +1,40 @@
+.availability-table {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.availability-table th,
+.availability-table td {
+    border: 1px solid var(--background);
+    padding: 0.4rem;
+}
+
+.availability-table th {
+    font-weight: bold;
+    background-color: var(--content-background);
+}
+
+.availability-table td {
+    position: relative;
+    background-color: var(--content-background);
+    text-align: center;
+}
+
+.square {
+    display: inline-block;
+    width: 0.7rem;
+    height: 0.7rem;
+}
+
+.square[status="available"] {
+    background-color: #36e476;
+}
+
+.square[status="unavailable"] {
+    background-color: #e05050;
+}
+
+.availability-table-container {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
