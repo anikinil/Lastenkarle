@@ -60,7 +60,7 @@ const StoreConfigAdmin = () => {
                 setStore(data);
                 setPrepareTime(data.prep_time);
                 setOpeningTimes({
-                    mon_opened: data.mon_opened, 
+                    mon_opened: data.mon_opened,
                     mon_open: data.mon_open,
                     mon_close: data.mon_close,
                     tue_opened: data.tue_opened,
@@ -119,9 +119,11 @@ const StoreConfigAdmin = () => {
             .then(response => response.json())
             .then(data => {
                 console.log(SUCCESS_UPDATING_STORE, data);
+                showNotification(SUCCESS_UPDATING_STORE, 'success');
             })
             .catch(error => {
                 console.error(ERR_UPDATING_STORE, error);
+                showNotification(`${ERR_UPDATING_STORE} ${error}`, 'error');
             });
     }
 

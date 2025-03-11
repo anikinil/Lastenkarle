@@ -17,7 +17,7 @@ import { getCookie } from "../../../services/Cookies";
 import StoreOpeningTimesConfig from "../../../components/openingTimesConfig/StoreOpeningTimesConfig";
 import BikeListManager from "../../../components/lists/bikeList/listVersions/BikeListManager";
 
-// TODO make sure, storeName is passed to this component as parameter
+import { useNotification } from "../../../components/notifications/NotificationContext";
 
 // page for the configuration of an existing store
 const StoreConfigManager = () => {
@@ -25,6 +25,8 @@ const StoreConfigManager = () => {
     const { t } = useTranslation();
     // Hook for navigation
     const navigate = useNavigate();
+
+    const { showNotification } = useNotification();
 
     // Extracting store name from URL parameters
     const storeName = useParams().store;
@@ -102,9 +104,11 @@ const StoreConfigManager = () => {
             .then(response => response.json())
             .then(data => {
                 console.log(SUCCESS_UPDATING_STORE, data);
+                showNotification(SUCCESS_UPDATING_STORE, 'success');
             })
             .catch(error => {
                 console.error(ERR_UPDATING_STORE, error);
+                showNotification(`${ERR_UPDATING_STORE} ${error}`, 'error');
             });
     }
 
