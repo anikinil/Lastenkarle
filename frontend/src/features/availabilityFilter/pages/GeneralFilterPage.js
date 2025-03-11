@@ -2,6 +2,8 @@
 
 import React, { useEffect } from 'react';
 
+import { useTranslation } from 'react-i18next';
+
 import { useState } from 'react';
 
 import FromToDatePicker from '../components/FromToDatePicker';
@@ -10,6 +12,8 @@ import { getCookie } from '../../../services/Cookies';
 import { ID } from '../../../constants/URIs/General';
 
 const GeneralFilterPage = () => {
+
+    const { t } = useTranslation();
 
     const token = getCookie('token');
     
@@ -52,7 +56,7 @@ const GeneralFilterPage = () => {
 
     return (
         <div>
-            <h1>General Filter Page</h1>
+            <h1>{t('availabilities_in_all_regions')}</h1>
 
             <FromToDatePicker from={from} to={to} setFrom={setFrom} setTo={setTo} />
 

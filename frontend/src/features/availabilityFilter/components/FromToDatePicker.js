@@ -13,7 +13,7 @@ const FromToDatePicker = ({ from, to, setFrom, setTo }) => {
         <div className="from-to-date-picker-container">
 
             <div className="date-container">
-                <label htmlFor="from">{t('from')}: </label>
+                <label htmlFor="from">{t('from')}</label>
                 <input
                     className='datepicker-input'
                     type="date"
@@ -25,7 +25,7 @@ const FromToDatePicker = ({ from, to, setFrom, setTo }) => {
             </div>
 
             <div className="date-container">
-                <label htmlFor="to">{t('to')}: </label>
+                <label htmlFor="to">{t('to')}</label>
                 <input
                     className='datepicker-input'
                     type="date"

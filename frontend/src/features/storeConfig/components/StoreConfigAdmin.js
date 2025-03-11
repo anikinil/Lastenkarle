@@ -194,7 +194,7 @@ const StoreConfigAdmin = () => {
                 {/* Configuring store opening times */}
                 <StoreOpeningTimesConfig prepareTimeValue={prepareTime} openingTimesValue={openingTimes} onPrepareTimeChange={handlePrepareTimeChange} onOpeningTimesChange={handleOpeningTimesChange} />
 
-                <h2>{t('bikes')}</h2>
+                <h2>{t('store_bikes')}</h2>
                 {/* Displaying list of bikes of the store */}
                 <BikeListManager bikes={bikes} />
 
