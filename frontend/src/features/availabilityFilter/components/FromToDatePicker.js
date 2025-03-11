@@ -7,7 +7,6 @@ import { useTranslation } from 'react-i18next';
 
 const FromToDatePicker = ({ from, to, setFrom, setTo }) => {
 
-
     const { t } = useTranslation();
 
     return (
@@ -16,7 +15,7 @@ const FromToDatePicker = ({ from, to, setFrom, setTo }) => {
             <div className="date-container">
                 <label htmlFor="from">{t('from')}: </label>
                 <input
-                    className='date-input'
+                    className='datepicker-input'
                     type="date"
                     id="from"
                     name="from"
@@ -28,7 +27,7 @@ const FromToDatePicker = ({ from, to, setFrom, setTo }) => {
             <div className="date-container">
                 <label htmlFor="to">{t('to')}: </label>
                 <input
-                    className='date-input'
+                    className='datepicker-input'
                     type="date"
                     id="to"
                     name="to"
