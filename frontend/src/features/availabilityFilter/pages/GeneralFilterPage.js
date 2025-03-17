@@ -7,14 +7,16 @@ import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 
 import FromToDatePicker from '../components/FromToDatePicker';
-import { ALL_AVAILABILITIES, ALL_BIKES, AVAILABILITY_OF_BIKE } from '../../../constants/URIs/RentingURIs';
+import { ALL_AVAILABILITIES, ALL_BIKES } from '../../../constants/URIs/RentingURIs';
 import { getCookie } from '../../../services/Cookies';
-import { ID } from '../../../constants/URIs/General';
 import AvailabilityTable from '../components/AvailabilityTable';
+import { useNotification } from '../../../components/notifications/NotificationContext';
 
 const GeneralFilterPage = () => {
 
     const { t } = useTranslation();
+
+    const { showNotification} = useNotification();
 
     const token = getCookie('token');
 
@@ -77,19 +79,32 @@ const GeneralFilterPage = () => {
     //         });
     // };
 
-
     useEffect(() => {
         fetchAvailabilities();
         fetchBikes();
     }, []);
+
+    useEffect(() => {
+        if (from && to && from > to) {
+            showNotification(t('from-date-must-be-before-to-date'), 'error');
+            setFrom('');
+        }
+    }, [from]);
+
+    useEffect(() => {
+        if (from && to && from > to) {
+            showNotification(t('from-date-must-be-before-to-date'), 'error');
+            setTo('');
+        }
+    }, [to]);
 
     return (
         <div>
             <h1>{t('availabilities_in_all_regions')}</h1>
 
             <FromToDatePicker from={from} to={to} setFrom={setFrom} setTo={setTo} />
-            
-            <AvailabilityTable bikes={bikes} availabilities={availabilities} />
+
+            <AvailabilityTable bikes={bikes} availabilities={availabilities} from={from} to={to} />
         </div>
     );
 }

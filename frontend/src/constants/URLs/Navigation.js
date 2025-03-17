@@ -21,7 +21,7 @@ export const USER_PAGE              = `/user/${ID}`
 export const ALL_STORES             = `/all-stores`                              // all stores in the system (admin)
 export const MY_STORES              = `/my-stores`                               // stores of particular in manager (manager, admin)
 export const STORE_PAGE_OF_BIKE     = `/store-page-of-bike/${ID}`                // display store page of a particular bike (customer)
-export const STORE_DISPLAY          = `/store-page/${ID}`                        // display store page (customer)
+export const STORE_DISPLAY          = `/store-page/${STORE_NAME}`                // display store page (customer)
 export const STORE_CONFIG           = `/store-config/${STORE_NAME}`              // configure store (manager, admin)
 export const STORE_REGISTRATION     = `/store-registration`                      // register store (admin)
 
