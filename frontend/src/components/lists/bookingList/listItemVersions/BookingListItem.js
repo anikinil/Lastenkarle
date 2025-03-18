@@ -70,7 +70,7 @@ const BookingListItem = ({ booking }) => {
             <p className='list-item-label'>{t('from')}: {booking.begin}</p>
             <p className='list-item-label'>{t('to')}: {booking.begin}</p>
 
-            <button type='button' className='list-item-button regular' onClick={handleBikeClick}>{bikeName}</button>
+            {bikeName && <button type='button' className='list-item-button regular' onClick={handleBikeClick}>{bikeName}</button>}
 
             <div className='list-item-img-container'>
                 <img className='list-item-img' alt={bikeName} src={bikeImage ? HOST + bikeImage : defaultBikeImage}></img>
