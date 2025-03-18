@@ -15,7 +15,7 @@ const AvailabilityTable = ({ bikes, availabilities, from, to }) => {
     const isAvailableOnDate = (bikeId, date) => {
         const normalizeDate = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
         const normalizedDate = normalizeDate(date);
-        
+
         const bikeAvs = availabilities.filter(availability => availability.bike === bikeId);
         return !bikeAvs.some(availability => {
             const start = normalizeDate(new Date(availability.from_date));
@@ -23,11 +23,11 @@ const AvailabilityTable = ({ bikes, availabilities, from, to }) => {
             return normalizedDate >= start && normalizedDate <= end;
         });
     };
-    
+
     const getDatesToShow = () => {
         const currentDate = new Date();
         currentDate.setHours(0, 0, 0, 0);
-    
+
         if (from && to) {
             const fromDate = new Date(from);
             const toDate = new Date(to);
@@ -45,7 +45,7 @@ const AvailabilityTable = ({ bikes, availabilities, from, to }) => {
             });
         }
     };
-    
+
     const getAvailabilityData = () => {
         console.log(getDatesToShow())
         const allBikeData = bikes.map(bike => {
@@ -84,6 +84,7 @@ const AvailabilityTable = ({ bikes, availabilities, from, to }) => {
                                     <th key={index} colSpan={span}>
                                         {month}
                                     </th>
+                                    // TODO add days of the week
                                 );
                             })}
                         </tr>
