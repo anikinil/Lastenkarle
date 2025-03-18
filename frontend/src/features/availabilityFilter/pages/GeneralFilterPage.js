@@ -16,7 +16,7 @@ const GeneralFilterPage = () => {
 
     const { t } = useTranslation();
 
-    const { showNotification} = useNotification();
+    const { showNotification } = useNotification();
 
     const token = getCookie('token');
 
@@ -86,14 +86,14 @@ const GeneralFilterPage = () => {
 
     useEffect(() => {
         if (from && to && from > to) {
-            showNotification(t('from-date-must-be-before-to-date'), 'error');
+            showNotification(t('from_date_must_be_before_to_date'), 'error');
             setFrom('');
         }
     }, [from]);
 
     useEffect(() => {
         if (from && to && from > to) {
-            showNotification(t('from-date-must-be-before-to-date'), 'error');
+            showNotification(t('from_date_must_be_before_to_date'), 'error');
             setTo('');
         }
     }, [to]);
@@ -102,9 +102,13 @@ const GeneralFilterPage = () => {
         <div>
             <h1>{t('availabilities_in_all_regions')}</h1>
 
-            <FromToDatePicker from={from} to={to} setFrom={setFrom} setTo={setTo} />
+            {bikes.length > 0 ?
+                <>
+                    <FromToDatePicker from={from} to={to} setFrom={setFrom} setTo={setTo} />
 
-            <AvailabilityTable bikes={bikes} availabilities={availabilities} from={from} to={to} />
+                    <AvailabilityTable bikes={bikes} availabilities={availabilities} from={from} to={to} />
+                </> : <p>{t('no_bikes_registered')}</p>
+            }
         </div>
     );
 }
