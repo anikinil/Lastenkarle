@@ -5,6 +5,7 @@
 
     "__GenerealFilterPage":                 "GeneralFilterPage.js",
     "availabilities_in_all_regions":        "Verfügbarkeiten in allen Regionen",
+    "reset":                                "Zurücksetzen",
 
     "__RegionFilterPage":                   "RegionFilterPage.js",
     "availabilities_in_region":             "Verfügbarkeiten in Region:",

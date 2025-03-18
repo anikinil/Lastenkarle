@@ -22,7 +22,7 @@ import LanguageToggle from './components/sidePanel/LanguageToggle';
 import RegionalRenting from './features/renting/pages/RegionalRenting';
 import BikeRegistration from './features/bikeRegistration/pages/BikeRegistration';
 import StoreRegistration from './features/storeRegistration/pages/StoreRegistration';
-import BookingList from './features/bookingListAdmin/pages/BookingList';
+import BookingList from './features/bookingListAdmin/pages/AllBookingsPage';
 import BikeConfigPage from './features/bikeConfig/pages/BikeConfigPage';
 import Register from './pages/Register';
 import Enrollment from './features/enrollment/pages/Enrollment';
