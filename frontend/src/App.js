@@ -22,7 +22,7 @@ import LanguageToggle from './components/sidePanel/LanguageToggle';
 import RegionalRenting from './features/renting/pages/RegionalRenting';
 import BikeRegistration from './features/bikeRegistration/pages/BikeRegistration';
 import StoreRegistration from './features/storeRegistration/pages/StoreRegistration';
-import BookingList from './features/bookingListAdmin/pages/AllBookingsPage';
+import BookingList from './features/allBookings/pages/AllBookingsPage';
 import BikeConfigPage from './features/bikeConfig/pages/BikeConfigPage';
 import Register from './pages/Register';
 import Enrollment from './features/enrollment/pages/Enrollment';
@@ -31,7 +31,8 @@ import StoreBookings from './features/storeBookings/pages/StoreBookings';
 import {
     BIKE_RENTING, BIKE_REGISTRATION, ALL_BIKES, RENTING, ACCOUNT_DELETION, EMAIL_VERIFICATION,
     ENROLLMENT, HOME, LOGIN, LOGOUT, REGIONAL_RENTING, REGISTER, STORE_BOOKINGS, STORE_REGISTRATION,
-    STORE_CONFIG, MY_STORES, ALL_STORES, BIKE_CONFIG, ALL_BOOKINGS, ALL_USERS, USER_PAGE, STORE_PAGE_OF_BIKE
+    STORE_CONFIG, MY_STORES, ALL_STORES, BIKE_CONFIG, ALL_BOOKINGS, ALL_USERS, USER_PAGE, STORE_PAGE_OF_BIKE,
+    BOOKING_PAGE
 }
     from './constants/URLs/Navigation';
     
@@ -52,6 +53,7 @@ import { setCookie } from './services/Cookies';
 import UserPage from './features/userPage/UserPage';
 import StorePageCustomer from './features/storePage/pages/StorePageCustomer';
 import { NotificationProvider } from './components/notifications/NotificationContext';
+import BookingPage from './features/bookingDisplay/pages/BookingPageAdmin';
 
 // TODO fix region selection everywhere
 
@@ -153,7 +155,7 @@ const App = () => {
 
                                     {/* BOOKINGS */}
 
-                                    {/* <Route exact path={BOOKING_PAGE} element={<BookingPage />} /> */}
+                                    <Route exact path={BOOKING_PAGE.replace(ID, ':id')} element={<BookingPage />} />
                                     <Route exact path={ALL_BOOKINGS} element={
                                         <ProtectedElement element={<BookingList />} elementRoles={[Roles.ADMINISTRATOR]} />
                                     } />

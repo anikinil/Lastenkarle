@@ -22,10 +22,8 @@ const BookingListItem = ({ booking }) => {
 
     const token = getCookie('token')
 
-
     const [bikeName, setBikeName] = useState('');
     const [bikeImage, setBikeImage] = useState(null);
-
 
     const handlePanelClick = () => {
         navigate(BOOKING_PAGE.replace(ID, booking.id))

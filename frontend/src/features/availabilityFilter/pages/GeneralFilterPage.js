@@ -49,39 +49,41 @@ const GeneralFilterPage = () => {
         setBikes(data);
     };
 
-    // const postBooking = () => {
-    //     const payload = {
-    //         begin:"2025-03-12",
-    //         end:"2025-03-13",
-    //         equipment:[
-    //         ]
-    //     };
+    const postBooking = () => {
+        const payload = {
+            begin:"2025-03-27",
+            end:"2025-03-29",
+            equipment:[
+                "test_equipment"
+            ]
+        };
 
-    //     fetch("http://localhost/api/booking/v1/bikes/10/booking", {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //             'Authorization': `Token ${token}`
-    //         },
-    //         body: JSON.stringify(payload)
-    //     })
-    //         .then(response => {
-    //             if (response.ok) {
-    //                 console.log('Booking successful');
-    //             } else {
-    //                 return response.json().then((errorText) => {
-    //                     throw new Error(errorText.detail);
-    //                 });
-    //             }
-    //         })
-    //         .catch(error => {
-    //             console.error('Error:', error);
-    //         });
-    // };
+        fetch("http://localhost/api/booking/v1/bikes/14/booking", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`
+            },
+            body: JSON.stringify(payload)
+        })
+            .then(response => {
+                if (response.ok) {
+                    console.log('Booking successful');
+                } else {
+                    return response.json().then((errorText) => {
+                        throw new Error(errorText.detail);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    };
 
     useEffect(() => {
         fetchAvailabilities();
         fetchBikes();
+        // postBooking();
     }, []);
 
     useEffect(() => {

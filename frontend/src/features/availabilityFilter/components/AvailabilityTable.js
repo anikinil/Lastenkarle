@@ -8,40 +8,46 @@ import { ID } from "../../../constants/URLs/General";
 
 const AvailabilityTable = ({ bikes, availabilities, from, to }) => {
 
-    const currentDate = new Date();
     const defaultNumDays = 30; // Number of days to display per default
 
     const { t } = useTranslation();
 
     const isAvailableOnDate = (bikeId, date) => {
+        const normalizeDate = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+        const normalizedDate = normalizeDate(date);
+        
         const bikeAvs = availabilities.filter(availability => availability.bike === bikeId);
         return !bikeAvs.some(availability => {
-            const start = new Date(availability.from_date);
-            const end = new Date(availability.until_date);
-            return date >= start && date <= end;
+            const start = normalizeDate(new Date(availability.from_date));
+            const end = normalizeDate(new Date(availability.until_date));
+            return normalizedDate >= start && normalizedDate <= end;
         });
     };
-
+    
     const getDatesToShow = () => {
+        const currentDate = new Date();
+        currentDate.setHours(0, 0, 0, 0);
+    
         if (from && to) {
             const fromDate = new Date(from);
             const toDate = new Date(to);
-            const days = (toDate - fromDate) / (1000 * 60 * 60 * 24) + 1; // add one day to include the last day
-            return Array(days).fill(null).map((_, index) => {
+            const days = (toDate - fromDate) / (1000 * 60 * 60 * 24) + 1;
+            return Array.from({ length: days }, (_, index) => {
                 const date = new Date(fromDate);
                 date.setDate(fromDate.getDate() + index);
                 return date;
             });
         } else {
-            return Array(defaultNumDays).fill(null).map((_, index) => {
+            return Array.from({ length: defaultNumDays }, (_, index) => {
                 const date = new Date(currentDate);
                 date.setDate(currentDate.getDate() + index);
                 return date;
             });
         }
     };
-
+    
     const getAvailabilityData = () => {
+        console.log(getDatesToShow())
         const allBikeData = bikes.map(bike => {
             return {
                 id: bike.id,
@@ -52,8 +58,7 @@ const AvailabilityTable = ({ bikes, availabilities, from, to }) => {
                 })
             };
         });
-        const filteredBikeData = allBikeData.filter((bike) => bike.avs.some(av => av === 'available'));
-        return filteredBikeData;
+        return allBikeData.filter((bike) => bike.avs.some(av => av === 'available'));
     };
 
 
