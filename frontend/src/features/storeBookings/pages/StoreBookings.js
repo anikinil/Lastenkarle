@@ -1,6 +1,6 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
-import BookingList from "../../bookingListAdmin/pages/AllBookingsPage";
+import BookingList from "../../allBookings/pages/AllBookingsPage";
 import { useTranslation } from "react-i18next";
 
 // Page component for displaying the bookings of a store

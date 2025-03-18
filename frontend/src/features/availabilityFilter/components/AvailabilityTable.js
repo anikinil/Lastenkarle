@@ -15,9 +15,14 @@ const AvailabilityTable = ({ bikes, availabilities, from, to }) => {
 
     const isAvailableOnDate = (bikeId, date) => {
         const bikeAvs = availabilities.filter(availability => availability.bike === bikeId);
+        // console.log(bikeAvs);
         return !bikeAvs.some(availability => {
             const start = new Date(availability.from_date);
             const end = new Date(availability.until_date);
+            console.log(availability.from_date);
+            console.log(availability.until_date);
+            console.log(date);
+            console.log(date >= start && date <= end ? 'unavailable' : 'available');
             return date >= start && date <= end;
         });
     };
@@ -26,7 +31,8 @@ const AvailabilityTable = ({ bikes, availabilities, from, to }) => {
         if (from && to) {
             const fromDate = new Date(from);
             const toDate = new Date(to);
-            const days = (toDate - fromDate) / (1000 * 60 * 60 * 24) + 1; // add one day to include the last day
+            toDate.setDate(toDate.getDate() + 1);
+            const days = (toDate - fromDate) / (1000 * 60 * 60 * 24);
             return Array(days).fill(null).map((_, index) => {
                 const date = new Date(fromDate);
                 date.setDate(fromDate.getDate() + index);
@@ -48,12 +54,14 @@ const AvailabilityTable = ({ bikes, availabilities, from, to }) => {
                 store: bike.store,
                 name: bike.name,
                 avs: getDatesToShow().map(date => {
+                    console.log(date);
+                    console.log(isAvailableOnDate(bike.id, date));
                     return isAvailableOnDate(bike.id, date) ? 'available' : 'unavailable';
                 })
             };
         });
-        const filteredBikeData = allBikeData.filter((bike) => bike.avs.some(av => av === 'available'));
-        return filteredBikeData;
+        // console.log(allBikeData);
+        return allBikeData.filter((bike) => bike.avs.some(av => av === 'available'));
     };
 
 
@@ -91,6 +99,8 @@ const AvailabilityTable = ({ bikes, availabilities, from, to }) => {
                         </tr>
                     </thead>
                     <tbody>
+                        {/* {getAvailabilityData()} */}
+                        {getAvailabilityData().map((bike) => console.log(bike))}
                         {getAvailabilityData().map((bike, rowIdx) => (
                             <tr key={rowIdx}>
                                 <td><a href={BIKE_RENTING.replace(ID, bike.id)}>{bike.name}</a></td>
