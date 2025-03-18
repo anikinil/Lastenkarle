@@ -8,7 +8,6 @@ import { ID } from "../../../constants/URLs/General";
 
 const AvailabilityTable = ({ bikes, availabilities, from, to }) => {
 
-    const currentDate = new Date();
     const defaultNumDays = 30; // Number of days to display per default
 
     const { t } = useTranslation();
@@ -55,13 +54,10 @@ const AvailabilityTable = ({ bikes, availabilities, from, to }) => {
                 store: bike.store,
                 name: bike.name,
                 avs: getDatesToShow().map(date => {
-                    // console.log(date);
-                    // console.log(isAvailableOnDate(bike.id, date));
                     return isAvailableOnDate(bike.id, date) ? 'available' : 'unavailable';
                 })
             };
         });
-        // console.log(allBikeData);
         return allBikeData.filter((bike) => bike.avs.some(av => av === 'available'));
     };
 
@@ -100,8 +96,6 @@ const AvailabilityTable = ({ bikes, availabilities, from, to }) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {/* {getAvailabilityData()} */}
-                        {getAvailabilityData().map((bike) => console.log(bike))}
                         {getAvailabilityData().map((bike, rowIdx) => (
                             <tr key={rowIdx}>
                                 <td><a href={BIKE_RENTING.replace(ID, bike.id)}>{bike.name}</a></td>
