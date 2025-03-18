@@ -14,48 +14,49 @@ const AvailabilityTable = ({ bikes, availabilities, from, to }) => {
     const { t } = useTranslation();
 
     const isAvailableOnDate = (bikeId, date) => {
+        const normalizeDate = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+        const normalizedDate = normalizeDate(date);
+        
         const bikeAvs = availabilities.filter(availability => availability.bike === bikeId);
-        // console.log(bikeAvs);
         return !bikeAvs.some(availability => {
-            const start = new Date(availability.from_date);
-            const end = new Date(availability.until_date);
-            console.log(availability.from_date);
-            console.log(availability.until_date);
-            console.log(date);
-            console.log(date >= start && date <= end ? 'unavailable' : 'available');
-            return date >= start && date <= end;
+            const start = normalizeDate(new Date(availability.from_date));
+            const end = normalizeDate(new Date(availability.until_date));
+            return normalizedDate >= start && normalizedDate <= end;
         });
     };
-
+    
     const getDatesToShow = () => {
+        const currentDate = new Date();
+        currentDate.setHours(0, 0, 0, 0);
+    
         if (from && to) {
             const fromDate = new Date(from);
             const toDate = new Date(to);
-            toDate.setDate(toDate.getDate() + 1);
-            const days = (toDate - fromDate) / (1000 * 60 * 60 * 24);
-            return Array(days).fill(null).map((_, index) => {
+            const days = (toDate - fromDate) / (1000 * 60 * 60 * 24) + 1;
+            return Array.from({ length: days }, (_, index) => {
                 const date = new Date(fromDate);
                 date.setDate(fromDate.getDate() + index);
                 return date;
             });
         } else {
-            return Array(defaultNumDays).fill(null).map((_, index) => {
+            return Array.from({ length: defaultNumDays }, (_, index) => {
                 const date = new Date(currentDate);
                 date.setDate(currentDate.getDate() + index);
                 return date;
             });
         }
     };
-
+    
     const getAvailabilityData = () => {
+        console.log(getDatesToShow())
         const allBikeData = bikes.map(bike => {
             return {
                 id: bike.id,
                 store: bike.store,
                 name: bike.name,
                 avs: getDatesToShow().map(date => {
-                    console.log(date);
-                    console.log(isAvailableOnDate(bike.id, date));
+                    // console.log(date);
+                    // console.log(isAvailableOnDate(bike.id, date));
                     return isAvailableOnDate(bike.id, date) ? 'available' : 'unavailable';
                 })
             };
