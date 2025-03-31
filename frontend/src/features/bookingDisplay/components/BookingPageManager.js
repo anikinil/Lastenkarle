@@ -12,7 +12,7 @@ import { BIKE_BY_ID } from '../../../constants/URIs/RentingURIs';
 import defaultBikeImage from '../../../assets/images/default_bike.png';
 import { HOST } from '../../../constants/URIs/General';
 import TextField from '../../../components/display/TextField';
-import { COMMENT_BOOKING } from '../../../constants/URIs/ManagerURIs';
+import { COMMENT_BOOKING, STORE_NAME } from '../../../constants/URIs/ManagerURIs';
 import { useNotification } from '../../../components/notifications/NotificationContext';
 
 // Displays a single booking without the option of editing.
@@ -87,7 +87,7 @@ const BookingPageManager = () => {
         let payload = {
             comment: newComment
         };
-        return fetch(COMMENT_BOOKING.replace(ID, bookingId), {
+        return fetch(COMMENT_BOOKING.replace(STORE_NAME, bike.store).replace(ID, bookingId), {
             method: 'PATCH',
             headers: {
                 'Authorization': `Token ${token}`
