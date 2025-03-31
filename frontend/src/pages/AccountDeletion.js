@@ -2,7 +2,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { ACCOUNT_DELETION } from "../constants/URIs/UserURIs";
-import { ERR_DELETING_ACCOUNT } from "../constants/ErrorMessages";
+import { ERR_DELETING_ACCOUNT } from "../constants/messages/ErrorMessages";
 import { LOGIN } from "../constants/URLs/Navigation";
 import { deleteCookie, getCookie } from "../services/Cookies";
 

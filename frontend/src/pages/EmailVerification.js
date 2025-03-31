@@ -5,8 +5,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ID, KEY } from '../constants/URIs/General';
 import { HOME } from '../constants/URLs/Navigation';
 import { EMAIL_VERIFICATION } from '../constants/URIs/UserURIs';
-import { ERR_POSTING_EMAIL_VERIFICATION } from '../constants/ErrorMessages';
-import { EMAIL_VERIFICATOIN_SUCCESSFUL } from '../constants/SuccessMessages';
+import { ERR_POSTING_EMAIL_VERIFICATION } from '../constants/messages/ErrorMessages';
+import { EMAIL_VERIFICATOIN_SUCCESSFUL } from '../constants/messages/SuccessMessages';
 
 import { useNotification } from '../components/notifications/NotificationContext';
 

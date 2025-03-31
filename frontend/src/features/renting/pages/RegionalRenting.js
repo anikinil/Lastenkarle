@@ -6,7 +6,7 @@ import Map from '../components/Map';
 import FilterForAvailabilities from '../components/FilterForAvailabilities';
 import AvailabilityCalendar from '../components/calendar/AvailabilityCalendar';
 import { ALL_BIKES, ALL_STORES } from '../../../constants/URIs/RentingURIs';
-import { ERR_FETCHING_BIKES, ERR_FETCHING_DATA, ERR_FETCHING_STORES } from '../../../constants/ErrorMessages';
+import { ERR_FETCHING_BIKES, ERR_FETCHING_DATA, ERR_FETCHING_STORES } from '../../../constants/messages/ErrorMessages';
 import BikeListCustomer from '../../../components/lists/bikeList/listVersions/BikeListCustomer';
 //Standard page for a specific region
 //TODO: Add Map of region with station markers

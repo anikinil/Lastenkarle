@@ -53,7 +53,7 @@ import { setCookie } from './services/Cookies';
 import UserPage from './features/userPage/UserPage';
 import StorePageCustomer from './features/storePage/pages/StorePageCustomer';
 import { NotificationProvider } from './components/notifications/NotificationContext';
-import BookingPage from './features/bookingDisplay/pages/BookingPageAdmin';
+import BookingPage from './features/bookingDisplay/pages/BookingPage';
 
 // TODO fix region selection everywhere
 

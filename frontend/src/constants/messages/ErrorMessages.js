@@ -28,3 +28,4 @@ export const ERR_DELETING_ACCOUNT               = "Error: account could not be d
 // updating
 export const ERR_UPDATING_STORE                 = "Error: store could not be updated."
 export const ERR_UPDATING_BIKE                  = "Error: bike could not be updated."
+export const ERR_UPDATING_COMMENT               = "Error: comment could not be updated."

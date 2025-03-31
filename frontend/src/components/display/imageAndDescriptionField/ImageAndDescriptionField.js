@@ -30,8 +30,6 @@ const ImageAndDescriptionField = ({ editable, imageValue, descriptionValue, onIm
 
     return (
         <>
-            {descriptionValue}
-
             <div className="image-and-description-container">
                 <div
                     className={`img-container ${editable ? '' : 'disabled'}`}

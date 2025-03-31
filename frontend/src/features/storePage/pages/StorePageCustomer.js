@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import ImageAndDescriptionField from '../../../components/display/imageAndDescriptionField/ImageAndDescriptionField';
 import { useParams } from 'react-router-dom';
 import TextField from '../../../components/display/TextField';
-import { ERR_FETCHING_STORE } from '../../../constants/ErrorMessages';
+import { ERR_FETCHING_STORE } from '../../../constants/messages/ErrorMessages';
 import { getCookie } from '../../../services/Cookies';
 import { STORE_BY_BIKE_ID } from '../../../constants/URIs/RentingURIs';
 import { ID } from '../../../constants/URIs/General';

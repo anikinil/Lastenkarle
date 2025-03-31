@@ -10,7 +10,7 @@ import { BIKE_CONFIG, BOOKING_PAGE } from '../../../../constants/URLs/Navigation
 import { ID } from '../../../../constants/URLs/General';
 import { BIKE_BY_ID } from '../../../../constants/URIs/RentingURIs';
 import { getCookie } from '../../../../services/Cookies';
-import { ERR_FETCHING_BIKE } from '../../../../constants/ErrorMessages';
+import { ERR_FETCHING_BIKE } from '../../../../constants/messages/ErrorMessages';
 import { useState } from 'react';
 import { useEffect } from 'react';
 

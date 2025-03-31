@@ -3,7 +3,7 @@ import "./TextField.css";
 
 // displays a one-line textfield with information,
 // which can either be changed/entered (editable=true) or just viewed (editable=false)
-const TextField = ({ title, value, handleChange, editable, singleLine }) => {
+const TextField = ({ title, placeholder, value, handleChange, editable, singleLine }) => {
     const textAreaRef = useRef(null);
 
     const [text, setText] = useState(value);
@@ -35,7 +35,7 @@ const TextField = ({ title, value, handleChange, editable, singleLine }) => {
             }}
             onKeyDown={handleKeyDown}
             onInput={handleInput}
-            placeholder={title}
+            placeholder={placeholder}
             disabled={!editable}
             style={{
                 overflowX: singleLine ? "auto" : "hidden", // enables horizontal scrolling if singleLine=ture

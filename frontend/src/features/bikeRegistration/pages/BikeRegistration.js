@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import './BikeRegistration.css'
 import ImageAndDescriptionField from '../../../components/display/imageAndDescriptionField/ImageAndDescriptionField';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ERR_POSTING_NEW_BIKE } from '../../../constants/ErrorMessages';
+import { ERR_POSTING_NEW_BIKE } from '../../../constants/messages/ErrorMessages';
 import { getCookie } from '../../../services/Cookies';
 import { STORE_NAME } from '../../../constants/URIs/ManagerURIs';
 import { BIKES_OF_STORE as NEW_BIKE_URI_MANAGER } from '../../../constants/URIs/ManagerURIs';

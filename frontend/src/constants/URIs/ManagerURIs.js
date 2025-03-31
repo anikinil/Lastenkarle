@@ -10,3 +10,5 @@ export const STORE_PAGE_BY_STORE_NAME   = `${BASE}/store-page`
 export const DELETE_BIKE                = `${BASE}/bikes/${ID}/delete`
 
 export const MY_STORES                  = `${BASE}/my-stores`
+
+export const COMMENT_BOOKING            = `${BASE}/bookings/${ID}/comment`

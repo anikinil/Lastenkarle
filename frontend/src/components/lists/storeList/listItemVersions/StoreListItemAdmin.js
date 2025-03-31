@@ -8,7 +8,7 @@ import { STORE_NAME } from '../../../../constants/URLs/General';
 import { STORE_CONFIG } from '../../../../constants/URLs/Navigation';
 import ConfirmationPopup from '../../../confirmationDialog/ConfirmationPopup';
 import { DELETE_STORE } from '../../../../constants/URIs/AdminURIs';
-import { ERR_DELETING_STORE } from '../../../../constants/ErrorMessages';
+import { ERR_DELETING_STORE } from '../../../../constants/messages/ErrorMessages';
 import { getCookie } from '../../../../services/Cookies';
 import { useTranslation } from 'react-i18next';
 import { HOST } from '../../../../constants/URIs/General';

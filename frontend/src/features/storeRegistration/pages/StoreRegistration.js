@@ -10,7 +10,7 @@ import TextField from '../../../components/display/TextField';
 import { useNavigate } from 'react-router-dom';
 import { CREATE_STORE } from '../../../constants/URIs/AdminURIs';
 import { getCookie } from '../../../services/Cookies';
-import { ERR_FETCHING_REGIONS, ERR_POSTING_NEW_STORE } from '../../../constants/ErrorMessages';
+import { ERR_FETCHING_REGIONS, ERR_POSTING_NEW_STORE } from '../../../constants/messages/ErrorMessages';
 import { REGIONS } from '../../../constants/URIs/RentingURIs';
 
 import { useNotification } from '../../../components/notifications/NotificationContext';

@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { USER_FLAGS } from '../../../constants/URIs/AdminURIs';
 import { ALL_STORES } from '../../../constants/URIs/RentingURIs';
 import { getCookie } from '../../../services/Cookies';
-import { ERR_POSTING_ENROLLMENT } from '../../../constants/ErrorMessages';
+import { ERR_POSTING_ENROLLMENT } from '../../../constants/messages/ErrorMessages';
 import { Roles } from '../../../constants/Roles';
 
 import { useNotification } from '../../../components/notifications/NotificationContext';

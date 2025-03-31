@@ -5,7 +5,7 @@ import { LOGOUT } from '../constants/URIs/UserURIs';
 import { useNavigate } from 'react-router-dom';
 import { deleteCookie, getCookie } from '../services/Cookies';
 import { LOGIN } from '../constants/URLs/Navigation';
-import { ERR_POSTING_LOGOUT_REQUEST } from '../constants/ErrorMessages';
+import { ERR_POSTING_LOGOUT_REQUEST } from '../constants/messages/ErrorMessages';
 import { AuthContext } from '../AuthProvider';
 import { useContext } from 'react';
 import { Roles } from '../constants/Roles';

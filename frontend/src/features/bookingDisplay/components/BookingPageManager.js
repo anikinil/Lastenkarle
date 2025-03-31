@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useNavigate, useParams } from 'react-router-dom';
-import DisplayPanel from '../../../components/display/DisplayPanel';
 import { SELECTED_BOOKING } from '../../../constants/URIs/AdminURIs';
-import { ERR_FETCHING_BIKE, ERR_FETCHING_BOOKING } from '../../../constants/ErrorMessages';
+import { ERR_FETCHING_BIKE, ERR_FETCHING_BOOKING, ERR_UPDATING_COMMENT } from '../../../constants/messages/ErrorMessages';
 import { ID } from '../../../constants/URIs/General';
 import { getCookie } from '../../../services/Cookies';
 import { BIKE_CONFIG } from '../../../constants/URLs/Navigation';
@@ -13,15 +12,19 @@ import { BIKE_BY_ID } from '../../../constants/URIs/RentingURIs';
 import defaultBikeImage from '../../../assets/images/default_bike.png';
 import { HOST } from '../../../constants/URIs/General';
 import TextField from '../../../components/display/TextField';
+import { COMMENT_BOOKING } from '../../../constants/URIs/ManagerURIs';
+import { useNotification } from '../../../components/notifications/NotificationContext';
 
 // Displays a single booking without the option of editing.
-const BookingPageAdmin = () => {
+const BookingPageManager = () => {
 
     const { t } = useTranslation();
 
-    const navigate = useNavigate();
+    const { showNotification } = useNotification();
 
     const bookingId = useParams().id;
+
+    const navigate = useNavigate();
 
     const [booking, setBooking] = useState({});
     const [bike, setBike] = useState({});
@@ -80,9 +83,35 @@ const BookingPageAdmin = () => {
         setNewComment(value);
     }
 
-    const handleSaveChanges = () => {
-        console.log(newComment);
-        // TODO post booking with newComment as comment
+    const handleSaveChangesClick = () => {
+        let payload = {
+            comment: newComment
+        };
+        return fetch(COMMENT_BOOKING.replace(ID, bookingId), {
+            method: 'PATCH',
+            headers: {
+                'Authorization': `Token ${token}`
+            },
+            body: JSON.stringify(payload)
+
+        })
+            .then(response => {
+                if (response.ok) {
+                    showNotification(t('comment_update_successful'), 'success');
+                    navigate(-1);
+                } else {
+                    return response.json().then((errorText) => {
+                        throw new Error(errorText.detail);
+                    });
+                }
+            })
+            .catch(error => {
+                showNotification(`${ERR_UPDATING_COMMENT} ${error.message}`, 'error');
+            });
+    }
+
+    const handleCancelClick = () => {
+        navigate(-1);
     }
 
     return (
@@ -96,7 +125,6 @@ const BookingPageAdmin = () => {
                 <img className='list-item-img' alt={bike?.name} src={bike?.image ? HOST + bike?.image : defaultBikeImage}></img>
             </div>
 
-
             {booking?.booking_status && <p>{t('status')}: {getBookingStatusString()}</p>}
 
             <p>{t('user')}: {booking?.user?.username}</p>
@@ -106,12 +134,13 @@ const BookingPageAdmin = () => {
             }
 
             <h2>{'comment'}</h2>
-            <TextField title={t('no_comment')} editable={true} singleLine={false} value={comment} handleChange={handleCommentChange} />
+            <TextField title={t('comment')} placeholder={t('no_comment')} editable={true} singleLine={false} value={comment} handleChange={handleCommentChange} />
             <div className='button-container'>
-                <button type='button' className='button accent' onClick={handleSaveChanges}>{t('save_changes')}</button>
+                <button type='button' className='button accent' onClick={handleSaveChangesClick}>{t('save_changes')}</button>
+                <button type='button' className='button regular' onClick={handleCancelClick}>{t('cancel')}</button>
             </div>
         </>
     );
 };
 
-export default BookingPageAdmin;
+export default BookingPageManager;

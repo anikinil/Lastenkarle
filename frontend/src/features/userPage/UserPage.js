@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { BAN_USER, SELECTED_USER } from '../../constants/URIs/AdminURIs';
-import { ERR_BNNING_USER, ERR_FETCHING_USER_DATA } from '../../constants/ErrorMessages';
+import { ERR_BNNING_USER, ERR_FETCHING_USER_DATA } from '../../constants/messages/ErrorMessages';
 import { ID } from '../../constants/URIs/General';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getCookie } from '../../services/Cookies';

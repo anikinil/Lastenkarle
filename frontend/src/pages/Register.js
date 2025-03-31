@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { LOGIN as LOGIN_URI, REGISTER, USER_DATA } from '../constants/URIs/UserURIs';
 import { useNavigate } from 'react-router-dom';
 import { HELMHOLTZ, HOME, LOGIN as LOGIN_URL } from '../constants/URLs/Navigation';
-import { ERR_FETCHING_USER_DATA, ERR_POSTING_LOGIN_REQUEST, ERR_POSTING_REGISTER_REQUEST } from '../constants/ErrorMessages';
+import { ERR_FETCHING_USER_DATA, ERR_POSTING_LOGIN_REQUEST, ERR_POSTING_REGISTER_REQUEST } from '../constants/messages/ErrorMessages';
 import { AuthContext } from '../AuthProvider';
 import { getCookie, setCookie } from '../services/Cookies';
 import { Roles } from '../constants/Roles';

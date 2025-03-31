@@ -1,7 +1,7 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import { Roles } from "../../../constants/Roles";
-import { ERR_FETCHING_USER_FLAGS } from "../../../constants/ErrorMessages";
+import { ERR_FETCHING_USER_FLAGS } from "../../../constants/messages/ErrorMessages";
 import { USER_DATA } from "../../../constants/URIs/UserURIs";
 import { getCookie } from "../../../services/Cookies";
 import BikeConfigAdmin from "../components/BikeConfigAdmin";

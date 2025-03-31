@@ -9,7 +9,7 @@ import TextField from '../../../components/display/TextField';
 import BikeCalendar from '../../renting/components/calendar/BikeCalendar';
 import { ID } from '../../../constants/URIs/General';
 import { BIKE_BY_ID, STORE_BY_BIKE_ID } from '../../../constants/URIs/RentingURIs';
-import { ERR_FETCHING_BIKE, ERR_FETCHING_STORE } from '../../../constants/ErrorMessages';
+import { ERR_FETCHING_BIKE, ERR_FETCHING_STORE } from '../../../constants/messages/ErrorMessages';
 import { STORE_PAGE_OF_BIKE } from '../../../constants/URLs/Navigation';
 
 //Standard page for a Bike

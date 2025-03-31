@@ -3,13 +3,13 @@ import { useTranslation } from 'react-i18next';
 
 import ImageAndDescriptionField from '../../../components/display/imageAndDescriptionField/ImageAndDescriptionField';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ERR_DELETING_BIKE, ERR_FETCHING_BIKE, ERR_UPDATING_BIKE } from '../../../constants/ErrorMessages';
+import { ERR_DELETING_BIKE, ERR_FETCHING_BIKE, ERR_UPDATING_BIKE } from '../../../constants/messages/ErrorMessages';
 import { getCookie } from '../../../services/Cookies';
 import TextField from '../../../components/display/TextField';
 import { DELETE_BIKE, UPDATE_BIKE } from '../../../constants/URIs/AdminURIs';
 import { ID } from '../../../constants/URIs/General';
 import { BIKE_BY_ID } from '../../../constants/URIs/RentingURIs';
-import { SUCCESS_UPDATING_BIKE } from '../../../constants/SuccessMessages';
+import { SUCCESS_UPDATING_BIKE } from '../../../constants/messages/SuccessMessages';
 import ConfirmationPopup from '../../../components/confirmationDialog/ConfirmationPopup';
 import { useNotification } from '../../../components/notifications/NotificationContext';
 

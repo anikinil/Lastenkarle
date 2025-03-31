@@ -5,7 +5,7 @@ import defaultBikeImage from '../../../../assets/images/default_bike.png'
 
 import { useNavigate } from 'react-router-dom';
 import { HOST, ID } from '../../../../constants/URIs/General';
-import { ERR_DELETING_BIKE } from '../../../../constants/ErrorMessages';
+import { ERR_DELETING_BIKE } from '../../../../constants/messages/ErrorMessages';
 import { getCookie } from '../../../../services/Cookies'
 import ConfirmationPopup from '../../../confirmationDialog/ConfirmationPopup';
 import { ALL_BOOKINGS, BIKE_CONFIG, STORE_CONFIG } from '../../../../constants/URLs/Navigation';
