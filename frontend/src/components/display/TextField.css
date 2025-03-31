@@ -1,5 +1,6 @@
 .text-field {
     overflow-y: hidden;
+    margin-top: 1rem;
 }
 
 .text-field:disabled {

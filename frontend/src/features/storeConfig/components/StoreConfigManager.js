@@ -102,7 +102,7 @@ const StoreConfigManager = () => {
             body: JSON.stringify(payload)
         })
             .then(response => response.json())
-            .then(data => {
+            .then(data => {                
                 console.log(SUCCESS_UPDATING_STORE, data);
                 showNotification(SUCCESS_UPDATING_STORE, 'success');
             })
@@ -139,7 +139,7 @@ const StoreConfigManager = () => {
             <>
                 <h1>{t('manager_view')}: {store.name}</h1>
 
-                {/* Configuring store opening times */}                
+                {/* Configuring store opening times */}
                 <StoreOpeningTimesConfig prepareTimeValue={prepareTime} openingTimesValue={openingTimes} onPrepareTimeChange={handlePrepareTimeChange} onOpeningTimesChange={handleOpeningTimesChange} />
 
                 <h2>{t('bikes')}</h2>
