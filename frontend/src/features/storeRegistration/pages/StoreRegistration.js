@@ -6,7 +6,7 @@ import './StoreRegistration.css'
 
 import 'react-time-picker/dist/TimePicker.css';
 
-import SingleLineTextField from '../../../components/display/SingleLineTextField';
+import TextField from '../../../components/display/TextField';
 import { useNavigate } from 'react-router-dom';
 import { CREATE_STORE } from '../../../constants/URIs/AdminURIs';
 import { getCookie } from '../../../services/Cookies';
@@ -123,10 +123,10 @@ const StoreRegistration = () => {
                 {regionOptions.map(e => <option key={e.value} value={e.value}>{e.label}</option>)}
             </select>
 
-            <SingleLineTextField editable={true} title='name' onChange={handleNameChange} />
-            <SingleLineTextField editable={true} title='address' onChange={handleAddressChange} />
-            <SingleLineTextField editable={true} title='phone_number' onChange={handlePhoneNumberChange} />
-            <SingleLineTextField editable={true} title='email' onChange={handleEmailChange} />
+            <TextField editable={true} singleLine={true} title='name' onChange={handleNameChange} />
+            <TextField editable={true} singleLine={true} title='address' onChange={handleAddressChange} />
+            <TextField editable={true} singleLine={true} title='phone_number' onChange={handlePhoneNumberChange} />
+            <TextField editable={true} singleLine={true} title='email' onChange={handleEmailChange} />
 
             <div className='button-container'>
                 <button type='button' className='button regular' onClick={handleCancelClick}>{t('cancel')}</button>

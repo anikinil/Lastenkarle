@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import ImageAndDescriptionField from '../../../components/display/imageAndDescriptionField/ImageAndDescriptionField';
-import SingleLineTextField from '../../../components/display/SingleLineTextField';
+import TextField from '../../../components/display/TextField';
 import BikeCalendar from '../../renting/components/calendar/BikeCalendar';
 import { ID } from '../../../constants/URIs/General';
 import { BIKE_BY_ID, STORE_BY_BIKE_ID } from '../../../constants/URIs/RentingURIs';
@@ -78,7 +78,7 @@ const BikeRentingPage = () => {
 
                 <ImageAndDescriptionField editable={false} imageValue={bike?.image} descriptionValue={bike?.description} />
                 {/* Display store address */}
-                <SingleLineTextField editable={false} value={store?.address} title='address' />
+                <TextField editable={false} value={store?.address} singleLine={true} title='address' />
 
                 <div className='button-container'>
                     <button type='button' className='button regular' onClick={handleStoreClick}>{store?.name}</button> {/* Button to navigate to store page */}

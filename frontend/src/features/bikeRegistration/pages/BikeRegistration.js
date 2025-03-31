@@ -9,7 +9,7 @@ import { getCookie } from '../../../services/Cookies';
 import { STORE_NAME } from '../../../constants/URIs/ManagerURIs';
 import { BIKES_OF_STORE as NEW_BIKE_URI_MANAGER } from '../../../constants/URIs/ManagerURIs';
 import { ADD_BIKE_TO_STORE as NEW_BIKE_URI_ADMIN } from '../../../constants/URIs/AdminURIs';
-import SingleLineTextField from '../../../components/display/SingleLineTextField';
+import TextField from '../../../components/display/TextField';
 import { AuthContext } from '../../../AuthProvider';
 import { Roles } from '../../../constants/Roles';
 import ConfirmationPopup from '../../../components/confirmationDialog/ConfirmationPopup';
@@ -105,7 +105,7 @@ const BikeRegistration = () => {
             {/* Page title */}
             <h1>{t('new_bike_to')} {storeName}</h1>
 
-            <SingleLineTextField title={t('name')} editable={true} onChange={handleNameChange} />
+            <TextField title={t('name')} editable={true} singleLine={true} onChange={handleNameChange} />
 
             {/* Image and description field component */}
             <ImageAndDescriptionField editable={true} onImageChange={handleImageChange} onDescriptionChange={handleDescriptionChange} />

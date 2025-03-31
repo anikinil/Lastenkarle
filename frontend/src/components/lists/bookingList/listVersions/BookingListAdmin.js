@@ -9,6 +9,8 @@ import BookingListItem from '../listItemVersions/BookingListItem';
 
 const BookingListAdmin = ({ bookings }) => {
 
+    console.log('BookingListAdmin', bookings)
+
     const { t } = useTranslation();
     
     const token = getCookie('token');

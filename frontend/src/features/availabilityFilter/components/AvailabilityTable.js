@@ -47,7 +47,6 @@ const AvailabilityTable = ({ bikes, availabilities, from, to }) => {
     };
 
     const getAvailabilityData = () => {
-        console.log(getDatesToShow())
         const allBikeData = bikes.map(bike => {
             return {
                 id: bike.id,

@@ -1,0 +1,11 @@
+.text-field {
+    overflow-y: hidden;
+}
+
+.text-field:disabled {
+    cursor: default;
+}
+
+.text-field::placeholder {
+    color: var(--textarea-placeholder);
+}

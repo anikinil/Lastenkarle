@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import ImageAndDescriptionField from '../../../components/display/imageAndDescriptionField/ImageAndDescriptionField';
 import { useParams } from 'react-router-dom';
-import SingleLineTextField from '../../../components/display/SingleLineTextField';
+import TextField from '../../../components/display/TextField';
 import { ERR_FETCHING_STORE } from '../../../constants/ErrorMessages';
 import { getCookie } from '../../../services/Cookies';
 import { STORE_BY_BIKE_ID } from '../../../constants/URIs/RentingURIs';
@@ -49,7 +49,7 @@ const StorePageCustomer = () => {
 
                 {/* NOTE crrently no image and description of store returned from backend */}
                 {/* <ImageAndDescriptionField editable={false} imageValue={store?.image} descriptionValue={store?.description} /> */}
-                <SingleLineTextField editable={false} value={store?.address} title={t('address')} /> {/* Display store address */}
+                <TextField editable={false} value={store?.address} singleLine={true} title={t('address')} /> {/* Display store address */}
             </>
         }
         </>

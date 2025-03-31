@@ -12,6 +12,7 @@ import { BIKE_BY_ID } from '../../../constants/URIs/RentingURIs';
 
 import defaultBikeImage from '../../../assets/images/default_bike.png';
 import { HOST } from '../../../constants/URIs/General';
+import TextField from '../../../components/display/TextField';
 
 // Displays a single booking without the option of editing.
 const BookingPageAdmin = () => {
@@ -24,6 +25,8 @@ const BookingPageAdmin = () => {
 
     const [booking, setBooking] = useState({});
     const [bike, setBike] = useState({});
+    const [comment, setComment] = useState('');
+    const [newComment, setNewComment] = useState('');
 
     const token = getCookie('token');
 
@@ -38,6 +41,7 @@ const BookingPageAdmin = () => {
             .then(response => response.json())
             .then(data => {
                 setBooking(data);
+                setComment(data.comment);
                 console.log(data);
                 fetchBike(data.bike);
             })
@@ -72,6 +76,14 @@ const BookingPageAdmin = () => {
         return booking.booking_status.map(status => status.status).join(', ')
     }
 
+    const handleCommentChange = (value) => {
+        setNewComment(value);
+    }
+
+    const handleSaveChanges = () => {
+        console.log(newComment);
+        // TODO post booking with newComment as comment
+    }
 
     return (
         <>
@@ -93,7 +105,11 @@ const BookingPageAdmin = () => {
                 <p>{t('equipment')}: {booking?.equipment?.map(e => e).join(', ')}</p>
             }
 
-            {booking?.comment && <p>{booking?.comment}</p>}
+            <h2>{'comment'}</h2>
+            <TextField title={t('no_comment')} editable={true} singleLine={false} value={comment} handleChange={handleCommentChange} />
+            <div className='button-container'>
+                <button type='button' className='button accent' onClick={handleSaveChanges}>{t('save_changes')}</button>
+            </div>
         </>
     );
 };

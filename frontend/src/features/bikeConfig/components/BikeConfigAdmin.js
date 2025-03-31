@@ -5,7 +5,7 @@ import ImageAndDescriptionField from '../../../components/display/imageAndDescri
 import { useNavigate, useParams } from 'react-router-dom';
 import { ERR_DELETING_BIKE, ERR_FETCHING_BIKE, ERR_UPDATING_BIKE } from '../../../constants/ErrorMessages';
 import { getCookie } from '../../../services/Cookies';
-import SingleLineTextField from '../../../components/display/SingleLineTextField';
+import TextField from '../../../components/display/TextField';
 import { DELETE_BIKE, UPDATE_BIKE } from '../../../constants/URIs/AdminURIs';
 import { ID } from '../../../constants/URIs/General';
 import { BIKE_BY_ID } from '../../../constants/URIs/RentingURIs';
@@ -166,7 +166,7 @@ const BikeConfigAdmin = () => {
                     {/* Page title */}
                     <h1>{t('bike_config')}: {bike.name}</h1>
 
-                    <SingleLineTextField title={t('name')} value={bike.name} editable={true} onChange={handleNameChange} />
+                    <TextField title={t('name')} value={bike.name} editable={true} singleLine={true} onChange={handleNameChange} />
 
                     {/* Image and description field component */}
                     <ImageAndDescriptionField editable={true} imageValue={bike.image} descriptionValue={bike.description} onImageChange={handleImageChange} onDescriptionChange={handleDescriptionChange} />
