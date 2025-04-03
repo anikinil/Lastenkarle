@@ -1,46 +1,62 @@
-// Calendar for page of a singular bike
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import './BikeCalendar.css'; // CSS für die Farblegende
+import './BikeCalendar.css';
 import i18n from 'i18next';
 
-const getDaysInMonth = (month, year) => {
-    return new Date(year, month + 1, 0).getDate();
-};
+import { useNotification } from '../../../../components/notifications/NotificationContext';
+import { getCookie } from '../../../../services/Cookies';
+import { ALL_AVAILABILITIES, AVAILABILITY_OF_BIKE } from '../../../../constants/URIs/RentingURIs';
+import { ID } from '../../../../constants/URIs/General';
 
-const getCurrLang = () => {
-    return i18n.language
-}
+const getDaysInMonth = (month, year) => new Date(year, month + 1, 0).getDate();
+const getCurrLang = () => i18n.language;
 
-const BikeCalendar = () => {
+const BikeCalendar = ({ bikeId }) => {
+    const { t } = useTranslation();
+    const { showNotification } = useNotification();
 
-
-    const { t } = useTranslation(); // Translation hook
     const today = new Date();
     const currentMonth = today.getMonth();
     const currentYear = today.getFullYear();
 
+    const token = getCookie('token');
+
     const [selectedStartDate, setSelectedStartDate] = useState(null);
     const [selectedEndDate, setSelectedEndDate] = useState(null);
-    const [availability, setAvailability] = useState({
-        // Beispiel-Daten für die Verfügbarkeit (0 = buchbar, 1 = reserviert, 2 = geschlossen, 3 = nicht buchbar)
-        '2025-01-17': 0,
-        '2025-01-00': 0,
-        '2025-01-01': 0,
-        '2025-01-15': 0,
-        '2025-01-16': 0,
-        '2025-01-18': 0
-        // Weitere Verfügbarkeiten
-    });
+    const [availability, setAvailability] = useState([]);
+
+    // const fetchAvailability = async () => {
+    //     const response = await fetch(AVAILABILITY_OF_BIKE.replace(ID, bikeId), {
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //             'Authorization': `Token ${token}`
+    //         }
+    //     });
+    //     const data = await response.json();
+    //     setAvailability(data);
+    // };
+
+    const fetchAvailability = () => {
+        fetch(AVAILABILITY_OF_BIKE.replace(ID, bikeId), {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            setAvailability(data)
+        })
+        .catch(error => {
+            console.error("ERROR", error)
+        })
+    }
 
 
     const handleDayClick = (date) => {
         const dateString = date.toISOString().split('T')[0];
 
-        if (availability[dateString] !== 0) {
-            // Tag nicht buchbar
-            return;
-        }
+        if (availability[dateString] !== 0) return;
 
         if (!selectedStartDate || (selectedStartDate && selectedEndDate)) {
             setSelectedStartDate(date);
@@ -48,56 +64,79 @@ const BikeCalendar = () => {
         } else if (selectedStartDate && !selectedEndDate) {
             if (date >= selectedStartDate) {
                 setSelectedEndDate(date);
-            }
-            if (date <= selectedStartDate){
+            } else {
                 setSelectedStartDate(date);
             }
         }
-
     };
+
+    const postBooking = async () => {
+        if (!selectedStartDate || !selectedEndDate) {
+            showNotification(t('select_dates_first'), 'error');
+            return;
+        }
+
+        const payload = {
+            begin: selectedStartDate.toISOString().split('T')[0],
+            end: selectedEndDate.toISOString().split('T')[0],
+            equipment: []
+        };
+
+        try {
+            const response = await fetch(`/api/booking/v1/bikes/${bikeId}/booking`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${token}`
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                showNotification(t('booking_successful'), 'success');
+                // fetchAvailability(); // Refresh availabiliy
+                setSelectedStartDate(null);
+                setSelectedEndDate(null);
+            } else {
+                const error = await response.json();
+                throw new Error(error.detail);
+            }
+        } catch (error) {
+            showNotification(`${t('booking_failed')}: ${error.message}`, 'error');
+        }
+    };
+
+    console.log(availability)
 
     const renderCalendarDays = (month, year) => {
         const daysInMonth = getDaysInMonth(month, year);
-        const firstDayOfMonth = new Date(year, month, 1).getDay(); // Get the weekday index (0 = Sunday, 1 = Monday, etc.)
-    
-        // Convert Sunday (0) to be the last day instead (aligning Monday as the first day)
-        const firstDayIndex = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
-    
+        const firstDay = new Date(year, month, 1).getDay();
+        const firstDayIndex = firstDay === 0 ? 6 : firstDay - 1;
         const daysArray = Array.from({ length: daysInMonth }, (_, i) => new Date(year, month, i + 1));
-    
+
         return (
             <>
-                {/* Weekday Labels */}
-                {["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"].map((day, index) => (
-                    <div key={index} className="weekday-label">{day}</div>
+                {["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"].map((d, i) => (
+                    <div key={i} className="weekday-label">{d}</div>
                 ))}
-    
-                {/* Empty slots for alignment */}
                 {Array.from({ length: firstDayIndex }).map((_, i) => (
                     <div key={`empty-${i}`} className="calendar-day empty"></div>
                 ))}
-    
-                {/* Actual days */}
                 {daysArray.map((day) => {
                     const dateString = day.toISOString().split('T')[0];
-                    const isSelectedStart = selectedStartDate && selectedStartDate.toISOString().split('T')[0] === dateString;
-                    const isSelectedEnd = selectedEndDate && selectedEndDate.toISOString().split('T')[0] === dateString;
-    
+                    const isSelectedStart = selectedStartDate?.toISOString().split('T')[0] === dateString;
+                    const isSelectedEnd = selectedEndDate?.toISOString().split('T')[0] === dateString;
+
                     let dayClass = '';
-                    if (availability[dateString] === 0) {
-                        dayClass = 'available';
-                    } else if (availability[dateString] === 1) {
-                        dayClass = 'reserved';
-                    } else if (availability[dateString] === 2) {
-                        dayClass = 'closed';
-                    } else {
-                        dayClass = 'not-bookable';
-                    }
-    
+                    if (availability[dateString] === 0) dayClass = 'available';
+                    else if (availability[dateString] === 1) dayClass = 'reserved';
+                    else if (availability[dateString] === 2) dayClass = 'closed';
+                    else dayClass = 'not-bookable';
+
                     if (isSelectedStart || isSelectedEnd) {
                         dayClass += ' selected';
                     }
-    
+
                     return (
                         <div
                             key={dateString}
@@ -111,7 +150,10 @@ const BikeCalendar = () => {
             </>
         );
     };
-    
+
+    useEffect(() => {
+        fetchAvailability();
+    }, []);
 
     return (
         <div className="booking-calendar">
@@ -133,7 +175,7 @@ const BikeCalendar = () => {
 
             <div className="selection-info">
                 <p>{t('pickup_date')}: {selectedStartDate ? selectedStartDate.toDateString() : t('select_date')}</p>
-                <p>{t('return_date')}: {selectedEndDate ? selectedEndDate.toDateString(): t('select_date')}</p>
+                <p>{t('return_date')}: {selectedEndDate ? selectedEndDate.toDateString() : t('select_date')}</p>
             </div>
 
             <div className="legend">
@@ -142,8 +184,11 @@ const BikeCalendar = () => {
                 <p><span className="legend-color closed"></span> Standort geschlossen</p>
                 <p><span className="legend-color not-bookable"></span> Nicht buchbar</p>
             </div>
-        </div>
 
+            <button onClick={postBooking} className="booking-button">
+                {t('book_now')}
+            </button>
+        </div>
     );
 };
 

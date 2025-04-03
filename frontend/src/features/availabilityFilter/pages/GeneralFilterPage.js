@@ -1,4 +1,6 @@
 // Shows availabilities of all bikes of all regions filtered by selected dates
+//TODO: General Filter for all bikes of all region in "Renting" main page
+//TODO: Filter for all bikes of a specific region in "Regional Renting" page
 
 import React, { useEffect } from 'react';
 
@@ -54,7 +56,6 @@ const GeneralFilterPage = () => {
             begin:"2025-04-10",
             end:"2025-04-12",
             equipment:[
-                "test_equipment"
             ]
         };
 
@@ -83,7 +84,7 @@ const GeneralFilterPage = () => {
     useEffect(() => {
         fetchAvailabilities();
         fetchBikes();
-        // postBooking();
+        //postBooking();
     }, []);
 
     useEffect(() => {
