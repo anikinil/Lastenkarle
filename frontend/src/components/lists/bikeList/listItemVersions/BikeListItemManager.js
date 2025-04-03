@@ -8,7 +8,7 @@ import { HOST, ID } from '../../../../constants/URIs/General';
 import { ERR_DELETING_BIKE } from '../../../../constants/messages/ErrorMessages';
 import { getCookie } from '../../../../services/Cookies'
 import ConfirmationPopup from '../../../confirmationDialog/ConfirmationPopup';
-import { ALL_BOOKINGS, BIKE_CONFIG, STORE_CONFIG } from '../../../../constants/URLs/Navigation';
+import { ALL_BOOKINGS, BIKE, BIKE_BOOKINGS, BIKE_CONFIG, STORE_CONFIG } from '../../../../constants/URLs/Navigation';
 import { STORE_NAME } from '../../../../constants/URLs/General';
 import { DELETE_BIKE as DELETE_BIKE_ADMIN  } from '../../../../constants/URIs/AdminURIs';
 import { DELETE_BIKE as DELETE_BIKE_MANAGER } from '../../../../constants/URIs/ManagerURIs';
@@ -37,7 +37,7 @@ const BikeListItemManager = ({ bike }) => {
     }
 
     const handleBookingsClick = e => {
-        navigate(ALL_BOOKINGS, { state: { filterBike: bike } })
+        navigate(BIKE_BOOKINGS, { state: { id: bike.id } })
         e.stopPropagation()
     }
 

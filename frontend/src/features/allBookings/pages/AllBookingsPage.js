@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import '../../../components/lists/List.css';
 
 import { ALL_BOOKINGS } from '../../../constants/URIs/AdminURIs';
-import BookingListAdmin from '../../../components/lists/bookingList/listVersions/BookingListAdmin';
+import BookingListAdmin from '../../../components/lists/bookingList/BookingList';
 import { getCookie } from '../../../services/Cookies';
 
 const AllBookingsPage = () => {

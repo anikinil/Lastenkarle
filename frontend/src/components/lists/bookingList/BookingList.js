@@ -2,14 +2,12 @@ import React from 'react';
 
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { getCookie } from '../../../../services/Cookies';
-import { ALL_BIKES, ALL_USERS } from '../../../../constants/URIs/AdminURIs';
-import BookingListItem from '../listItemVersions/BookingListItem';
+import { getCookie } from '../../../services/Cookies';
+import { ALL_BIKES, ALL_USERS } from '../../../constants/URIs/AdminURIs';
+import BookingListItem from './BookingListItem';
 
 
-const BookingListAdmin = ({ bookings }) => {
-
-    console.log('BookingListAdmin', bookings)
+const BookingList = ({ bookings }) => {
 
     const { t } = useTranslation();
     
@@ -120,4 +118,4 @@ const BookingListAdmin = ({ bookings }) => {
     );
 }
 
-export default BookingListAdmin;
+export default BookingList;

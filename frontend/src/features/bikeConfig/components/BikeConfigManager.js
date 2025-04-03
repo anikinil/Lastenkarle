@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-// TODO implement this component
+// TODO implement
 const BikeConfigManager = () => {
     return (
         <div>
