@@ -70,7 +70,7 @@ const RegionalRenting = () => {
 
     return (
         <>
-            <h1>{t('rent_in') + ': ' + regionName}</h1>
+            <h1>{t('rent_in') + ': ' + String(regionName[0]).toUpperCase() + String(regionName).slice(1)}</h1>
 
             {/* <Map /> */}
             {/* <FilterForAvailabilities /> */}
