@@ -165,5 +165,7 @@
     "return_date":                          "Rückgabedatum",
     "select_date":                          "Bitte wähle ein Datum",
     "manager_of":                           "Manager*in von",
-    "not_selected":                         "Bitte wähle eine Option aus"
+    "not_selected":                         "Bitte wähle eine Option aus",
+    "bike":                                 "Lastenrad",
+    "bikes":                                "Lastenräder"
 }

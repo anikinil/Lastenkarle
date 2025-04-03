@@ -165,5 +165,7 @@
     "return_date":                          "Return date",
     "select_date":                          "Please select a date",
     "manager_of":                           "Manager of",
-    "not_selected":                         "Please pick an option"
+    "not_selected":                         "Please pick an option",
+    "bike":                                 "Cargo Bike",
+    "bikes":                                "Cargo Bikes"
 }
