@@ -160,5 +160,10 @@
     "rent_in":                              "Dein Lastenrad buchen in",
     "karlsruhe":                            "Karlsruhe",
     "no_bikes_registered":                  "Es sind keine Lastenräder in dieser Region vorhanden",
-    "no_bookings":                          "Momentan keine Buchungen"
+    "no_bookings":                          "Momentan keine Buchungen",
+    "pickup_date":                          "Abholdatum",
+    "return_date":                          "Rückgabedatum",
+    "select_date":                          "Bitte wähle ein Datum",
+    "manager_of":                           "Manager*in von",
+    "not_selected":                         "Bitte wähle eine Option aus"
 }
