@@ -123,10 +123,10 @@ const StoreRegistration = () => {
                 {regionOptions.map(e => <option key={e.value} value={e.value}>{e.label}</option>)}
             </select>
 
-            <TextField editable={true} singleLine={true} title='name' placeholder='name' onChange={handleNameChange} />
-            <TextField editable={true} singleLine={true} title='address' placeholder='address' onChange={handleAddressChange} />
-            <TextField editable={true} singleLine={true} title='phone_number' placeholder='phone_number' onChange={handlePhoneNumberChange} />
-            <TextField editable={true} singleLine={true} title='email' placeholder='email' onChange={handleEmailChange} />
+            <TextField editable={true} singleLine={true} title='name' placeholder='name' handleChange={handleNameChange} />
+            <TextField editable={true} singleLine={true} title='address' placeholder='address' handleChange={handleAddressChange} />
+            <TextField editable={true} singleLine={true} title='phone_number' placeholder='phone_number' handleChange={handlePhoneNumberChange} />
+            <TextField editable={true} singleLine={true} title='email' placeholder='email' handleChange={handleEmailChange} />
 
             <div className='button-container'>
                 <button type='button' className='button regular' onClick={handleCancelClick}>{t('cancel')}</button>

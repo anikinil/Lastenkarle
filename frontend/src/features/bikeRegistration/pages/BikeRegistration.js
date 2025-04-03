@@ -105,7 +105,7 @@ const BikeRegistration = () => {
             {/* Page title */}
             <h1>{t('new_bike_to')} {storeName}</h1>
 
-            <TextField title={t('name')} editable={true} singleLine={true} onChange={handleNameChange} />
+            <TextField title={t('name')} editable={true} singleLine={true} handleChange={handleNameChange} />
 
             {/* Image and description field component */}
             <ImageAndDescriptionField editable={true} onImageChange={handleImageChange} onDescriptionChange={handleDescriptionChange} />

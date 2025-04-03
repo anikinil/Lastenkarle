@@ -166,7 +166,7 @@ const BikeConfigAdmin = () => {
                     {/* Page title */}
                     <h1>{t('bike_config')}: {bike.name}</h1>
 
-                    <TextField title={t('name')} value={bike.name} editable={true} singleLine={true} onChange={handleNameChange} />
+                    <TextField title={t('name')} value={bike.name} editable={true} singleLine={true} handleChange={handleNameChange} />
 
                     {/* Image and description field component */}
                     <ImageAndDescriptionField editable={true} imageValue={bike.image} descriptionValue={bike.description} onImageChange={handleImageChange} onDescriptionChange={handleDescriptionChange} />
