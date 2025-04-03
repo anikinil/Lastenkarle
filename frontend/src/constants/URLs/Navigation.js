@@ -34,7 +34,7 @@ export const BIKE_REGISTRATION      = `/store/${STORE_NAME}/bike-registration`  
 export const ALL_BOOKINGS           = `/all-bookings`
 export const MY_BOOKINGS            = `/my-bookings`
 export const BOOKING_PAGE           = `/booking/${ID}`
-export const STORE_BOOKINGS         = `/store/${STORE_NAME}/store-bookings`
+export const BIKE_BOOKINGS         = `/store/${STORE_NAME}/bike-bookings`
 
 export const RENTING                = `/renting`
 export const REGIONAL_RENTING       = `/regional-renting/${REGION_NAME}`

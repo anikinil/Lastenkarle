@@ -26,11 +26,11 @@ import BookingList from './features/allBookings/pages/AllBookingsPage';
 import BikeConfigPage from './features/bikeConfig/pages/BikeConfigPage';
 import Register from './pages/Register';
 import Enrollment from './features/enrollment/pages/Enrollment';
-import StoreBookings from './features/storeBookings/pages/StoreBookings';
+import BikeBookings from './features/bikeBookings/pages/BikeBookings';
 
 import {
     BIKE_RENTING, BIKE_REGISTRATION, ALL_BIKES, RENTING, ACCOUNT_DELETION, EMAIL_VERIFICATION,
-    ENROLLMENT, HOME, LOGIN, LOGOUT, REGIONAL_RENTING, REGISTER, STORE_BOOKINGS, STORE_REGISTRATION,
+    ENROLLMENT, HOME, LOGIN, LOGOUT, REGIONAL_RENTING, REGISTER, BIKE_BOOKINGS, STORE_REGISTRATION,
     STORE_CONFIG, MY_STORES, ALL_STORES, BIKE_CONFIG, ALL_BOOKINGS, ALL_USERS, USER_PAGE, STORE_PAGE_OF_BIKE,
     BOOKING_PAGE
 }
@@ -159,8 +159,8 @@ const App = () => {
                                     <Route exact path={ALL_BOOKINGS} element={
                                         <ProtectedElement element={<BookingList />} elementRoles={[Roles.ADMINISTRATOR]} />
                                     } />
-                                    <Route exact path={STORE_BOOKINGS} element={
-                                        <ProtectedElement element={<StoreBookings />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
+                                    <Route exact path={BIKE_BOOKINGS} element={
+                                        <ProtectedElement element={<BikeBookings />} elementRoles={[Roles.ADMINISTRATOR, Roles.MANAGER]} />
                                     } />
 
                                     {/* OTHER */}

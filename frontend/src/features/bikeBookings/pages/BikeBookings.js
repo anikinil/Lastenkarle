@@ -4,7 +4,7 @@ import BookingList from "../../allBookings/pages/AllBookingsPage";
 import { useTranslation } from "react-i18next";
 
 // Page component for displaying the bookings of a store
-const StoreBookings = () => {
+const BikeBookings = () => {
     // Use the useTranslation hook to get the translation function
     const { t } = useTranslation();
 
@@ -22,4 +22,4 @@ const StoreBookings = () => {
     );
 }
 
-export default StoreBookings;
+export default BikeBookings;

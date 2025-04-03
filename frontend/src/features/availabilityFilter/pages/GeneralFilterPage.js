@@ -51,14 +51,14 @@ const GeneralFilterPage = () => {
 
     const postBooking = () => {
         const payload = {
-            begin:"2025-03-27",
-            end:"2025-03-29",
+            begin:"2025-04-10",
+            end:"2025-04-12",
             equipment:[
                 "test_equipment"
             ]
         };
 
-        fetch("http://localhost/api/booking/v1/bikes/14/booking", {
+        fetch("http://localhost/api/booking/v1/bikes/16/booking", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
