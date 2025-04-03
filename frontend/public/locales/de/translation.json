@@ -155,5 +155,10 @@
     "enroll":                               "Ernennen",
 
     "__Loading":                            "Loading.js",
-    "loading":                              "Lädt..."
+    "loading":                              "Lädt...",
+
+    "rent_in":                              "Dein Lastenrad buchen in",
+    "karlsruhe":                            "Karlsruhe",
+    "no_bikes_registered":                  "Es sind keine Lastenräder in dieser Region vorhanden",
+    "no_bookings":                          "Momentan keine Buchungen"
 }

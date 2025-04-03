@@ -155,5 +155,10 @@
     "enroll":                               "Enroll",
 
     "__Loading":                            "Loading.js",
-    "loading":                              "Loading..."
+    "loading":                              "Loading...",
+
+    "rent_in":                              "Rent your bike in",
+    "karlsruhe":                            "Karlsruhe",
+    "no_bikes_registered":                  "There are no bikes registered in this region",
+    "no_bookings":                          "No bookings at the moment"
 }
