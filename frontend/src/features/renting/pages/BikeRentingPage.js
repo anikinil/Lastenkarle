@@ -8,7 +8,7 @@ import ImageAndDescriptionField from '../../../components/display/imageAndDescri
 import TextField from '../../../components/display/TextField';
 import BikeCalendar from '../../renting/components/calendar/BikeCalendar';
 import { ID } from '../../../constants/URIs/General';
-import { AVAILABILITY_OF_BIKE, BIKE_BY_ID, STORE_BY_BIKE_ID } from '../../../constants/URIs/RentingURIs';
+import { AVAILABILITY_OF_BIKE, BIKE_BY_ID, POST_BOOKING, STORE_BY_BIKE_ID } from '../../../constants/URIs/RentingURIs';
 import { ERR_FETCHING_BIKE, ERR_FETCHING_STORE } from '../../../constants/messages/ErrorMessages';
 import { STORE_PAGE_OF_BIKE } from '../../../constants/URLs/Navigation';
 import { getCookie } from '../../../services/Cookies';
@@ -80,8 +80,6 @@ const BikeRentingPage = () => {
         });
         const data = await response.json();
         setAvailabilities(data);
-        console.log(bikeId);
-        console.log(data);
     };
 
 
@@ -98,7 +96,7 @@ const BikeRentingPage = () => {
         };
 
         try {
-            const response = await fetch(`/api/booking/v1/bikes/${bikeId}/booking`, {
+            const response = await fetch(POST_BOOKING.replace(ID, bikeId), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

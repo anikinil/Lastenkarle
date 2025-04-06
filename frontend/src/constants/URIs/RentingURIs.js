@@ -9,3 +9,4 @@ export const ALL_STORES             = `${BASE}/stores`
 export const REGIONS                = `${BASE}/region`
 export const AVAILABILITY_OF_BIKE   = `${BASE}/bikes/${ID}/availability`
 export const ALL_AVAILABILITIES     = `${BASE}/availabilities`
+export const POST_BOOKING           = `${BASE}/bikes/${ID}/booking`
