@@ -12,6 +12,7 @@ import { AVAILABILITY_OF_BIKE, BIKE_BY_ID, STORE_BY_BIKE_ID } from '../../../con
 import { ERR_FETCHING_BIKE, ERR_FETCHING_STORE } from '../../../constants/messages/ErrorMessages';
 import { STORE_PAGE_OF_BIKE } from '../../../constants/URLs/Navigation';
 import { getCookie } from '../../../services/Cookies';
+import { useNotification } from '../../../components/notifications/NotificationContext';
 
 //Standard page for a Bike
 //TODO: organize Images
@@ -22,7 +23,10 @@ import { getCookie } from '../../../services/Cookies';
 // TODO add equipment selection (Ilja)
 
 const BikeRentingPage = () => {
+
     const { t } = useTranslation(); // Translation hook
+    const { showNotification } = useNotification();
+
     const navigate = useNavigate(); // Navigation hook
 
     const token = getCookie('token'); // Get token from cookies
@@ -31,6 +35,9 @@ const BikeRentingPage = () => {
     const [bike, setBike] = useState(); // State to store bike data
     const [store, setStore] = useState(); // State to store store data
     const [availabilities, setAvailabilities] = useState([]); // State to store availability data
+
+    const [selectedStartDate, setSelectedStartDate] = useState(null);
+    const [selectedEndDate, setSelectedEndDate] = useState(null);
 
     // fetch bike
     const fetchBike = () => {
@@ -77,6 +84,46 @@ const BikeRentingPage = () => {
         console.log(data);
     };
 
+
+    const postBooking = async () => {
+        if (!selectedStartDate || !selectedEndDate) {
+            showNotification(t('select_dates_first'), 'error');
+            return;
+        }
+
+        const payload = {
+            begin: selectedStartDate.toISOString().split('T')[0],
+            end: selectedEndDate.toISOString().split('T')[0],
+            equipment: []
+        };
+
+        try {
+            const response = await fetch(`/api/booking/v1/bikes/${bikeId}/booking`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${token}`
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                showNotification(t('booking_successful'), 'success');
+                setSelectedStartDate(null);
+                setSelectedEndDate(null);
+            } else {
+                const error = await response.json();
+                throw new Error(error.detail);
+            }
+        } catch (error) {
+            showNotification(`${t('booking_failed')}: ${error.message}`, 'error');
+        }
+    };
+
+    const handleBookClick = () => {
+        postBooking(); // Call function to post booking
+    }
+
     // Fetch bike and store data when component mounts
     useEffect(() => {
         fetchBike();
@@ -103,7 +150,17 @@ const BikeRentingPage = () => {
                 </div>
 
                 {/* Display bike calendar for reservations */}
-                <BikeCalendar bikeId={bikeId} availabilities={availabilities} />
+                <BikeCalendar
+                    availabilities={availabilities}
+                    selectedStartDate={selectedStartDate}
+                    setSelectedStartDate={setSelectedStartDate}
+                    selectedEndDate={selectedEndDate}
+                    setSelectedEndDate={setSelectedEndDate}
+                />
+
+                <div className='button-container'>
+                    <button onClick={handleBookClick} className="button accent">{t('book_now')}</button>
+                </div>
             </>
         }
         </>
