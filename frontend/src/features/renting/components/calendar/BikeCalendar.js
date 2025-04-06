@@ -56,24 +56,34 @@ const BikeCalendar = ({ availabilities, selectedStartDate, setSelectedStartDate,
         const daysArray = Array.from({ length: daysInMonth }, (_, i) => new Date(year, month, i + 1));
 
         return (
-            <>
+            <div className="calendar-grid">
+                {/* Weekday labels (top row) */}
                 {["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"].map((d, i) => (
-                    <div key={i} className="weekday-label">{d}</div>
+                    <div key={`label-${i}`} className="weekday-label">{d}</div>
                 ))}
+
+                {/* Empty slots before the first day of the month */}
                 {Array.from({ length: firstDayIndex }).map((_, i) => (
                     <div key={`empty-${i}`} className="calendar-day empty"></div>
                 ))}
+
+                {/* Actual days */}
                 {daysArray.map((day) => {
                     const dateString = day.toISOString().split('T')[0];
                     const isSelectedStart = start?.toISOString().split('T')[0] === dateString;
                     const isSelectedEnd = end?.toISOString().split('T')[0] === dateString;
-
+                    const isInRange = start && end && day >= start && day <= end;
                     let dayClass = '';
-                    if (day < today - 24*60*60*1000) dayClass = 'past';
-                    else if (isAvailableOnDate(day)) dayClass = 'available';
-                    else dayClass = 'not-bookable';
 
-                    if (isSelectedStart || isSelectedEnd) {
+                    if (day < new Date(today.getTime() - 24 * 60 * 60 * 1000)) {
+                        dayClass = 'past';
+                    } else if (isAvailableOnDate(day)) {
+                        dayClass = 'available';
+                    } else {
+                        dayClass = 'not-bookable';
+                    }
+
+                    if (isInRange || isSelectedStart || isSelectedEnd) {
                         dayClass += ' selected';
                     }
 
@@ -87,7 +97,7 @@ const BikeCalendar = ({ availabilities, selectedStartDate, setSelectedStartDate,
                         </div>
                     );
                 })}
-            </>
+            </div>
         );
     };
 
@@ -115,8 +125,8 @@ const BikeCalendar = ({ availabilities, selectedStartDate, setSelectedStartDate,
             </div>
 
             <div className="legend">
-                <p><span className="legend-color available"></span> Buchbar</p>
-                <p><span className="legend-color not-bookable"></span> Nicht buchbar</p>
+                <p><span className="legend-color available"></span>{t('bookable')}</p>
+                <p><span className="legend-color not-bookable"></span>{t('not_bookable')}</p>
             </div>
         </div>
     );

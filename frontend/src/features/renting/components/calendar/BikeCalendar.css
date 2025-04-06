@@ -28,9 +28,15 @@
 
 .calendar-grid {
     display: grid;
-    grid-template-columns: repeat(10, 1fr);
     gap: 0px;
     width: 60%;
+    grid-template-columns: repeat(7, 1fr);
+}
+
+.weekday-label {
+    font-weight: bold;
+    text-align: center;
+    padding: 0.5rem;
 }
 
 .calendar-day {
@@ -57,15 +63,27 @@
 }
 
 .calendar-day.not-bookable {
-    background-color: #b3503f;
+    background-color: #ff8b7c;
 }
 
 .calendar-day.selected {
-    border: 2px solid #007bff;
+    color: #2890ff;
+    font-weight: bold;
+}
+
+.calendar-day.empty {
+    border: none;
+}
+
+.calendar-day:hover {
+    background-color: #2890ff;
+    transition: none;
 }
 
 .selection-info {
     margin-top: 20px;
+    color: #2890ff;
+    font-weight: bold;
 }
 
 .legend {
