@@ -5,6 +5,9 @@ import i18n from 'i18next';
 
 import { getCookie } from '../../../../services/Cookies';
 
+// TODO also display closed and reseved days (needs to be fetched seperately)
+// TODO add legend for closed and reserved days
+
 const getDaysInMonth = (month, year) => new Date(year, month + 1, 0).getDate();
 const getCurrLang = () => i18n.language;
 
