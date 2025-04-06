@@ -2,24 +2,32 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
-import Map from '../components/Map';
-import FilterForAvailabilities from '../components/FilterForAvailabilities';
-import AvailabilityCalendar from '../components/calendar/AvailabilityCalendar';
-import { ALL_BIKES, ALL_STORES } from '../../../constants/URIs/RentingURIs';
+import { ALL_BIKES, ALL_STORES, AVAILABILITY_OF_BIKE } from '../../../constants/URIs/RentingURIs';
 import { ERR_FETCHING_BIKES, ERR_FETCHING_DATA, ERR_FETCHING_STORES } from '../../../constants/messages/ErrorMessages';
-import BikeListCustomer from '../../../components/lists/bikeList/listVersions/BikeListCustomer';
+import AvailabilityTable from '../components/availabilityTable/AvailabilityTable';
+import FromToDatePicker from '../components/availabilityTable/FromToDatePicker';
+import { ID } from '../../../constants/URIs/General';
+import { getCookie } from '../../../services/Cookies';
+import { useNotification } from '../../../components/notifications/NotificationContext';
+
 //Standard page for a specific region
-//TODO: Add Map of region with station markers
-//TODO: Add Filter Bar for Availabilities
-//TODO: Add Calendar overview of reservations sorted by bike
 
 const RegionalRenting = () => {
 
     const { t } = useTranslation();
 
+    const { showNotification } = useNotification();
+    
+
+    const token = getCookie('token');
+
     const regionName = useParams().region;
 
-    const [bikesInRegion, setBikesInRegion] = useState([]);
+    const [bikes, setBikes] = useState([]);
+    const [availabilities, setAvailabilities] = useState([]);
+
+    const [from, setFrom] = useState('');
+    const [to, setTo] = useState('');
 
     const fetchAllStores = async () => {
         try {
@@ -27,7 +35,7 @@ const RegionalRenting = () => {
             const data = await response.json();
             return data;
         } catch (error) {
-            console.error(ERR_FETCHING_STORES, error);
+            showNotification(`${ERR_FETCHING_STORES}: ${error}`, 'error');
         }
     }
 
@@ -38,9 +46,20 @@ const RegionalRenting = () => {
             const data = await response.json();
             return data;
         } catch (error) {
-            console.error(ERR_FETCHING_BIKES, error);
+            showNotification(`${ERR_FETCHING_BIKES}: ${error}`, 'error');
         }
     };
+
+    const fetchBikeAvailabilities = async (bikeId) => {
+            const response = await fetch(AVAILABILITY_OF_BIKE.replace(ID, bikeId), {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${token}`
+                }
+            });
+            const data = await response.json();
+            return data;
+        };
 
     // Filters stores by the region of the page
     const filterStoresByRegion = (allStores) => {
@@ -52,6 +71,7 @@ const RegionalRenting = () => {
         return allBikes.filter(bike => storesInRegion.some(store => store.name === bike.store));
     }
 
+
     // useEffect hook to fetch data when the component mounts
     useEffect(() => {
         const fetchData = async () => {
@@ -60,9 +80,13 @@ const RegionalRenting = () => {
                 const allBikes = await fetchAllBikes(); // Fetch all bikes
                 const storesInRegion = filterStoresByRegion(allStores); // Filter stores by region
                 const bikesInRegion = filterBikesByRegionStores(allBikes, storesInRegion); // Filter bikes by region stores
-                setBikesInRegion(bikesInRegion); // Update state with bikes in the region
+                setBikes(bikesInRegion); // Set bikes in state
+                const bikeIds = bikesInRegion.map(bike => bike.id); // Get bike IDs
+                const bikeAvailabilities = await Promise.all(bikeIds.map(fetchBikeAvailabilities)); // Fetch availabilities for each bike
+                const allAvailabilities = bikeAvailabilities.flat(); // Flatten the array of availabilities
+                setAvailabilities(allAvailabilities); // Set availabilities in state
             } catch (error) {
-                console.error(ERR_FETCHING_DATA, error); // Log any errors that occur during data fetching
+                showNotification(`${ERR_FETCHING_DATA}: ${error}`, 'error');
             }
         };
         fetchData(); // Call the fetchData function
@@ -70,13 +94,13 @@ const RegionalRenting = () => {
 
     return (
         <>
-            <h1>{t('rent_in') + ': ' + String(regionName[0]).toUpperCase() + String(regionName).slice(1)}</h1>
+            <h1>
+                {t('rent_in') + ': '
+                    + String(regionName[0]).toUpperCase() + String(regionName).slice(1)} {/* capitalizes region name*/}
+            </h1>
 
-            {/* <Map /> */}
-            {/* <FilterForAvailabilities /> */}
-            {/* <AvailabilityCalendar /> */}
-            
-            <BikeListCustomer bikes={bikesInRegion} />
+            <FromToDatePicker from={from} to={to} setFrom={setFrom} setTo={setTo} />
+            <AvailabilityTable bikes={bikes} availabilities={availabilities} from={from} to={to} />
         </>
 
     );

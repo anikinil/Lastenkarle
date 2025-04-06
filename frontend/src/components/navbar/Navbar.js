@@ -33,11 +33,15 @@ const Navbar = () => {
                     },
                     {
                         title: 'Bruchsaal',
-                        url: REGIONAL_RENTING.replace(REGION_NAME, 'bruchsaal')
+                        url: REGIONAL_RENTING.replace(REGION_NAME, 'bruchsal')
                     },
                     {
                         title: 'Malsch',
                         url: REGIONAL_RENTING.replace(REGION_NAME, 'malsch')
+                    },
+                    {
+                        title: 'Baden-Baden',
+                        url: REGIONAL_RENTING.replace(REGION_NAME, 'baden-baden')
                     }
                 ]
             },

@@ -1,6 +1,4 @@
 // Shows availabilities of all bikes of all regions filtered by selected dates
-//TODO: General Filter for all bikes of all region in "Renting" main page
-//TODO: Filter for all bikes of a specific region in "Regional Renting" page
 
 import React, { useEffect } from 'react';
 
@@ -49,36 +47,6 @@ const GeneralRentingPage = () => {
         });
         const data = await response.json();
         setBikes(data);
-    };
-
-    const postBooking = () => {
-        const payload = {
-            begin:"2025-03-27",
-            end:"2025-03-29",
-            equipment:[
-            ]
-        };
-
-        fetch("http://localhost/api/booking/v1/bikes/14/booking", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${token}`
-            },
-            body: JSON.stringify(payload)
-        })
-            .then(response => {
-                if (response.ok) {
-                    console.log('Booking successful');
-                } else {
-                    return response.json().then((errorText) => {
-                        throw new Error(errorText.detail);
-                    });
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
     };
 
     useEffect(() => {
