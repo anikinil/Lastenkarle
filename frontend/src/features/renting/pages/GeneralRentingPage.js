@@ -14,7 +14,7 @@ import { getCookie } from '../../../services/Cookies';
 import AvailabilityTable from '../components/availabilityTable/AvailabilityTable';
 import { useNotification } from '../../../components/notifications/NotificationContext';
 
-const Renting = () => {
+const GeneralRentingPage = () => {
 
     const { t } = useTranslation();
 
@@ -116,4 +116,4 @@ const Renting = () => {
     );
 }
 
-export default Renting;
+export default GeneralRentingPage;

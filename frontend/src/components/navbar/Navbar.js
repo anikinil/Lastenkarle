@@ -3,7 +3,7 @@ import MenuItems from './MenuItems';
 import './Navbar.css';
 import logo from '../../assets/images/logo.png';
 import { FaUser } from 'react-icons/fa';
-import { ACCOUNT_DELETION, ALL_BIKES, ALL_BOOKINGS, ALL_STORES, ALL_USERS, RENTING, ENROLLMENT, LOGIN, LOGOUT, MY_BOOKINGS, MY_STORES, REGIONAL_RENTING, REGISTER, STORE_CONFIG, USERS } from '../../constants/URLs/Navigation';
+import { ACCOUNT_DELETION, ALL_BIKES, ALL_BOOKINGS, ALL_STORES, ALL_USERS, GENERAL_RENTING, ENROLLMENT, LOGIN, LOGOUT, MY_BOOKINGS, MY_STORES, REGIONAL_RENTING, REGISTER, STORE_CONFIG, USERS } from '../../constants/URLs/Navigation';
 import { REGION_NAME, STORE_NAME } from '../../constants/URLs/General';
 import { Roles } from '../../constants/Roles';
 import { useTranslation } from 'react-i18next';
@@ -20,7 +20,7 @@ const Navbar = () => {
         const allItems = [
             {
                 title: t('rent'),
-                url: RENTING,
+                url: GENERAL_RENTING,
                 roles: [Roles.CUSTOMER, Roles.MANAGER, Roles.ADMINISTRATOR, Roles.VISITOR],
                 submenu: [
                     {

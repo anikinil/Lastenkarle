@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getCookie } from '../services/Cookies';
 import { USER_DATA } from '../constants/URIs/UserURIs';
-import Renting from '../features/renting/pages/Renting';
+import GeneralRentingPage from '../features/renting/pages/GeneralRentingPage';
 
 
 const Home = () => {
@@ -41,7 +41,7 @@ const Home = () => {
                 <p>Token: {token}</p>
             </div>
 
-            <Renting />
+            <GeneralRentingPage />
         </>
     );
 };

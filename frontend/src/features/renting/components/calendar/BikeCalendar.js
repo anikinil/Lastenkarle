@@ -1,17 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import './BikeCalendar.css';
 import i18n from 'i18next';
 
 import { useNotification } from '../../../../components/notifications/NotificationContext';
 import { getCookie } from '../../../../services/Cookies';
-import { ALL_AVAILABILITIES, AVAILABILITY_OF_BIKE } from '../../../../constants/URIs/RentingURIs';
-import { ID } from '../../../../constants/URIs/General';
 
 const getDaysInMonth = (month, year) => new Date(year, month + 1, 0).getDate();
 const getCurrLang = () => i18n.language;
 
-const BikeCalendar = ({ bikeId }) => {
+const BikeCalendar = ({ bikeId, availabilities }) => {
     const { t } = useTranslation();
     const { showNotification } = useNotification();
 
@@ -23,40 +21,11 @@ const BikeCalendar = ({ bikeId }) => {
 
     const [selectedStartDate, setSelectedStartDate] = useState(null);
     const [selectedEndDate, setSelectedEndDate] = useState(null);
-    const [availability, setAvailability] = useState([]);
-
-    // const fetchAvailability = async () => {
-    //     const response = await fetch(AVAILABILITY_OF_BIKE.replace(ID, bikeId), {
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //             'Authorization': `Token ${token}`
-    //         }
-    //     });
-    //     const data = await response.json();
-    //     setAvailability(data);
-    // };
-
-    const fetchAvailability = () => {
-        fetch(AVAILABILITY_OF_BIKE.replace(ID, bikeId), {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${token}`
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            setAvailability(data)
-        })
-        .catch(error => {
-            console.error("ERROR", error)
-        })
-    }
-
 
     const handleDayClick = (date) => {
         const dateString = date.toISOString().split('T')[0];
 
-        if (availability[dateString] !== 0) return;
+        if (availabilities[dateString] !== 0) return;
 
         if (!selectedStartDate || (selectedStartDate && selectedEndDate)) {
             setSelectedStartDate(date);
@@ -94,7 +63,6 @@ const BikeCalendar = ({ bikeId }) => {
 
             if (response.ok) {
                 showNotification(t('booking_successful'), 'success');
-                // fetchAvailability(); // Refresh availabiliy
                 setSelectedStartDate(null);
                 setSelectedEndDate(null);
             } else {
@@ -106,7 +74,16 @@ const BikeCalendar = ({ bikeId }) => {
         }
     };
 
-    console.log(availability)
+    const isAvailableOnDate = (date) => {
+        const normalizeDate = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+        const normalizedDate = normalizeDate(date);
+
+        return !availabilities.some(availability => {
+            const start = normalizeDate(new Date(availability.from_date));
+            const end = normalizeDate(new Date(availability.until_date));
+            return normalizedDate >= start && normalizedDate <= end;
+        });
+    };
 
     const renderCalendarDays = (month, year) => {
         const daysInMonth = getDaysInMonth(month, year);
@@ -128,9 +105,8 @@ const BikeCalendar = ({ bikeId }) => {
                     const isSelectedEnd = selectedEndDate?.toISOString().split('T')[0] === dateString;
 
                     let dayClass = '';
-                    if (availability[dateString] === 0) dayClass = 'available';
-                    else if (availability[dateString] === 1) dayClass = 'reserved';
-                    else if (availability[dateString] === 2) dayClass = 'closed';
+                    if (day < today - 24*60*60*1000) dayClass = 'past';
+                    else if (isAvailableOnDate(day)) dayClass = 'available';
                     else dayClass = 'not-bookable';
 
                     if (isSelectedStart || isSelectedEnd) {
@@ -150,10 +126,6 @@ const BikeCalendar = ({ bikeId }) => {
             </>
         );
     };
-
-    useEffect(() => {
-        fetchAvailability();
-    }, []);
 
     return (
         <div className="booking-calendar">
@@ -180,8 +152,6 @@ const BikeCalendar = ({ bikeId }) => {
 
             <div className="legend">
                 <p><span className="legend-color available"></span> Buchbar</p>
-                <p><span className="legend-color reserved"></span> Reserviert</p>
-                <p><span className="legend-color closed"></span> Standort geschlossen</p>
                 <p><span className="legend-color not-bookable"></span> Nicht buchbar</p>
             </div>
 

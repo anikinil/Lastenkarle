@@ -8,9 +8,10 @@ import ImageAndDescriptionField from '../../../components/display/imageAndDescri
 import TextField from '../../../components/display/TextField';
 import BikeCalendar from '../../renting/components/calendar/BikeCalendar';
 import { ID } from '../../../constants/URIs/General';
-import { BIKE_BY_ID, STORE_BY_BIKE_ID } from '../../../constants/URIs/RentingURIs';
+import { AVAILABILITY_OF_BIKE, BIKE_BY_ID, STORE_BY_BIKE_ID } from '../../../constants/URIs/RentingURIs';
 import { ERR_FETCHING_BIKE, ERR_FETCHING_STORE } from '../../../constants/messages/ErrorMessages';
 import { STORE_PAGE_OF_BIKE } from '../../../constants/URLs/Navigation';
+import { getCookie } from '../../../services/Cookies';
 
 //Standard page for a Bike
 //TODO: organize Images
@@ -24,9 +25,12 @@ const BikeRentingPage = () => {
     const { t } = useTranslation(); // Translation hook
     const navigate = useNavigate(); // Navigation hook
 
+    const token = getCookie('token'); // Get token from cookies
+
     const bikeId = useParams().bike; // Get bike ID from URL parameters
     const [bike, setBike] = useState(); // State to store bike data
     const [store, setStore] = useState(); // State to store store data
+    const [availabilities, setAvailabilities] = useState([]); // State to store availability data
 
     // fetch bike
     const fetchBike = () => {
@@ -60,10 +64,24 @@ const BikeRentingPage = () => {
             });
     }
 
+    const fetchAvailabilities = async () => {
+        const response = await fetch(AVAILABILITY_OF_BIKE.replace(ID, bikeId), {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`
+            }
+        });
+        const data = await response.json();
+        setAvailabilities(data);
+        console.log(bikeId);
+        console.log(data);
+    };
+
     // Fetch bike and store data when component mounts
     useEffect(() => {
         fetchBike();
         fetchStore();
+        fetchAvailabilities();
     }, [])
 
     // Handle click on store button
@@ -85,7 +103,7 @@ const BikeRentingPage = () => {
                 </div>
 
                 {/* Display bike calendar for reservations */}
-                <BikeCalendar />
+                <BikeCalendar bikeId={bikeId} availabilities={availabilities} />
             </>
         }
         </>

@@ -42,6 +42,10 @@
   background-color: #68ce4a; /* Grün für buchbar */
 }
 
+.calendar-day.past {
+    background-color: #777777; /* Grau für Vergangenheit */
+  }
+
 .calendar-day.reserved {
   background-color: #f0e68c; /* Gelb für reserviert */
 }

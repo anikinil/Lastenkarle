@@ -16,7 +16,7 @@ import Login from './pages/Login';
 import Logout from './pages/Logout';
 import AccountDeletion from './pages/AccountDeletion';
 import Navbar from './components/navbar/Navbar';
-import Renting from './features/renting/pages/Renting';
+import GeneralRentingPage from './features/renting/pages/GeneralRentingPage';
 
 import LanguageToggle from './components/sidePanel/LanguageToggle';
 import RegionalRenting from './features/renting/pages/RegionalRenting';
@@ -29,7 +29,7 @@ import Enrollment from './features/enrollment/pages/Enrollment';
 import BikeBookings from './features/bikeBookings/pages/BikeBookings';
 
 import {
-    BIKE_RENTING, BIKE_REGISTRATION, ALL_BIKES, RENTING, ACCOUNT_DELETION, EMAIL_VERIFICATION,
+    BIKE_RENTING, BIKE_REGISTRATION, ALL_BIKES, GENERAL_RENTING, ACCOUNT_DELETION, EMAIL_VERIFICATION,
     ENROLLMENT, HOME, LOGIN, LOGOUT, REGIONAL_RENTING, REGISTER, BIKE_BOOKINGS, STORE_REGISTRATION,
     STORE_CONFIG, MY_STORES, ALL_STORES, BIKE_CONFIG, ALL_BOOKINGS, ALL_USERS, USER_PAGE, STORE_PAGE_OF_BIKE,
     BOOKING_PAGE
@@ -120,7 +120,7 @@ const App = () => {
 
                                     {/* RENTING */}
 
-                                    <Route exact path={RENTING} element={<Renting />} />
+                                    <Route exact path={GENERAL_RENTING} element={<GeneralRentingPage />} />
                                     <Route path={REGIONAL_RENTING.replace(REGION_NAME, ':region')} element={<RegionalRenting />} />
                                     <Route exact path={BIKE_RENTING.replace(ID, ':bike')} element={<BikeRentingPage />} />
 
