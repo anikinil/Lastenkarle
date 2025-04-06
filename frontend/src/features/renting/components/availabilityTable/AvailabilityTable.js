@@ -5,10 +5,11 @@ import './AvailabilityTable.css';
 import { useTranslation } from 'react-i18next';
 import { BIKE_RENTING, STORE_PAGE_OF_BIKE } from "../../../../constants/URLs/Navigation";
 import { ID } from "../../../../constants/URLs/General";
+import i18n from "../../../../i18n";
 
 const AvailabilityTable = ({ bikes, availabilities, from, to }) => {
 
-    const defaultNumDays = 30; // Number of days to display per default
+    const defaultNumDays = 21; // Number of days to display per default
 
     const { t } = useTranslation();
 
@@ -62,8 +63,13 @@ const AvailabilityTable = ({ bikes, availabilities, from, to }) => {
 
 
     const getDayLabels = () => {
+        const locale = i18n.language;
         return getDatesToShow().map(date => {
-            return { day: date.getDate(), month: date.toLocaleString("default", { month: "short" }) };
+            return {
+                day: date.getDate(),
+                month: date.toLocaleString(locale, { month: "short" }),
+                weekday: date.toLocaleString(locale, { weekday: "short" })
+            };
         });
     };
 
@@ -75,15 +81,14 @@ const AvailabilityTable = ({ bikes, availabilities, from, to }) => {
                 <table className="availability-table">
                     <thead>
                         <tr>
-                            <th rowSpan={2}>{t('bike')}</th>
-                            <th rowSpan={2}>{t('store')}</th>
+                            <th rowSpan={3}>{t('bike')}</th>
+                            <th rowSpan={3}>{t('store')}</th>
                             {Array.from(new Set(dayLabels.map(label => label.month))).map((month, index) => {
                                 const span = dayLabels.filter(label => label.month === month).length;
                                 return (
                                     <th key={index} colSpan={span}>
                                         {month}
                                     </th>
-                                    // TODO add days of the week
                                 );
                             })}
                         </tr>
@@ -91,6 +96,13 @@ const AvailabilityTable = ({ bikes, availabilities, from, to }) => {
                             {dayLabels.map((label, index) => (
                                 <th key={index}>
                                     {label.day}
+                                </th>
+                            ))}
+                        </tr>
+                        <tr>
+                            {dayLabels.map((label, index) => (
+                                <th key={index}>
+                                    {label.weekday}
                                 </th>
                             ))}
                         </tr>

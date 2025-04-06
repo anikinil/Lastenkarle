@@ -1,12 +1,14 @@
-.availability-table {
-    width: 100%;
+.overflow-x-auto {
     overflow-x: auto;
+    max-width: 100%;
 }
 
 .availability-table th,
 .availability-table td {
     border: 1px solid var(--background);
-    padding: 0.4rem;
+    padding: 0.3rem;
+    min-width: 2rem;
+    max-width: 10rem;
 }
 
 .availability-table th {
@@ -22,8 +24,8 @@
 
 .square {
     display: inline-block;
-    width: 0.7rem;
-    height: 0.7rem;
+    width: 0.8rem;
+    height: 0.8rem;
 }
 
 .square[status="available"] {
