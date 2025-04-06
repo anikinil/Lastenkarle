@@ -41,9 +41,10 @@
 
 .calendar-day {
     padding: 10px;
-    border: 2px solid #48494bfd;
+    color: white;
     text-align: center;
     cursor: pointer;
+    margin: 2px;
 }
 
 .calendar-day.available {
@@ -63,26 +64,24 @@
 }
 
 .calendar-day.not-bookable {
-    background-color: #ff8b7c;
+    background-color: #ff6e5b;
 }
 
 .calendar-day.selected {
-    color: #2890ff;
     font-weight: bold;
-}
-
-.calendar-day.empty {
-    border: none;
+    outline: 3px solid #1888ff;
+    outline-offset: -3px;
 }
 
 .calendar-day:hover {
-    background-color: #2890ff;
+    background-color: #1888ff;
+    color: white;
     transition: none;
 }
 
 .selection-info {
     margin-top: 20px;
-    color: #2890ff;
+    color: #1888ff;
     font-weight: bold;
 }
 

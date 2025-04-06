@@ -69,9 +69,9 @@ const BikeCalendar = ({ availabilities, selectedStartDate, setSelectedStartDate,
 
                 {/* Actual days */}
                 {daysArray.map((day) => {
-                    const dateString = day.toISOString().split('T')[0];
-                    const isSelectedStart = start?.toISOString().split('T')[0] === dateString;
-                    const isSelectedEnd = end?.toISOString().split('T')[0] === dateString;
+                    const dateString = day.toLocaleDateString('en-CA') // format date to 'YYYY-MM-DD'
+                    const isSelectedStart = start?.toLocaleDateString('en-CA') === dateString;
+                    const isSelectedEnd = end?.toLocaleDateString('en-CA') === dateString;
                     const isInRange = start && end && day >= start && day <= end;
                     let dayClass = '';
 

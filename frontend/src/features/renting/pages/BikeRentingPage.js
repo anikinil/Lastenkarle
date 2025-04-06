@@ -88,13 +88,11 @@ const BikeRentingPage = () => {
             showNotification(t('select_dates_first'), 'error');
             return;
         }
-
         const payload = {
-            begin: selectedStartDate.toISOString().split('T')[0],
-            end: selectedEndDate.toISOString().split('T')[0],
+            begin: selectedStartDate.toLocaleDateString('en-CA'), // format date to 'YYYY-MM-DD'
+            end: selectedEndDate.toLocaleDateString('en-CA'), 
             equipment: []
         };
-
         try {
             const response = await fetch(POST_BOOKING.replace(ID, bikeId), {
                 method: 'POST',
@@ -109,6 +107,7 @@ const BikeRentingPage = () => {
                 showNotification(t('booking_successful'), 'success');
                 setSelectedStartDate(null);
                 setSelectedEndDate(null);
+                await fetchAvailabilities();
             } else {
                 const error = await response.json();
                 throw new Error(error.detail);
