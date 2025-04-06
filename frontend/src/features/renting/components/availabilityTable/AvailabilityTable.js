@@ -3,8 +3,8 @@ import React from "react";
 import './AvailabilityTable.css';
 
 import { useTranslation } from 'react-i18next';
-import { BIKE_RENTING, STORE_PAGE_OF_BIKE } from "../../../constants/URLs/Navigation";
-import { ID } from "../../../constants/URLs/General";
+import { BIKE_RENTING, STORE_PAGE_OF_BIKE } from "../../../../constants/URLs/Navigation";
+import { ID } from "../../../../constants/URLs/General";
 
 const AvailabilityTable = ({ bikes, availabilities, from, to }) => {
 

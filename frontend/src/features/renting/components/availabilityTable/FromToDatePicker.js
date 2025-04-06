@@ -6,7 +6,7 @@ import './FromToDatePicker.css';
 import { useTranslation } from 'react-i18next';
 
 import { useState, useEffect } from 'react';
-import { useNotification } from '../../../components/notifications/NotificationContext';
+import { useNotification } from '../../../../components/notifications/NotificationContext';
 
 const FromToDatePicker = ({ from, to, setFrom, setTo}) => {
 
