@@ -14,13 +14,10 @@ import { STORE_PAGE_OF_BIKE } from '../../../constants/URLs/Navigation';
 import { getCookie } from '../../../services/Cookies';
 import { useNotification } from '../../../components/notifications/NotificationContext';
 
-//Standard page for a Bike
-//TODO: organize Images
-//TODO: Add bike description
-//TODO: Add Store information
+// Standard page for a Bike
 
-// TODO add equipment selection (Ilja)
-//TODO: users that arent locked in should also be able to see this page
+// TODO add equipment selection
+// TODO users that arent locked in should also be able to see this page
 
 const BikeRentingPage = () => {
 

@@ -3,9 +3,6 @@ import { useTranslation } from 'react-i18next';
 import './BikeCalendar.css';
 import i18n from 'i18next';
 
-// TODO also display closed and reseved days (needs to be fetched seperately)
-// TODO add legend for closed and reserved days
-
 const getDaysInMonth = (month, year) => new Date(year, month + 1, 0).getDate();
 const getCurrLang = () => i18n.language;
 

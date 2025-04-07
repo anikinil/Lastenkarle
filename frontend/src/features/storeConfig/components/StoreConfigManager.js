@@ -61,7 +61,6 @@ const StoreConfigManager = () => {
                     sat_opened: data.sat_opened, sat_open: data.sat_open, sat_close: data.sat_close,
                     sun_opened: data.sun_opened, sun_open: data.sun_open, sun_close: data.sun_close
                 });
-                console.log(data);
                 fetchBikes();
             })
             .catch(error => {
