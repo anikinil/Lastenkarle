@@ -157,7 +157,7 @@ const BikeRentingPage = () => {
                     selectedEndDate={selectedEndDate}
                     setSelectedEndDate={setSelectedEndDate}
                 />
-
+{/* TODO: Redirect users that aren't locked in already to login page and then back to here */}
                 <div className='button-container'>
                     <button onClick={handleBookClick} className="button accent">{t('book_now')}</button>
                 </div>
