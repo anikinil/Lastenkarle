@@ -1,6 +1,6 @@
 .overflow-x-auto {
-    /* overflow-x: auto; */
-    /* max-width: 100%; */
+    overflow-x: auto;
+    max-width: 100%;
 }
 
 .availability-table th,
