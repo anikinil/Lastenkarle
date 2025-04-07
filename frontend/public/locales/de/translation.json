@@ -169,5 +169,8 @@
     "bike":                                 "Lastenrad",
     "bikes":                                "Lastenräder",
     "bike_config":                          "Lastenradkonfiguration",
-    "no_bikes_registered_in_region":        "In dieser Region sind keine Lastenräder registriert"
+    "no_bikes_registered_in_region":        "In dieser Region sind keine Lastenräder registriert",
+    "bookable":                             "Verfügbar",
+    "not_bookable":                         "Nicht verfügbar",
+    "book_now":                             "Jetzt buchen"
 }

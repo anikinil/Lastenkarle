@@ -169,5 +169,8 @@
     "bike":                                 "Cargo Bike",
     "bikes":                                "Cargo Bikes",
     "bike_config":                          "Cargo Bike Configuration",
-    "no_bikes_registered_in_region":        "There are no bikes registered in this region"
+    "no_bikes_registered_in_region":        "There are no bikes registered in this region",
+    "bookable":                             "Available for renting",
+    "not_bookable":                         "Reserved",
+    "book_now":                             "Rent now"
 }
