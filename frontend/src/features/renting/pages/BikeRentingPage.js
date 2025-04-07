@@ -18,9 +18,9 @@ import { useNotification } from '../../../components/notifications/NotificationC
 //TODO: organize Images
 //TODO: Add bike description
 //TODO: Add Store information
-//TODO: Add calandar as availability overview
 
 // TODO add equipment selection (Ilja)
+//TODO: users that arent locked in should also be able to see this page
 
 const BikeRentingPage = () => {
 
