@@ -167,5 +167,6 @@
     "manager_of":                           "Manager of",
     "not_selected":                         "Please pick an option",
     "bike":                                 "Cargo Bike",
-    "bikes":                                "Cargo Bikes"
+    "bikes":                                "Cargo Bikes",
+    "bike_config":                          "Cargo Bike Configuration"
 }

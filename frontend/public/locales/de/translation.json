@@ -167,5 +167,6 @@
     "manager_of":                           "Manager*in von",
     "not_selected":                         "Bitte wähle eine Option aus",
     "bike":                                 "Lastenrad",
-    "bikes":                                "Lastenräder"
+    "bikes":                                "Lastenräder",
+    "bike_config":                          "Lastenradkonfiguration"
 }
