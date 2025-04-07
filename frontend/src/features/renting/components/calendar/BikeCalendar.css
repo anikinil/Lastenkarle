@@ -63,7 +63,7 @@
     background-color: #d3d3d3;
 }
 
-.calendar-day.not-bookable {
+.calendar-day.booked {
     background-color: #ff6e5b;
 }
 

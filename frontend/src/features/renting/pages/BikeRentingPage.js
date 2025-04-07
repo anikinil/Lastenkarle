@@ -39,6 +39,8 @@ const BikeRentingPage = () => {
     const [selectedStartDate, setSelectedStartDate] = useState(null);
     const [selectedEndDate, setSelectedEndDate] = useState(null);
 
+    const [openingTimes, setOpeningTimes] = useState({});
+
     // fetch bike
     const fetchBike = () => {
         fetch(BIKE_BY_ID.replace(ID, bikeId), {
@@ -65,6 +67,15 @@ const BikeRentingPage = () => {
             .then(response => response.json())
             .then(data => {
                 setStore(data); // Set store data to state
+                setOpeningTimes({
+                    mon: data.mon_opened,
+                    tue: data.tue_opened,
+                    wed: data.wed_opened,
+                    thu: data.thu_opened,
+                    fri: data.fri_opened,
+                    sat: data.sat_opened,
+                    sun: data.sun_opened
+                });
             })
             .catch(error => {
                 console.error(ERR_FETCHING_STORE, error); // Log error if fetching store fails
@@ -90,7 +101,7 @@ const BikeRentingPage = () => {
         }
         const payload = {
             begin: selectedStartDate.toLocaleDateString('en-CA'), // format date to 'YYYY-MM-DD'
-            end: selectedEndDate.toLocaleDateString('en-CA'), 
+            end: selectedEndDate.toLocaleDateString('en-CA'),
             equipment: []
         };
         try {
@@ -145,9 +156,10 @@ const BikeRentingPage = () => {
                 <div className='button-container'>
                     <button type='button' className='button regular' onClick={handleStoreClick}>{store?.name}</button> {/* Button to navigate to store page */}
                 </div>
-                
+
                 {/* Display bike calendar for reservations */}
                 <BikeCalendar
+                    storeOpeningDays={openingTimes}
                     availabilities={availabilities}
                     selectedStartDate={selectedStartDate}
                     setSelectedStartDate={setSelectedStartDate}

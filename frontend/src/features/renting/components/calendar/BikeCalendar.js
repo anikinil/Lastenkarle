@@ -3,24 +3,20 @@ import { useTranslation } from 'react-i18next';
 import './BikeCalendar.css';
 import i18n from 'i18next';
 
-import { getCookie } from '../../../../services/Cookies';
-
 // TODO also display closed and reseved days (needs to be fetched seperately)
 // TODO add legend for closed and reserved days
 
 const getDaysInMonth = (month, year) => new Date(year, month + 1, 0).getDate();
 const getCurrLang = () => i18n.language;
 
-const BikeCalendar = ({ availabilities, selectedStartDate, setSelectedStartDate, selectedEndDate, setSelectedEndDate }) => {
+const BikeCalendar = ({ storeOpeningDays, availabilities, selectedStartDate, setSelectedStartDate, selectedEndDate, setSelectedEndDate }) => {
     const { t } = useTranslation();
 
-    console.log('availabilities', availabilities);
+    console.log('storeOpeningDays', storeOpeningDays);
 
     const today = new Date();
     const currentMonth = today.getMonth();
     const currentYear = today.getFullYear();
-
-    const token = getCookie('token');
 
     const [start, setStart] = useState(selectedStartDate);
     const [end, setEnd] = useState(selectedEndDate);
@@ -43,6 +39,11 @@ const BikeCalendar = ({ availabilities, selectedStartDate, setSelectedStartDate,
         }
     };
 
+    const isStoreOpen = (date) => {
+        const weekday = date.toLocaleDateString('en-US', { weekday: 'short' }).toLowerCase();
+        return storeOpeningDays[weekday] === true;
+    }
+
     const isAvailableOnDate = (date) => {
         const normalizeDate = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
         const normalizedDate = normalizeDate(date);
@@ -62,6 +63,7 @@ const BikeCalendar = ({ availabilities, selectedStartDate, setSelectedStartDate,
 
         return (
             <div className="calendar-grid">
+                {/* TODO make weekdays translatable */}
                 {/* Weekday labels (top row) */}
                 {["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"].map((d, i) => (
                     <div key={`label-${i}`} className="weekday-label">{d}</div>
@@ -82,10 +84,12 @@ const BikeCalendar = ({ availabilities, selectedStartDate, setSelectedStartDate,
 
                     if (day < new Date(today.getTime() - 24 * 60 * 60 * 1000)) {
                         dayClass = 'past';
+                    } else if (!isStoreOpen(day)) {
+                        dayClass = 'closed';
                     } else if (isAvailableOnDate(day)) {
                         dayClass = 'available';
                     } else {
-                        dayClass = 'not-bookable';
+                        dayClass = 'booked';
                     }
 
                     if (isInRange || isSelectedStart || isSelectedEnd) {
