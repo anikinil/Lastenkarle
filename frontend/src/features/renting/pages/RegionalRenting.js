@@ -17,7 +17,7 @@ const RegionalRenting = () => {
     const { t } = useTranslation();
 
     const { showNotification } = useNotification();
-    
+
 
     const token = getCookie('token');
 
@@ -51,15 +51,15 @@ const RegionalRenting = () => {
     };
 
     const fetchBikeAvailabilities = async (bikeId) => {
-            const response = await fetch(AVAILABILITY_OF_BIKE.replace(ID, bikeId), {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Token ${token}`
-                }
-            });
-            const data = await response.json();
-            return data;
-        };
+        const response = await fetch(AVAILABILITY_OF_BIKE.replace(ID, bikeId), {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`
+            }
+        });
+        const data = await response.json();
+        return data;
+    };
 
     // Filters stores by the region of the page
     const filterStoresByRegion = (allStores) => {
@@ -99,8 +99,15 @@ const RegionalRenting = () => {
                     + String(regionName[0]).toUpperCase() + String(regionName).slice(1)} {/* capitalizes region name*/}
             </h1>
 
-            <FromToDatePicker from={from} to={to} setFrom={setFrom} setTo={setTo} />
-            <AvailabilityTable bikes={bikes} availabilities={availabilities} from={from} to={to} />
+            {bikes.length > 0 ?
+                <>
+
+                    <FromToDatePicker from={from} to={to} setFrom={setFrom} setTo={setTo} />
+                    <AvailabilityTable bikes={bikes} availabilities={availabilities} from={from} to={to} />
+                </>
+                :
+                <p>{t('no_bikes_registered')}</p>
+            }
         </>
 
     );
