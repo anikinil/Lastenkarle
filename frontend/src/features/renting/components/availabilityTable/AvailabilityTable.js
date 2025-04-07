@@ -79,47 +79,53 @@ const AvailabilityTable = ({ bikes, availabilities, from, to }) => {
         <div className="availability-table-container">
             <div className="overflow-x-auto">
                 <table className="availability-table">
-                    <thead>
-                        <tr>
-                            <th rowSpan={3}>{t('bike')}</th>
-                            <th rowSpan={3}>{t('store')}</th>
-                            {Array.from(new Set(dayLabels.map(label => label.month))).map((month, index) => {
-                                const span = dayLabels.filter(label => label.month === month).length;
-                                return (
-                                    <th key={index} colSpan={span}>
-                                        {month}
-                                    </th>
-                                );
-                            })}
-                        </tr>
-                        <tr>
-                            {dayLabels.map((label, index) => (
-                                <th key={index}>
-                                    {label.day}
-                                </th>
-                            ))}
-                        </tr>
-                        <tr>
-                            {dayLabels.map((label, index) => (
-                                <th key={index}>
-                                    {label.weekday}
-                                </th>
-                            ))}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {getAvailabilityData().map((bike, rowIdx) => (
-                            <tr key={rowIdx}>
-                                <td><a href={BIKE_RENTING.replace(ID, bike.id)}>{bike.name}</a></td>
-                                <td><a href={STORE_PAGE_OF_BIKE.replace(ID, bike.id)}>{bike.store}</a></td>
-                                {bike.avs.map((status, colIdx) => (
-                                    <td key={colIdx}>
-                                        <div className={`square`} status={status} />
-                                    </td>
+                    {getAvailabilityData().length === 0 ?
+                        <p>{t('no_bikes_available_at_selected_period')}</p>
+                        :
+                        <>
+                            <thead>
+                                <tr>
+                                    <th rowSpan={3}>{t('bike')}</th>
+                                    <th rowSpan={3}>{t('store')}</th>
+                                    {Array.from(new Set(dayLabels.map(label => label.month))).map((month, index) => {
+                                        const span = dayLabels.filter(label => label.month === month).length;
+                                        return (
+                                            <th key={index} colSpan={span}>
+                                                {month}
+                                            </th>
+                                        );
+                                    })}
+                                </tr>
+                                <tr>
+                                    {dayLabels.map((label, index) => (
+                                        <th key={index}>
+                                            {label.day}
+                                        </th>
+                                    ))}
+                                </tr>
+                                <tr>
+                                    {dayLabels.map((label, index) => (
+                                        <th key={index}>
+                                            {label.weekday}
+                                        </th>
+                                    ))}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {getAvailabilityData().map((bike, rowIdx) => (
+                                    <tr key={rowIdx}>
+                                        <td><a href={BIKE_RENTING.replace(ID, bike.id)}>{bike.name}</a></td>
+                                        <td><a href={STORE_PAGE_OF_BIKE.replace(ID, bike.id)}>{bike.store}</a></td>
+                                        {bike.avs.map((status, colIdx) => (
+                                            <td key={colIdx}>
+                                                <div className={`square`} status={status} />
+                                            </td>
+                                        ))}
+                                    </tr>
                                 ))}
-                            </tr>
-                        ))}
-                    </tbody>
+                            </tbody>
+                        </>
+                    }
                 </table>
             </div>
         </div>
