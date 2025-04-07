@@ -172,5 +172,8 @@
     "no_bikes_registered_in_region":        "In dieser Region sind keine Lastenräder registriert",
     "bookable":                             "Verfügbar",
     "not_bookable":                         "Nicht verfügbar",
-    "book_now":                             "Jetzt buchen"
+    "book_now":                             "Jetzt buchen",
+    "select_dates_first":                   "Wähle bitte deinen Wunschzeitraum",
+    "booking_failed":                       "Buchung nicht möglich",
+    "no_bikes_available_at_selected_period": "In dem ausgewählten Zeitraum ist leider kein Lastenrad verfügbar"
 }

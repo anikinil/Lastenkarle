@@ -172,5 +172,8 @@
     "no_bikes_registered_in_region":        "There are no bikes registered in this region",
     "bookable":                             "Available for renting",
     "not_bookable":                         "Reserved",
-    "book_now":                             "Rent now"
+    "book_now":                             "Rent now",
+    "select_dates_first":                   "Please select your desired period",
+    "booking_failed":                       "Renting not possible",
+    "no_bikes_available_at_selected_period": "There are no bikes available in the selected time period"
 }
