@@ -11,7 +11,7 @@ const getCurrLang = () => i18n.language;
 
 const getLocalizedWeekdays = () => {
     const locale = i18n.language;
-    const baseDate = new Date(Date.UTC(2025, 4, 7)); // just a random Monday
+    const baseDate = new Date(Date.UTC(2022, 7, 1)); // just a random Monday on the 1st of August 2022
     return Array.from({ length: 7 }).map((_, i) => {
         const date = new Date(baseDate);
         date.setDate(baseDate.getDate() + i);
@@ -19,11 +19,8 @@ const getLocalizedWeekdays = () => {
     });
 };
 
-
 const BikeCalendar = ({ storeOpeningDays, availabilities, selectedStartDate, setSelectedStartDate, selectedEndDate, setSelectedEndDate }) => {
     const { t } = useTranslation();
-
-    console.log('storeOpeningDays', storeOpeningDays);
 
     const today = new Date();
     const currentMonth = today.getMonth();
