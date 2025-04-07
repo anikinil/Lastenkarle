@@ -9,6 +9,17 @@ import i18n from 'i18next';
 const getDaysInMonth = (month, year) => new Date(year, month + 1, 0).getDate();
 const getCurrLang = () => i18n.language;
 
+const getLocalizedWeekdays = () => {
+    const locale = i18n.language;
+    const baseDate = new Date(Date.UTC(2025, 4, 7)); // just a random Monday
+    return Array.from({ length: 7 }).map((_, i) => {
+        const date = new Date(baseDate);
+        date.setDate(baseDate.getDate() + i);
+        return date.toLocaleDateString(locale, { weekday: 'short' });
+    });
+};
+
+
 const BikeCalendar = ({ storeOpeningDays, availabilities, selectedStartDate, setSelectedStartDate, selectedEndDate, setSelectedEndDate }) => {
     const { t } = useTranslation();
 
@@ -63,9 +74,8 @@ const BikeCalendar = ({ storeOpeningDays, availabilities, selectedStartDate, set
 
         return (
             <div className="calendar-grid">
-                {/* TODO make weekdays translatable */}
                 {/* Weekday labels (top row) */}
-                {["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"].map((d, i) => (
+                {getLocalizedWeekdays().map((d, i) => (
                     <div key={`label-${i}`} className="weekday-label">{d}</div>
                 ))}
 
@@ -134,8 +144,10 @@ const BikeCalendar = ({ storeOpeningDays, availabilities, selectedStartDate, set
             </div>
 
             <div className="legend">
-                <p><span className="legend-color available"></span>{t('bookable')}</p>
-                <p><span className="legend-color not-bookable"></span>{t('not_bookable')}</p>
+                <p><span className="legend-color available"></span>{t('available')}</p>
+                <p><span className="legend-color closed"></span>{t('store_closed')}</p>
+                <p><span className="legend-color booked"></span>{t('booked')}</p>
+                <p><span className="legend-color past"></span>{t('past')}</p>
             </div>
         </div>
     );
