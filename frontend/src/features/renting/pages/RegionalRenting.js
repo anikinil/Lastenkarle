@@ -101,12 +101,11 @@ const RegionalRenting = () => {
 
             {bikes.length > 0 ?
                 <>
-
                     <FromToDatePicker from={from} to={to} setFrom={setFrom} setTo={setTo} />
                     <AvailabilityTable bikes={bikes} availabilities={availabilities} from={from} to={to} />
                 </>
                 :
-                <p>{t('no_bikes_registered')}</p>
+                <p>{t('no_bikes_registered_in_region')}</p>
             }
         </>
 
