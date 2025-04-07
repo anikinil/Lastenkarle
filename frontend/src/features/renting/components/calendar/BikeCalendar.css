@@ -111,3 +111,7 @@
 .legend-color.booked {
     background-color: #b3503f;
 }
+
+.legend-color.past {
+    background-color: #777777;
+}
