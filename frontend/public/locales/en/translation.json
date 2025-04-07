@@ -159,7 +159,7 @@
 
     "rent_in":                              "Rent your bike in",
     "karlsruhe":                            "Karlsruhe",
-    "no_bikes_registered":                  "There are no bikes registered in this region",
+    "no_bikes_registered":                  "There are currently no bikes registered",
     "no_bookings":                          "No bookings at the moment",
     "pickup_date":                          "Pickup date",
     "return_date":                          "Return date",
@@ -168,5 +168,6 @@
     "not_selected":                         "Please pick an option",
     "bike":                                 "Cargo Bike",
     "bikes":                                "Cargo Bikes",
-    "bike_config":                          "Cargo Bike Configuration"
+    "bike_config":                          "Cargo Bike Configuration",
+    "no_bikes_registered_in_region":        "There are no bikes registered in this region"
 }
