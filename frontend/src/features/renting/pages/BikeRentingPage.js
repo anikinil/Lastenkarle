@@ -145,7 +145,7 @@ const BikeRentingPage = () => {
                 <div className='button-container'>
                     <button type='button' className='button regular' onClick={handleStoreClick}>{store?.name}</button> {/* Button to navigate to store page */}
                 </div>
-
+                
                 {/* Display bike calendar for reservations */}
                 <BikeCalendar
                     availabilities={availabilities}

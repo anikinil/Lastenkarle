@@ -91,7 +91,6 @@ const RegionalRenting = () => {
         };
         fetchData(); // Call the fetchData function
     }, []);
-
     return (
         <>
             <h1>
