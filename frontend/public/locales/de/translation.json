@@ -175,5 +175,6 @@
     "book_now":                             "Jetzt buchen",
     "select_dates_first":                   "Wähle bitte deinen Wunschzeitraum",
     "booking_failed":                       "Buchung nicht möglich",
-    "no_bikes_available_at_selected_period": "In dem ausgewählten Zeitraum ist leider kein Lastenrad verfügbar"
+    "no_bikes_available_at_selected_period": "In dem ausgewählten Zeitraum ist leider kein Lastenrad verfügbar",
+    "store_closed":                         "Station geschlossen"
 }

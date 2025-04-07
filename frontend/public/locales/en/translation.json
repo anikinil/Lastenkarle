@@ -175,5 +175,6 @@
     "book_now":                             "Rent now",
     "select_dates_first":                   "Please select your desired period",
     "booking_failed":                       "Renting not possible",
-    "no_bikes_available_at_selected_period": "There are no bikes available in the selected time period"
+    "no_bikes_available_at_selected_period": "There are no bikes available in the selected time period",
+    "store_close":                          "The station is closed"
 }
