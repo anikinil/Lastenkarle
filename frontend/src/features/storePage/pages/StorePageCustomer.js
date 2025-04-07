@@ -7,7 +7,6 @@ import i18n from 'i18next';
 import { useParams } from 'react-router-dom';
 import TextField from '../../../components/display/TextField';
 import { ERR_FETCHING_STORE } from '../../../constants/messages/ErrorMessages';
-import { getCookie } from '../../../services/Cookies';
 import { STORE_BY_BIKE_ID } from '../../../constants/URIs/RentingURIs';
 import { ID } from '../../../constants/URIs/General';
 
@@ -28,14 +27,11 @@ const StorePageCustomer = () => {
     const [store, setStore] = useState(); // State to hold store data
     const [openingTimes, setOpeningTimes] = useState([]); // State to hold opening times data
 
-    const token = getCookie('token'); // Get authentication token from cookies
-
     // Function to fetch store data from the server
     const fetchStore = () => {
         fetch(STORE_BY_BIKE_ID.replace(ID, bikeId), {
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Token ${token}`,
             }
         })
             .then(response => response.json()) // Parse JSON response

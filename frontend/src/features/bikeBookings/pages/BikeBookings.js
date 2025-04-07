@@ -25,7 +25,7 @@ const BikeBookings = () => {
         fetch(BIKE_BY_ID.replace(ID, bikeId), {
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Token ${token}`
+                // 'Authorization': `Token ${token}`
             }
         })
             .then(response => response.json())

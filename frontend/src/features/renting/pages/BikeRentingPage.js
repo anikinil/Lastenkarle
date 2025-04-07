@@ -11,13 +11,11 @@ import { ID } from '../../../constants/URIs/General';
 import { AVAILABILITY_OF_BIKE, BIKE_BY_ID, POST_BOOKING, STORE_BY_BIKE_ID } from '../../../constants/URIs/RentingURIs';
 import { ERR_FETCHING_BIKE, ERR_FETCHING_STORE } from '../../../constants/messages/ErrorMessages';
 import { STORE_PAGE_OF_BIKE } from '../../../constants/URLs/Navigation';
-import { getCookie } from '../../../services/Cookies';
 import { useNotification } from '../../../components/notifications/NotificationContext';
 
 // Standard page for a Bike
 
 // TODO add equipment selection
-// TODO users that arent locked in should also be able to see this page
 
 const BikeRentingPage = () => {
 
@@ -25,8 +23,6 @@ const BikeRentingPage = () => {
     const { showNotification } = useNotification();
 
     const navigate = useNavigate(); // Navigation hook
-
-    const token = getCookie('token'); // Get token from cookies
 
     const bikeId = useParams().bike; // Get bike ID from URL parameters
     const [bike, setBike] = useState(); // State to store bike data
@@ -83,7 +79,6 @@ const BikeRentingPage = () => {
         const response = await fetch(AVAILABILITY_OF_BIKE.replace(ID, bikeId), {
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Token ${token}`
             }
         });
         const data = await response.json();
@@ -106,7 +101,6 @@ const BikeRentingPage = () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Token ${token}`
                 },
                 body: JSON.stringify(payload)
             });

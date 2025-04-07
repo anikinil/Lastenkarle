@@ -8,7 +8,6 @@ import { useState } from 'react';
 
 import FromToDatePicker from '../components/availabilityTable/FromToDatePicker';
 import { ALL_AVAILABILITIES, ALL_BIKES } from '../../../constants/URIs/RentingURIs';
-import { getCookie } from '../../../services/Cookies';
 import AvailabilityTable from '../components/availabilityTable/AvailabilityTable';
 import { useNotification } from '../../../components/notifications/NotificationContext';
 
@@ -17,8 +16,6 @@ const GeneralRentingPage = () => {
     const { t } = useTranslation();
 
     const { showNotification } = useNotification();
-
-    const token = getCookie('token');
 
     const [from, setFrom] = useState('');
     const [to, setTo] = useState('');
@@ -30,7 +27,6 @@ const GeneralRentingPage = () => {
         const response = await fetch(ALL_AVAILABILITIES, {
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Token ${token}`
             }
         });
         const data = await response.json();
@@ -42,7 +38,6 @@ const GeneralRentingPage = () => {
         const response = await fetch(ALL_BIKES, {
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Token ${token}`
             }
         });
         const data = await response.json();
@@ -52,7 +47,6 @@ const GeneralRentingPage = () => {
     useEffect(() => {
         fetchAvailabilities();
         fetchBikes();
-        //postBooking();
     }, []);
 
     useEffect(() => {
