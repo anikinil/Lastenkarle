@@ -4,15 +4,12 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import i18n from 'i18next';
 
-import ImageAndDescriptionField from '../../../components/display/imageAndDescriptionField/ImageAndDescriptionField';
 import { useParams } from 'react-router-dom';
 import TextField from '../../../components/display/TextField';
 import { ERR_FETCHING_STORE } from '../../../constants/messages/ErrorMessages';
 import { getCookie } from '../../../services/Cookies';
 import { STORE_BY_BIKE_ID } from '../../../constants/URIs/RentingURIs';
 import { ID } from '../../../constants/URIs/General';
-import BikeListCustomer from '../../../components/lists/bikeList/listVersions/BikeListCustomer';
-import StoreOpeningTimesConfig from '../../../components/openingTimesConfig/StoreOpeningTimesConfig';
 
 const getLocalizedWeekdays = () => {
     const locale = i18n.language;
@@ -65,15 +62,14 @@ const StorePageCustomer = () => {
         fetchStore();
     }, []); // Empty dependency array ensures this runs only once
 
-    //TODO: Opening hours
-
     return (
         <> {store &&
             <>
                 <h1>{store?.name}</h1> {/* Display store name */}
 
-                {/* NOTE crrently no image and description of store returned from backend */}
+                {/* NOTE crrently no image and description of store stored at backend */}
                 {/* <ImageAndDescriptionField editable={false} imageValue={store?.image} descriptionValue={store?.description} /> */}
+                
                 <TextField editable={false} value={store?.address} singleLine={true} title={t('address')} /> {/* Display store address */}
 
                 {openingTimes.map((day, key) => {
