@@ -170,7 +170,7 @@
     "bikes":                                "Lastenräder",
     "bike_config":                          "Lastenradkonfiguration",
     "no_bikes_registered_in_region":        "In dieser Region sind keine Lastenräder registriert",
-    "bookable":                             "Verfügbar",
+    "available":                            "Verfügbar",
     "booked":                               "Bereits reserviert",
     "book_now":                             "Jetzt buchen",
     "select_dates_first":                   "Wähle bitte deinen Wunschzeitraum",

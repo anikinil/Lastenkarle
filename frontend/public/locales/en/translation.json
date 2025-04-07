@@ -170,7 +170,7 @@
     "bikes":                                "Cargo Bikes",
     "bike_config":                          "Cargo Bike Configuration",
     "no_bikes_registered_in_region":        "There are no bikes registered in this region",
-    "bookable":                             "Available for renting",
+    "available":                            "Available for renting",
     "booked":                               "Already reserved",
     "book_now":                             "Rent now",
     "select_dates_first":                   "Please select your desired period",
