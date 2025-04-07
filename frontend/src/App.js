@@ -71,7 +71,7 @@ const App = () => {
     }
 
     // THINK if some sort of encapsulation needed
-    // TODO maybe add a notification when session expired (may be with a button leading to the login page)
+    // THINK maybe add a notification when session expired (may be with a button leading to the login page)
     // on page load, check if the token is expired and reset the user roles and stores, to update the navbar
     useEffect(() => {
         if (tokenExpired()) {

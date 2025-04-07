@@ -5,7 +5,6 @@ import { STORE_NAME, REGION_NAME } from "./General"
 export const HOME                   = `/`
 export const NO_PERMISSION          = `/no-permission`
 
-// TODO check if correct
 export const HELMHOLTZ              = `${HOST}/api/user/v1/helmholtz/login`
 
 export const LOGIN                  = `/login`

@@ -13,7 +13,7 @@ const Home = () => {
 
     const [username, setUsername] = useState('');
 
-    // TODO remove, when not needed
+    // TODO remove, when not needed anymore
     const fetchUserData = () => {
         fetch(USER_DATA, {
             headers: {
