@@ -42,6 +42,8 @@ const StorePageCustomer = () => {
         fetchStore();
     }, []); // Empty dependency array ensures this runs only once
 
+    //TODO: Opening hours
+
     return (
         <> {store &&
             <>
