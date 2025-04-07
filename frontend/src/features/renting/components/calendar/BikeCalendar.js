@@ -14,6 +14,8 @@ const getCurrLang = () => i18n.language;
 const BikeCalendar = ({ availabilities, selectedStartDate, setSelectedStartDate, selectedEndDate, setSelectedEndDate }) => {
     const { t } = useTranslation();
 
+    console.log('availabilities', availabilities);
+
     const today = new Date();
     const currentMonth = today.getMonth();
     const currentYear = today.getFullYear();
